@@ -142,7 +142,7 @@
     <Compile Include="Reporting\ReportData.cs" />
     <Compile Include="Reporting\IReportColumn.cs" />
     <Compile Include="SimpleDbContext.cs" />
-    <Compile Include="TestData\ValueTransformer.cs" />
+    <Compile Include="TestData\ValueProvider.cs" />
     <Compile Include="TestData\TestDataGenerator.cs" />
     <Compile Include="Transactions\LazyQueryExecutor.cs" />
     <Compile Include="Transactions\TransactionScopeFactory.cs" />

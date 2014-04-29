@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData
 {
@@ -9,7 +11,8 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
     public static void Main ()
     {
       var valueProvider = ValueProviderFactory.GetDefaultProvider();
-      valueProvider.SetProvider<string, Dog>(new DogNameGenerator(), d => d.Name);
+      valueProvider.SetProvider<string, Dog>(new DogNameGenerator("first name"), d => d.FirstName);
+      valueProvider.SetProvider<string, Dog>(new DogNameGenerator("last name"), d => d.LastName);
       valueProvider.SetProvider(new CatGenerator());
 
       var typeFiller = new TypeFiller(valueProvider);
@@ -18,7 +21,10 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       Console.WriteLine(someString);
 
       var dog = typeFiller.Get<Dog>();
-      Console.WriteLine(dog.Name);
+      Console.WriteLine(dog.FirstName);
+      Console.WriteLine(dog.LastName);
+      Console.WriteLine("DogAge:"+dog.Age);
+      Console.WriteLine("BestCatFriendName:" + dog.BestCatFriend.Name);
 
       var cat = typeFiller.Get<Cat>();
       Console.WriteLine(cat.Name);
@@ -30,10 +36,10 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
     }
   }
 
-  internal class CatGenerator:ValueTransformer<Cat>
+  internal class CatGenerator:ValueProvider<Cat>
   {
-    public CatGenerator (ValueTransformer<Cat> nextTransformer=null)
-        : base(nextTransformer)
+    public CatGenerator (ValueProvider<Cat> nextProvider=null)
+        : base(nextProvider)
     {
     }
 
@@ -51,14 +57,19 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       _typeValuesProvider = typeValuesProvider;
     }
 
-    public TValue Get<TValue> ()
+    public TValue Get<TValue>()
     {
-      var valueType = typeof (TValue);
-      if (_typeValuesProvider.Has<TValue>())
+      return Get<TValue, object>(null);
+    }
+
+    private TValue Get<TValue, TSource> (Expression<Func<TSource, TValue>> valueExpression)
+    {
+      if (_typeValuesProvider.Has(valueExpression))
       {
-        return _typeValuesProvider.Get<TValue>();
+        return _typeValuesProvider.Get(valueExpression);
       }
 
+      var valueType = typeof (TValue);
       if (!valueType.IsClass)
       {
         return default(TValue);
@@ -68,14 +79,23 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
 
       //create the filter expression
       var parameter = Expression.Parameter(valueType);
-      var property = Expression.Property(parameter, "Name");
-      var typeExpression = Expression.Lambda<Func<TValue, string>>(property, parameter);
 
-      var nameValue = _typeValuesProvider.Get(typeExpression);
+      //we go over all properties and generate values for them
+      var properties = valueType.GetProperties();
+      foreach (var property in properties)
+      {
+        var propertyExpression = Expression.Property(parameter, property.Name);
 
-      //reflect:
-      var nameProperty = valueType.GetProperty("Name");
-      nameProperty.SetValue(instance, nameValue);
+        var gen=typeof (Func<,>).MakeGenericType(typeof (TValue), property.PropertyType);
+
+        var typeExpression = Expression.Lambda(gen, propertyExpression, parameter);
+
+        var getValueGeneric = GetType().GetMethods(BindingFlags.Instance|BindingFlags.NonPublic).First(m => m.GetGenericArguments().Length == 2);
+        var concreteGeneric = getValueGeneric.MakeGenericMethod(property.PropertyType, typeof (TValue));
+
+        var nameValue = concreteGeneric.Invoke(this, new object[]{typeExpression});
+        property.SetValue(instance, nameValue);
+      }
 
       return instance;
     }
@@ -88,7 +108,10 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
 
   internal class Dog
   {
-    public string Name { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public int Age { get; set; }
+    public Cat BestCatFriend { get; set; }
   }
 
   internal static class ExpressionExtensions
@@ -116,7 +139,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
     public static TypeValuesProvider GetDefaultProvider()
     {
       var defaultProvider = GetEmptyProvider();
-      defaultProvider.SetProvider<string>(new BasicStringGenerator());
+      defaultProvider.SetProvider(new BasicStringGenerator());
 
       return defaultProvider;
     }
@@ -129,19 +152,19 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
 
   public class TypeValuesProvider
   {
-    private readonly Dictionary<string, IValueTransformer> _typeToValueTransformer;
+    private readonly Dictionary<string, IValueProvider> _typeToValueTransformer;
 
     internal TypeValuesProvider()
     {
-      _typeToValueTransformer = new Dictionary<string, IValueTransformer>();
+      _typeToValueTransformer = new Dictionary<string, IValueProvider>();
     }
 
-    public void SetProvider<TValue> (ValueTransformer<TValue> valueTransformer)
+    public void SetProvider<TValue> (ValueProvider<TValue> valueProvider)
     {
-      SetProvider<TValue, object>(valueTransformer, null);
+      SetProvider<TValue, object>(valueProvider, null);
     }
 
-    public void SetProvider<TValue, TSource> (ValueTransformer<TValue> valueTransformer, Expression<Func<TSource, TValue>> filterExpression)
+    public void SetProvider<TValue, TSource> (ValueProvider<TValue> valueProvider, Expression<Func<TSource, TValue>> filterExpression)
     {
       var sourceType = typeof (TValue);
       var key = filterExpression == null ? sourceType.FullName : filterExpression.GetName();
@@ -151,7 +174,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
         _typeToValueTransformer.Remove(key);
       }
 
-      _typeToValueTransformer.Add(key, valueTransformer);
+      _typeToValueTransformer.Add(key, valueProvider);
     }
 
     public bool Has<TValue> ()
@@ -194,18 +217,18 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
     }
   }
 
-  public abstract class ValueTransformer<TProperty>:IValueTransformer
+  public abstract class ValueProvider<TProperty>:IValueProvider
   {
-    private readonly ValueTransformer<TProperty> _nextTransformer;
+    private readonly ValueProvider<TProperty> _nextProvider;
 
-    protected ValueTransformer(ValueTransformer<TProperty> nextTransformer)
+    protected ValueProvider(ValueProvider<TProperty> nextProvider)
     {
-      _nextTransformer = nextTransformer;
+      _nextProvider = nextProvider;
     }
 
     protected virtual TProperty GetValue (TProperty currentValue)
     {
-      return _nextTransformer != null ? _nextTransformer.GetValue(currentValue) : currentValue;
+      return _nextProvider != null ? _nextProvider.GetValue(currentValue) : currentValue;
     }
 
     public object GetValue(object value=null)
@@ -214,15 +237,15 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
     }
   }
 
-  public interface IValueTransformer
+  public interface IValueProvider
   {
     object GetValue (object currentValue=null);
   }
 
-  class BasicStringGenerator:ValueTransformer<string>
+  class BasicStringGenerator:ValueProvider<string>
   {
-    public BasicStringGenerator (ValueTransformer<string> nextTransformer=null)
-        : base(nextTransformer)
+    public BasicStringGenerator (ValueProvider<string> nextProvider=null)
+        : base(nextProvider)
     {
     }
 
@@ -232,10 +255,10 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
     }
   }
 
-  internal class CustomStringGenerator : ValueTransformer<string>
+  internal class CustomStringGenerator : ValueProvider<string>
   {
-    public CustomStringGenerator (ValueTransformer<string> nextTransformer=null)
-        : base(nextTransformer)
+    public CustomStringGenerator (ValueProvider<string> nextProvider=null)
+        : base(nextProvider)
     {
     }
 
@@ -245,16 +268,19 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
     }
   }
 
-  internal class DogNameGenerator:ValueTransformer<string>
+  internal class DogNameGenerator:ValueProvider<string>
   {
-    public DogNameGenerator (ValueTransformer<string> nextTransformer=null)
-        : base(nextTransformer)
+    private readonly string _additionalContent;
+
+    public DogNameGenerator (string additionalContent, ValueProvider<string> nextProvider=null)
+        : base(nextProvider)
     {
+      _additionalContent = additionalContent;
     }
 
     protected override string GetValue (string currentValue)
     {
-      return "I am a dog";
+      return "I am a dog - " + _additionalContent;
     }
   }
 }
