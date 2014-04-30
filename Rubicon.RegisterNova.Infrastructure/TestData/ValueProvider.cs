@@ -21,7 +21,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       var someString=typeValueProvider.Get<string>();
       Console.WriteLine(someString);
 
-      var dog = typeValueProvider.Get<Dog>(2);
+      var dog = typeValueProvider.Get<Dog>();
       Console.WriteLine(dog.FirstName);
       Console.WriteLine(dog.LastName);
       Console.WriteLine("BestDogFriend - First:" + dog.BestDogFriend.FirstName);
@@ -29,8 +29,8 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       Console.WriteLine("DogAge:"+dog.Age);
       Console.WriteLine("BestCatFriendName:" + dog.BestCatFriend.Name);
 
-      var cat = typeValueProvider.Get<Cat>();
-      Console.WriteLine(cat.Name);
+      var cat = typeValueProvider.Get<Cat>(0); //0 deptht means the properties are not filled
+      Console.WriteLine("Cat name:"+cat.Name);
 
       int someInt = typeValueProvider.Get<int>();
       Console.WriteLine(someInt);
@@ -48,7 +48,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
     }
 
     private Dictionary<Type, int> _typeFillCountDictionary;
-    public TValue Get<TValue>(int maxDepth=1)
+    public TValue Get<TValue>(int maxDepth=2)
     {
       _typeFillCountDictionary = new Dictionary<Type, int>();
 
@@ -77,7 +77,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
 
       if(!MayFill(currentType, maxDepth))
       {
-        return null;
+        return instance;
       }
 
       RaiseFillCount(currentType);
@@ -120,6 +120,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
 
     private bool MayFill (Type currentType, int maxDepth)
     {
+      if (maxDepth <= 0)
+        return false;
+
       return !_typeFillCountDictionary.ContainsKey(currentType) || _typeFillCountDictionary[currentType] < maxDepth;
     }
 
