@@ -16,6 +16,10 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       valueProviderBuilder.SetProvider<string, Dog>(new DogNameGenerator("dog friend first name"), d => d.BestDogFriend.FirstName);
       valueProviderBuilder.SetProvider(new CatGenerator());
 
+      valueProviderBuilder.SetProvider<Dog, Dog>(new DogFriendInjector(), d => d.BestDogFriend);
+      valueProviderBuilder.SetProvider<string, Cat>(new FuncProvider<string>(() => "cat name..."), c => c.Name);
+
+
       var typeValueProvider = new TypeValueProvider(valueProviderBuilder.ToValueProvider());
 
       var someString=typeValueProvider.Get<string>();
@@ -24,19 +28,54 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       var dog = typeValueProvider.Get<Dog>();
       Console.WriteLine(dog.FirstName);
       Console.WriteLine(dog.LastName);
+      Console.WriteLine("dog concrete type: " + dog.GetType());
       Console.WriteLine("BestDogFriend - First:" + dog.BestDogFriend.FirstName);
       Console.WriteLine("BestDogFriend - Last:" + dog.BestDogFriend.LastName);
+      Console.WriteLine("BestDogFriend concrete type: " + dog.BestDogFriend.GetType());
       Console.WriteLine("DogAge:"+dog.Age);
       Console.WriteLine("BestCatFriendName:" + dog.BestCatFriend.Name);
 
       var cat = typeValueProvider.Get<Cat>(0); //0 deptht means the properties are not filled
       Console.WriteLine("Cat name:"+cat.Name);
 
-      int someInt = typeValueProvider.Get<int>();
+      var someInt = typeValueProvider.Get<int>();
       Console.WriteLine(someInt);
 
       Console.ReadKey();
     }
+  }
+  
+  internal class FuncProvider<T>:ValueProvider<T>
+  {
+    private readonly Func<T> _valueFunc;
+
+    public FuncProvider (Func<T> valueFunc)
+        : base(null)
+    {
+      _valueFunc = valueFunc;
+    }
+
+    protected override T GetValue (T currentValue=default(T))
+    {
+      return _valueFunc();
+    }
+  }
+
+  internal class DogFriendInjector:ValueProvider<Dog>
+  {
+    public DogFriendInjector (ValueProvider<Dog> nextProvider=null)
+        : base(nextProvider)
+    {
+    }
+
+    protected override Dog GetValue (Dog currentValue = null)
+    {
+      return new DogFriend();
+    }
+  }
+
+  internal class DogFriend : Dog
+  {
   }
 
   class TypeValueProvider
@@ -238,7 +277,15 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       for (var i = 0; i < expressionChain.Count-1; i++)
       {
         var chainKey = expressionChain[i];
-        currentValueProvider = currentValueProvider.SetChainProvider(null, chainKey.Type, chainKey.Name);
+
+        if (currentValueProvider.HasChainProvider(chainKey.Type, chainKey.Name))
+        {
+          currentValueProvider = currentValueProvider.GetChainProvider(chainKey.Type, chainKey.Name);
+        }
+        else
+        {
+          currentValueProvider = currentValueProvider.SetChainProvider(null, chainKey.Type, chainKey.Name);
+        }
       }
 
       var finalExpression = expressionChain.Last();
