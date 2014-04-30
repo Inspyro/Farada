@@ -3,7 +3,7 @@ using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode
 {
-  internal class FuncProvider<T>:ValueProvider<T>
+  public class FuncProvider<T>:ValueProvider<T>
   {
     private readonly Func<T> _valueFunc;
 

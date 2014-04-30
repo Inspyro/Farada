@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 {
-  class TypeValueProvider
+  public class TypeValueProvider
   {
     private readonly IChainValueProvider _valueChain;
     public TypeValueProvider(IChainValueProvider valueChain)

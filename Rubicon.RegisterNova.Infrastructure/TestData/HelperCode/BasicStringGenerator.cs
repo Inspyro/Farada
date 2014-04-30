@@ -3,7 +3,7 @@ using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode
 {
-  class BasicStringGenerator:ValueProvider<string>
+  public class BasicStringGenerator:ValueProvider<string>
   {
     public BasicStringGenerator (ValueProvider<string> nextProvider=null)
         : base(nextProvider)

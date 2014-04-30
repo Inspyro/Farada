@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{EE7EFDEB-F9B0-4882-9520-C71B33149C9D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rubicon.RegisterNova.Infrastructure</RootNamespace>
     <AssemblyName>Rubicon.RegisterNova.Infrastructure</AssemblyName>
@@ -143,23 +143,15 @@
     <Compile Include="Reporting\IReportColumn.cs" />
     <Compile Include="SimpleDbContext.cs" />
     <Compile Include="TestData\HelperCode\BasicStringGenerator.cs" />
-    <Compile Include="TestData\SampleCode\Classes\Cat.cs" />
-    <Compile Include="TestData\SampleCode\ValueProviders\CatGenerator.cs" />
     <Compile Include="TestData\ValueChain\ChainKey.cs" />
     <Compile Include="TestData\ValueChain\ChainKeyComparer.cs" />
     <Compile Include="TestData\ValueChain\ChainValueProvider.cs" />
     <Compile Include="TestData\ValueChain\ChainValueProviderBuilder.cs" />
-    <Compile Include="TestData\ValueChain\ChainValueProviderBuilderFactory.cs" />
-    <Compile Include="TestData\SampleCode\ValueProviders\CustomStringGenerator.cs" />
-    <Compile Include="TestData\SampleCode\Classes\Dog.cs" />
-    <Compile Include="TestData\SampleCode\Classes\DogFriend.cs" />
-    <Compile Include="TestData\SampleCode\ValueProviders\DogFriendInjector.cs" />
-    <Compile Include="TestData\SampleCode\ValueProviders\DogNameGenerator.cs" />
+    <Compile Include="TestData\HelperCode\ChainValueProviderBuilderFactory.cs" />
     <Compile Include="Utilities\ExpressionExtensions.cs" />
     <Compile Include="TestData\HelperCode\FuncProvider.cs" />
     <Compile Include="TestData\ValueChain\IChainValueProvider.cs" />
     <Compile Include="TestData\ValueGeneration\IValueProvider.cs" />
-    <Compile Include="TestData\SampleCode\SampleProgram.cs" />
     <Compile Include="TestData\ValueChain\TypeValueProvider.cs" />
     <Compile Include="TestData\ValueGeneration\ValueProvider.cs" />
     <Compile Include="TestData\TestDataGenerator.cs" />
