@@ -1,5 +1,6 @@
 ﻿using System;
 using Machine.Specifications;
+using Rubicon.RegisterNova.Infrastructure.JetBrainsAnnotations;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueChain;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
@@ -58,12 +59,12 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
   class Dog
   {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public int Age { get; set; }
+    public string FirstName { get; [UsedImplicitly] set; }
+    public string LastName { get; [UsedImplicitly] set; }
+    public int Age { get; [UsedImplicitly] set; }
 
-    public Cat BestCatFriend { get; set; }
-    public Dog BestDogFriend { get; set; }
+    public Cat BestCatFriend { get; [UsedImplicitly] set; }
+    public Dog BestDogFriend { get; [UsedImplicitly] set; }
   }
 
   class DogFriend : Dog
