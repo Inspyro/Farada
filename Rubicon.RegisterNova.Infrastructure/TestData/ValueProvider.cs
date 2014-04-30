@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData
 {
@@ -10,26 +11,27 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
   {
     public static void Main ()
     {
-      var valueProvider = ValueProviderFactory.GetDefaultProvider();
-      valueProvider.SetProvider<string, Dog>(new DogNameGenerator("first name"), d => d.FirstName);
-      valueProvider.SetProvider<string, Dog>(new DogNameGenerator("last name"), d => d.LastName);
-      valueProvider.SetProvider(new CatGenerator());
+      var valueProviderBuilder = ChainValueProviderBuilderFactory.GetDefault();
+      valueProviderBuilder.SetProvider<string, Dog>(new DogNameGenerator("first name"), d => d.FirstName);
+      valueProviderBuilder.SetProvider<string, Dog>(new DogNameGenerator("last name"), d => d.LastName);
+      valueProviderBuilder.SetProvider<string, Dog>(new DogNameGenerator("dog friend first name"), d => d.BestDogFriend.FirstName);
+      valueProviderBuilder.SetProvider(new CatGenerator());
 
-      var typeFiller = new TypeFiller(valueProvider);
+      var typeValueProvider = new TypeValueProvider(valueProviderBuilder.ToValueProvider());
 
-      var someString=typeFiller.Get<string>();
+      var someString=typeValueProvider.Get<string>();
       Console.WriteLine(someString);
 
-      var dog = typeFiller.Get<Dog>();
+      var dog = typeValueProvider.Get<Dog>();
       Console.WriteLine(dog.FirstName);
       Console.WriteLine(dog.LastName);
       Console.WriteLine("DogAge:"+dog.Age);
       Console.WriteLine("BestCatFriendName:" + dog.BestCatFriend.Name);
 
-      var cat = typeFiller.Get<Cat>();
+      var cat = typeValueProvider.Get<Cat>();
       Console.WriteLine(cat.Name);
 
-      int someInt = typeFiller.Get<int>();
+      int someInt = typeValueProvider.Get<int>();
       Console.WriteLine(someInt);
 
       Console.ReadKey();
@@ -49,70 +51,116 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
     }
   }
 
-  class TypeFiller
+  class TypeValueProvider
   {
-    private readonly TypeValuesProvider _typeValuesProvider;
-    public TypeFiller(TypeValuesProvider typeValuesProvider)
+    private readonly IChainValueProvider _valueChain;
+    public TypeValueProvider(IChainValueProvider valueChain)
     {
-      _typeValuesProvider = typeValuesProvider;
+      _valueChain = valueChain;
     }
 
-    public TValue Get<TValue>()
+    private Dictionary<Type, int> _typeFillCountDictionary;
+    public TValue Get<TValue>(int maxDepth=1)
     {
-      return Get<TValue, object>(null);
+      _typeFillCountDictionary = new Dictionary<Type, int>();
+
+      var value = Get(_valueChain, typeof (TValue), null, maxDepth);
+      return value == null ? default(TValue) : (TValue) value;
     }
 
-    private TValue Get<TValue, TSource> (Expression<Func<TSource, TValue>> valueExpression)
+  
+    private object Get(IChainValueProvider currentChain, Type currentType, string currentFilter, int maxDepth)
     {
-      if (_typeValuesProvider.Has(valueExpression))
+      IChainValueProvider directValueProvider = null;
+      if(currentChain.HasChainProvider(currentType, currentFilter))
       {
-        return _typeValuesProvider.Get(valueExpression);
+        directValueProvider = currentChain.GetChainProvider(currentType, currentFilter);
       }
 
-      var valueType = typeof (TValue);
-      if (!valueType.IsClass)
+      var hasDirectValue = directValueProvider != null && directValueProvider.HasValue();
+
+      //if we try to get a basic type (e.g. no class) we can only get the value directly...
+      if (!currentType.IsClass||currentType==typeof(string))
       {
-        return default(TValue);
+        return hasDirectValue ? directValueProvider.GetValue() : null;
       }
 
-      var instance = (TValue) Activator.CreateInstance(valueType);
+      var instance = hasDirectValue ? directValueProvider.GetValue() : Activator.CreateInstance(currentType);
 
-      //create the filter expression
-      var parameter = Expression.Parameter(valueType);
+      if(!MayFill(currentType, maxDepth))
+      {
+        return null;
+      }
+
+      RaiseFillCount(currentType);
 
       //we go over all properties and generate values for them
-      var properties = valueType.GetProperties();
+      var properties = currentType.GetProperties();
       foreach (var property in properties)
       {
-        var propertyExpression = Expression.Property(parameter, property.Name);
-
-        var gen=typeof (Func<,>).MakeGenericType(typeof (TValue), property.PropertyType);
-
-        var typeExpression = Expression.Lambda(gen, propertyExpression, parameter);
-
-        var getValueGeneric = GetType().GetMethods(BindingFlags.Instance|BindingFlags.NonPublic).First(m => m.GetGenericArguments().Length == 2);
-        var concreteGeneric = getValueGeneric.MakeGenericMethod(property.PropertyType, typeof (TValue));
-
-        var nameValue = concreteGeneric.Invoke(this, new object[]{typeExpression});
-        property.SetValue(instance, nameValue);
+        //if there is no direct value provider we try to get all values from the base chain
+        if (directValueProvider == null)
+        {
+          TryFillProperty(_valueChain, property, instance, maxDepth);
+        }
+        else //else we try to get all properties from the concrete chain
+        {
+          if (!TryFillProperty(directValueProvider, property, instance, maxDepth)) //if we cant fill the properties with the direct chain (current level) we get the values from the default chain
+          {
+            TryFillProperty(_valueChain, property, instance, maxDepth);
+          }
+        }
       }
 
       return instance;
     }
+
+    private void RaiseFillCount (Type currentType)
+    {
+      if(_typeFillCountDictionary.ContainsKey(currentType))
+      {
+        _typeFillCountDictionary[currentType]++;
+      }
+      else
+      {
+        _typeFillCountDictionary.Add(currentType, 1);
+      }
+    }
+
+    private bool MayFill (Type currentType, int maxDepth)
+    {
+      return !_typeFillCountDictionary.ContainsKey(currentType) || _typeFillCountDictionary[currentType] < maxDepth;
+    }
+
+    private bool TryFillProperty (IChainValueProvider valueProvider, PropertyInfo property, object instance, int maxDepth)
+    {
+      if (CanFillProperty(valueProvider, property, true))
+      {
+        FillProperty(valueProvider, property, instance, true, maxDepth);
+        return true;
+      }
+
+      if (CanFillProperty(valueProvider, property, false))
+      {
+        FillProperty(valueProvider, property, instance, false, maxDepth);
+        return true;
+      }
+
+      return false;
+    }
+
+    private static bool CanFillProperty (IChainValueProvider valueProvider, PropertyInfo property, bool filterName)
+    {
+      return valueProvider.HasChainProvider(property.PropertyType, filterName ? property.Name : null);
+    }
+
+    private void FillProperty (IChainValueProvider directValueProvider, PropertyInfo property, object instance, bool filterName, int maxDepth)
+    {
+      var propertyValue = Get(directValueProvider, property.PropertyType, filterName?property.Name:null, maxDepth);
+      property.SetValue(instance, propertyValue);
+    }
   }
 
-  internal class Cat
-  {
-    public string Name { get; set; }
-  }
-
-  internal class Dog
-  {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public int Age { get; set; }
-    public Cat BestCatFriend { get; set; }
-  }
 
   internal static class ExpressionExtensions
   {
@@ -131,90 +179,210 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
 
       return string.Format("{0} {1}.{2}", returnType, typeInfo, bodyInfo);
     }
+
+    public static IEnumerable<ChainKey> ToChain(this Expression expression)
+    {
+      var parameterExpression = expression as ParameterExpression;
+      if (parameterExpression != null)
+      {
+        yield return new ChainKey(parameterExpression.Type);
+      }
+
+      var memberExpression = expression as MemberExpression;
+      if (memberExpression != null)
+      {
+        foreach (var chainKey in memberExpression.Expression.ToChain())
+        {
+          yield return chainKey;
+        }
+
+        yield return new ChainKey(memberExpression.Type, memberExpression.Member.Name);
+      }
+    }
+
+    public static IEnumerable<ChainKey> ToChain (this LambdaExpression expression)
+    {
+      return expression.Body.ToChain();
+    }
   }
 
   //Provide a base value provider like this
-  public static class ValueProviderFactory
+  internal static class ChainValueProviderBuilderFactory
   {
-    public static TypeValuesProvider GetDefaultProvider()
+    public static ChainValueProviderBuilder GetDefault ()
     {
-      var defaultProvider = GetEmptyProvider();
-      defaultProvider.SetProvider(new BasicStringGenerator());
+      var defaultProvider = GetEmpty();
+      defaultProvider.SetProvider(new BasicStringGenerator(new CustomStringGenerator()));
 
       return defaultProvider;
     }
 
-    public static TypeValuesProvider GetEmptyProvider()
+    public static ChainValueProviderBuilder GetEmpty ()
     {
-      return new TypeValuesProvider();
+      return new ChainValueProviderBuilder();
     }
   }
 
-  public class TypeValuesProvider
+
+  public class ChainValueProviderBuilder
   {
-    private readonly Dictionary<string, IValueProvider> _typeToValueTransformer;
+    private readonly IChainValueProvider _chainValueProvider;
 
-    internal TypeValuesProvider()
+    public ChainValueProviderBuilder()
     {
-      _typeToValueTransformer = new Dictionary<string, IValueProvider>();
+      _chainValueProvider = new ChainValueProvider();
     }
 
-    public void SetProvider<TValue> (ValueProvider<TValue> valueProvider)
+    public void SetProvider<TProperty>(ValueProvider<TProperty> valueProvider)
     {
-      SetProvider<TValue, object>(valueProvider, null);
+      _chainValueProvider.SetChainProvider(valueProvider, typeof (TProperty));
     }
 
-    public void SetProvider<TValue, TSource> (ValueProvider<TValue> valueProvider, Expression<Func<TSource, TValue>> filterExpression)
+    public void SetProvider<TProperty, TContainer>(ValueProvider<TProperty> valueProvider, Expression<Func<TContainer, TProperty>> chainExpression)
     {
-      var sourceType = typeof (TValue);
-      var key = filterExpression == null ? sourceType.FullName : filterExpression.GetName();
+      var expressionChain = chainExpression.ToChain().ToList();
+      var currentValueProvider = _chainValueProvider;
 
-      if(_typeToValueTransformer.ContainsKey(key))
+      for (var i = 0; i < expressionChain.Count-1; i++)
       {
-        _typeToValueTransformer.Remove(key);
+        var chainKey = expressionChain[i];
+        currentValueProvider = currentValueProvider.SetChainProvider(null, chainKey.Type, chainKey.Name);
       }
 
-      _typeToValueTransformer.Add(key, valueProvider);
+      var finalExpression = expressionChain.Last();
+      currentValueProvider.SetChainProvider(valueProvider, finalExpression.Type, finalExpression.Name);
     }
 
-    public bool Has<TValue> ()
+    public IChainValueProvider ToValueProvider()
     {
-      return Has<TValue, object>(null);
+      return _chainValueProvider;
+    }
+  }
+
+
+  public class ChainValueProvider:IChainValueProvider
+  {
+    private IValueProvider _valueProvider;
+    private readonly Dictionary<ChainKey, IChainValueProvider> _nextProviders;
+
+    public ChainValueProvider(IValueProvider valueProvider=null)
+    {
+      _nextProviders = new Dictionary<ChainKey, IChainValueProvider>(new ChainKeyComparer());
+      _valueProvider = valueProvider;
     }
 
-    public bool Has<TValue, TSource> (Expression<Func<TSource, TValue>> valueExpression)
+    public void SetProvider(IValueProvider valueProvider)
     {
-      var key = GetKey(valueExpression);
-      return _typeToValueTransformer.ContainsKey(key);
+      _valueProvider = valueProvider;
     }
 
-    public TValue Get<TValue> ()
+    public IChainValueProvider SetChainProvider(IValueProvider valueProvider, Type providerType, string nameFilter=null)
     {
-      return Get<TValue, object>(null);
-    }
-
-    public TValue Get<TValue, TSource> (Expression<Func<TSource, TValue>> valueExpression)
-    {
-      var key=GetKey(valueExpression);
-      return (TValue) _typeToValueTransformer[key].GetValue();
-    }
-
-    private string GetKey<TSource, TValue> (Expression<Func<TSource, TValue>> valueExpression)
-    {
-       var sourceType = typeof (TValue);
-
-       string key = sourceType.FullName;
-      if (valueExpression != null)
+      IChainValueProvider chainValueProvider = null;
+      var key = GetKey(providerType, nameFilter);
+      if(HasChainProvider(providerType, nameFilter))
       {
-        var concreteKey = valueExpression.GetName();
-        if (_typeToValueTransformer.ContainsKey(concreteKey)) //use more concrete transformer if possible
-        {
-          key = concreteKey;
-        }
+        chainValueProvider = GetChainProvider(providerType, nameFilter);
+        chainValueProvider.SetProvider(valueProvider);
+      }
+      else
+      {
+        chainValueProvider = new ChainValueProvider(valueProvider);
+        _nextProviders.Add(key,chainValueProvider );
       }
 
-      return key;
+      return chainValueProvider;
     }
+
+    public bool HasChainProvider(Type providerType, string nameFilter=null)
+    {
+      return _nextProviders.ContainsKey(GetKey(providerType, nameFilter));
+    }
+
+    public IChainValueProvider GetChainProvider(Type providerType, string nameFilter)
+    {
+      return _nextProviders[GetKey(providerType, nameFilter)];
+    }
+
+    public bool HasValue()
+    {
+      return _valueProvider != null;
+    }
+
+    public object GetValue()
+    {
+      return !HasValue() ? null : _valueProvider.GetObjectValue();
+    }
+
+    private static ChainKey GetKey (Type providerType, string nameFilter)
+    {
+      return new ChainKey(providerType, nameFilter);
+    }
+  }
+
+  public interface IChainValueProvider
+  {
+    bool HasValue ();
+    object GetValue();
+
+    void SetProvider (IValueProvider valueProvider);
+    IChainValueProvider SetChainProvider(IValueProvider valueProvider, Type providerType, string nameFilter=null);
+    bool HasChainProvider(Type providerType, string nameFilter=null);
+    IChainValueProvider GetChainProvider(Type providerType, string nameFilter);
+  }
+
+  internal class ChainKeyComparer : IEqualityComparer<ChainKey>
+  {
+    public bool Equals (ChainKey x, ChainKey y)
+    {
+      return x.Equals(y);
+    }
+
+    public int GetHashCode (ChainKey obj)
+    {
+      return obj.GetHashCode();
+    }
+  }
+
+  internal class ChainKey
+  {
+    public Type Type { get; private set; }
+    public string Name { get; private set; }
+
+    public override bool Equals (object obj)
+    {
+      if (ReferenceEquals(null, obj))
+        return false;
+      if (ReferenceEquals(this, obj))
+        return true;
+      if (obj.GetType() != this.GetType())
+        return false;
+      return Equals((ChainKey) obj);
+    }
+
+    public ChainKey(Type type, string name=null)
+    {
+      Type = type;
+      Name = name;
+    }
+
+    public bool Equals (ChainKey other)
+    {
+      return Type == other.Type && string.Equals(Name, other.Name);
+    }
+
+    public override int GetHashCode ()
+    {
+      unchecked
+      {
+        return ((Type != null ? Type.GetHashCode() : 0) * 397) ^ (Name != null ? Name.GetHashCode() : 0);
+      }
+    }
+  }
+
+  public interface IValueProvider
+  {
+    object GetObjectValue ();
   }
 
   public abstract class ValueProvider<TProperty>:IValueProvider
@@ -226,20 +394,32 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       _nextProvider = nextProvider;
     }
 
-    protected virtual TProperty GetValue (TProperty currentValue)
+    protected virtual TProperty GetValue (TProperty currentValue=default(TProperty))
     {
       return _nextProvider != null ? _nextProvider.GetValue(currentValue) : currentValue;
     }
 
-    public object GetValue(object value=null)
+    public object GetObjectValue ()
     {
-      return GetValue((TProperty) value);
+      return GetValue();
     }
   }
 
-  public interface IValueProvider
+
+  #region Sample code
+  internal class Cat
   {
-    object GetValue (object currentValue=null);
+    public string Name { get; set; }
+  }
+
+  internal class Dog
+  {
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public int Age { get; set; }
+
+    public Cat BestCatFriend { get; set; }
+    public Dog BestDogFriend { get; set; }
   }
 
   class BasicStringGenerator:ValueProvider<string>
@@ -283,4 +463,5 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       return "I am a dog - " + _additionalContent;
     }
   }
+#endregion
 }
