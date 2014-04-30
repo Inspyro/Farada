@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData
 {
@@ -22,9 +21,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       var someString=typeValueProvider.Get<string>();
       Console.WriteLine(someString);
 
-      var dog = typeValueProvider.Get<Dog>();
+      var dog = typeValueProvider.Get<Dog>(2);
       Console.WriteLine(dog.FirstName);
       Console.WriteLine(dog.LastName);
+      Console.WriteLine("BestDogFriend - First:" + dog.BestDogFriend.FirstName);
+      Console.WriteLine("BestDogFriend - Last:" + dog.BestDogFriend.LastName);
       Console.WriteLine("DogAge:"+dog.Age);
       Console.WriteLine("BestCatFriendName:" + dog.BestCatFriend.Name);
 
@@ -35,19 +36,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       Console.WriteLine(someInt);
 
       Console.ReadKey();
-    }
-  }
-
-  internal class CatGenerator:ValueProvider<Cat>
-  {
-    public CatGenerator (ValueProvider<Cat> nextProvider=null)
-        : base(nextProvider)
-    {
-    }
-
-    protected override Cat GetValue (Cat currentValue)
-    {
-      return new Cat { Name = "Nice cat" };
     }
   }
 
@@ -107,7 +95,10 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
         {
           if (!TryFillProperty(directValueProvider, property, instance, maxDepth)) //if we cant fill the properties with the direct chain (current level) we get the values from the default chain
           {
-            TryFillProperty(_valueChain, property, instance, maxDepth);
+            if(!TryFillProperty(currentChain, property, instance, maxDepth))
+            {
+              TryFillProperty(_valueChain, property, instance, maxDepth);
+            }
           }
         }
       }
@@ -160,7 +151,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       property.SetValue(instance, propertyValue);
     }
   }
-
 
   internal static class ExpressionExtensions
   {
@@ -223,7 +213,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
     }
   }
 
-
   public class ChainValueProviderBuilder
   {
     private readonly IChainValueProvider _chainValueProvider;
@@ -258,7 +247,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       return _chainValueProvider;
     }
   }
-
 
   public class ChainValueProvider:IChainValueProvider
   {
@@ -420,6 +408,19 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
 
     public Cat BestCatFriend { get; set; }
     public Dog BestDogFriend { get; set; }
+  }
+
+  internal class CatGenerator:ValueProvider<Cat>
+  {
+    public CatGenerator (ValueProvider<Cat> nextProvider=null)
+        : base(nextProvider)
+    {
+    }
+
+    protected override Cat GetValue (Cat currentValue)
+    {
+      return new Cat { Name = "Nice cat" };
+    }
   }
 
   class BasicStringGenerator:ValueProvider<string>
