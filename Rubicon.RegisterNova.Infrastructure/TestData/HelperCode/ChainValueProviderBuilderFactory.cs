@@ -1,11 +1,19 @@
 ﻿using System;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueChain;
+using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode
 {
-  public static class ChainValueProviderBuilderFactory
+  public class ChainValueProviderBuilderFactory
   {
-    public static ChainValueProviderBuilder GetDefault ()
+    private readonly RandomGeneratorProvider _randomGeneratorProvider;
+
+    internal ChainValueProviderBuilderFactory(RandomGeneratorProvider randomGeneratorProvider)
+    {
+      _randomGeneratorProvider = randomGeneratorProvider;
+    }
+
+    public ChainValueProviderBuilder GetDefault ()
     {
       var defaultProvider = GetEmpty();
       defaultProvider.SetProvider(new BasicStringGenerator());
@@ -13,9 +21,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode
       return defaultProvider;
     }
 
-    public static ChainValueProviderBuilder GetEmpty ()
+    public ChainValueProviderBuilder GetEmpty ()
     {
-      return new ChainValueProviderBuilder();
+      return new ChainValueProviderBuilder(_randomGeneratorProvider);
     }
   }
 }

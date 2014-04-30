@@ -142,7 +142,10 @@
     <Compile Include="Reporting\ReportData.cs" />
     <Compile Include="Reporting\IReportColumn.cs" />
     <Compile Include="SimpleDbContext.cs" />
+    <Compile Include="TestData\HelperCode\StringGenerator.cs" />
     <Compile Include="TestData\HelperCode\BasicStringGenerator.cs" />
+    <Compile Include="TestData\ValueGeneration\IRandomGenerator.cs" />
+    <Compile Include="TestData\ValueGeneration\RandomGeneratorProvider.cs" />
     <Compile Include="TestData\ValueChain\ChainKey.cs" />
     <Compile Include="TestData\ValueChain\ChainKeyComparer.cs" />
     <Compile Include="TestData\ValueChain\ChainValueProvider.cs" />
@@ -154,7 +157,7 @@
     <Compile Include="TestData\ValueGeneration\IValueProvider.cs" />
     <Compile Include="TestData\ValueChain\TypeValueProvider.cs" />
     <Compile Include="TestData\ValueGeneration\ValueProvider.cs" />
-    <Compile Include="TestData\TestDataGenerator.cs" />
+    <Compile Include="TestData\TestDataGeneratorFactory.cs" />
     <Compile Include="Transactions\LazyQueryExecutor.cs" />
     <Compile Include="Transactions\TransactionScopeFactory.cs" />
     <Compile Include="Transactions\WrappingTransactionScope.cs" />

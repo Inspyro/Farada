@@ -1,6 +1,7 @@
 ﻿using System;
 using Machine.Specifications;
 using Rubicon.RegisterNova.Infrastructure.JetBrainsAnnotations;
+using Rubicon.RegisterNova.Infrastructure.TestData;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueChain;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
@@ -13,7 +14,14 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     {
       Because of = () =>
       {
-        var valueProviderBuilder = ChainValueProviderBuilderFactory.GetDefault();
+        var randomGeneratorProvider = new RandomGeneratorProvider();
+
+        randomGeneratorProvider.SetBase(new StringGenerator());
+        randomGeneratorProvider.Add(new DogNameStringGenerator());
+
+        var testDataGeneratorFactory = new TestDataGeneratorFactory(randomGeneratorProvider);
+
+        var valueProviderBuilder = testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault();
         valueProviderBuilder.SetProvider<string, Dog>(new DogNameGenerator("first name"), d => d.FirstName);
         valueProviderBuilder.SetProvider<string, Dog>(new DogNameGenerator("last name"), d => d.LastName);
         valueProviderBuilder.SetProvider<string, Dog>(new DogNameGenerator("dog friend first name"), d => d.BestDogFriend.FirstName);
@@ -22,33 +30,34 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
         valueProviderBuilder.SetProvider<Dog, Dog>(new DogFriendInjector(), d => d.BestDogFriend);
         valueProviderBuilder.SetProvider<string, Cat>(new FuncProvider<string>(() => "cat name..."), c => c.Name);
 
-        TypeValueProvider = new TypeValueProvider(valueProviderBuilder.ToValueProvider());
+        var testDataGenerator = testDataGeneratorFactory.Build(valueProviderBuilder);
+        ValueProvider = testDataGenerator.ValueProvider;
       };
 
       It sets_correctString =
-          () => TypeValueProvider.Get<string>().ShouldEqual("some String...");
+          () => ValueProvider.Get<string>().ShouldEqual("some String...");
 
-      It sets_correctDogFirstName = () => TypeValueProvider.Get<Dog>().FirstName.ShouldEqual("I am a dog - first name");
+      It sets_correctDogFirstName = () => ValueProvider.Get<Dog>().FirstName.ShouldEqual("Dog Name String Gen - first name");
 
-      It sets_correctDogLastName = () => TypeValueProvider.Get<Dog>().LastName.ShouldEqual("I am a dog - last name");
+      It sets_correctDogLastName = () => ValueProvider.Get<Dog>().LastName.ShouldEqual("Dog Name String Gen - last name");
 
-      It returns_correctDogType = () => TypeValueProvider.Get<Dog>().GetType().ShouldEqual(typeof (Dog));
+      It returns_correctDogType = () => ValueProvider.Get<Dog>().GetType().ShouldEqual(typeof (Dog));
 
-      It sets_correctBestFriendDogFirstName = () => TypeValueProvider.Get<Dog>().BestDogFriend.FirstName.ShouldEqual("I am a dog - dog friend first name");
+      It sets_correctBestFriendDogFirstName = () => ValueProvider.Get<Dog>().BestDogFriend.FirstName.ShouldEqual("Dog Name String Gen - dog friend first name");
 
-      It sets_correctBestFriendDogLastName = () => TypeValueProvider.Get<Dog>().BestDogFriend.LastName.ShouldEqual("I am a dog - last name");
+      It sets_correctBestFriendDogLastName = () => ValueProvider.Get<Dog>().BestDogFriend.LastName.ShouldEqual("Dog Name String Gen - last name");
 
-      It returns_correctBestFriendDogType = () => TypeValueProvider.Get<Dog>().BestDogFriend.GetType().ShouldEqual(typeof (DogFriend));
+      It returns_correctBestFriendDogType = () => ValueProvider.Get<Dog>().BestDogFriend.GetType().ShouldEqual(typeof (DogFriend));
 
-      It sets_correctDogAge = () => TypeValueProvider.Get<Dog>().Age.ShouldEqual(0);
+      It sets_correctDogAge = () => ValueProvider.Get<Dog>().Age.ShouldEqual(0);
 
-      It sets_correctBestCatFriendsName = () => TypeValueProvider.Get<Dog>().BestCatFriend.Name.ShouldEqual("cat name...");
+      It sets_correctBestCatFriendsName = () => ValueProvider.Get<Dog>().BestCatFriend.Name.ShouldEqual("cat name...");
 
-      It sets_correctCatWithoutProperties = () => TypeValueProvider.Get<Cat>(0).Name.ShouldEqual("Nice cat");
+      It sets_correctCatWithoutProperties = () => ValueProvider.Get<Cat>(0).Name.ShouldEqual("Nice cat");
 
-      It sets_correctInt = () => TypeValueProvider.Get<int>().ShouldEqual(0);
+      It sets_correctInt = () => ValueProvider.Get<int>().ShouldEqual(0);
 
-      static TypeValueProvider TypeValueProvider;
+      static TypeValueProvider ValueProvider;
     }
   }
 
@@ -93,7 +102,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
     protected override string GetValue (string currentValue)
     {
-      return base.GetValue(currentValue.Substring(1,2));
+      return currentValue.Substring(1, 2);
     }
   }
 
@@ -110,7 +119,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     }
   }
 
-  class DogNameGenerator:ValueProvider<string>
+  class DogNameGenerator:ValueProvider<string, DogNameStringGenerator>
   {
     private readonly string _additionalContent;
 
@@ -122,7 +131,15 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
     protected override string GetValue (string currentValue)
     {
-      return "I am a dog - " + _additionalContent;
+      return RandomGenerator.Next() +" - "+ _additionalContent;
+    }
+  }
+
+  internal class DogNameStringGenerator:RandomGenerator<string>
+  {
+    public override string Next ()
+    {
+      return "Dog Name String Gen";
     }
   }
 }

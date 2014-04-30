@@ -7,7 +7,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
   public class TypeValueProvider
   {
     private readonly IChainValueProvider _valueChain;
-    public TypeValueProvider(IChainValueProvider valueChain)
+    internal TypeValueProvider(IChainValueProvider valueChain)
     {
       _valueChain = valueChain;
     }

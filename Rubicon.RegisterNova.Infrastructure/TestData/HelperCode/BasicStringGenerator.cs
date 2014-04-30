@@ -12,7 +12,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode
 
     protected override string GetValue (string currentValue)
     {
-      return base.GetValue(currentValue + "some String...");
+      return currentValue + "some String...";
     }
   }
 }

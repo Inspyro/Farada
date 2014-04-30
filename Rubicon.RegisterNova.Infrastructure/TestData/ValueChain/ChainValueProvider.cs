@@ -6,12 +6,14 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 {
   public class ChainValueProvider:IChainValueProvider
   {
+    private readonly RandomGeneratorProvider _randomGeneratorProvider;
     private IValueProvider _valueProvider;
     private readonly Dictionary<ChainKey, IChainValueProvider> _nextProviders;
 
-    public ChainValueProvider(IValueProvider valueProvider=null)
+    public ChainValueProvider(RandomGeneratorProvider randomGeneratorProvider, IValueProvider valueProvider=null)
     {
       _nextProviders = new Dictionary<ChainKey, IChainValueProvider>(new ChainKeyComparer());
+      _randomGeneratorProvider = randomGeneratorProvider;
       _valueProvider = valueProvider;
     }
 
@@ -31,7 +33,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       }
       else
       {
-        chainValueProvider = new ChainValueProvider(valueProvider);
+        chainValueProvider = new ChainValueProvider(_randomGeneratorProvider, valueProvider);
         _nextProviders.Add(key,chainValueProvider );
       }
 
@@ -55,7 +57,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 
     public object GetValue()
     {
-      return !HasValue() ? null : _valueProvider.GetObjectValue();
+      return !HasValue() ? null : _valueProvider.GetObjectValue(_randomGeneratorProvider);
     }
 
     private static ChainKey GetKey (Type providerType, string nameFilter)

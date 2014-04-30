@@ -8,11 +8,13 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 {
   public class ChainValueProviderBuilder
   {
+    private readonly RandomGeneratorProvider _randomGeneratorProvider;
     private readonly IChainValueProvider _chainValueProvider;
 
-    public ChainValueProviderBuilder()
+    public ChainValueProviderBuilder(RandomGeneratorProvider randomGeneratorProvider)
     {
-      _chainValueProvider = new ChainValueProvider();
+      _randomGeneratorProvider = randomGeneratorProvider;
+      _chainValueProvider = new ChainValueProvider(_randomGeneratorProvider);
     }
 
     public void SetProvider<TProperty>(ValueProvider<TProperty> valueProvider)
@@ -43,7 +45,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       currentValueProvider.SetChainProvider(valueProvider, finalExpression.Type, finalExpression.Name);
     }
 
-    public IChainValueProvider ToValueProvider()
+    internal IChainValueProvider ToValueProvider()
     {
       return _chainValueProvider;
     }
