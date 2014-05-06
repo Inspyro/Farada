@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DocumentFormat.OpenXml.Drawing.Charts;
 using Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueChain;
 using Rubicon.RegisterNova.Infrastructure.Utilities;
@@ -10,21 +9,19 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
 {
   public class TestDataGenerator
   {
-    private Random _random;
     public TypeValueProvider ValueProvider { get; private set; }
 
     internal TestDataGenerator (TypeValueProvider valueProvider)
     {
       ValueProvider = valueProvider;
-      _random = new Random();//TODO
-      InitialDataProvider = new InitialDataProvider(new GeneratorDataProvider(_random));
+      InitialDataProvider = new InitialDataProvider(new GeneratorDataProvider(ValueProvider.Random));
     }
 
     public GeneratorResult Generate (RuleSet ruleSet, GeneratorResult lastGenerationResult=null)
     {
       ArgumentUtility.CheckNotNull("ruleSet", ruleSet);
 
-      var dataProvider = lastGenerationResult==null?new GeneratorDataProvider(_random):new GeneratorDataProvider(_random, lastGenerationResult.DataLists);
+      var dataProvider = lastGenerationResult==null?new GeneratorDataProvider(ValueProvider.Random):new GeneratorDataProvider(ValueProvider.Random, lastGenerationResult.DataLists);
 
       foreach (var ruleEvent in ruleSet.GetRuleAppliances(dataProvider.GetCountInternal))
       {
@@ -40,7 +37,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
             parameterData = parameterData.Take(ruleEvent.ExecutionCount).ToArray();
           }
 
-          parameterData.Randomize();
+          parameterData.Randomize(ValueProvider.Random);
 
 
           for (var i = 0; i < parameterData.Length; i++)

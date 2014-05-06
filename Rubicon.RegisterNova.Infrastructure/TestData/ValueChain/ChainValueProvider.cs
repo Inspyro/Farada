@@ -50,6 +50,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       return _nextProviders[GetKey(providerType, nameFilter)];
     }
 
+    public Random Random
+    {
+      get { return _randomGeneratorProvider.Random; }
+    }
+
     public bool HasValue()
     {
       return _valueProvider != null;

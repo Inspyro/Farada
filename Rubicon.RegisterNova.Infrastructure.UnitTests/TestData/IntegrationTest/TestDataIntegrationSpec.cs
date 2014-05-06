@@ -17,7 +17,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     {
       Because of = () =>
       {
-        var randomGeneratorProvider = new RandomGeneratorProvider();
+        var randomGeneratorProvider = new RandomGeneratorProvider(new Random());
 
         randomGeneratorProvider.SetBase(new StringGenerator());
         randomGeneratorProvider.Add(new DogNameStringGenerator());
@@ -69,7 +69,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     {
       Because of = () =>
       {
-        var testDataGeneratorFactory = new TestDataGeneratorFactory(new RandomGeneratorProvider());
+        var testDataGeneratorFactory = new TestDataGeneratorFactory(new RandomGeneratorProvider(new Random()));
         var testDataGenerator = testDataGeneratorFactory.Build(testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault());
 
 
@@ -92,6 +92,8 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
         var count = resultStrings.Count(result => result.Contains("Marr"));
         Console.WriteLine("Married ppl: " + count);
       };
+
+      It doesNothing = () => true.ShouldBeTrue();
     }
   }
 
@@ -99,7 +101,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
   {
     Because of = () =>
     {
-      var testDataGeneratorFactory = new TestDataGeneratorFactory(new RandomGeneratorProvider());
+      var testDataGeneratorFactory = new TestDataGeneratorFactory(new RandomGeneratorProvider(new Random()));
       var valueProviderBuilder = testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault();
 
       var random = new Random(); //TODO-> inject....
@@ -153,7 +155,7 @@ internal class ProcreationRule : Rule<Person>
     var male = inputData[0].GetValue<Person>();
     var female = inputData[1].GetValue<Person>();
 
-    var childCount = new Random().Next(1, 1); //TODO: Use global random -> also maybe add more features to global random ;)
+    var childCount = valueProvider.Random.Next(1, 1);
     for(var i=0;i<childCount;i++)
     {
       var child = valueProvider.Get<Person>(2);

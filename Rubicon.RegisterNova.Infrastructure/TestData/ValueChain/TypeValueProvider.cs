@@ -6,8 +6,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 {
   public class TypeValueProvider
   {
+    public Random Random { get { return _valueChain.Random; } }
+
     private readonly IChainValueProvider _valueChain;
-    internal TypeValueProvider(IChainValueProvider valueChain)
+
+    internal TypeValueProvider (IChainValueProvider valueChain)
     {
       _valueChain = valueChain;
     }

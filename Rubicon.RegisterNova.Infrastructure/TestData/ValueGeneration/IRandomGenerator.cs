@@ -15,5 +15,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration
     }
 
     public abstract T Next ();
+    public Random Random { get; set; }
   }
 }

@@ -12,5 +12,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
     IChainValueProvider SetChainProvider(IValueProvider valueProvider, Type providerType, string nameFilter=null);
     bool HasChainProvider(Type providerType, string nameFilter=null);
     IChainValueProvider GetChainProvider(Type providerType, string nameFilter);
+    Random Random { get; }
   }
 }

@@ -5,11 +5,14 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration
 {
   public class RandomGeneratorProvider
   {
+    public Random Random { get; private set; }
+
     private readonly Dictionary<Type, IRandomGenerator> _typeToBaseGenerator;
     private readonly Dictionary<Type, Dictionary<Type, IRandomGenerator>> _typeToConcreteGenerator;
  
-    public RandomGeneratorProvider()
+    public RandomGeneratorProvider(Random random)
     {
+      Random = random;
       _typeToBaseGenerator = new Dictionary<Type, IRandomGenerator>();
       _typeToConcreteGenerator = new Dictionary<Type, Dictionary<Type, IRandomGenerator>>();
     }
@@ -47,8 +50,10 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration
 
     public void Add<T>(RandomGenerator<T> randomGenerator)
     {
+      randomGenerator.Random = Random;
+
       var returnType = typeof (T);
-      Dictionary<Type, IRandomGenerator> concreteGenerators=null;
+      Dictionary<Type, IRandomGenerator> concreteGenerators;
 
       if(_typeToConcreteGenerator.ContainsKey(returnType))
       {
@@ -73,6 +78,8 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration
 
     public void SetBase<T>(RandomGenerator<T> baseGenerator)
     {
+      baseGenerator.Random = Random;
+
       var returnType = typeof (T);
       if(_typeToBaseGenerator.ContainsKey(returnType))
       {
