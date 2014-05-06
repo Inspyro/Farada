@@ -158,7 +158,7 @@
     <Compile Include="TestData\HelperCode\String\WordValueProvider.cs" />
     <Compile Include="TestData\InitialDataProvider.cs" />
     <Compile Include="TestData\TestDataGenerator.cs" />
-    <Compile Include="TestData\TestDataGeneratorProxy.cs" />
+    <Compile Include="TestData\TestDataGeneratorFacade.cs" />
     <Compile Include="TestData\ValueGeneration\IRandomGenerator.cs" />
     <Compile Include="TestData\ValueGeneration\RandomGeneratorProvider.cs" />
     <Compile Include="TestData\ValueChain\ChainKey.cs" />

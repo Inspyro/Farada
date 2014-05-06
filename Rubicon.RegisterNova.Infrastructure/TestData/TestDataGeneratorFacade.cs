@@ -3,7 +3,7 @@ using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData
 {
-  public static class TestDataGeneratorProxy
+  public static class TestDataGeneratorFacade
   {
     /// <summary>
     /// Creates a test data generator for the given domain
