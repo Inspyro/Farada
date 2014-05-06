@@ -157,7 +157,9 @@
     <Compile Include="TestData\DataGeneration\Rule.cs" />
     <Compile Include="TestData\HelperCode\String\WordValueProvider.cs" />
     <Compile Include="TestData\DataGeneration\InitialDataProvider.cs" />
+    <Compile Include="TestData\Reflection\FastPropertyInfo.cs" />
     <Compile Include="TestData\Reflection\FastReflection.cs" />
+    <Compile Include="TestData\Reflection\FastTypeInfo.cs" />
     <Compile Include="TestData\TestDataGenerator.cs" />
     <Compile Include="TestData\TestDataGeneratorFacade.cs" />
     <Compile Include="TestData\ValueGeneration\IRandomGenerator.cs" />
