@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Machine.Specifications;
 using Rubicon.RegisterNova.Infrastructure.JetBrainsAnnotations;
 using Rubicon.RegisterNova.Infrastructure.TestData;
+using Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueChain;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
@@ -43,7 +46,8 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
       It returns_correctDogType = () => ValueProvider.Get<Dog>().GetType().ShouldEqual(typeof (Dog));
 
-      It sets_correctBestFriendDogFirstName = () => ValueProvider.Get<Dog>().BestDogFriend.FirstName.ShouldEqual("Dog Name String Gen - dog friend first name");
+      It sets_correctBestFriendDogFirstName =
+          () => ValueProvider.Get<Dog>().BestDogFriend.FirstName.ShouldEqual("Dog Name String Gen - dog friend first name");
 
       It sets_correctBestFriendDogLastName = () => ValueProvider.Get<Dog>().BestDogFriend.LastName.ShouldEqual("Dog Name String Gen - last name");
 
@@ -58,6 +62,159 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       It sets_correctInt = () => ValueProvider.Get<int>().ShouldEqual(0);
 
       static TypeValueProvider ValueProvider;
+    }
+
+
+    class when_using_TestDataGenerator_simple
+    {
+      Because of = () =>
+      {
+        var testDataGeneratorFactory = new TestDataGeneratorFactory(new RandomGeneratorProvider());
+        var testDataGenerator = testDataGeneratorFactory.Build(testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault());
+
+
+        var basicRuleSet = new RuleSet(new RuleInfo<string>(new StringMarryRule(), 1f, 0.05f, 10));
+
+        var initialDataProvider = testDataGenerator.InitialDataProvider;
+        for (var i = 0; i < 1000; i++)
+        {
+          initialDataProvider.Add("some sexy string " + i);
+        }
+
+        var lastResult = initialDataProvider.Build();
+        for (var i = 0; i < 1; i++)
+        {
+          lastResult = testDataGenerator.Generate(basicRuleSet, lastResult);
+        }
+
+        var resultStrings = lastResult.GetResult<string>();
+
+        var count = resultStrings.Count(result => result.Contains("Marr"));
+        Console.WriteLine("Married ppl: " + count);
+      };
+    }
+  }
+
+  class when_using_TestDataGenerator_complex
+  {
+    Because of = () =>
+    {
+      var testDataGeneratorFactory = new TestDataGeneratorFactory(new RandomGeneratorProvider());
+      var valueProviderBuilder = testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault();
+
+      var random = new Random(); //TODO-> inject....
+      valueProviderBuilder.SetProvider(new FuncProvider<Gender>(() => (Gender) random.Next(0, 2)));
+
+      var testDataGenerator = testDataGeneratorFactory.Build(valueProviderBuilder);
+
+      var lifeRuleSet = new RuleSet(new RuleInfo<Person>(new ProcreationRule(), 1f, 0.05f, 1000000));
+      lifeRuleSet.AddGlobalRule(new AgingRule());
+
+      var initialDataProvider = testDataGenerator.InitialDataProvider;
+      initialDataProvider.Add(new Person("Adam", Gender.Male));
+      initialDataProvider.Add(new Person("Eve", Gender.Female));
+
+      var lastResult = initialDataProvider.Build();
+      for (var i = 0; i < 100; i++)
+      {
+        lastResult = testDataGenerator.Generate(lifeRuleSet, lastResult);
+      }
+
+      var resultPersons = lastResult.GetResult<Person>();
+
+      var count = resultPersons.Count();
+      Console.WriteLine("ppl count: " + count);
+    };
+
+    It does_nothing = () => true.ShouldBeTrue();
+  }
+}
+
+internal class AgingRule : GlobalRule<Person>
+{
+  protected override void Execute (Handle<Person> person)
+  {
+    person.UserData.IsPregnant = false;
+    person.Value.Age++;
+  }
+}
+
+internal class ProcreationRule : Rule<Person>
+{
+  public override IEnumerable<IRuleParameter> GetRuleInputs ()
+  {
+    yield return new RuleParameter<Person>(p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male);
+    yield return
+        new RuleParameter<Person>(p => p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant));
+  }
+
+  public override void Execute (List<IRuleInput> inputData, GeneratorDataProvider dataProvider, TypeValueProvider valueProvider)
+  {
+    var male = inputData[0].GetValue<Person>();
+    var female = inputData[1].GetValue<Person>();
+
+    var childCount = new Random().Next(1, 1); //TODO: Use global random -> also maybe add more features to global random ;)
+    for(var i=0;i<childCount;i++)
+    {
+      var child = valueProvider.Get<Person>(2);
+      child.Father = male.Value;
+      child.Mother = female.Value;
+
+      dataProvider.Add(child);
+    }
+
+    female.UserData.IsPregnant = true;
+  }
+}
+
+class Person
+{
+  public string Name { get; set; }
+  public int Age { get; set; }
+  public Gender Gender { get; set; }
+
+  public Person Father { get; set; }
+  public Person Mother { get; set; }
+
+  public Person()
+  {
+
+  }
+
+  public Person (string name, Gender gender, int age=0)
+  {
+    Name = name;
+    Gender = gender;
+    Age = age;
+  }
+}
+
+internal enum Gender
+{
+  Male,
+  Female
+}
+
+#region Simple
+  public class StringMarryRule:Rule<string>
+  {
+    public override IEnumerable<IRuleParameter> GetRuleInputs ()
+    {
+      Func<Handle<string>, bool> predicate = p => p.Value.Length > 3 && (p.UserData.IsMarried == null || !p.UserData.IsMarried);
+      yield return new RuleParameter<string>(predicate);
+      yield return new RuleParameter<string>(predicate); //TODO: how to define excludes on rule filter basis?
+    }
+
+    public override void Execute(List<IRuleInput> inputData, GeneratorDataProvider dataProvider, TypeValueProvider valueProvider) //e.g. one instance - stores all generation data..
+    {
+      var sexyString1 = inputData[0].GetValue<string>();
+      var sexyString2 = inputData[1].GetValue<string>();
+
+      sexyString1.Value += "[Married to:" + sexyString2.Value + "]";
+      sexyString2.Value += "[Married to:" + sexyString1.Value + "]";
+
+      sexyString1.UserData.IsMarried = true;
+      sexyString2.UserData.IsMarried = true;
     }
   }
 
@@ -142,4 +299,5 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       return "Dog Name String Gen";
     }
   }
-}
+#endregion
+
