@@ -163,6 +163,7 @@
     <Compile Include="TestData\ValueChain\ChainValueProvider.cs" />
     <Compile Include="TestData\ValueChain\ChainValueProviderBuilder.cs" />
     <Compile Include="TestData\ValueChain\ChainValueProviderBuilderFactory.cs" />
+    <Compile Include="TestData\ValueGeneration\RandomGeneratorProviderFactory.cs" />
     <Compile Include="Utilities\ExpressionExtensions.cs" />
     <Compile Include="TestData\HelperCode\FuncProvider.cs" />
     <Compile Include="TestData\ValueChain\IChainValueProvider.cs" />

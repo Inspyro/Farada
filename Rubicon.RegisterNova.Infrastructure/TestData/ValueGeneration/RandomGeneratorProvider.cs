@@ -10,7 +10,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration
     private readonly Dictionary<Type, IRandomGenerator> _typeToBaseGenerator;
     private readonly Dictionary<Type, Dictionary<Type, IRandomGenerator>> _typeToConcreteGenerator;
  
-    public RandomGeneratorProvider(Random random)
+    internal RandomGeneratorProvider(Random random)
     {
       Random = random;
       _typeToBaseGenerator = new Dictionary<Type, IRandomGenerator>();

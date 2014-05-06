@@ -19,7 +19,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     {
       Because of = () =>
       {
-        var randomGeneratorProvider = new RandomGeneratorProvider(new Random());
+        var randomGeneratorProvider = new RandomGeneratorProviderFactory(new Random()).GetDefault();
 
         randomGeneratorProvider.SetBase(new StringGenerator());
         randomGeneratorProvider.Add(new DogNameStringGenerator());
@@ -40,7 +40,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       };
 
       It sets_correctString =
-          () => ValueProvider.Get<string>().ShouldEqual("some String...");
+          () => ValueProvider.Get<string>().ShouldEqual("Some random string...");
 
       It sets_correctDogFirstName = () => ValueProvider.Get<Dog>().FirstName.ShouldEqual("Dog Name String Gen - first name");
 
@@ -70,7 +70,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     {
       Because of = () =>
       {
-        var randomGeneratorProvider = new RandomGeneratorProvider(new Random());
+        var randomGeneratorProvider = new RandomGeneratorProviderFactory(new Random()).GetEmpty();
 
         randomGeneratorProvider.SetBase(new RandomStringGenerator());
         randomGeneratorProvider.Add(new RandomWordGenerator());
@@ -103,7 +103,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     {
       Because of = () =>
       {
-        var testDataGeneratorFactory = new TestDataGeneratorFactory(new RandomGeneratorProvider(new Random()));
+        var testDataGeneratorFactory = new TestDataGeneratorFactory(new RandomGeneratorProviderFactory(new Random()).GetDefault());
         var testDataGenerator = testDataGeneratorFactory.Build(testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault());
 
 
@@ -135,7 +135,10 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
   {
     Because of = () =>
     {
-      var testDataGeneratorFactory = new TestDataGeneratorFactory(new RandomGeneratorProvider(new Random()));
+      var randomGeneratorProvider= new RandomGeneratorProviderFactory(new Random()).GetDefault();
+      randomGeneratorProvider.SetBase(new GenderGenerator());
+
+      var testDataGeneratorFactory = new TestDataGeneratorFactory(randomGeneratorProvider);
       var valueProviderBuilder = testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault();
 
       valueProviderBuilder.SetProvider(new FuncProvider<Gender>((randomGenerator) => randomGenerator.Next()));
@@ -162,6 +165,14 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     };
 
     It does_nothing = () => true.ShouldBeTrue();
+  }
+
+  internal class GenderGenerator:RandomGenerator<Gender>
+  {
+    public override Gender Next ()
+    {
+      return (Gender) Random.Next(0, 2);
+    }
   }
 }
 
