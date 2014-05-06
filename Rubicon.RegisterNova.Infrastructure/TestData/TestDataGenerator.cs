@@ -37,6 +37,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       return result;
     }
 
+    
     private GeneratorResult Generate (GeneratorResult lastGenerationResult)
     {
       var dataProvider = lastGenerationResult==null?new GeneratorDataProvider(ValueProvider.Random):new GeneratorDataProvider(ValueProvider.Random, lastGenerationResult.DataLists);
@@ -44,7 +45,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       foreach (var ruleEvent in _ruleSet.GetRuleAppliances(dataProvider.GetCountInternal))
       {
         var inputParameters = ruleEvent.Rule.GetRuleInputs();
-        var inputDataList = inputParameters.Select(p => dataProvider.GetAll(p).ToArray()).ToList();
+        var inputDataList = inputParameters.Select(p => dataProvider.GetAll(p).ToArray()).ToList(); //TODO: use this count for execution count calculation
 
         var inputList = new List<List<IRuleInput>>();
         foreach (var t in inputDataList)
@@ -71,9 +72,10 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
               inputList[i].Add(parameter);
             }
           }
-        }
+        } 
 
-
+        //TODO: Use plinq here... but never give them the same value - should be already like this
+        //TODO: Lock world? or world readonly
         foreach (var inputValues in inputList.Where(parameterList=>parameterList.Count==inputDataList.Count))
         {
           ruleEvent.Rule.Execute(inputValues, dataProvider, ValueProvider);

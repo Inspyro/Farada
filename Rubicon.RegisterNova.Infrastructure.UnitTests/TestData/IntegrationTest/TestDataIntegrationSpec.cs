@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration.Provider;
 using System.Linq;
 using System.Text;
 using Machine.Specifications;
@@ -22,13 +23,13 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       {
         var randomGeneratorProvider = new RandomGeneratorProviderFactory(new Random()).GetDefault();
 
-        randomGeneratorProvider.SetBase(new StringGenerator());
+        randomGeneratorProvider.SetBase(new StringGenerator()); //for Type -> 
         randomGeneratorProvider.Add(new DogNameStringGenerator());
 
         var testDataGeneratorFactory = new TestDataGeneratorFactory(randomGeneratorProvider);
 
         var valueProviderBuilder = testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault();
-        valueProviderBuilder.SetProvider<string, Dog>(new DogNameGenerator("first name"), d => d.FirstName);
+        valueProviderBuilder.SetProvider<string, Dog>(new DogNameGenerator("first name"), d => d.FirstName); //TODO param order reverse
         valueProviderBuilder.SetProvider<string, Dog>(new DogNameGenerator("last name"), d => d.LastName);
         valueProviderBuilder.SetProvider<string, Dog>(new DogNameGenerator("dog friend first name"), d => d.BestDogFriend.FirstName);
         valueProviderBuilder.SetProvider(new CatGenerator());
@@ -36,8 +37,9 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
         valueProviderBuilder.SetProvider<Dog, Dog>(new DogFriendInjector(), d => d.BestDogFriend);
         valueProviderBuilder.SetProvider<string, Cat>(new FuncProvider<string>((randomGenerator) => "cat name..."), c => c.Name);
 
+        //TODO valueProviderBuilder.Build()?
         var testDataGenerator = testDataGeneratorFactory.Build(valueProviderBuilder);
-        ValueProvider = testDataGenerator.ValueProvider;
+        ValueProvider = testDataGenerator.ValueProvider; //TODO: rename to composite value provider?
       };
 
       It sets_correctString =
@@ -75,7 +77,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       Because of = () =>
       {
         var basicDomain = new DataDomain();
-        var testDataGenerator = TestDataGeneratorFacade.Get(basicDomain);
+        var testDataGenerator = TestDataGeneratorFacade.Get(basicDomain); //TODO: rename to create?
 
         var count = 1000000; //1 million
 
@@ -255,10 +257,10 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
   {
     Because of = () =>
     {
-      var lifeRuleSet = new RuleSet(new RuleInfo<Person>(new ProcreationRule(), 1f, 0.05f, 1000000));
+      var lifeRuleSet = new RuleSet(new RuleInfo<Person>(new ProcreationRule(), 1f, 0.05f, 1000000)); //TODO: RuleInfo is not so good - implement this directly on the rule
       lifeRuleSet.AddGlobalRule(new AgingRule());
 
-      var complexDomain = new DataDomain
+      var complexDomain = new DataDomain //TODO: Configuration
                           {
                             Rules = lifeRuleSet,
                             SetupRandomProviderAction = provider =>
@@ -271,7 +273,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                               }
                           };
 
-      var testDataGenerator = TestDataGeneratorFacade.Get(complexDomain);
+      var testDataGenerator = TestDataGeneratorFacade.Get(complexDomain); //TODO: meaningful name... facade to factory .. remove factory
 
       var initialDataProvider = testDataGenerator.InitialDataProvider;
       initialDataProvider.Add(new Person("Adam", Gender.Male));
@@ -298,6 +300,8 @@ internal class GenderGenerator : RandomGenerator<Gender>
   }
 }
 
+//TODO: Rule for every generation... not per type
+//TODO: World class that contains global generation data - like World.IsFertile..
 internal class AgingRule : GlobalRule<Person>
 {
   protected override void Execute (Handle<Person> person)
@@ -309,6 +313,8 @@ internal class AgingRule : GlobalRule<Person>
 
 internal class ProcreationRule : Rule<Person>
 {
+  //TODO: Rule Appliance Probability based on World.Fertility...
+
   public override IEnumerable<IRuleParameter> GetRuleInputs ()
   {
     yield return new RuleParameter<Person>(p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male);
@@ -316,9 +322,10 @@ internal class ProcreationRule : Rule<Person>
         new RuleParameter<Person>(p => p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant));
   }
 
+  //TODO: dataProvider -rename or better: yield return..  and use in next generation (not for next rules..)
   public override void Execute (List<IRuleInput> inputData, GeneratorDataProvider dataProvider, TypeValueProvider valueProvider)
   {
-    var male = inputData[0].GetValue<Person>();
+    var male = inputData[0].GetValue<Person>();//TODO: replace list with custom type?
     var female = inputData[1].GetValue<Person>();
 
     var childCount = valueProvider.Random.Next(1, 1);

@@ -8,12 +8,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration
     public float LowDataExecutionProbability { get; private set; }
     public float HighDataExecutionProbability { get; private set; }
     public int HighDataCount { get; private set; }
-
-    public Type MainDataType
-    {
-      get { return Rule.MainDataType; }
-    }
-
     /// <summary>
     /// Create a new rule info with a given execution probability, not depending on the data size
     /// </summary>

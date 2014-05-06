@@ -7,7 +7,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.Reflection
   public static class FastReflection
   {
     private readonly static Dictionary<Type, IFastTypeInfo> s_typeInfos = new Dictionary<Type, IFastTypeInfo>();
-    public static IFastTypeInfo GetTypeInfo(Type type)
+    public static IFastTypeInfo GetTypeInfo(Type type) //TODO: thread safe..
     {
       if(s_typeInfos.ContainsKey(type))
       {
