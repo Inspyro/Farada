@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Machine.Specifications;
 using Rubicon.RegisterNova.Infrastructure.JetBrainsAnnotations;
 using Rubicon.RegisterNova.Infrastructure.TestData;
@@ -56,13 +57,39 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
       It sets_correctDogAge = () => ValueProvider.Get<Dog>().Age.ShouldEqual(0);
 
-      It sets_correctBestCatFriendsName = () => ValueProvider.Get<Dog>().BestCatFriend.Name.ShouldEqual("cat name...");
+      It sets_correctBestCatFriendsName = () =>
+      {
+        ValueProvider.Get<Dog>().BestCatFriend.Name.ShouldEqual("cat name...");
+      };
 
       It sets_correctCatWithoutProperties = () => ValueProvider.Get<Cat>(0).Name.ShouldEqual("Nice cat");
 
       It sets_correctInt = () => ValueProvider.Get<int>().ShouldEqual(0);
 
       static TypeValueProvider ValueProvider;
+    }
+
+    class when_using_TypeValueProvider_Performance
+    {
+      Because of = () =>
+      {
+        var basicDomain = new DataDomain();
+        var testDataGenerator = TestDataGeneratorFacade.Get(basicDomain);
+
+        var count = 1000000; //1 million
+
+        var start = DateTime.Now;
+
+        for (var i = 0; i < count; i++)
+        {
+          var universe = testDataGenerator.ValueProvider.Get<Universe>();
+        }
+
+        Console.WriteLine("Took {0} s to generate {1} universes", (DateTime.Now - start).TotalSeconds, count);
+      };
+
+      It doesNothing = () => true.ShouldBeTrue();
+
     }
 
     class when_using_TypeValueProvider_Word
@@ -154,6 +181,40 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       It doesNothing = () => true.ShouldBeTrue();
     }
   }
+
+  #region Performance
+  internal class Universe
+  {
+    public string Name { get; set; }
+    public float SizeInLightYears { get; set; }
+    public int PeopleCount { get; set; }
+
+    public StarSystem StarSystem { get; set; }  //TODO declare as List as soon as available
+  }
+
+  internal class StarSystem
+  {
+    public string Name { get; set; }
+    public float SizeInLightYears { get;set; }
+    public int PeopleCount { get;set; }
+
+    public Planet Planet { get; set; } //TODO declare as List as soon as available
+  }
+
+  internal class Planet
+  {
+    public string Name { get;set; }
+    public float SizeInKilometers { get; set; }
+    public int PeopleCount { get; set; }
+    public PlanetColor Color { get; set; }
+  }
+
+  internal enum PlanetColor
+  {
+    Blue, Red
+  }
+
+  #endregion
 
   internal class when_using_TestDataGenerator_complex
   {
