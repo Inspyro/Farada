@@ -1,8 +1,8 @@
 ﻿using System;
-using Rubicon.RegisterNova.Infrastructure.TestData.ValueChain;
+using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
 
-namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode
+namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 {
   public class ChainValueProviderBuilderFactory
   {
@@ -16,7 +16,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode
     public ChainValueProviderBuilder GetDefault ()
     {
       var defaultProvider = GetEmpty();
-      defaultProvider.SetProvider(new BasicStringGenerator());
+      defaultProvider.SetProvider(new FuncProvider<string>((randomGenerator) => randomGenerator.Next()));
 
       return defaultProvider;
     }

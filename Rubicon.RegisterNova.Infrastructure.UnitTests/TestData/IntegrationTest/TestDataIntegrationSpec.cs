@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DocumentFormat.OpenXml.Office2013.PowerPoint.Roaming;
 using Machine.Specifications;
 using Rubicon.RegisterNova.Infrastructure.JetBrainsAnnotations;
 using Rubicon.RegisterNova.Infrastructure.TestData;
 using Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode;
+using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.String;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueChain;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
 
@@ -64,6 +66,38 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       static TypeValueProvider ValueProvider;
     }
 
+    class when_using_TypeValueProvider_Word
+    {
+      Because of = () =>
+      {
+        var randomGeneratorProvider = new RandomGeneratorProvider(new Random());
+
+        randomGeneratorProvider.SetBase(new RandomStringGenerator());
+        randomGeneratorProvider.Add(new RandomWordGenerator());
+
+        var testDataGeneratorFactory = new TestDataGeneratorFactory(randomGeneratorProvider);
+
+        var valueProviderBuilder = testDataGeneratorFactory.ValueProviderBuilderFactory.GetEmpty();
+        valueProviderBuilder.SetProvider(new WordValueProvider());
+
+        valueProviderBuilder.SetProvider<Dog, Dog>(new DogFriendInjector(), d => d.BestDogFriend);
+        valueProviderBuilder.SetProvider<string, Cat>(new FuncProvider<string>((randomGenerator) => "cat name..."), c => c.Name);
+
+        var testDataGenerator = testDataGeneratorFactory.Build(valueProviderBuilder);
+        ValueProvider = testDataGenerator.ValueProvider;
+
+        for (int i = 0; i < 100; i++)
+        {
+          Console.WriteLine(ValueProvider.Get<string>());
+        }
+      };
+
+      It sets_correctString =
+          () => ValueProvider.Get<string>().Length.ShouldBeGreaterThan(0);
+
+      static TypeValueProvider ValueProvider;
+    }
+
 
     class when_using_TestDataGenerator_simple
     {
@@ -104,7 +138,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       var testDataGeneratorFactory = new TestDataGeneratorFactory(new RandomGeneratorProvider(new Random()));
       var valueProviderBuilder = testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault();
 
-      valueProviderBuilder.SetProvider(new FuncProvider<Gender>((randomGenerator) => (Gender) randomGenerator.Random.Next(0, 2)));
+      valueProviderBuilder.SetProvider(new FuncProvider<Gender>((randomGenerator) => randomGenerator.Next()));
 
       var testDataGenerator = testDataGeneratorFactory.Build(valueProviderBuilder);
 
@@ -197,7 +231,16 @@ internal enum Gender
 }
 
 #region Simple
-  public class StringMarryRule:Rule<string>
+
+public class StringGenerator : RandomGenerator<string>
+{
+  public override string Next ()
+  {
+    return "Some random string...";
+  }
+}
+
+public class StringMarryRule:Rule<string>
   {
     public override IEnumerable<IRuleParameter> GetRuleInputs ()
     {
