@@ -9,21 +9,39 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
 {
   public class TestDataGenerator
   {
+    private RuleSet _ruleSet;
     public TypeValueProvider ValueProvider { get; private set; }
 
-    internal TestDataGenerator (TypeValueProvider valueProvider)
+    internal TestDataGenerator (TypeValueProvider valueProvider, RuleSet ruleSet)
     {
+      ArgumentUtility.CheckNotNull("valueProvider", valueProvider);
+
       ValueProvider = valueProvider;
+      _ruleSet = ruleSet;
       InitialDataProvider = new InitialDataProvider(new GeneratorDataProvider(ValueProvider.Random));
     }
 
-    public GeneratorResult Generate (RuleSet ruleSet, GeneratorResult lastGenerationResult=null)
+    public GeneratorResult Generate (int generations = 1, GeneratorResult initialData = null)
     {
-      ArgumentUtility.CheckNotNull("ruleSet", ruleSet);
+      if(_ruleSet==null)
+      {
+        throw new InvalidOperationException("You cannot generate data without a rule set - please specify a rule set on initiliation!");
+      }
 
+      var result = initialData;
+      for (var i = 0; i < generations; i++)
+      {
+        result = Generate(result);
+      }
+
+      return result;
+    }
+
+    private GeneratorResult Generate (GeneratorResult lastGenerationResult)
+    {
       var dataProvider = lastGenerationResult==null?new GeneratorDataProvider(ValueProvider.Random):new GeneratorDataProvider(ValueProvider.Random, lastGenerationResult.DataLists);
 
-      foreach (var ruleEvent in ruleSet.GetRuleAppliances(dataProvider.GetCountInternal))
+      foreach (var ruleEvent in _ruleSet.GetRuleAppliances(dataProvider.GetCountInternal))
       {
         var inputParameters = ruleEvent.Rule.GetRuleInputs();
         var inputDataList = inputParameters.Select(p => dataProvider.GetAll(p).ToArray()).ToList();
@@ -62,7 +80,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
         }
       }
 
-      foreach (var globalRule in ruleSet.GetGlobalRules())
+      foreach (var globalRule in _ruleSet.GetGlobalRules())
       {
         var handleList=dataProvider.GetHandleListInternal(globalRule.MainDataType);
         foreach (var handle in handleList)
@@ -75,25 +93,5 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
     }
 
     public InitialDataProvider InitialDataProvider { get; private set; }
-  }
-
-  public class InitialDataProvider
-  {
-    private readonly GeneratorDataProvider _generatorDataProvider;
-
-    public InitialDataProvider (GeneratorDataProvider generatorDataProvider)
-    {
-      _generatorDataProvider = generatorDataProvider;
-    }
-
-    public void Add<T>(T value)
-    {
-      _generatorDataProvider.Add(value);
-    }
-
-    public GeneratorResult Build()
-    {
-      return new GeneratorResult(_generatorDataProvider.DataLists);
-    }
   }
 }

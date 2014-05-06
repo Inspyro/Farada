@@ -149,13 +149,16 @@
     <Compile Include="TestData\DataGeneration\RuleInput.cs" />
     <Compile Include="TestData\DataGeneration\RuleParameter.cs" />
     <Compile Include="TestData\DataGeneration\UserData.cs" />
+    <Compile Include="TestData\Domain.cs" />
     <Compile Include="TestData\HelperCode\String\RandomStringValueProvider.cs" />
     <Compile Include="TestData\DataGeneration\RuleSet.cs" />
     <Compile Include="TestData\DataGeneration\RuleInfo.cs" />
     <Compile Include="TestData\DataGeneration\RuleAppliance.cs" />
     <Compile Include="TestData\DataGeneration\Rule.cs" />
     <Compile Include="TestData\HelperCode\String\WordValueProvider.cs" />
+    <Compile Include="TestData\InitialDataProvider.cs" />
     <Compile Include="TestData\TestDataGenerator.cs" />
+    <Compile Include="TestData\TestDataGeneratorProxy.cs" />
     <Compile Include="TestData\ValueGeneration\IRandomGenerator.cs" />
     <Compile Include="TestData\ValueGeneration\RandomGeneratorProvider.cs" />
     <Compile Include="TestData\ValueChain\ChainKey.cs" />

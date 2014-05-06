@@ -103,11 +103,10 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     {
       Because of = () =>
       {
-        var testDataGeneratorFactory = new TestDataGeneratorFactory(new RandomGeneratorProviderFactory(new Random()).GetDefault());
-        var testDataGenerator = testDataGeneratorFactory.Build(testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault());
-
-
         var basicRuleSet = new RuleSet(new RuleInfo<string>(new StringMarryRule(), 1f, 0.05f, 10));
+
+        var testDataGeneratorFactory = new TestDataGeneratorFactory(new RandomGeneratorProviderFactory(new Random()).GetDefault(), basicRuleSet);
+        var testDataGenerator = testDataGeneratorFactory.Build(testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault());
 
         var initialDataProvider = testDataGenerator.InitialDataProvider;
         for (var i = 0; i < 1000; i++)
@@ -115,13 +114,10 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
           initialDataProvider.Add("some sexy string " + i);
         }
 
-        var lastResult = initialDataProvider.Build();
-        for (var i = 0; i < 1; i++)
-        {
-          lastResult = testDataGenerator.Generate(basicRuleSet, lastResult);
-        }
+        var initialData = initialDataProvider.Build();
+        var resultData=testDataGenerator.Generate(1, initialData);
 
-        var resultStrings = lastResult.GetResult<string>();
+        var resultStrings = resultData.GetResult<string>();
 
         var count = resultStrings.Count(result => result.Contains("Marr"));
         Console.WriteLine("Married ppl: " + count);
@@ -138,27 +134,25 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       var randomGeneratorProvider= new RandomGeneratorProviderFactory(new Random()).GetDefault();
       randomGeneratorProvider.SetBase(new GenderGenerator());
 
-      var testDataGeneratorFactory = new TestDataGeneratorFactory(randomGeneratorProvider);
+       var lifeRuleSet = new RuleSet(new RuleInfo<Person>(new ProcreationRule(), 1f, 0.05f, 1000000));
+      lifeRuleSet.AddGlobalRule(new AgingRule());
+
+      var testDataGeneratorFactory = new TestDataGeneratorFactory(randomGeneratorProvider,lifeRuleSet);
       var valueProviderBuilder = testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault();
 
       valueProviderBuilder.SetProvider(new FuncProvider<Gender>((randomGenerator) => randomGenerator.Next()));
 
       var testDataGenerator = testDataGeneratorFactory.Build(valueProviderBuilder);
 
-      var lifeRuleSet = new RuleSet(new RuleInfo<Person>(new ProcreationRule(), 1f, 0.05f, 1000000));
-      lifeRuleSet.AddGlobalRule(new AgingRule());
 
       var initialDataProvider = testDataGenerator.InitialDataProvider;
       initialDataProvider.Add(new Person("Adam", Gender.Male));
       initialDataProvider.Add(new Person("Eve", Gender.Female));
 
-      var lastResult = initialDataProvider.Build();
-      for (var i = 0; i < 100; i++)
-      {
-        lastResult = testDataGenerator.Generate(lifeRuleSet, lastResult);
-      }
+      var initialData = initialDataProvider.Build();
+      var resultData=testDataGenerator.Generate(100, initialData);
 
-      var resultPersons = lastResult.GetResult<Person>();
+      var resultPersons = resultData.GetResult<Person>();
 
       var count = resultPersons.Count();
       Console.WriteLine("ppl count: " + count);
