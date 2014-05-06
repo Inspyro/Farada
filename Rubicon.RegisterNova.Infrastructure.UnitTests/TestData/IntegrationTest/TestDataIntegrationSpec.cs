@@ -13,6 +13,7 @@ using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
 
 namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 {
+  [Subject(typeof(TestDataGenerator))]
   internal class TestDataIntegrationSpec
   {
     class when_using_TypeValueProvider
