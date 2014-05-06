@@ -149,7 +149,7 @@
     <Compile Include="TestData\DataGeneration\RuleInput.cs" />
     <Compile Include="TestData\DataGeneration\RuleParameter.cs" />
     <Compile Include="TestData\DataGeneration\UserData.cs" />
-    <Compile Include="TestData\Domain.cs" />
+    <Compile Include="TestData\DataDomain.cs" />
     <Compile Include="TestData\HelperCode\String\RandomStringValueProvider.cs" />
     <Compile Include="TestData\DataGeneration\RuleSet.cs" />
     <Compile Include="TestData\DataGeneration\RuleInfo.cs" />

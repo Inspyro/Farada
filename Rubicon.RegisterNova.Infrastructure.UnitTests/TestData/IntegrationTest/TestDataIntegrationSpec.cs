@@ -115,7 +115,36 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
         }
 
         var initialData = initialDataProvider.Build();
-        var resultData=testDataGenerator.Generate(1, initialData);
+        var resultData = testDataGenerator.Generate(1, initialData);
+
+        var resultStrings = resultData.GetResult<string>();
+
+        var count = resultStrings.Count(result => result.Contains("Marr"));
+        Console.WriteLine("Married ppl: " + count);
+      };
+
+      It doesNothing = () => true.ShouldBeTrue();
+    }
+
+    class when_using_TestDataGenerator_simpleFacade
+    {
+      Because of = () =>
+      {
+        var simpleDomain = new DataDomain
+                           {
+                               Rules = new RuleSet(new RuleInfo<string>(new StringMarryRule(), 1f, 0.05f, 10))
+                           };
+
+        var testDataGenerator = TestDataGeneratorFacade.Get(simpleDomain);
+
+        var initialDataProvider = testDataGenerator.InitialDataProvider;
+        for (var i = 0; i < 1000; i++)
+        {
+          initialDataProvider.Add("some sexy string " + i);
+        }
+
+        var initialData = initialDataProvider.Build();
+        var resultData = testDataGenerator.Generate(1, initialData);
 
         var resultStrings = resultData.GetResult<string>();
 
@@ -127,17 +156,17 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     }
   }
 
-  class when_using_TestDataGenerator_complex
+  internal class when_using_TestDataGenerator_complex
   {
     Because of = () =>
     {
-      var randomGeneratorProvider= new RandomGeneratorProviderFactory(new Random()).GetDefault();
+      var randomGeneratorProvider = new RandomGeneratorProviderFactory(new Random()).GetDefault();
       randomGeneratorProvider.SetBase(new GenderGenerator());
 
-       var lifeRuleSet = new RuleSet(new RuleInfo<Person>(new ProcreationRule(), 1f, 0.05f, 1000000));
+      var lifeRuleSet = new RuleSet(new RuleInfo<Person>(new ProcreationRule(), 1f, 0.05f, 1000000));
       lifeRuleSet.AddGlobalRule(new AgingRule());
 
-      var testDataGeneratorFactory = new TestDataGeneratorFactory(randomGeneratorProvider,lifeRuleSet);
+      var testDataGeneratorFactory = new TestDataGeneratorFactory(randomGeneratorProvider, lifeRuleSet);
       var valueProviderBuilder = testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault();
 
       valueProviderBuilder.SetProvider(new FuncProvider<Gender>((randomGenerator) => randomGenerator.Next()));
@@ -150,7 +179,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       initialDataProvider.Add(new Person("Eve", Gender.Female));
 
       var initialData = initialDataProvider.Build();
-      var resultData=testDataGenerator.Generate(100, initialData);
+      var resultData = testDataGenerator.Generate(100, initialData);
 
       var resultPersons = resultData.GetResult<Person>();
 
@@ -161,12 +190,50 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     It does_nothing = () => true.ShouldBeTrue();
   }
 
-  internal class GenderGenerator:RandomGenerator<Gender>
+  internal class when_using_TestDataGenerator_complexFacade
   {
-    public override Gender Next ()
+    Because of = () =>
     {
-      return (Gender) Random.Next(0, 2);
-    }
+      var lifeRuleSet = new RuleSet(new RuleInfo<Person>(new ProcreationRule(), 1f, 0.05f, 1000000));
+      lifeRuleSet.AddGlobalRule(new AgingRule());
+
+      var complexDomain = new DataDomain
+                          {
+                            Rules = lifeRuleSet,
+                            SetupRandomProviderAction = provider =>
+                            {
+                              provider.SetBase(new GenderGenerator());
+                            },
+                            SetupValueProviderAction = provider=>
+                              {
+                                 provider.SetProvider(new FuncProvider<Gender>((randomGenerator) => randomGenerator.Next()));
+                              }
+                          };
+
+      var testDataGenerator = TestDataGeneratorFacade.Get(complexDomain);
+
+      var initialDataProvider = testDataGenerator.InitialDataProvider;
+      initialDataProvider.Add(new Person("Adam", Gender.Male));
+      initialDataProvider.Add(new Person("Eve", Gender.Female));
+
+      var initialData = initialDataProvider.Build();
+      var resultData = testDataGenerator.Generate(100, initialData);
+
+      var resultPersons = resultData.GetResult<Person>();
+
+      var count = resultPersons.Count();
+      Console.WriteLine("ppl count: " + count);
+    };
+
+    It does_nothing = () => true.ShouldBeTrue();
+  }
+}
+
+internal class GenderGenerator : RandomGenerator<Gender>
+{
+  public override Gender Next ()
+  {
+    return (Gender) Random.Next(0, 2);
   }
 }
 
