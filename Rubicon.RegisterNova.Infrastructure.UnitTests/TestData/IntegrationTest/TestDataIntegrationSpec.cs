@@ -31,7 +31,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
         valueProviderBuilder.SetProvider(new CatGenerator());
 
         valueProviderBuilder.SetProvider<Dog, Dog>(new DogFriendInjector(), d => d.BestDogFriend);
-        valueProviderBuilder.SetProvider<string, Cat>(new FuncProvider<string>(() => "cat name..."), c => c.Name);
+        valueProviderBuilder.SetProvider<string, Cat>(new FuncProvider<string>((randomGenerator) => "cat name..."), c => c.Name);
 
         var testDataGenerator = testDataGeneratorFactory.Build(valueProviderBuilder);
         ValueProvider = testDataGenerator.ValueProvider;
@@ -104,8 +104,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       var testDataGeneratorFactory = new TestDataGeneratorFactory(new RandomGeneratorProvider(new Random()));
       var valueProviderBuilder = testDataGeneratorFactory.ValueProviderBuilderFactory.GetDefault();
 
-      var random = new Random(); //TODO-> inject....
-      valueProviderBuilder.SetProvider(new FuncProvider<Gender>(() => (Gender) random.Next(0, 2)));
+      valueProviderBuilder.SetProvider(new FuncProvider<Gender>((randomGenerator) => (Gender) randomGenerator.Random.Next(0, 2)));
 
       var testDataGenerator = testDataGeneratorFactory.Build(valueProviderBuilder);
 
