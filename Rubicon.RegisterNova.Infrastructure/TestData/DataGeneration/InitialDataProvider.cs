@@ -1,7 +1,6 @@
 ﻿using System;
-using Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration;
 
-namespace Rubicon.RegisterNova.Infrastructure.TestData
+namespace Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration
 {
   public class InitialDataProvider
   {

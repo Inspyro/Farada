@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Rubicon.RegisterNova.Infrastructure.TestData.Reflection;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 {
@@ -51,24 +52,24 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       RaiseFillCount(currentType);
 
       //we go over all properties and generate values for them
-      var properties = currentType.GetProperties();
+      var properties = FastReflection.GetTypeInfo(currentType).Properties; //currentType.GetProperties();
       foreach (var property in properties)
       {
         //if there is no direct value provider we try to get all values from the base chain
         if (directValueProvider == null)
         {
           TryFillProperty(_valueChain, property, instance, maxDepth);
+          continue;
         }
-        else //else we try to get all properties from the concrete chain
-        {
-          if (!TryFillProperty(directValueProvider, property, instance, maxDepth)) //if we cant fill the properties with the direct chain (current level) we get the values from the default chain
-          {
-            if(!TryFillProperty(currentChain, property, instance, maxDepth))
-            {
-              TryFillProperty(_valueChain, property, instance, maxDepth);
-            }
-          }
-        }
+
+        if (TryFillProperty(directValueProvider, property, instance, maxDepth))
+          continue;
+
+        //if we cant fill the properties with the direct chain (current level) we get the values from the default chain
+        if (TryFillProperty(currentChain, property, instance, maxDepth))
+          continue;
+
+        TryFillProperty(_valueChain, property, instance, maxDepth);
       }
 
       return instance;
@@ -94,7 +95,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       return !_typeFillCountDictionary.ContainsKey(currentType) || _typeFillCountDictionary[currentType] < maxDepth;
     }
 
-    private bool TryFillProperty (IChainValueProvider valueProvider, PropertyInfo property, object instance, int maxDepth)
+    private bool TryFillProperty (IChainValueProvider valueProvider, IFastPropertyInfo property, object instance, int maxDepth)
     {
       if (CanFillProperty(valueProvider, property, true))
       {
@@ -111,14 +112,14 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       return false;
     }
 
-    private static bool CanFillProperty (IChainValueProvider valueProvider, PropertyInfo property, bool filterName)
+    private static bool CanFillProperty (IChainValueProvider valueProvider, IFastPropertyInfo property, bool shouldFilterName)
     {
-      return valueProvider.HasChainProvider(property.PropertyType, filterName ? property.Name : null);
+      return valueProvider.HasChainProvider(property.PropertyType, shouldFilterName ? property.Name : null);
     }
 
-    private void FillProperty (IChainValueProvider directValueProvider, PropertyInfo property, object instance, bool filterName, int maxDepth)
+    private void FillProperty (IChainValueProvider directValueProvider, IFastPropertyInfo property, object instance, bool shouldFilterName, int maxDepth)
     {
-      var propertyValue = Get(directValueProvider, property.PropertyType, filterName?property.Name:null, maxDepth);
+      var propertyValue = Get(directValueProvider, property.PropertyType, shouldFilterName?property.Name:null, maxDepth);
       property.SetValue(instance, propertyValue);
     }
   }
