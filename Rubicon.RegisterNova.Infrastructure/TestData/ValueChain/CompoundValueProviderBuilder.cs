@@ -22,7 +22,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       _chainValueProvider.SetChainProvider(valueProvider, typeof (TProperty));
     }
 
-    public void SetProvider<TProperty, TContainer>(ValueProvider<TProperty> valueProvider, Expression<Func<TContainer, TProperty>> chainExpression)
+    public void SetProvider<TProperty, TContainer>(Expression<Func<TContainer, TProperty>> chainExpression, ValueProvider<TProperty> valueProvider)
     {
       var expressionChain = chainExpression.ToChain().ToList();
       var currentValueProvider = _chainValueProvider;

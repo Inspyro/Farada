@@ -27,13 +27,14 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                            //TODO: per type: 
                            builder.SetProvider(new StringGenerator());
 
-                           builder.SetProvider<string, Dog>(new DogNameGenerator("first name"), d => d.FirstName); //TODO param order reverse
-                           builder.SetProvider<string, Dog>(new DogNameGenerator("last name"), d => d.LastName);
-                           builder.SetProvider<string, Dog>(new DogNameGenerator("dog friend first name"), d => d.BestDogFriend.FirstName);
+                           builder.SetProvider((Dog d) => d.FirstName, new DogNameGenerator("first name"));
+                           builder.SetProvider((Dog d) => d.LastName, new DogNameGenerator("last name"));
+                           builder.SetProvider((Dog d)=> d.BestDogFriend.FirstName, new DogNameGenerator("dog friend first name"));
+
                            builder.SetProvider(new CatGenerator());
 
-                           builder.SetProvider<Dog, Dog>(new DogFriendInjector(), d => d.BestDogFriend);
-                           builder.SetProvider<string, Cat>(new FuncProvider<string>((random) => "cat name..."), c => c.Name);
+                           builder.SetProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
+                           builder.SetProvider((Cat c) => c.Name, new FuncProvider<string>((random) => "cat name..."));
                          }
                      };
 
@@ -72,7 +73,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       Because of = () =>
       {
         var basicDomain = new DomainConfiguration();
-        var valueProvider = TestDataGeneratorFactory.CreateValueProvider(basicDomain); //TODO: rename to create?
+        var valueProvider = TestDataGeneratorFactory.CreateValueProvider(basicDomain);
 
         const int count = 1000000; //1 million
 
@@ -99,8 +100,8 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                          BuildValueProvider = builder =>
                          {
                            builder.SetProvider(new RandomWordGenerator());
-                           builder.SetProvider<Dog, Dog>(new DogFriendInjector(), d => d.BestDogFriend);
-                           builder.SetProvider<string, Cat>(new FuncProvider<string>((random) => "cat name..."), c => c.Name);
+                           builder.SetProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
+                           builder.SetProvider((Cat c) => c.Name, new FuncProvider<string>((random) => "cat name..."));
                          }
                      };
 
