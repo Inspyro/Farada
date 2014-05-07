@@ -12,6 +12,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration
     public RuleValue(T value)
     {
       _value = value;
+      UserData = new UserData();
     }
 
     public void OnDeleted(Action deleteAction)

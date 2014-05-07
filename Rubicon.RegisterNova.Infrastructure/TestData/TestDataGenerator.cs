@@ -50,7 +50,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
         var inputParameters = rule.GetRuleInputs(world);
         var inputDataList = inputParameters.Select(p => dataProvider.GetAll(p).ToArray()).ToList();
 
-        var executionCount = (int) (rule.GetExecutionProbability() * inputDataList.Count);
+        var executionCount = (int) (rule.GetExecutionProbability() * inputDataList.Count); //TODO count to low
 
         var inputList = new List<CompoundRuleInput>();
         foreach (var t in inputDataList)
@@ -62,7 +62,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
           }
 
           parameterValues.Randomize(ValueProvider.Random);
-
 
           for (var i = 0; i < parameterValues.Length; i++)
           {

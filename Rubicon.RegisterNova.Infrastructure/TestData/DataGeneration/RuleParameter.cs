@@ -26,7 +26,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration
 
     bool IRuleParameter.Predicate (IRuleValue arg)
     {
-      return _predicate((RuleValue<T>) arg);
+      return _predicate==null||_predicate((RuleValue<T>) arg);
     }
   }
 

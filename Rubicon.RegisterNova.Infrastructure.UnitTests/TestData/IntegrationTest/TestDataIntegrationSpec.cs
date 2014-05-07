@@ -278,9 +278,14 @@ internal class ProcreationRule : Rule
 
   protected override IEnumerable<IRuleParameter> GetRuleInputs ()
   {
-    yield return new RuleParameter<Person>(p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male);
+    yield return new RuleParameter<Person>(
+      p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male);
     yield return
-        new RuleParameter<Person>(p => p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant));
+        new RuleParameter<Person>(
+            (p) =>
+            {
+              return p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant);
+            });
   }
 
   protected override IEnumerable<IRuleValue>  Execute (CompoundRuleInput inputData)
