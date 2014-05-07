@@ -6,15 +6,15 @@ using Rubicon.RegisterNova.Infrastructure.Utilities;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 {
-  public class ChainValueProviderBuilder
+  public class CompoundValueProviderBuilder
   {
-    private readonly RandomGeneratorProvider _randomGeneratorProvider;
+    private readonly Random _random;
     private readonly IChainValueProvider _chainValueProvider;
 
-    public ChainValueProviderBuilder(RandomGeneratorProvider randomGeneratorProvider)
+    public CompoundValueProviderBuilder(Random random)
     {
-      _randomGeneratorProvider = randomGeneratorProvider;
-      _chainValueProvider = new ChainValueProvider(_randomGeneratorProvider);
+      _random = random;
+      _chainValueProvider = new ChainValueProvider(random);
     }
 
     public void SetProvider<TProperty>(ValueProvider<TProperty> valueProvider)
@@ -45,9 +45,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       currentValueProvider.SetChainProvider(valueProvider, finalExpression.Type, finalExpression.Name);
     }
 
-    internal IChainValueProvider ToValueProvider()
+    internal CompoundValueProvider Build()
     {
-      return _chainValueProvider;
+      return new CompoundValueProvider(_chainValueProvider);
     }
   }
 }

@@ -5,17 +5,16 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode
 {
   public class FuncProvider<T>:ValueProvider<T>
   {
-    private readonly Func<RandomGenerator<T>, T> _valueFunc;
+    private readonly Func<Random, T> _valueFunc;
 
-    public FuncProvider (Func<RandomGenerator<T>, T> valueFunc)
-        : base(null)
+    public FuncProvider (Func<Random, T> valueFunc)
     {
       _valueFunc = valueFunc;
     }
 
-    protected override T GetValue (T currentValue)
+    protected override T GetValue ()
     {
-      return _valueFunc(RandomGenerator);
+      return _valueFunc(Random);
     }
   }
 }

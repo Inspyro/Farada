@@ -6,14 +6,14 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 {
   public class ChainValueProvider:IChainValueProvider
   {
-    private readonly RandomGeneratorProvider _randomGeneratorProvider;
+    private readonly Random _random;
     private IValueProvider _valueProvider;
     private readonly Dictionary<ChainKey, IChainValueProvider> _nextProviders;
 
-    public ChainValueProvider(RandomGeneratorProvider randomGeneratorProvider, IValueProvider valueProvider=null)
+    public ChainValueProvider(Random random, IValueProvider valueProvider=null)
     {
       _nextProviders = new Dictionary<ChainKey, IChainValueProvider>(new ChainKeyComparer());
-      _randomGeneratorProvider = randomGeneratorProvider;
+      _random = random;
       _valueProvider = valueProvider;
     }
 
@@ -24,7 +24,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 
     public IChainValueProvider SetChainProvider(IValueProvider valueProvider, Type providerType, string nameFilter=null)
     {
-      IChainValueProvider chainValueProvider = null;
+      IChainValueProvider chainValueProvider;
       var key = GetKey(providerType, nameFilter);
       if(HasChainProvider(providerType, nameFilter))
       {
@@ -33,7 +33,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       }
       else
       {
-        chainValueProvider = new ChainValueProvider(_randomGeneratorProvider, valueProvider);
+        chainValueProvider = new ChainValueProvider(_random, valueProvider);
         _nextProviders.Add(key,chainValueProvider );
       }
 
@@ -52,7 +52,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 
     public Random Random
     {
-      get { return _randomGeneratorProvider.Random; }
+      get { return _random; }
     }
 
     public bool HasValue()
@@ -62,7 +62,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 
     public object GetValue()
     {
-      return !HasValue() ? null : _valueProvider.GetObjectValue(_randomGeneratorProvider);
+      return !HasValue() ? null : _valueProvider.GetObjectValue(_random);
     }
 
     private static ChainKey GetKey (Type providerType, string nameFilter)

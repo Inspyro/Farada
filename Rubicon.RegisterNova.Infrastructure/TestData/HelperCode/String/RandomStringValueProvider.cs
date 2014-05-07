@@ -4,22 +4,9 @@ using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.String
 {
-  public class RandomStringValueProvider:ValueProvider<string, RandomStringGenerator>
+  public class RandomStringGenerator:ValueProvider<string>
   {
-    public RandomStringValueProvider (ValueProvider<string> nextProvider=null)
-        : base(nextProvider)
-    {
-    }
-
-    protected override string GetValue (string currentValue)
-    {
-      return RandomGenerator.Next();
-    }
-  }
-
-  public class RandomStringGenerator:RandomGenerator<string>
-  {
-    public override string Next ()
+    protected override string GetValue ()
     {
       return new string(Enumerable.Range(1, Random.Next(1,20)).Select(x => GenerateChar()).ToArray());
     }

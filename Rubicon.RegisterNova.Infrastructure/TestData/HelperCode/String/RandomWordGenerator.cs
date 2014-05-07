@@ -4,19 +4,6 @@ using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.String
 {
-  public class WordValueProvider : ValueProvider<string, RandomWordGenerator>
-  {
-    public WordValueProvider (ValueProvider<string> nextProvider=null)
-        : base(nextProvider)
-    {
-    }
-
-    protected override string GetValue (string currentValue)
-    {
-      return currentValue + RandomGenerator.Next();
-    }
-  }
-
   public class RandomWordGenerator:RandomSyllabileGenerator
   {
     private readonly int _minWordSyllabiles;
@@ -28,13 +15,13 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.String
       _maxWordSyllabiles = maxWordSyllabiles;
     }
 
-    public override string Next ()
+    protected override string GetValue ()
     {
       var syllabiles = Random.Next(_minWordSyllabiles, _maxWordSyllabiles);
       var word = new StringBuilder();
       for (var i = 0; i < syllabiles; i++)
       {
-        word.Append(base.Next());
+        word.Append(base.GetValue());
       }
 
       if (Random.Next() > 0.5)
@@ -46,7 +33,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.String
     }
   }
 
-  public class RandomSyllabileGenerator:RandomGenerator<string>
+  public class RandomSyllabileGenerator:ValueProvider<string>
   {
     private readonly int _min;
     private readonly int _max;
@@ -60,7 +47,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.String
       _max = max;
     }
 
-    public override string Next ()
+    protected override string GetValue ()
     {
      var len = Random.Next(_min, _max);
 

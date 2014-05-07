@@ -10,9 +10,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
   public class TestDataGenerator
   {
     private RuleSet _ruleSet;
-    public TypeValueProvider ValueProvider { get; private set; }
+    public CompoundValueProvider ValueProvider { get; private set; }
 
-    internal TestDataGenerator (TypeValueProvider valueProvider, RuleSet ruleSet)
+    internal TestDataGenerator (CompoundValueProvider valueProvider, RuleSet ruleSet)
     {
       ArgumentUtility.CheckNotNull("valueProvider", valueProvider);
 

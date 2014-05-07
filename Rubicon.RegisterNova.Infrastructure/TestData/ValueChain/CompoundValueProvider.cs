@@ -6,28 +6,28 @@ using Rubicon.RegisterNova.Infrastructure.Utilities;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 {
-  public class TypeValueProvider
+  public class CompoundValueProvider
   {
     public Random Random { get { return _valueChain.Random; } }
 
     private readonly IChainValueProvider _valueChain;
 
-    internal TypeValueProvider (IChainValueProvider valueChain)
+    internal CompoundValueProvider (IChainValueProvider valueChain)
     {
       _valueChain = valueChain;
     }
 
     private Dictionary<Type, int> _typeFillCountDictionary;
-    public TValue Get<TValue>(int maxDepth=2)
+    public TValue Create<TValue>(int maxDepth=2)
     {
       _typeFillCountDictionary = new Dictionary<Type, int>();
 
-      var value = Get(_valueChain, typeof (TValue), null, maxDepth);
+      var value = Create(_valueChain, typeof (TValue), null, maxDepth);
       return value == null ? default(TValue) : (TValue) value;
     }
 
   
-    private object Get(IChainValueProvider currentChain, Type currentType, string currentFilter, int maxDepth)
+    private object Create(IChainValueProvider currentChain, Type currentType, string currentFilter, int maxDepth)
     {
       IChainValueProvider directValueProvider = null;
       if(currentChain.HasChainProvider(currentType, currentFilter))
@@ -121,7 +121,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 
     private void FillProperty (IChainValueProvider directValueProvider, IFastPropertyInfo property, object instance, bool shouldFilterName, int maxDepth)
     {
-      var propertyValue = Get(directValueProvider, property.PropertyType, shouldFilterName?property.Name:null, maxDepth);
+      var propertyValue = Create(directValueProvider, property.PropertyType, shouldFilterName?property.Name:null, maxDepth);
       property.SetValue(instance, propertyValue);
     }
   }

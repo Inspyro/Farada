@@ -4,6 +4,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration
 {
   public interface IValueProvider
   {
-    object GetObjectValue (RandomGeneratorProvider randomGeneratorProvider);
+    object GetObjectValue (Random random);
   }
 }
