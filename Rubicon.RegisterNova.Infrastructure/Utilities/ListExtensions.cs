@@ -7,72 +7,6 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
 {
   public static class ListExtensions
   {
-    /// <summary>
-    /// Selects a random value from a list that matches the predicate but does not match the excluded values
-    /// Performance: O(n)
-    /// </summary>
-    /// <typeparam name="T">The inner type of the list</typeparam>
-    /// <param name="list">The list to search</param>
-    /// <param name="random"></param>
-    /// <returns>A random value or default(T) if no value matching predicate and excludes was found</returns>
-    /*public static T RandomValue<T>(this IList<T> list, Func<T, bool> predicate, T[] excludes, Random random)
-    {
-      var possibleIndices= list.WhereIndices(predicate).ToList();
-      
-      if(possibleIndices.Count<=0)
-        return default (T);
-
-      var initialIndex = possibleIndices.RandomIndex(random);
-
-      if(excludes==null)
-      {
-        return list[possibleIndices[initialIndex]];
-      }
-
-      var currentIndex = initialIndex;
-
-      var countUp = true;
-      T finalValue;
-      while (excludes.Contains(finalValue = list[possibleIndices[currentIndex]]))
-      {
-        if (countUp)
-        {
-          var isLastItem = currentIndex >= possibleIndices.Count - 1;
-          if(isLastItem)
-          {
-            countUp = false;
-            currentIndex = initialIndex;
-          }
-          else
-          {
-            currentIndex++;
-          }
-        }
-       
-        if(!countUp)
-        {
-          if (currentIndex == 0)
-            break;
-
-          currentIndex--;
-        }
-      }
-
-      return finalValue;
-    }*/
-
-    /// <summary>
-    /// Randomly selects an index from a list
-    /// </summary>
-    /// <returns>A random index from the list</returns>
-    /*public static int RandomIndex<T>(this IList<T> list, Random random)
-    {
-      if (list.Count <= 0)
-        throw new ArgumentOutOfRangeException("list", "You cannot randomly select a index of an empty list");
-
-      return random.Next(0, list.Count);
-    }*/
-
     public static void Randomize<T> (this IList<T> list, Random random = null)
     {
       random = random ?? new Random();
@@ -86,6 +20,14 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
         list[k] = list[n];
         list[n] = value;
       }
+    }
+
+    public static IList<T> Slice<T>(this IList<T> list, int count)
+    {
+      var slicedList = new List<T>(list);
+      slicedList.RemoveRange(0, count);
+
+      return slicedList;
     }
 
     public static IList<object> Adapt(this IList list)

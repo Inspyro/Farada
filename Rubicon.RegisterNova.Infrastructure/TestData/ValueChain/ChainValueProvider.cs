@@ -50,6 +50,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       return _nextProviders[GetKey(providerType, nameFilter)];
     }
 
+    public bool WantsPreviousValue()
+    {
+      return _valueProvider != null && _valueProvider.WantsPreviousValue();
+    }
+
     public Random Random
     {
       get { return _random; }
@@ -60,9 +65,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       return _valueProvider != null;
     }
 
-    public object GetValue()
+    public object GetValue(object currentValue)
     {
-      return !HasValue() ? null : _valueProvider.GetObjectValue(_random);
+      return !HasValue() ? null : _valueProvider.GetObjectValue(_random, currentValue);
     }
 
     private static ChainKey GetKey (Type providerType, string nameFilter)

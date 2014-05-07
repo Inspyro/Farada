@@ -35,6 +35,8 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
                            builder.SetProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
                            builder.SetProvider((Cat c) => c.Name, new FuncProvider<string>((random) => "cat name..."));
+
+                           builder.SetProvider((Dog d) => d.BestDogFriend.LastName, new LastValueGenerator("best dog friend name"));
                          }
                      };
 
@@ -44,7 +46,8 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       It sets_correctString =
           () => ValueProvider.Create<string>().ShouldEqual("Some random string...");
 
-      It sets_correctDogFirstName = () => ValueProvider.Create<Dog>().FirstName.ShouldEqual("Dog Name String Gen - first name");
+      It sets_correctDogFirstName = () => 
+        ValueProvider.Create<Dog>().FirstName.ShouldEqual("Dog Name String Gen - first name");
 
       It sets_correctDogLastName = () => ValueProvider.Create<Dog>().LastName.ShouldEqual("Dog Name String Gen - last name");
 
@@ -53,13 +56,16 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       It sets_correctBestFriendDogFirstName =
           () => ValueProvider.Create<Dog>().BestDogFriend.FirstName.ShouldEqual("Dog Name String Gen - dog friend first name");
 
-      It sets_correctBestFriendDogLastName = () => ValueProvider.Create<Dog>().BestDogFriend.LastName.ShouldEqual("Dog Name String Gen - last name");
+       It sets_correctBestFriendDogLastName =
+          () => 
+            ValueProvider.Create<Dog>().BestDogFriend.LastName.ShouldEqual("Dog Name String Gen - last namebest dog friend name");
 
       It returns_correctBestFriendDogType = () => ValueProvider.Create<Dog>().BestDogFriend.GetType().ShouldEqual(typeof (DogFriend));
 
       It sets_correctDogAge = () => ValueProvider.Create<Dog>().Age.ShouldEqual(0);
 
-      It sets_correctBestCatFriendsName = () => ValueProvider.Create<Dog>().BestCatFriend.Name.ShouldEqual("cat name...");
+      It sets_correctBestCatFriendsName = () => 
+        ValueProvider.Create<Dog>().BestCatFriend.Name.ShouldEqual("cat name...");
 
       It sets_correctCatWithoutProperties = () => ValueProvider.Create<Cat>(0).Name.ShouldEqual("Nice cat");
 
@@ -145,6 +151,21 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       };
 
       It doesNothing = () => true.ShouldBeTrue();
+    }
+  }
+
+  internal class LastValueGenerator : ValueProvider<string>
+  {
+    readonly string _additionalValue;
+
+    public LastValueGenerator (string additionalValue):base(true)
+    {
+      _additionalValue = additionalValue;
+    }
+
+    protected override string GetValue ()
+    {
+      return CurrentValue + _additionalValue;
     }
   }
 

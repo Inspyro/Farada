@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
 using Rubicon.RegisterNova.Infrastructure.TestData.Reflection;
 using Rubicon.RegisterNova.Infrastructure.Utilities;
 
@@ -8,31 +8,44 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 {
   public class CompoundValueProvider
   {
-    public Random Random { get { return _valueChain.Random; } }
-
-    private readonly IChainValueProvider _valueChain;
-
-    internal CompoundValueProvider (IChainValueProvider valueChain)
+    public Random Random
     {
-      _valueChain = valueChain;
+      get { return _baseValueProvider.Random; }
+    }
+
+    private readonly IChainValueProvider _baseValueProvider;
+
+    internal CompoundValueProvider (IChainValueProvider baseValueProvider)
+    {
+      _baseValueProvider = baseValueProvider;
     }
 
     private Dictionary<Type, int> _typeFillCountDictionary;
-    public TValue Create<TValue>(int maxDepth=2)
+
+    public TValue Create<TValue> (int maxDepth = 2)
     {
       _typeFillCountDictionary = new Dictionary<Type, int>();
 
-      var value = Create(_valueChain, typeof (TValue), null, maxDepth);
+      var baseStack = new List<IChainValueProvider>();
+      baseStack.Add(_baseValueProvider);
+
+      var value = Create(baseStack, typeof (TValue), null, maxDepth, null);
       return value == null ? default(TValue) : (TValue) value;
     }
 
-  
-    private object Create(IChainValueProvider currentChain, Type currentType, string currentFilter, int maxDepth)
+
+    private object Create (IList<IChainValueProvider> chainValueProviders, Type currentType, string currentFilter, int maxDepth, object currentValue)
     {
       IChainValueProvider directValueProvider = null;
-      if(currentChain.HasChainProvider(currentType, currentFilter))
+      var currentValueProvider = chainValueProviders.First();
+      if (currentValueProvider.HasChainProvider(currentType, currentFilter))
       {
-        directValueProvider = currentChain.GetChainProvider(currentType, currentFilter);
+        directValueProvider = currentValueProvider.GetChainProvider(currentType, currentFilter);
+
+        var newChainValueProviders = new List<IChainValueProvider> { directValueProvider };
+        newChainValueProviders.AddRange(chainValueProviders);
+
+        chainValueProviders = newChainValueProviders;
       }
 
       var hasDirectValue = directValueProvider != null && directValueProvider.HasValue();
@@ -40,12 +53,12 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       //if we try to get a basic type (e.g. no class) we can only get the value directly...
       if (!currentType.CanBeInstantiated())
       {
-        return hasDirectValue ? directValueProvider.GetValue() : null;
+        return hasDirectValue ? directValueProvider.GetValue(currentValue) : null;
       }
 
-      var instance = hasDirectValue ? directValueProvider.GetValue() : Activator.CreateInstance(currentType);
+      var instance = hasDirectValue ? directValueProvider.GetValue(currentValue) : Activator.CreateInstance(currentType);
 
-      if(!MayFill(currentType, maxDepth))
+      if (!MayFill(currentType, maxDepth))
       {
         return instance;
       }
@@ -53,32 +66,47 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       RaiseFillCount(currentType);
 
       //we go over all properties and generate values for them
-      var properties = FastReflection.GetTypeInfo(currentType).Properties; //currentType.GetProperties();
+      var properties = FastReflection.GetTypeInfo(currentType).Properties;
       foreach (var property in properties)
       {
-        //if there is no direct value provider we try to get all values from the base chain
-        if (directValueProvider == null)
+        var currentProviders = Sort(chainValueProviders, property);
+        while (currentProviders.Count > 0)
         {
-          TryFillProperty(_valueChain, property, instance, maxDepth, true);
-          continue;
+          var isLastPossibility = currentProviders.Count == 1;
+
+          if (TryFillProperty(currentProviders, property, instance, maxDepth, isLastPossibility))
+            break;
+
+          currentProviders = currentProviders.Slice(1);
         }
-
-        if (TryFillProperty(directValueProvider, property, instance, maxDepth,false))
-          continue;
-
-        //if we cant fill the properties with the direct chain (current level) we get the values from the default chain
-        if (TryFillProperty(currentChain, property, instance, maxDepth, false))
-          continue;
-
-        TryFillProperty(_valueChain, property, instance, maxDepth, true);
       }
 
       return instance;
     }
 
+    private static IList<IChainValueProvider> Sort (IList<IChainValueProvider> chainValueProviders, IFastPropertyInfo property)
+    {
+      var sortedList = new List<IChainValueProvider>();
+      for (var i = 0; i < chainValueProviders.Count; i++)
+      {
+        var currentProvider = chainValueProviders[i];
+
+        if (i < chainValueProviders.Count - 1 && WantsValue(currentProvider, property))
+        {
+          var previousProvider = chainValueProviders[i + 1];
+          var targetIndex = i == 0 ? 0 : chainValueProviders.IndexOf(currentProvider); //TODO: maybe use o(1) version of list
+          sortedList.Insert(targetIndex, previousProvider);
+        }
+
+        sortedList.Add(currentProvider);
+      }
+
+      return sortedList;
+    }
+
     private void RaiseFillCount (Type currentType)
     {
-      if(_typeFillCountDictionary.ContainsKey(currentType))
+      if (_typeFillCountDictionary.ContainsKey(currentType))
       {
         _typeFillCountDictionary[currentType]++;
       }
@@ -96,32 +124,61 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
       return !_typeFillCountDictionary.ContainsKey(currentType) || _typeFillCountDictionary[currentType] < maxDepth;
     }
 
-    private bool TryFillProperty (IChainValueProvider valueProvider, IFastPropertyInfo property, object instance, int maxDepth, bool fallback)
+    private bool TryFillProperty (IList<IChainValueProvider> valueProviders, IFastPropertyInfo property, object instance, int maxDepth, bool fallback)
     {
-      if (CanFillProperty(valueProvider, property, true, fallback))
+      var targetProvider = valueProviders.First();
+      if (CanFillProperty(targetProvider, property, true, false))
       {
-        FillProperty(valueProvider, property, instance, true, maxDepth);
-        return true;
+        FillProperty(valueProviders, property, instance, true, maxDepth);
+        return !NextWantsValue(valueProviders, property);
       }
 
-      if (CanFillProperty(valueProvider, property, false, fallback))
+      if (CanFillProperty(targetProvider, property, false, fallback))
       {
-        FillProperty(valueProvider, property, instance, false, maxDepth);
-        return true;
+        FillProperty(valueProviders, property, instance, false, maxDepth);
+        return !NextWantsValue(valueProviders, property);
       }
 
       return false;
     }
 
+    private static bool NextWantsValue (IList<IChainValueProvider> valueProviders, IFastPropertyInfo property)
+    {
+      if (valueProviders.Count < 2)
+        return false;
+
+      var targetProvider = valueProviders[1];
+      return WantsValue(targetProvider, property);
+    }
+
+    private static bool WantsValue (IChainValueProvider valueProvider, IFastPropertyInfo property)
+    {
+      return WantsValue(valueProvider, property, true) || WantsValue(valueProvider, property, false);
+    }
+
+    private static bool WantsValue (IChainValueProvider valueProvider, IFastPropertyInfo property, bool shouldFilterName)
+    {
+      //a non value type can at least be instantiated...
+      return valueProvider.HasChainProvider(property.PropertyType, shouldFilterName ? property.Name : null)
+             && valueProvider.GetChainProvider(property.PropertyType, shouldFilterName ? property.Name : null).WantsPreviousValue();
+    }
+
     private static bool CanFillProperty (IChainValueProvider valueProvider, IFastPropertyInfo property, bool shouldFilterName, bool fallback)
     {
       //a non value type can at least be instantiated...
-      return fallback&&property.PropertyType.CanBeInstantiated() || valueProvider.HasChainProvider(property.PropertyType, shouldFilterName ? property.Name : null);
+      return fallback && property.PropertyType.CanBeInstantiated()
+             || valueProvider.HasChainProvider(property.PropertyType, shouldFilterName ? property.Name : null);
     }
 
-    private void FillProperty (IChainValueProvider directValueProvider, IFastPropertyInfo property, object instance, bool shouldFilterName, int maxDepth)
+    private void FillProperty (
+        IList<IChainValueProvider> valueProviders,
+        IFastPropertyInfo property,
+        object instance,
+        bool shouldFilterName,
+        int maxDepth)
     {
-      var propertyValue = Create(directValueProvider, property.PropertyType, shouldFilterName?property.Name:null, maxDepth);
+      var value=property.GetValue(instance);
+      var propertyValue = Create(valueProviders, property.PropertyType, shouldFilterName ? property.Name : null, maxDepth, value);
       property.SetValue(instance, propertyValue);
     }
   }

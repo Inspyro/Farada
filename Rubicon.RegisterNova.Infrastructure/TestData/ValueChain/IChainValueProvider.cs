@@ -6,12 +6,14 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
   public interface IChainValueProvider
   {
     bool HasValue ();
-    object GetValue();
+    object GetValue(object currentValue);
+    bool WantsPreviousValue ();
 
     void SetProvider (IValueProvider valueProvider);
     IChainValueProvider SetChainProvider(IValueProvider valueProvider, Type providerType, string nameFilter=null);
     bool HasChainProvider(Type providerType, string nameFilter=null);
     IChainValueProvider GetChainProvider(Type providerType, string nameFilter);
+   
     Random Random { get; }
   }
 }
