@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Rubicon.RegisterNova.Infrastructure.Utilities;
@@ -9,16 +8,16 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration
   public class GeneratorDataProvider
   {
     private readonly Random _random;
-    private readonly Dictionary<Type, IList> _dataLists; 
-    internal GeneratorDataProvider(Random random, Dictionary<Type, IList> initialData=null)
+    private readonly Dictionary<Type, List<IRuleValue>> _dataLists; 
+    internal GeneratorDataProvider(Random random, Dictionary<Type, List<IRuleValue>> initialData=null)
     {
       _random = random;
-      _dataLists = initialData ?? new Dictionary<Type, IList>();
+      _dataLists = initialData ?? new Dictionary<Type, List<IRuleValue>>();
     }
 
-    internal Dictionary<Type, IList> DataLists { get { return _dataLists; } }
+    internal Dictionary<Type, List<IRuleValue>> DataLists { get { return _dataLists; } }
 
-    internal IEnumerable<IRuleInput> GetAll (IRuleParameter ruleParameter)
+    internal IEnumerable<IRuleValue> GetAll (IRuleParameter ruleParameter)
     {
       var dataType = ruleParameter.DataType;
       if (!_dataLists.ContainsKey(dataType))
@@ -26,61 +25,39 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration
         throw new ArgumentException("Could not find a result of type " + dataType);
       }
 
-      return _dataLists[dataType].Adapt().WhereValues(ruleParameter.Predicate, ruleParameter.Excludes).Select(ruleParameter.GetRuleInput);
+      return _dataLists[dataType].WhereValues(ruleParameter.Predicate, ruleParameter.Excludes);
     }
 
-    public void Add<T> (T value)
+    public void Add(IRuleValue value)
     {
-      var dataType = typeof (T);
+      var dataType = value.GetDataType();
 
-      IList<Handle<T>> valueList;
+      List<IRuleValue> valueList;
       if(_dataLists.ContainsKey(dataType))
       {
-        valueList = (IList<Handle<T>>) _dataLists[dataType];
+        valueList = _dataLists[dataType];
       }
       else
       {
-        valueList = new List<Handle<T>>();
-        _dataLists.Add(dataType, (IList) valueList);
+        valueList = new List<IRuleValue>();
+        _dataLists.Add(dataType, valueList);
       }
 
       var indexInList = valueList.Count;
-      var valueHandle = new Handle<T>(value, () => Delete<T>(indexInList));
 
-      valueList.Add(valueHandle);
+      value.OnDeleted(() => Delete(dataType, indexInList));
+      valueList.Add(value);
     }
 
-    private void Delete<T> (int index)
+    private void Delete (Type dataType, int index)
     {
-      var dataType = typeof (T);
       if (!_dataLists.ContainsKey(dataType))
       {
         throw new ArgumentException("Could not find a result of type " + dataType);
       }
 
-      var valueList = (IList<Handle<T>>) _dataLists[dataType];
+      var valueList = _dataLists[dataType];
       valueList.RemoveAt(index);
-    }
-
-    internal int GetCountInternal (Type dataType)
-    {
-      if (!_dataLists.ContainsKey(dataType))
-      {
-        throw new ArgumentException("Could not find a result of type " + dataType);
-      }
-
-      return _dataLists[dataType].Count;
-    }
-
-
-    internal IList GetHandleListInternal (Type dataType)
-    {
-    if (!_dataLists.ContainsKey(dataType))
-      {
-        throw new ArgumentException("Could not find a result of type " + dataType);
-      }
-
-      return _dataLists[dataType];
     }
   }
 }

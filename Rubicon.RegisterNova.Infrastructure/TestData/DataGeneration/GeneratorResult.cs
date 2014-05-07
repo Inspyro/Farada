@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,13 +6,13 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration
 {
   public class GeneratorResult
   {
-    private readonly Dictionary<Type, IList> _dataLists;
-    internal GeneratorResult(Dictionary<Type, IList> dataLists)
+    private readonly Dictionary<Type,  List<IRuleValue>> _dataLists;
+    internal GeneratorResult(Dictionary<Type, List<IRuleValue>> dataLists)
     {
       _dataLists = dataLists;
     }
 
-    internal Dictionary<Type, IList> DataLists { get { return _dataLists; } }
+    internal Dictionary<Type,  List<IRuleValue>> DataLists { get { return _dataLists; } }
 
     public IList<T> GetResult<T>()
     {
@@ -23,7 +22,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration
         throw new ArgumentException("Could not find a result of type " + dataType);
       }
 
-      return ((IList<Handle<T>>) _dataLists[dataType]).Select(handle => handle.Value).ToList();
+      return _dataLists[dataType].Select(value => value.GetValue<T>()).ToList();
     }
 
     public IList<Type> GetResultTypes()

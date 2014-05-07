@@ -9,7 +9,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
 {
   public class TestDataGenerator
   {
-    private RuleSet _ruleSet;
+    private readonly RuleSet _ruleSet;
     public CompoundValueProvider ValueProvider { get; private set; }
 
     internal TestDataGenerator (CompoundValueProvider valueProvider, RuleSet ruleSet)
@@ -28,67 +28,70 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
         throw new InvalidOperationException("You cannot generate data without a rule set - please specify a rule set on initiliation!");
       }
 
+      var world = new World();
+
       var result = initialData;
       for (var i = 0; i < generations; i++)
       {
-        result = Generate(result);
+        result = Generate(result, world);
       }
 
       return result;
     }
 
     
-    private GeneratorResult Generate (GeneratorResult lastGenerationResult)
+    private GeneratorResult Generate (GeneratorResult lastGenerationResult, IWriteableWorld world)
     {
       var dataProvider = lastGenerationResult==null?new GeneratorDataProvider(ValueProvider.Random):new GeneratorDataProvider(ValueProvider.Random, lastGenerationResult.DataLists);
+      var generatedData = new List<IRuleValue>();
 
-      foreach (var ruleEvent in _ruleSet.GetRuleAppliances(dataProvider.GetCountInternal))
+      foreach (var rule in _ruleSet.GetRules())
       {
-        var inputParameters = ruleEvent.Rule.GetRuleInputs();
-        var inputDataList = inputParameters.Select(p => dataProvider.GetAll(p).ToArray()).ToList(); //TODO: use this count for execution count calculation
+        var inputParameters = rule.GetRuleInputs(world);
+        var inputDataList = inputParameters.Select(p => dataProvider.GetAll(p).ToArray()).ToList();
 
-        var inputList = new List<List<IRuleInput>>();
+        var executionCount = (int) (rule.GetExecutionProbability() * inputDataList.Count);
+
+        var inputList = new List<CompoundRuleInput>();
         foreach (var t in inputDataList)
         {
-          var parameterData = t;
-          if (parameterData.Length > ruleEvent.ExecutionCount)
+          var parameterValues = t;
+          if (parameterValues.Length > executionCount)
           {
-            parameterData = parameterData.Take(ruleEvent.ExecutionCount).ToArray();
+            parameterValues = parameterValues.Take(executionCount).ToArray();
           }
 
-          parameterData.Randomize(ValueProvider.Random);
+          parameterValues.Randomize(ValueProvider.Random);
 
 
-          for (var i = 0; i < parameterData.Length; i++)
+          for (var i = 0; i < parameterValues.Length; i++)
           {
-            var parameter = parameterData[i];
+            var value = parameterValues[i];
 
             if (i >= inputList.Count)
             {
-              inputList.Add(new List<IRuleInput> { parameter });
+              inputList.Add(new CompoundRuleInput());
             }
-            else
-            {
-              inputList[i].Add(parameter);
-            }
+
+            inputList[i].Add(value);
           }
         } 
 
         //TODO: Use plinq here... but never give them the same value - should be already like this
-        //TODO: Lock world? or world readonly
-        foreach (var inputValues in inputList.Where(parameterList=>parameterList.Count==inputDataList.Count))
+        foreach (var inputValues in inputList.Where(ruleInput=>ruleInput.Count==inputDataList.Count))
         {
-          ruleEvent.Rule.Execute(inputValues, dataProvider, ValueProvider);
+          generatedData.AddRange(rule.Execute(inputValues, ValueProvider, world));
         }
+      }
+
+      foreach (var result in generatedData)
+      {
+        dataProvider.Add(result);
       }
 
       foreach (var globalRule in _ruleSet.GetGlobalRules())
       {
-        var handleList=dataProvider.GetHandleListInternal(globalRule.MainDataType);
-        foreach (var handle in handleList)
-        {
-          globalRule.Execute(handle);
-        }
+        globalRule.Execute(world);
       }
 
       return new GeneratorResult(dataProvider.DataLists);

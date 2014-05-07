@@ -4,21 +4,36 @@ using Rubicon.RegisterNova.Infrastructure.TestData.ValueChain;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration
 {
-  public abstract class Rule<T>:IRule
+  public abstract class Rule:IRule
   {
-    public abstract IEnumerable<IRuleParameter> GetRuleInputs ();
-    public abstract void Execute (List<IRuleInput> inputData, GeneratorDataProvider generatorDataProvider, CompoundValueProvider valueProvider);
+    protected CompoundValueProvider ValueProvider { get; private set; }
+    protected IReadableWorld World { get; private set; }
 
-    public Type MainDataType
+    protected abstract IEnumerable<IRuleParameter> GetRuleInputs ();
+    protected abstract IEnumerable<IRuleValue> Execute (CompoundRuleInput inputData);
+
+    public IEnumerable<IRuleParameter> GetRuleInputs (IReadableWorld world)
     {
-      get { return typeof (T); }
+      World = world;
+      return GetRuleInputs();
+    }
+
+    public IEnumerable<IRuleValue> Execute (CompoundRuleInput inputData, CompoundValueProvider valueProvider, IReadableWorld world)
+    {
+      ValueProvider = valueProvider;
+      return Execute(inputData);
+    }
+
+    public virtual float GetExecutionProbability ()
+    {
+      return 1;
     }
   }
 
   public interface IRule
   {
-    IEnumerable<IRuleParameter> GetRuleInputs ();
-    void Execute (List<IRuleInput> inputData, GeneratorDataProvider dataProvider, CompoundValueProvider valueProvider);
-    Type MainDataType { get; }
+    IEnumerable<IRuleParameter> GetRuleInputs (IReadableWorld world);
+    IEnumerable<IRuleValue> Execute (CompoundRuleInput inputData, CompoundValueProvider valueProvider, IReadableWorld world);
+    float GetExecutionProbability ();
   }
 }

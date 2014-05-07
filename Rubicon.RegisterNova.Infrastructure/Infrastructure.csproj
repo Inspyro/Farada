@@ -87,6 +87,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NEventStore.5.0.0.100\lib\net40\NEventStore.dll</HintPath>
     </Reference>
+    <Reference Include="Rubicon.RegisterNova.Infrastructure, Version=0.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\Rubicon.RegisterNova.Infrastructure.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -143,18 +147,19 @@
     <Compile Include="Reporting\IReportColumn.cs" />
     <Compile Include="SimpleDbContext.cs" />
     <Compile Include="TestData\DataGeneration\GeneratorDataProvider.cs" />
-    <Compile Include="TestData\DataGeneration\Handle.cs" />
     <Compile Include="TestData\DataGeneration\GeneratorResult.cs" />
     <Compile Include="TestData\DataGeneration\GlobalRule.cs" />
-    <Compile Include="TestData\DataGeneration\RuleInput.cs" />
+    <Compile Include="TestData\DataGeneration\CompoundRuleInput.cs" />
+    <Compile Include="TestData\DataGeneration\RuleValue.cs" />
     <Compile Include="TestData\DataGeneration\RuleParameter.cs" />
     <Compile Include="TestData\DataGeneration\UserData.cs" />
     <Compile Include="TestData\BaseDomainConfiguration.cs" />
+    <Compile Include="TestData\DataGeneration\World.cs" />
     <Compile Include="TestData\DomainConfiguration.cs" />
+    <Compile Include="TestData\HelperCode\DataGeneration\LerpUtility.cs" />
+    <Compile Include="TestData\HelperCode\DataGeneration\UnrestrictedRule.cs" />
     <Compile Include="TestData\HelperCode\String\RandomStringValueProvider.cs" />
     <Compile Include="TestData\DataGeneration\RuleSet.cs" />
-    <Compile Include="TestData\DataGeneration\RuleInfo.cs" />
-    <Compile Include="TestData\DataGeneration\RuleAppliance.cs" />
     <Compile Include="TestData\DataGeneration\Rule.cs" />
     <Compile Include="TestData\HelperCode\String\RandomWordGenerator.cs" />
     <Compile Include="TestData\DataGeneration\InitialDataProvider.cs" />

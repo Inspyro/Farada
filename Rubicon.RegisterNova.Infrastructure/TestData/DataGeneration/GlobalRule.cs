@@ -2,24 +2,20 @@
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration
 {
-  public abstract class GlobalRule<T>:IGlobalRule
+  public abstract class GlobalRule:IGlobalRule
   {
-    protected abstract void Execute (Handle<T> value);
+    protected IWriteableWorld World { get; private set; }
+    protected abstract void Execute ();
 
-    public void Execute(object handle)
+    public void Execute (IWriteableWorld world)
     {
-      Execute((Handle<T>) handle);
-    }
-
-    public Type MainDataType
-    {
-      get { return typeof (T); }
+      World = world;
+      Execute();
     }
   }
 
   public interface IGlobalRule
   {
-    void Execute (object handle);
-    Type MainDataType { get; }
+    void Execute (IWriteableWorld world);
   }
 }

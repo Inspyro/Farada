@@ -1,33 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rubicon.RegisterNova.Infrastructure.Utilities;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration
 {
   public class RuleSet
   {
-    private readonly List<IRuleInfo> _ruleInfos;
+    private readonly List<IRule> _rules;
     private readonly List<IGlobalRule> _globalRules;
 
-    public RuleSet(params IRuleInfo[] ruleInfos)
+    public RuleSet(params IRule[] ruleInfos)
     {
-      _ruleInfos = ruleInfos == null ? new List<IRuleInfo>() : ruleInfos.ToList();
+      _rules = ruleInfos == null ? new List<IRule>() : ruleInfos.ToList();
       _globalRules = new List<IGlobalRule>();
     }
 
-    internal IEnumerable<RuleAppliance> GetRuleAppliances (Func<Type, int> getDataCount)
+    internal IEnumerable<IRule> GetRules()
     {
-      foreach (var ruleInfo in _ruleInfos)
-      {
-        var dataCountForRule = getDataCount(ruleInfo.Rule.MainDataType);
-
-        var percentage = Math.Min(1f, (float) dataCountForRule / ruleInfo.HighDataCount);
-        var executionCount = (int) (MathUtility.Lerp(ruleInfo.LowDataExecutionProbability, ruleInfo.HighDataExecutionProbability, percentage)
-                             * dataCountForRule);
-
-        yield return new RuleAppliance(ruleInfo.Rule, executionCount);
-      }
+      return _rules;
     }
 
     internal IEnumerable<IGlobalRule> GetGlobalRules()

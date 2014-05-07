@@ -6,6 +6,7 @@ using Rubicon.RegisterNova.Infrastructure.JetBrainsAnnotations;
 using Rubicon.RegisterNova.Infrastructure.TestData;
 using Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode;
+using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.DataGeneration;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.String;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueChain;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
@@ -130,7 +131,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       {
         var simpleDomain = new DomainConfiguration
                            {
-                               Rules = new RuleSet(new RuleInfo<string>(new StringMarryRule(), 1f, 0.05f, 10))
+                               Rules = new RuleSet(new StringMarryRule())
                            };
 
         var testDataGenerator = TestDataGeneratorFactory.CreateDataGenerator(simpleDomain);
@@ -207,10 +208,10 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
   {
     Because of = () =>
     {
-      var lifeRuleSet = new RuleSet(new RuleInfo<Person>(new ProcreationRule(), 1f, 0.05f, 1000000)); //TODO: RuleInfo is not so good - implement this directly on the rule
-      lifeRuleSet.AddGlobalRule(new AgingRule());
+      var lifeRuleSet = new RuleSet(new ProcreationRule(), new AgingRule());
+      lifeRuleSet.AddGlobalRule(new WorldRule());
 
-      var complexDomain = new DomainConfiguration //TODO: Configuration
+      var complexDomain = new DomainConfiguration
                           {
                             Rules = lifeRuleSet,
                             BuildValueProvider = builder=>
@@ -219,7 +220,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                               }
                           };
 
-      var testDataGenerator = TestDataGeneratorFactory.CreateDataGenerator(complexDomain); //TODO: meaningful name... facade to factory .. remove factory
+      var testDataGenerator = TestDataGeneratorFactory.CreateDataGenerator(complexDomain);
 
       var initialDataProvider = testDataGenerator.InitialDataProvider;
       initialDataProvider.Add(new Person("Adam", Gender.Male));
@@ -236,6 +237,14 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
     It does_nothing = () => true.ShouldBeTrue();
   }
+
+  internal class WorldRule : GlobalRule
+  {
+    protected override void Execute ()
+    {
+      
+    }
+  }
 }
 
 internal class GenderGenerator : ValueProvider<Gender>
@@ -248,40 +257,45 @@ internal class GenderGenerator : ValueProvider<Gender>
 
 //TODO: Rule for every generation... not per type
 //TODO: World class that contains global generation data - like World.IsFertile..
-internal class AgingRule : GlobalRule<Person>
+internal class AgingRule : UnrestrictedRule<Person>
 {
-  protected override void Execute (Handle<Person> person)
+  protected override IEnumerable<Person> Execute (RuleValue<Person> person)
   {
     person.UserData.IsPregnant = false;
     person.Value.Age++;
+
+    yield break;
   }
 }
 
-internal class ProcreationRule : Rule<Person>
+internal class ProcreationRule : Rule
 {
-  //TODO: Rule Appliance Probability based on World.Fertility...
+  public override float GetExecutionProbability ()
+  {
+     //TODO: Rule Appliance Probability based on World.Fertility...
+    return LerpUtility.LerpFromLowToHigh(100000, World.Count<Person>(), 1f, 0.1f);
+  }
 
-  public override IEnumerable<IRuleParameter> GetRuleInputs ()
+  protected override IEnumerable<IRuleParameter> GetRuleInputs ()
   {
     yield return new RuleParameter<Person>(p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male);
     yield return
         new RuleParameter<Person>(p => p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant));
   }
 
-  //TODO: dataProvider -rename or better: yield return..  and use in next generation (not for next rules..)
-  public override void Execute (List<IRuleInput> inputData, GeneratorDataProvider dataProvider, CompoundValueProvider valueProvider)
+  protected override IEnumerable<IRuleValue>  Execute (CompoundRuleInput inputData)
   {
-    var male = inputData[0].GetValue<Person>();//TODO: replace list with custom type?
-    var female = inputData[1].GetValue<Person>();
+    var male = inputData.GetValue<Person>(0);
+    var female = inputData.GetValue<Person>(1);
 
-    var childCount = valueProvider.Random.Next(1, 1);
+    var childCount = ValueProvider.Random.Next(1, 1);
     for(var i=0;i<childCount;i++)
     {
-      var child = valueProvider.Create<Person>(2);
+      var child = ValueProvider.Create<Person>();
       child.Father = male.Value;
       child.Mother = female.Value;
 
-      dataProvider.Add(child);
+      yield return new RuleValue<Person>(child);
     }
 
     female.UserData.IsPregnant = true;
@@ -326,25 +340,32 @@ public class StringGenerator : ValueProvider<string>
   }
 }
 
-public class StringMarryRule:Rule<string>
+public class StringMarryRule:Rule
   {
-    public override IEnumerable<IRuleParameter> GetRuleInputs ()
+  public override float GetExecutionProbability ()
+  {
+    return 0.5f;
+  }
+
+  protected override IEnumerable<IRuleParameter> GetRuleInputs ()
     {
-      Func<Handle<string>, bool> predicate = p => p.Value.Length > 3 && (p.UserData.IsMarried == null || !p.UserData.IsMarried);
+      Func<RuleValue<string>, bool> predicate = p => p.Value.Length > 3 && (p.UserData.IsMarried == null || !p.UserData.IsMarried);
       yield return new RuleParameter<string>(predicate);
       yield return new RuleParameter<string>(predicate); //TODO: how to define excludes on rule filter basis?
     }
 
-    public override void Execute(List<IRuleInput> inputData, GeneratorDataProvider dataProvider, CompoundValueProvider valueProvider) //e.g. one instance - stores all generation data..
+    protected override IEnumerable<IRuleValue> Execute(CompoundRuleInput inputData) //e.g. one instance - stores all generation data..
     {
-      var sexyString1 = inputData[0].GetValue<string>();
-      var sexyString2 = inputData[1].GetValue<string>();
+      var sexyString1 = inputData.GetValue<string>(0);
+      var sexyString2 = inputData.GetValue<string>(1);
 
       sexyString1.Value += "[Married to:" + sexyString2.Value + "]";
       sexyString2.Value += "[Married to:" + sexyString1.Value + "]";
 
       sexyString1.UserData.IsMarried = true;
       sexyString2.UserData.IsMarried = true;
+
+      yield break;
     }
   }
 

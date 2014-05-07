@@ -13,7 +13,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration
 
     public void Add<T>(T value)
     {
-      _generatorDataProvider.Add(value);
+      _generatorDataProvider.Add(new RuleValue<T>(value));
     }
 
     public GeneratorResult Build()
