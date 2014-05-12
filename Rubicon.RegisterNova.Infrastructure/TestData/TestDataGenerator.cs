@@ -48,22 +48,25 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
       foreach (var rule in _ruleSet.GetRules())
       {
         var inputParameters = rule.GetRuleInputs(world);
-        var inputDataList = inputParameters.Select(p => dataProvider.GetAll(p).ToArray()).ToList();
+        var inputDataList = inputParameters.Select(p => dataProvider.GetAll(p).ToList()).ToList();
 
-        var executionCount = (int) (rule.GetExecutionProbability() * inputDataList.Count); //TODO count to low
+        if(inputDataList.Count<=0)
+          continue;
+
+        var executionCount = (int) (rule.GetExecutionProbability() * inputDataList[0].Count);
 
         var inputList = new List<CompoundRuleInput>();
         foreach (var t in inputDataList)
         {
           var parameterValues = t;
-          if (parameterValues.Length > executionCount)
+          if (parameterValues.Count > executionCount)
           {
-            parameterValues = parameterValues.Take(executionCount).ToArray();
+            parameterValues = parameterValues.Take(executionCount).ToList();
           }
 
           parameterValues.Randomize(ValueProvider.Random);
 
-          for (var i = 0; i < parameterValues.Length; i++)
+          for (var i = 0; i < parameterValues.Count; i++)
           {
             var value = parameterValues[i];
 
