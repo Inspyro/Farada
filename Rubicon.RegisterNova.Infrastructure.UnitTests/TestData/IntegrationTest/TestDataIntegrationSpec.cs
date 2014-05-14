@@ -4,16 +4,16 @@ using System.Linq;
 using Machine.Specifications;
 using Rubicon.RegisterNova.Infrastructure.JetBrainsAnnotations;
 using Rubicon.RegisterNova.Infrastructure.TestData;
-using Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration;
+using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode;
-using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.DataGeneration;
-using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.String;
-using Rubicon.RegisterNova.Infrastructure.TestData.ValueChain;
-using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
+using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.RuleBasedDataGeneration;
+using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders;
+using Rubicon.RegisterNova.Infrastructure.TestData.RuleBasedDataGenerator;
+using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 
 namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 {
-  [Subject(typeof(TestDataGenerator))]
+  [Subject(typeof(RuleBasedDataGenerator))]
   internal class TestDataIntegrationSpec
   {
     class when_using_TypeValueProvider
@@ -46,7 +46,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
         //TODO: a.b is of type b1, b2 or b3 - how to specify this?
         //TODO: What happens when Dog:Animal and both have LastName property (same) - want: Get<Dog>()
         //TODO: Feature-Request - valueprovider create call inside other valueprovider...
-        ValueProvider = TestDataGeneratorFactory.CreateValueProvider(domain);
+        ValueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(domain);
       };
 
       It sets_correctString =
@@ -82,7 +82,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
       It sets_correctInt = () => ValueProvider.Create<int>().ShouldEqual(0);
 
-      static CompoundValueProvider ValueProvider;
+      static ICompoundValueProvider ValueProvider;
     }
 
     class when_using_TypeValueProvider_Performance
@@ -90,13 +90,13 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       Because of = () =>
       {
         var basicDomain = new DomainConfiguration();
-        var valueProvider = TestDataGeneratorFactory.CreateValueProvider(basicDomain); //TODO: Name it generator?
+        var valueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(basicDomain);
 
         const int count = 1000000; //1 million
 
         var start = DateTime.Now;
 
-        var result = valueProvider.CreateMany<Universe>(count); //TODO: valueProvider.Create<Universe>(count);
+        var result = valueProvider.CreateMany<Universe>(count);
         
         Console.WriteLine("Took {0} s to generate {1} universes", (DateTime.Now - start).TotalSeconds, result.Count());
       };
@@ -119,7 +119,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                          }
                      };
 
-        ValueProvider = TestDataGeneratorFactory.CreateValueProvider(domain, false);
+        ValueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(domain, false);
         
         for (int i = 0; i < 100; i++)
         {
@@ -130,7 +130,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       It sets_correctString =
           () => ValueProvider.Create<string>().Length.ShouldBeGreaterThan(0);
 
-      static CompoundValueProvider ValueProvider;
+      static ICompoundValueProvider ValueProvider;
     }
     class when_using_TestDataGenerator_simple
     {
@@ -141,7 +141,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                                Rules = new RuleSet(new StringMarryRule())
                            };
 
-        var testDataGenerator = TestDataGeneratorFactory.CreateDataGenerator(simpleDomain);
+        var testDataGenerator = TestDataGeneratorFactory.CreateRuleBasedDataGenerator(simpleDomain);
 
         var initialDataProvider = testDataGenerator.InitialDataProvider;
         for (var i = 0; i < 1000; i++)
@@ -171,7 +171,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       _additionalValue = additionalValue;
     }
 
-    protected override string GetValue ()
+    protected override string CreateValue ()
     {
       return Context.GetPreviousValue() +"_"+ _additionalValue;
     }
@@ -227,7 +227,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                               }
                           };
 
-      var testDataGenerator = TestDataGeneratorFactory.CreateDataGenerator(complexDomain);
+      var testDataGenerator = TestDataGeneratorFactory.CreateRuleBasedDataGenerator(complexDomain);
 
       var initialDataProvider = testDataGenerator.InitialDataProvider;
       initialDataProvider.Add(new Person("Adam", Gender.Male));
@@ -258,7 +258,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
 internal class GenderGenerator : ValueProvider<Gender>
 {
-  protected override Gender GetValue ()
+  protected override Gender CreateValue ()
   {
     return (Gender) Context.Random.Next(0, 2);
   }
@@ -306,7 +306,7 @@ internal class ProcreationRule : Rule
     var male = inputData.GetValue<Person>(0);
     var female = inputData.GetValue<Person>(1);
 
-    var childCount = ValueProvider.Random.Next(1, 1);
+    var childCount = 1; // TODO: Get Random object from somewhere ValueProvider.Random.Next(1, 1);
     for(var i=0;i<childCount;i++)
     {
       var child = ValueProvider.Create<Person>();
@@ -352,7 +352,7 @@ internal enum Gender
 
 public class StringGenerator : ValueProvider<string>
 {
-  protected override string GetValue ()
+  protected override string CreateValue ()
   {
     return "default string";
   }
@@ -410,7 +410,7 @@ public class StringMarryRule:Rule
 
   class CatGenerator:ValueProvider<Cat>
   {
-    protected override Cat GetValue ()
+    protected override Cat CreateValue ()
     {
       return new Cat { Name = "Nice cat" };
     }
@@ -418,7 +418,7 @@ public class StringMarryRule:Rule
 
   class DogFriendInjector:ValueProvider<Dog>
   {
-    protected override Dog GetValue ()
+    protected override Dog CreateValue ()
     {
       return new DogFriend();
     }
@@ -433,7 +433,7 @@ public class StringMarryRule:Rule
       _additionalContent = additionalContent;
     }
 
-    protected override string GetValue ()
+    protected override string CreateValue ()
     {
       return "Dog_" + _additionalContent;
     }

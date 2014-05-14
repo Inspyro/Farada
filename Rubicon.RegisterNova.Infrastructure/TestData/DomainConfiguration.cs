@@ -1,9 +1,12 @@
 ﻿using System;
-using Rubicon.RegisterNova.Infrastructure.TestData.DataGeneration;
+using Rubicon.RegisterNova.Infrastructure.TestData.RuleBasedDataGenerator;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData
 {
-  public class DomainConfiguration:BaseDomainConfiguration
+  /// <summary>
+  /// TODO
+  /// </summary>
+  public class DomainConfiguration : BaseDomainConfiguration
   {
     public RuleSet Rules { get; set; }
   }

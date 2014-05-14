@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Rubicon.RegisterNova.Infrastructure.TestData;
-using Rubicon.RegisterNova.Infrastructure.TestData.ValueChain;
+using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
 
 namespace Rubicon.RegisterNova.Infrastructure.Utilities
 {

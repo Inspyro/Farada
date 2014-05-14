@@ -1,14 +1,17 @@
 ﻿using System;
-using Rubicon.RegisterNova.Infrastructure.TestData.ValueChain;
+using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData
 {
+  /// <summary>
+  /// TODO
+  /// </summary>
   public class BaseDomainConfiguration
   {
     public Random Random { get; set; }
-    public Action<CompoundValueProviderBuilder> BuildValueProvider { get; set; }
+    public Action<ICompoundValueProviderBuilder> BuildValueProvider { get; set; }
 
-    public BaseDomainConfiguration()
+    public BaseDomainConfiguration ()
     {
       Random = new Random();
     }
