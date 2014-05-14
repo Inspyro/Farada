@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using Rubicon.RegisterNova.Infrastructure.TestData;
 using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
+using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
 
 namespace Rubicon.RegisterNova.Infrastructure.Utilities
 {
@@ -40,7 +42,7 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
           yield return chainKey;
         }
 
-        yield return new KeyPart(memberExpression.Type, memberExpression.Member.Name);
+        yield return new KeyPart(memberExpression.Type, FastReflection.GetPropertyInfo(((PropertyInfo) memberExpression.Member)));
       }
     }
 

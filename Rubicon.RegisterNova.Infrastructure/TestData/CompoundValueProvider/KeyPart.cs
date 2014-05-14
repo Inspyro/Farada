@@ -1,4 +1,6 @@
 ﻿using System;
+using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
+using Rubicon.RegisterNova.Infrastructure.Utilities;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
 {
@@ -8,18 +10,23 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
   internal class KeyPart
   {
     internal Type PropertyType { get; private set; }
-    internal string PropertyName { get; private set; }
+    internal IFastPropertyInfo Property { get; private set; }
+    private readonly string _propertyName;
 
-    internal KeyPart (Type propertyType, string propertyName = null)
+    internal KeyPart (Type propertyType, IFastPropertyInfo property=null)
     {
+      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
+
       PropertyType = propertyType;
-      PropertyName = propertyName;
+      Property = property;
+
+      _propertyName = Property != null ? Property.Name : null;
     }
 
     // REVIEW FS: Should we keep KeyComparer as well as this Equals()/GetHashCode() implementation?
     private bool Equals (KeyPart other)
     {
-      return string.Equals(PropertyName, other.PropertyName) && PropertyType == other.PropertyType;
+      return string.Equals(_propertyName, other._propertyName) && PropertyType == other.PropertyType;
     }
 
     public override bool Equals (object obj)
@@ -37,7 +44,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     {
       unchecked
       {
-        return ((PropertyName != null ? PropertyName.GetHashCode() : 0) * 397) ^ (PropertyType != null ? PropertyType.GetHashCode() : 0);
+        return ((_propertyName != null ? _propertyName.GetHashCode() : 0) * 397) ^ (PropertyType != null ? PropertyType.GetHashCode() : 0);
       }
     }
   }

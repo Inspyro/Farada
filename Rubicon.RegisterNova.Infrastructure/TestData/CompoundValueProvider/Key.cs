@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
 using Rubicon.RegisterNova.Infrastructure.Utilities;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
@@ -13,11 +14,12 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     private readonly IList<KeyPart> _keyParts;
     private readonly Key _cachedPreviousKey;
 
-    public Type Type { get; private set; }
+    internal KeyPart Top { get; private set; }
+
     public int RecursionDepth { get; private set; }
 
-    internal Key (Type propertyType, string propertyName = null)
-        : this(new List<KeyPart> { new KeyPart(propertyType, propertyName) })
+    internal Key (Type propertyType, FastPropertyInfo propertyInfo = null)
+        : this(new List<KeyPart> { new KeyPart(propertyType, propertyInfo) })
     {
     }
 
@@ -26,8 +28,8 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       _keyParts = keyParts;
       _cachedPreviousKey = CreatePreviousKey();
 
-      Type = _keyParts.Last().PropertyType;
-      RecursionDepth = _keyParts.Count(part => part.PropertyType == Type);
+      Top = _keyParts.Last();
+      RecursionDepth = _keyParts.Count(part => part.PropertyType == Top.PropertyType);
     }
 
     private Key CreatePreviousKey ()
@@ -46,9 +48,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       return _cachedPreviousKey;
     }
 
-    public Key GetNextKey (Type propertyType, string propertyName)
+    public Key GetNextKey (Type propertyType, IFastPropertyInfo property)
     {
-      var keyPartsOfNextKey = new List<KeyPart>(_keyParts) { new KeyPart(propertyType, propertyName) };
+      var keyPartsOfNextKey = new List<KeyPart>(_keyParts) { new KeyPart(propertyType, property) };
       return new Key(keyPartsOfNextKey);
     }
 

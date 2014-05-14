@@ -1,4 +1,6 @@
 ﻿using System;
+using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
+using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
 {
@@ -9,10 +11,14 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
   {
     public Random Random { get; private set; }
     public Func<object> GetPreviousValue { get; private set; }
+    public IFastPropertyInfo PropertyInfo { get; private set; }
+    public ICompoundValueProvider ValueProvider { get; private set; }
 
-    internal ValueProviderContext(Random random, Func<object> getPreviousValueFunc)
+    internal ValueProviderContext(ICompoundValueProvider compoundValueProvider, Random random, IFastPropertyInfo propertyInfo, Func<object> getPreviousValueFunc)
     {
+      ValueProvider = compoundValueProvider;
       Random = random;
+      PropertyInfo = propertyInfo;
       GetPreviousValue = getPreviousValueFunc;
     }
   }

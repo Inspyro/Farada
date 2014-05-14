@@ -6,6 +6,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
 {
   public class FastPropertyInfo:IFastPropertyInfo
   {
+    private readonly PropertyInfo _propertyInfo;
     private readonly Func<object, object> _getFunction;
     private readonly Action<object, object> _setAction;
 
@@ -14,6 +15,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
 
     public FastPropertyInfo (PropertyInfo propertyInfo)
     {
+      _propertyInfo = propertyInfo;
       var targetType = propertyInfo.DeclaringType;
       if(targetType==null)
       {
@@ -42,6 +44,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
     {
       var methodInfo = propertyInfo.GetSetMethod();
 
+      if (methodInfo == null)
+        return (o, o1) => { };
+
       var exTarget = Expression.Parameter(typeof (object), "t");
       var exValue = Expression.Parameter(typeof (object), "p");
 
@@ -63,10 +68,22 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
     {
       _setAction(instance, value);
     }
+
+    public T GetCustomAttribute<T> () where T : Attribute
+    {
+      return _propertyInfo.GetCustomAttribute<T>(); //TODO custom attribute cache?
+    }
+
+    public bool IsDefined (Type type)
+    {
+      return _propertyInfo.IsDefined(type);
+    }
   }
 
   public interface IFastPropertyInfo
   {
+    T GetCustomAttribute<T> () where T : Attribute;
+    bool IsDefined (Type type);
     object GetValue (object instance);
     void SetValue (object instance, object value);
     string Name { get; }

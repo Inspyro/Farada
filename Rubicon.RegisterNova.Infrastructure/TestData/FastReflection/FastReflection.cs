@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
 {
@@ -14,11 +15,16 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
         return s_typeInfos[type];
       }
 
-      var fastProperties = type.GetProperties().Select(propertyInfo=>(IFastPropertyInfo) new FastPropertyInfo(propertyInfo)).ToList();
+      var fastProperties = type.GetProperties().Select(GetPropertyInfo).ToList();
       var fastTypeInfo = new FastTypeInfo(fastProperties);
       s_typeInfos.Add(type, fastTypeInfo);
 
       return fastTypeInfo;
+    }
+
+    public static IFastPropertyInfo GetPropertyInfo (PropertyInfo propertyInfo)
+    {
+      return new FastPropertyInfo(propertyInfo);
     }
   }
 }

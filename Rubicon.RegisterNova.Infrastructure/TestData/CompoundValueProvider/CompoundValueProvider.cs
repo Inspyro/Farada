@@ -50,18 +50,18 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       {
         instances = CreateInstances(currentKey, numberOfObjects);
       }
-      else if (currentKey.Type.CanBeInstantiated())
+      else if (currentKey.Top.PropertyType.CanBeInstantiated())
       {
-        instances = EnumerableExtensions.Repeat(() => Activator.CreateInstance(currentKey.Type), numberOfObjects).ToList();
+        instances = EnumerableExtensions.Repeat(() => Activator.CreateInstance(currentKey.Top.PropertyType), numberOfObjects).ToList();
       }
 
-      if (instances == null || !currentKey.Type.IsCompoundType() || ReachedMaxRecursionDepth(currentKey, maxRecursionDepth))
+      if (instances == null || !currentKey.Top.PropertyType.IsCompoundType() || ReachedMaxRecursionDepth(currentKey, maxRecursionDepth))
         return instances;
       
-      var properties = FastReflection.FastReflection.GetTypeInfo(currentKey.Type).Properties;
+      var properties = FastReflection.FastReflection.GetTypeInfo(currentKey.Top.PropertyType).Properties;
       foreach (var property in properties)
       {
-        var nextKey = currentKey.GetNextKey(property.PropertyType, property.Name);
+        var nextKey = currentKey.GetNextKey(property.PropertyType, property);
 
         var propertyValues = CreateMany(nextKey, numberOfObjects, maxRecursionDepth);
         if (propertyValues == null)
@@ -90,7 +90,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     private ValueProviderContext CreateValueProviderContext (Key key)
     {
       var previousKey = key.GetPreviousKey();
-      return new ValueProviderContext(Random, () => CreateInstances(previousKey, 1).Single());
+      return new ValueProviderContext(this, Random, key.Top.Property, () => CreateInstances(previousKey, 1).Single());
     }
 
     private static bool ReachedMaxRecursionDepth (Key currentKey, int maxDepth)
