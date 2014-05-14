@@ -92,16 +92,13 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
         var basicDomain = new DomainConfiguration();
         var valueProvider = TestDataGeneratorFactory.CreateValueProvider(basicDomain); //TODO: Name it generator?
 
-        const int count = 100000; //1 million
+        const int count = 1000000; //1 million
 
         var start = DateTime.Now;
 
-        for (var i = 0; i < count; i++)
-        {
-          valueProvider.Create<Universe>(); //TODO: valueProvider.Create<Universe>(count);
-        }
-
-        Console.WriteLine("Took {0} s to generate {1} universes", (DateTime.Now - start).TotalSeconds, count);
+        var result = valueProvider.CreateMany<Universe>(count); //TODO: valueProvider.Create<Universe>(count);
+        
+        Console.WriteLine("Took {0} s to generate {1} universes", (DateTime.Now - start).TotalSeconds, result.Count());
       };
 
       It doesNothing = () => true.ShouldBeTrue();

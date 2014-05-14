@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using AutoMapper.Impl;
+using System.Linq;
 using Rubicon.RegisterNova.Infrastructure.TestData.Reflection;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration;
 using Rubicon.RegisterNova.Infrastructure.Utilities;
@@ -23,29 +22,38 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 
     public TValue Create<TValue> (int maxDepth = 2)
     {
+      return CreateMany<TValue>(1, maxDepth).Single();
+    }
+
+    public IEnumerable<TValue> CreateMany<TValue> (int numberOfObjects, int maxDepth = 2)
+    {
       _typeFillCountDictionary = new Dictionary<Type, int>();
 
       var key = new Key(new KeyPart(typeof (TValue)));
-      var value = Create(key, maxDepth);
-      return value == null ? default(TValue) : (TValue) value;
+      var values = Create(numberOfObjects, key, maxDepth);
+      if (values != null)
+        return values.Cast<TValue>();
+
+      return EnumerableExtensions.Repeat(() => default(TValue), numberOfObjects);
     }
 
-    private object Create (Key currentKey, int maxDepth)
+    private IList<object> Create (int numberOfObjects, Key currentKey, int maxDepth)
     {
-      object instance = null;
+      IList<object> instances = null;
 
       var valueProvider = _dictionary.GetValueProviderFor(currentKey);
       if(valueProvider!=null)
       {
-        instance = GetValue(currentKey);
+        instances = GetValue(numberOfObjects, currentKey);
       }
       else if (currentKey.GetTopType().CanBeInstantiated())
       {
-        instance = Activator.CreateInstance(currentKey.GetTopType());
+        
+        instances = EnumerableExtensions.Repeat(()=>Activator.CreateInstance(currentKey.GetTopType()), numberOfObjects).ToList();
       }
 
-      if (instance == null || !MayFill(currentKey.GetTopType(), maxDepth))
-        return instance;
+      if (instances == null || !MayFill(currentKey.GetTopType(), maxDepth))
+        return instances;
 
       RaiseFillCount(currentKey.GetTopType());
 
@@ -57,16 +65,19 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
         {
           var nextKey = currentKey.GetNextKey(property.PropertyType, property.Name);
 
-          var propertyValue = Create(nextKey, maxDepth);
-          if(propertyValue != null)
-            property.SetValue(instance, propertyValue);
+          var propertyValues = Create(numberOfObjects, nextKey, maxDepth);
+          if (propertyValues != null)
+          {
+            for(int i = 0; i < numberOfObjects; ++i)
+              property.SetValue(instances[i], propertyValues[i]);
+          }
         }
       }
 
-      return instance;
+      return instances;
     }
 
-    private object GetValue (Key key)
+    private IList<object> GetValue (int numberOfObjects, Key key)
     {
       if (key == null)
         return null;
@@ -76,13 +87,13 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
         return null;
 
       var previousContext = CreateValueProviderContext(key);
-      return previousValueProvider.GetObjectValue(previousContext);
+      return EnumerableExtensions.Repeat(() => previousValueProvider.GetObjectValue(previousContext), numberOfObjects).ToList();
     }
 
     private ValueProviderContext CreateValueProviderContext (Key key)
     {
       var previousKey = key.GetPreviousKey();
-      return new ValueProviderContext { Random = Random, GetPreviousValue = () => GetValue(previousKey) };
+      return new ValueProviderContext { Random = Random, GetPreviousValue = () => GetValue(1, previousKey).Single() };
     }
 
     private void RaiseFillCount (Type currentType)
