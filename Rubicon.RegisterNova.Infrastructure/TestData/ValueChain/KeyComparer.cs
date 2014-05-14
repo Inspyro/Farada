@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 {
-  internal class ChainKeyComparer : IEqualityComparer<ChainKey>
+  internal class KeyComparer : IEqualityComparer<Key>
   {
-    public bool Equals (ChainKey x, ChainKey y)
+    public bool Equals (Key x, Key y)
     {
       return x.Equals(y);
     }
 
-    public int GetHashCode (ChainKey obj)
+    public int GetHashCode (Key obj)
     {
       return obj.GetHashCode();
     }

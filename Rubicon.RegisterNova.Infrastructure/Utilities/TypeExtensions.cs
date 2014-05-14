@@ -15,6 +15,11 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
       return typeof(T).IsAssignableFrom(type);
     }
 
+    public static bool IsCompoundType (this Type type)
+    {
+      return !type.IsValueType && type.CanBeInstantiated();
+    }
+
     public static bool CanBeInstantiated(this Type type)
     {
       return type.GetConstructor(Type.EmptyTypes) != null;

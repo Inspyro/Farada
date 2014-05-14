@@ -2,7 +2,7 @@
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 {
-  internal class ChainKey
+  public class ValueProviderTreeNodeKey
   {
     public Type Type { get; private set; }
     public string Name { get; private set; }
@@ -15,16 +15,16 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
         return true;
       if (obj.GetType() != GetType())
         return false;
-      return Equals((ChainKey) obj);
+      return Equals((ValueProviderTreeNodeKey) obj);
     }
 
-    public ChainKey(Type type, string name=null)
+    public ValueProviderTreeNodeKey(Type type, string name=null)
     {
       Type = type;
       Name = name;
     }
 
-    public bool Equals (ChainKey other)
+    public bool Equals (ValueProviderTreeNodeKey other)
     {
       return Type == other.Type && string.Equals(Name, other.Name);
     }

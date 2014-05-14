@@ -3,11 +3,11 @@ using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.String;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
 {
-  public class ChainValueProviderBuilderFactory
+  public class CompoundValueProviderBuilderFactory
   {
     private readonly Random _random;
 
-    internal ChainValueProviderBuilderFactory(Random random)
+    internal CompoundValueProviderBuilderFactory(Random random)
     {
       _random = random;
     }
@@ -16,6 +16,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueChain
     {
       var defaultProvider = GetEmpty();
       defaultProvider.SetProvider(new RandomStringGenerator());
+      //TODO: Add defaults, int, datetime, ienumerable?
 
       return defaultProvider;
     }

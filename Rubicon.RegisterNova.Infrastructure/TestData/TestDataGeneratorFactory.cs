@@ -25,13 +25,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData
     /// <returns>the final compound value provider that can be used for data generation</returns>
     public static CompoundValueProvider CreateValueProvider(BaseDomainConfiguration baseDomainConfiguration, bool useDefaults=true)
     {
-      var valueProviderBuilderFactory = new ChainValueProviderBuilderFactory(baseDomainConfiguration.Random);
+      var valueProviderBuilderFactory = new CompoundValueProviderBuilderFactory(baseDomainConfiguration.Random);
       var valueProviderBuilder = useDefaults ? valueProviderBuilderFactory.GetDefault() : valueProviderBuilderFactory.GetEmpty();
 
       if (baseDomainConfiguration.BuildValueProvider != null)
-      {
         baseDomainConfiguration.BuildValueProvider(valueProviderBuilder);
-      }
 
       return valueProviderBuilder.Build();
     }

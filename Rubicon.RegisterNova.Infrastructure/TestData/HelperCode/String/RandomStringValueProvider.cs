@@ -8,12 +8,12 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.String
   {
     protected override string GetValue ()
     {
-      return new string(Enumerable.Range(1, Random.Next(1,20)).Select(x => GenerateChar()).ToArray());
+      return new string(Enumerable.Range(1, Context.Random.Next(1,20)).Select(x => GenerateChar()).ToArray());
     }
 
     private char GenerateChar ()
     {
-      return (char) Random.Next((byte) 'A', (byte) 'z' + 1);
+      return (char) Context.Random.Next((byte) 'A', (byte) 'z' + 1);
     }
   }
 }

@@ -17,14 +17,14 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.String
 
     protected override string GetValue ()
     {
-      var syllabiles = Random.Next(_minWordSyllabiles, _maxWordSyllabiles);
+      var syllabiles = Context.Random.Next(_minWordSyllabiles, _maxWordSyllabiles);
       var word = new StringBuilder();
       for (var i = 0; i < syllabiles; i++)
       {
         word.Append(base.GetValue());
       }
 
-      if (Random.Next() > 0.5)
+      if (Context.Random.Next() > 0.5)
       {
         word[0] = Char.ToUpper(word[0]);
       }
@@ -49,12 +49,12 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.String
 
     protected override string GetValue ()
     {
-     var len = Random.Next(_min, _max);
+     var len = Context.Random.Next(_min, _max);
 
       var syllabile = new StringBuilder();
       for (var i = 0; i < len; i++)
       {
-        var c = i == 1 ? s_vowels[Random.Next(s_vowels.Length)] : s_consonants[Random.Next(s_consonants.Length)];
+        var c = i == 1 ? s_vowels[Context.Random.Next(s_vowels.Length)] : s_consonants[Context.Random.Next(s_consonants.Length)];
         syllabile.Append(c);
       }
 

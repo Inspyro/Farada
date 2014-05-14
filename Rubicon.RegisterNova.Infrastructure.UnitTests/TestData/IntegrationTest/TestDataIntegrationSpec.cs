@@ -30,36 +30,46 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
                            builder.SetProvider((Dog d) => d.FirstName, new DogNameGenerator("first name"));
                            builder.SetProvider((Dog d) => d.LastName, new DogNameGenerator("last name"));
-                           builder.SetProvider((Dog d)=> d.BestDogFriend.FirstName, new DogNameGenerator("dog friend first name"));
+                           builder.SetProvider((Dog d)=> d.BestDogFriend.FirstName, new DogNameGenerator("friend first name"));   
+                           //TODO: can we cast bestdogfriend to DogFriend? or better: chain expressions
+                           builder.SetProvider((Dog d) => d.BestDogFriend.LastName, new LastValueGenerator("friend last name"));
 
                            builder.SetProvider(new CatGenerator());
 
                            builder.SetProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
-                           builder.SetProvider((Cat c) => c.Name, new FuncProvider<string>((random) => "cat name..."));
+                           builder.SetProvider((Cat c) => c.Name, new FuncProvider<string>((random) => "cat name...")); //TODO: replace funcprovider with func? - extension method?
 
-                           builder.SetProvider((Dog d) => d.BestDogFriend.LastName, new LastValueGenerator("best dog friend name"));
+                        
                          }
                      };
 
+        //TODO: a.b is of type b1, b2 or b3 - how to specify this?
+        //TODO: What happens when Dog:Animal and both have LastName property (same) - want: Get<Dog>()
+        //TODO: Feature-Request - valueprovider create call inside other valueprovider...
         ValueProvider = TestDataGeneratorFactory.CreateValueProvider(domain);
       };
 
       It sets_correctString =
-          () => ValueProvider.Create<string>().ShouldEqual("Some random string...");
+          () => ValueProvider.Create<string>().ShouldEqual("default string");
 
       It sets_correctDogFirstName = () => 
-        ValueProvider.Create<Dog>().FirstName.ShouldEqual("Dog Name String Gen - first name");
+        ValueProvider.Create<Dog>().FirstName.ShouldEqual("Dog_first name");
 
-      It sets_correctDogLastName = () => ValueProvider.Create<Dog>().LastName.ShouldEqual("Dog Name String Gen - last name");
+      It sets_correctDogLastName = () => ValueProvider.Create<Dog>().LastName.ShouldEqual("Dog_last name");
+
+       It sets_correctDogDefault =
+          () => ValueProvider.Create<Dog>().Default.ShouldEqual("default string");
+
 
       It returns_correctDogType = () => ValueProvider.Create<Dog>().GetType().ShouldEqual(typeof (Dog));
 
       It sets_correctBestFriendDogFirstName =
-          () => ValueProvider.Create<Dog>().BestDogFriend.FirstName.ShouldEqual("Dog Name String Gen - dog friend first name");
+          () => 
+            ValueProvider.Create<Dog>().BestDogFriend.FirstName.ShouldEqual("Dog_friend first name");
 
        It sets_correctBestFriendDogLastName =
           () => 
-            ValueProvider.Create<Dog>().BestDogFriend.LastName.ShouldEqual("Dog Name String Gen - last namebest dog friend name");
+            ValueProvider.Create<Dog>().BestDogFriend.LastName.ShouldEqual("Dog_last name_friend last name");
 
       It returns_correctBestFriendDogType = () => ValueProvider.Create<Dog>().BestDogFriend.GetType().ShouldEqual(typeof (DogFriend));
 
@@ -80,15 +90,15 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       Because of = () =>
       {
         var basicDomain = new DomainConfiguration();
-        var valueProvider = TestDataGeneratorFactory.CreateValueProvider(basicDomain);
+        var valueProvider = TestDataGeneratorFactory.CreateValueProvider(basicDomain); //TODO: Name it generator?
 
-        const int count = 1000000; //1 million
+        const int count = 100000; //1 million
 
         var start = DateTime.Now;
 
         for (var i = 0; i < count; i++)
         {
-          valueProvider.Create<Universe>();
+          valueProvider.Create<Universe>(); //TODO: valueProvider.Create<Universe>(count);
         }
 
         Console.WriteLine("Took {0} s to generate {1} universes", (DateTime.Now - start).TotalSeconds, count);
@@ -159,14 +169,14 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
   {
     readonly string _additionalValue;
 
-    public LastValueGenerator (string additionalValue):base(true)
+    public LastValueGenerator (string additionalValue)
     {
       _additionalValue = additionalValue;
     }
 
     protected override string GetValue ()
     {
-      return CurrentValue + _additionalValue;
+      return Context.GetPreviousValue() +"_"+ _additionalValue;
     }
   }
 
@@ -231,6 +241,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
       var resultPersons = resultData.GetResult<Person>();
 
+      //TODO: specify how many persons we want..
       var count = resultPersons.Count();
       Console.WriteLine("ppl count: " + count);
     };
@@ -238,6 +249,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     It does_nothing = () => true.ShouldBeTrue();
   }
 
+  //TODO: Support special distribution like 50% married people, 20% marry twice...
   internal class WorldRule : GlobalRule
   {
     protected override void Execute ()
@@ -251,7 +263,7 @@ internal class GenderGenerator : ValueProvider<Gender>
 {
   protected override Gender GetValue ()
   {
-    return (Gender) Random.Next(0, 2);
+    return (Gender) Context.Random.Next(0, 2);
   }
 }
 
@@ -268,7 +280,7 @@ internal class AgingRule : UnrestrictedRule<Person>
   }
 }
 
-internal class ProcreationRule : Rule
+internal class ProcreationRule : Rule 
 {
   public override float GetExecutionProbability ()
   {
@@ -278,6 +290,8 @@ internal class ProcreationRule : Rule
 
   protected override IEnumerable<IRuleParameter> GetRuleInputs ()
   {
+    //TODO: array? config parameter? - compound could mix multiple parameters (see below)
+    //TODO: can we have relations between persons? a likes b,c,d hates f,g..?
     yield return new RuleParameter<Person>(
       p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male);
     yield return
@@ -286,6 +300,8 @@ internal class ProcreationRule : Rule
             {
               return p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant);
             });
+
+    //TODO: do we need optional rule paramters?
   }
 
   protected override IEnumerable<IRuleValue>  Execute (CompoundRuleInput inputData)
@@ -341,7 +357,7 @@ public class StringGenerator : ValueProvider<string>
 {
   protected override string GetValue ()
   {
-    return "Some random string...";
+    return "default string";
   }
 }
 
@@ -383,6 +399,8 @@ public class StringMarryRule:Rule
   {
     public string FirstName { get; [UsedImplicitly] set; }
     public string LastName { get; [UsedImplicitly] set; }
+    public string Default { get; [UsedImplicitly] set;}
+
     public int Age { get; [UsedImplicitly] set; }
 
     public Cat BestCatFriend { get; [UsedImplicitly] set; }
@@ -420,7 +438,7 @@ public class StringMarryRule:Rule
 
     protected override string GetValue ()
     {
-      return "Dog Name String Gen - " + _additionalContent;
+      return "Dog_" + _additionalContent;
     }
   }
 #endregion

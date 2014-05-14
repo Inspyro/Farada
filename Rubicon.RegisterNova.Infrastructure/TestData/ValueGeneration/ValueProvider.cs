@@ -4,26 +4,12 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueGeneration
 {
   public abstract class ValueProvider<TProperty>:IValueProvider
   {
-    private readonly bool _wantsPreviousValue;
+    protected ValueProviderContext Context { get; private set; }
 
-    protected TProperty CurrentValue { get; private set; }
-    protected Random Random { get; private set; }
-
-     protected ValueProvider (bool wantsPreviousValue=false)
-     {
-       _wantsPreviousValue = wantsPreviousValue;
-     }
-
-    public object GetObjectValue (Random random, object currentValue)
+    public object GetObjectValue (ValueProviderContext context)
     {
-      Random = random;
-      CurrentValue = (TProperty) currentValue;
+      Context = context;
       return GetValue();
-    }
-
-    public bool WantsPreviousValue()
-    {
-      return _wantsPreviousValue;
     }
 
     protected abstract TProperty GetValue ();
