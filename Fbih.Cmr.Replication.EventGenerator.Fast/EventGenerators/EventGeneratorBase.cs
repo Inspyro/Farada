@@ -358,7 +358,7 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
   {
     protected override DateTime CreateValue ()
     {
-      var dateTime = Context.ValueProvider.Create<DateTime>();
+      var dateTime = new DateTime(); //TODO: get previous value?/fill all values before...
 
       var dateTimeKindAttribute = Context.PropertyInfo.GetCustomAttribute<RequiredDateTimeKindAttribute>();
 

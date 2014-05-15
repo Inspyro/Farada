@@ -79,18 +79,18 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       if (key == null)
         return null;
 
-      var previousValueProvider = _valueProviderDictionary.GetValueProviderFor(key);
-      if (previousValueProvider == null)
+      var valueProvider = _valueProviderDictionary.GetValueProviderFor(key);
+      if (valueProvider == null)
         return null;
 
-      var previousContext = CreateValueProviderContext(key);
-      return EnumerableExtensions.Repeat(() => previousValueProvider.CreateObjectValue(previousContext), numberOfObjects).ToList();
+      var previousContext = CreateValueProviderContext(key, valueProvider);
+      return EnumerableExtensions.Repeat(() => valueProvider.CreateObjectValue(previousContext), numberOfObjects).ToList();
     }
 
-    private ValueProviderContext CreateValueProviderContext (Key key)
+    private IValueProviderContext CreateValueProviderContext (Key key, IValueProvider valueProvider)
     {
       var previousKey = key.GetPreviousKey();
-      return new ValueProviderContext(this, Random, key.Top.Property, () => CreateInstances(previousKey, 1).Single());
+      return valueProvider.CreateContext(this, Random, () => CreateInstances(previousKey, 1).Single(), key.Top.Property);
     }
 
     private static bool ReachedMaxRecursionDepth (Key currentKey, int maxDepth)

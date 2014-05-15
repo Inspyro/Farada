@@ -7,19 +7,27 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
   /// <summary>
   /// TODO
   /// </summary>
-  public class ValueProviderContext // TODO: Make generic.
+  public interface IValueProviderContext
+  {
+  }
+
+  public class ValueProviderContext<TProperty>:IValueProviderContext
   {
     public Random Random { get; private set; }
-    public Func<object> GetPreviousValue { get; private set; }
+    public Func<TProperty> GetPreviousValue { get; private set; }
     public IFastPropertyInfo PropertyInfo { get; private set; }
     public ICompoundValueProvider ValueProvider { get; private set; }
 
-    internal ValueProviderContext(ICompoundValueProvider compoundValueProvider, Random random, IFastPropertyInfo propertyInfo, Func<object> getPreviousValueFunc)
+    internal ValueProviderContext (
+        ICompoundValueProvider valueProvider,
+        Random random,
+        Func<TProperty> getPreviousValue,
+        IFastPropertyInfo fastPropertyInfo)
     {
-      ValueProvider = compoundValueProvider;
+      ValueProvider = valueProvider;
       Random = random;
-      PropertyInfo = propertyInfo;
-      GetPreviousValue = getPreviousValueFunc;
+      GetPreviousValue = getPreviousValue;
+      PropertyInfo = fastPropertyInfo;
     }
   }
 }

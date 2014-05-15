@@ -1,4 +1,6 @@
 ﻿using System;
+using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
+using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
 {
@@ -8,11 +10,16 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
   /// <typeparam name="TProperty">TODO</typeparam>
   public abstract class ValueProvider<TProperty> : IValueProvider
   {
-    protected ValueProviderContext Context { get; private set; }
+    protected ValueProviderContext<TProperty> Context { get; private set; }
 
-    public object CreateObjectValue (ValueProviderContext context)
+    internal void CreateContext()
     {
-      Context = context;
+
+    }
+
+    public object CreateObjectValue (IValueProviderContext context)
+    {
+      Context = (ValueProviderContext<TProperty>) context;
       return CreateValue();
     }
 
@@ -20,5 +27,14 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
     /// TODO
     /// </summary>
     protected abstract TProperty CreateValue ();
+
+    public IValueProviderContext CreateContext (
+        ICompoundValueProvider compoundValueProvider,
+        Random random,
+        Func<object> getPreviousValue,
+        IFastPropertyInfo fastPropertyInfo)
+    {
+      return new ValueProviderContext<TProperty>(compoundValueProvider, random, () => (TProperty) getPreviousValue(), fastPropertyInfo);
+    }
   }
 }

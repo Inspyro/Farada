@@ -5,9 +5,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
 {
   public class FuncProvider<T>:ValueProvider<T>
   {
-    private readonly Func<ValueProviderContext, T> _valueFunc;
+    private readonly Func<ValueProviderContext<T>, T> _valueFunc;
 
-    public FuncProvider (Func<ValueProviderContext, T> valueFunc)
+    public FuncProvider (Func<ValueProviderContext<T>, T> valueFunc)
     {
       _valueFunc = valueFunc;
     }
