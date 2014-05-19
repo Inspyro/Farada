@@ -99,7 +99,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
           Console.WriteLine(valueProvider.Create<char>());
           Console.WriteLine(valueProvider.Create<decimal>());
           Console.WriteLine(valueProvider.Create<double>());
-          Console.WriteLine(valueProvider.Create<SomeEnum>());
+          Console.WriteLine(valueProvider.Create<SomeEnum>()); //TODO: Support base types (SomeEnum:Enum:object)
           Console.WriteLine(valueProvider.Create<EmptyEnum>());
           Console.WriteLine(valueProvider.Create<float>());
           Console.WriteLine(valueProvider.Create<int>());

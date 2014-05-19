@@ -146,7 +146,6 @@
     <Compile Include="TestData\HelperCode\ValueProviders\RandomBoolGenerator.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\RandomByteGenerator.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\RandomCharGenerator.cs" />
-    <Compile Include="TestData\HelperCode\ValueProviders\RandomFutureDateTimeGenerator.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\RandomPastDateTimeGenerator.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\RandomSByteGenerator.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\RandomDecimalGenerator.cs" />
