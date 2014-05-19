@@ -7,7 +7,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
   {
     protected override char CreateValue (ValueProviderContext<char> context)
     {
-      return (char) context.Random.Next(char.MinValue, char.MaxValue);
+      return (char) context.Random.Next(60, 100);
     }
   }
 }

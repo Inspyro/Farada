@@ -8,7 +8,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
     protected override Enum CreateValue (ValueProviderContext<Enum> context)
     {
       var enumNames = Enum.GetNames(context.PropertyInfo.GetType());
-      var randomValue = enumNames[context.Random.Next(enumNames.Length)];
+      var randomValue = enumNames[context.Random.Next(enumNames.Length+1)];
 
       return (Enum) Enum.Parse(context.PropertyInfo.GetType(), randomValue);
     }

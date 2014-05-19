@@ -37,7 +37,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
 
 
       defaultProvider.SetProvider(new RandomWordGenerator()); //string
-      defaultProvider.SetProvider(new RandomDateTimeGenerator());
+      defaultProvider.SetProvider(new RandomPastDateTimeGenerator());
 
       return defaultProvider;
     }

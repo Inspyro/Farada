@@ -86,6 +86,48 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       static ICompoundValueProvider ValueProvider;
     }
 
+    class when_using_TypeValueProvider_DefaultTypes
+    {
+      Because of = () =>
+      {
+        var valueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(new BaseDomainConfiguration());
+
+        for (var i = 0; i < 100; i++)
+        {
+          Console.WriteLine(valueProvider.Create<bool>());
+          Console.WriteLine(valueProvider.Create<byte>());
+          Console.WriteLine(valueProvider.Create<char>());
+          Console.WriteLine(valueProvider.Create<decimal>());
+          Console.WriteLine(valueProvider.Create<double>());
+          Console.WriteLine(valueProvider.Create<SomeEnum>());
+          Console.WriteLine(valueProvider.Create<EmptyEnum>());
+          Console.WriteLine(valueProvider.Create<float>());
+          Console.WriteLine(valueProvider.Create<int>());
+          Console.WriteLine(valueProvider.Create<long>());
+          Console.WriteLine(valueProvider.Create<sbyte>());
+          Console.WriteLine(valueProvider.Create<short>());
+          Console.WriteLine(valueProvider.Create<uint>());
+          Console.WriteLine(valueProvider.Create<ulong>());
+          Console.WriteLine(valueProvider.Create<ushort>());
+
+          Console.WriteLine(valueProvider.Create<string>());
+          Console.WriteLine(valueProvider.Create<DateTime>());
+        }
+      };
+
+      enum EmptyEnum
+      {
+      }
+
+      enum SomeEnum
+      {
+        Value1,
+        Value2
+      }
+
+      It doesNothing = () => true.ShouldBeTrue();
+    }
+
     class when_using_TypeValueProvider_Performance
     {
       Because of = () =>
