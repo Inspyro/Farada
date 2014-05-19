@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
@@ -9,29 +10,51 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
   /// </summary>
   internal class ValueProviderDictionary
   {
-    private readonly Dictionary<Key, IValueProvider> _valueProviders;
+    private readonly Dictionary<Key, Stack<IValueProvider>> _valueProviders;
 
     public ValueProviderDictionary ()
     {
-      _valueProviders = new Dictionary<Key, IValueProvider>(new KeyComparer());
+      _valueProviders = new Dictionary<Key, Stack<IValueProvider>>(new KeyComparer());
     }
 
-    internal void SetValueProvider (Key key, IValueProvider valueProvider)
+    internal void AddValueProvider (Key key, IValueProvider valueProvider)
     {
-      _valueProviders[key] = valueProvider;
+      if(!_valueProviders.ContainsKey(key))
+      {
+        _valueProviders[key] = new Stack<IValueProvider>();
+      }
+
+      _valueProviders[key].Push(valueProvider);
     }
 
-    internal IValueProvider GetValueProviderFor (Key currentKey)
+    internal IValueProvider GetValueProviderFor (Key currentKey, IValueProvider valueProviderToExclude=null)
     {
       while (currentKey != null)
       {
-        if (_valueProviders.ContainsKey(currentKey))
-          return _valueProviders[currentKey];
+        var valueProvider = GetValueProvider(currentKey, valueProviderToExclude);
+        if (valueProvider != null)
+        {
+          return valueProvider;
+        }
+
+        valueProvider = GetValueProvider(currentKey.WithouthAttributes(), valueProviderToExclude);
+
+        if (valueProvider != null)
+        {
+          return valueProvider;
+        }
 
         currentKey = currentKey.GetPreviousKey();
       }
 
       return null;
+    }
+
+    private IValueProvider GetValueProvider (Key currentKey, IValueProvider valueProviderToExclude)
+    {
+      return _valueProviders.ContainsKey(currentKey)
+          ? _valueProviders[currentKey].FirstOrDefault(provider => provider != valueProviderToExclude)
+          : null;
     }
   }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -9,6 +11,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
     private readonly PropertyInfo _propertyInfo;
     private readonly Func<object, object> _getFunction;
     private readonly Action<object, object> _setAction;
+    private readonly List<Type> _attributes;
 
     public string Name { get; private set; }
     public Type PropertyType { get; private set; }
@@ -24,6 +27,8 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
 
       Name = propertyInfo.Name;
       PropertyType = propertyInfo.PropertyType;
+
+      _attributes = propertyInfo.GetCustomAttributes().Select(a => a.GetType()).ToList();
 
        _getFunction = CreateGetFunction(propertyInfo, targetType);
       _setAction=CreateSetAction(propertyInfo, targetType);
@@ -74,6 +79,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
       return _propertyInfo.GetCustomAttribute<T>(); //TODO custom attribute cache?
     }
 
+    public IEnumerable<Type> Attributes
+    {
+      get { return _attributes; }
+    }
+
     public bool IsDefined (Type type)
     {
       return _propertyInfo.IsDefined(type);
@@ -83,6 +93,8 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
   public interface IFastPropertyInfo
   {
     T GetCustomAttribute<T> () where T : Attribute;
+    IEnumerable<Type> Attributes { get; }
+
     bool IsDefined (Type type);
     object GetValue (object instance);
     void SetValue (object instance, object value);

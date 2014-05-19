@@ -18,8 +18,8 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
 
     public int RecursionDepth { get; private set; }
 
-    internal Key (Type propertyType, FastPropertyInfo propertyInfo = null)
-        : this(new List<KeyPart> { new KeyPart(propertyType, propertyInfo) })
+    internal Key (Type propertyType, FastPropertyInfo propertyInfo = null, params Type[] attributes)
+        : this(new List<KeyPart> { new KeyPart(propertyType, propertyInfo, attributes) })
     {
     }
 
@@ -38,7 +38,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       if (keyPartsOfPreviousKey.Count == 0)
         return null;
 
-      keyPartsOfPreviousKey[0] = new KeyPart(keyPartsOfPreviousKey[0].PropertyType);
+      keyPartsOfPreviousKey[0] = new KeyPart(keyPartsOfPreviousKey[0].PropertyType, null, keyPartsOfPreviousKey[0].Attributes);
 
       return new Key(keyPartsOfPreviousKey);
     }
@@ -48,10 +48,15 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       return _cachedPreviousKey;
     }
 
-    public Key GetNextKey (Type propertyType, IFastPropertyInfo property)
+    internal Key GetNextKey (IFastPropertyInfo property)
     {
-      var keyPartsOfNextKey = new List<KeyPart>(_keyParts) { new KeyPart(propertyType, property) };
+      var keyPartsOfNextKey = new List<KeyPart>(_keyParts) { new KeyPart(property.PropertyType, property, property.Attributes.ToArray()) };
       return new Key(keyPartsOfNextKey);
+    }
+
+    internal Key WithouthAttributes ()
+    {
+      return new Key(_keyParts.Select(keyPart => new KeyPart(keyPart.PropertyType, keyPart.Property)).ToList());
     }
 
     // REVIEW FS: Should we keep KeyComparer as well as this Equals()/GetHashCode() implementation?

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DocumentFormat.OpenXml.Office2013.PowerPoint.Roaming;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 using Rubicon.RegisterNova.Infrastructure.Utilities;
 
@@ -43,17 +44,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     // TODO: Maybe add some comments to algorithm?
     private IList<object> CreateMany (Key currentKey, int numberOfObjects, int maxRecursionDepth)
     {
-      IList<object> instances = null;
-
-      var valueProvider = _valueProviderDictionary.GetValueProviderFor(currentKey);
-      if (valueProvider != null)
-      {
-        instances = CreateInstances(currentKey, numberOfObjects);
-      }
-      else if (currentKey.Top.PropertyType.CanBeInstantiated())
-      {
-        instances = EnumerableExtensions.Repeat(() => Activator.CreateInstance(currentKey.Top.PropertyType), numberOfObjects).ToList();
-      }
+      var instances = CreateInstances(currentKey, numberOfObjects);
 
       if (instances == null || !currentKey.Top.PropertyType.IsCompoundType() || ReachedMaxRecursionDepth(currentKey, maxRecursionDepth))
         return instances;
@@ -61,7 +52,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       var properties = FastReflection.FastReflection.GetTypeInfo(currentKey.Top.PropertyType).Properties;
       foreach (var property in properties)
       {
-        var nextKey = currentKey.GetNextKey(property.PropertyType, property);
+        var nextKey = currentKey.GetNextKey(property);
 
         var propertyValues = CreateMany(nextKey, numberOfObjects, maxRecursionDepth);
         if (propertyValues == null)
@@ -74,14 +65,18 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       return instances;
     }
 
-    private IList<object> CreateInstances (Key key, int numberOfObjects)
+    private IList<object> CreateInstances (Key key, int numberOfObjects, IValueProvider valueProviderToExclude=null)
     {
       if (key == null)
         return null;
 
-      var valueProvider = _valueProviderDictionary.GetValueProviderFor(key);
+      var valueProvider = _valueProviderDictionary.GetValueProviderFor(key, valueProviderToExclude);
       if (valueProvider == null)
-        return null;
+      {
+        return key.Top.PropertyType.CanBeInstantiated()
+            ? EnumerableExtensions.Repeat(() => Activator.CreateInstance(key.Top.PropertyType), numberOfObjects).ToList()
+            : null;
+      }
 
       var previousContext = CreateValueProviderContext(key, valueProvider);
       return EnumerableExtensions.Repeat(() => valueProvider.CreateObjectValue(previousContext), numberOfObjects).ToList();
@@ -90,7 +85,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     private IValueProviderContext CreateValueProviderContext (Key key, IValueProvider valueProvider)
     {
       var previousKey = key.GetPreviousKey();
-      return valueProvider.CreateContext(this, Random, () => CreateInstances(previousKey, 1).Single(), key.Top.Property);
+      return valueProvider.CreateContext(this, Random, () => CreateInstances(previousKey, 1, valueProvider).Single(), key.Top.Property);
     }
 
     private static bool ReachedMaxRecursionDepth (Key currentKey, int maxDepth)

@@ -20,24 +20,24 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       var defaultProvider = GetEmpty();
 
       //Value types:
-      defaultProvider.SetProvider(new RandomBoolGenerator());
-      defaultProvider.SetProvider(new RandomByteGenerator());
-      defaultProvider.SetProvider(new RandomCharGenerator());
-      defaultProvider.SetProvider(new RandomDecimalGenerator());
-      defaultProvider.SetProvider(new RandomDoubleGenerator());
-      defaultProvider.SetProvider(new RandomEnumGenerator());
-      defaultProvider.SetProvider(new RandomFloatGenerator());
-      defaultProvider.SetProvider(new RandomIntGenerator());
-      defaultProvider.SetProvider(new RandomLongGenerator());
-      defaultProvider.SetProvider(new RandomSByteGenerator());
-      defaultProvider.SetProvider(new RandomShortGenerator());
-      defaultProvider.SetProvider(new RandomUIntGenerator());
-      defaultProvider.SetProvider(new RandomULongGenerator());
-      defaultProvider.SetProvider(new RandomUShortGenerator());
+      defaultProvider.AddProvider(new RandomBoolGenerator());
+      defaultProvider.AddProvider(new RandomByteGenerator());
+      defaultProvider.AddProvider(new RandomCharGenerator());
+      defaultProvider.AddProvider(new RandomDecimalGenerator());
+      defaultProvider.AddProvider(new RandomDoubleGenerator());
+      defaultProvider.AddProvider(new RandomEnumGenerator());
+      defaultProvider.AddProvider(new RandomFloatGenerator());
+      defaultProvider.AddProvider(new RandomIntGenerator());
+      defaultProvider.AddProvider(new RandomLongGenerator());
+      defaultProvider.AddProvider(new RandomSByteGenerator());
+      defaultProvider.AddProvider(new RandomShortGenerator());
+      defaultProvider.AddProvider(new RandomUIntGenerator());
+      defaultProvider.AddProvider(new RandomULongGenerator());
+      defaultProvider.AddProvider(new RandomUShortGenerator());
 
 
-      defaultProvider.SetProvider(new RandomWordGenerator()); //string
-      defaultProvider.SetProvider(new RandomPastDateTimeGenerator());
+      defaultProvider.AddProvider(new RandomWordGenerator()); //string
+      defaultProvider.AddProvider(new RandomPastDateTimeGenerator());
 
       return defaultProvider;
     }

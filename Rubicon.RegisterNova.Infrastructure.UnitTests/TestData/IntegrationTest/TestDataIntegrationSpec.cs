@@ -5,11 +5,11 @@ using Machine.Specifications;
 using Rubicon.RegisterNova.Infrastructure.JetBrainsAnnotations;
 using Rubicon.RegisterNova.Infrastructure.TestData;
 using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
-using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.RuleBasedDataGeneration;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders;
 using Rubicon.RegisterNova.Infrastructure.TestData.RuleBasedDataGenerator;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
+using Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest;
 
 namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 {
@@ -24,29 +24,27 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                      {
                          BuildValueProvider = builder =>
                          {
-                           //TODO: decorator for base value provider.. - get value from chain, so do next provider first...?
-                           //TODO: per type: 
-                           builder.SetProvider(new StringGenerator());
-                           builder.SetProvider(new FuncProvider<int>(context => 0));
+                           builder.AddProvider(new StringGenerator());
+                           builder.AddProvider(new FuncProvider<int>(context => 0));
 
-                           builder.SetProvider((Dog d) => d.FirstName, new DogNameGenerator("first name"));
-                           builder.SetProvider((Dog d) => d.LastName, new DogNameGenerator("last name"));
-                           builder.SetProvider((Dog d)=> d.BestDogFriend.FirstName, new DogNameGenerator("friend first name"));   
+                           builder.AddProvider((Dog d) => d.FirstName, new DogNameGenerator("first name"));
+                           builder.AddProvider((Dog d) => d.LastName, new DogNameGenerator("last name"));
+                           builder.AddProvider((Dog d)=> d.BestDogFriend.FirstName, new DogNameGenerator("friend first name"));   
                            //TODO: can we cast bestdogfriend to DogFriend? or better: chain expressions
-                           builder.SetProvider((Dog d) => d.BestDogFriend.LastName, new LastValueGenerator("friend last name"));
+                           builder.AddProvider((Dog d) => d.BestDogFriend.LastName, new LastValueGenerator("friend last name"));
 
-                           builder.SetProvider(new CatGenerator());
+                           builder.AddProvider(new CatGenerator());
 
-                           builder.SetProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
-                           builder.SetProvider((Cat c) => c.Name, new FuncProvider<string>((random) => "cat name...")); //TODO: replace funcprovider with func? - extension method?
+                           builder.AddProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
+                           builder.AddProvider((Cat c) => c.Name, new FuncProvider<string>((random) => "cat name...")); //TODO: replace funcprovider with func? - extension method?
 
-                        
+                           builder.AddProvider(new SomeAttributeFiller());
+                           builder.AddProvider((Dog d) => d.BestDogFriend.AttributedValue, new DogAttributeFiller());
                          }
                      };
 
         //TODO: a.b is of type b1, b2 or b3 - how to specify this?
         //TODO: What happens when Dog:Animal and both have LastName property (same) - want: Get<Dog>()
-        //TODO: Feature-Request - valueprovider create call inside other valueprovider...
         ValueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(domain);
       };
 
@@ -60,6 +58,11 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
        It sets_correctDogDefault =
           () => ValueProvider.Create<Dog>().Default.ShouldEqual("default string");
+
+       It sets_correctNonAttributeValue = () => ValueProvider.Create<Dog>().AttributedValue.ShouldEqual("default string_some value");
+
+
+      It sets_correctAttributeValue = () => ValueProvider.Create<Dog>().BestDogFriend.AttributedValue.ShouldEqual("default string_some value_test dog attribute");
 
 
       It returns_correctDogType = () => ValueProvider.Create<Dog>().GetType().ShouldEqual(typeof (Dog));
@@ -156,9 +159,9 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                      {
                          BuildValueProvider = builder =>
                          {
-                           builder.SetProvider(new RandomWordGenerator());
-                           builder.SetProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
-                           builder.SetProvider((Cat c) => c.Name, new FuncProvider<string>((random) => "cat name..."));
+                           builder.AddProvider(new RandomWordGenerator());
+                           builder.AddProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
+                           builder.AddProvider((Cat c) => c.Name, new FuncProvider<string>((random) => "cat name..."));
                          }
                      };
 
@@ -202,6 +205,42 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       };
 
       It doesNothing = () => true.ShouldBeTrue();
+    }
+  }
+
+  internal class SomeAttributeFiller:AttributeValueProvider<string, SomeValue>
+  {
+     protected override string CreateValue (AttributeValueProviderContext<string, SomeValue> context)
+    {
+      return context.GetPreviousValue()+"_"+ context.Attribute.Text;
+    }
+  }
+
+  internal class SomeValue : Attribute
+  {
+    public string Text { get; private set; }
+
+    public SomeValue(string text)
+    {
+      Text = text;
+    }
+  }
+
+  internal class DogAttributeFiller : AttributeValueProvider<string, DogValue>
+  {
+    protected override string CreateValue (AttributeValueProviderContext<string, DogValue> context)
+    {
+      return context.GetPreviousValue()+"_"+ context.Attribute.Text;
+    }
+  }
+
+  internal class DogValue : Attribute
+  {
+    public string Text { get; private set; }
+
+    public DogValue(string text)
+    {
+      Text = text;
     }
   }
 
@@ -266,7 +305,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                             Rules = lifeRuleSet,
                             BuildValueProvider = builder=>
                               {
-                                 builder.SetProvider(new GenderGenerator());
+                                 builder.AddProvider(new GenderGenerator());
                               }
                           };
 
@@ -435,19 +474,23 @@ public class StringMarryRule:Rule
     public string Name { get; set; }
   }
 
-  class Dog
-  {
-    public string FirstName { get; [UsedImplicitly] set; }
-    public string LastName { get; [UsedImplicitly] set; }
-    public string Default { get; [UsedImplicitly] set;}
+internal class Dog
+{
+  public string FirstName { get; [UsedImplicitly] set; }
+  public string LastName { get; [UsedImplicitly] set; }
+  public string Default { get; [UsedImplicitly] set; }
 
-    public int Age { get; [UsedImplicitly] set; }
+  [SomeValue("some value")]
+  [DogValue ("test dog attribute")]
+  public string AttributedValue { get; [UsedImplicitly] set; }
 
-    public Cat BestCatFriend { get; [UsedImplicitly] set; }
-    public Dog BestDogFriend { get; [UsedImplicitly] set; }
-  }
+  public int Age { get; [UsedImplicitly] set; }
 
-  class DogFriend : Dog
+  public Cat BestCatFriend { get; [UsedImplicitly] set; }
+  public Dog BestDogFriend { get; [UsedImplicitly] set; }
+}
+
+class DogFriend : Dog
   {
   }
 

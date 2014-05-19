@@ -7,8 +7,6 @@ using Fbih.Cmr.Domain.EntryData.Printing;
 using Fbih.Cmr.Domain.Events;
 using Fbih.Cmr.Domain.Events.BookOfBirths;
 using Fbih.Cmr.Domain.Events.BookOfCitizens;
-using Fbih.Cmr.Domain.Events.Notes;
-using Fbih.Cmr.Domain.Events.Printing;
 using Fbih.Cmr.Domain.ExternalCatalogs;
 using Fbih.Cmr.Domain.TestInfrastructure;
 using Fbih.Cmr.Domain.Validation;
@@ -64,25 +62,33 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
           {
             BuildValueProvider = builder =>
             {
-              // TODO: Providers
-              builder.SetProvider(
+              builder.AddProvider(
                   (BirthEntryCreatedEvent bc) => bc.MunicipalityId,
                   new FuncProvider<int>(context => parameters.MunicipalityId));
 
-              builder.SetProvider(
+              builder.AddProvider(
                   (PrintingData bc) => bc.PrintingMunicipalityId,
                   new FuncProvider<int>(context => parameters.PrintingMunicipalityId));
 
-              builder.SetProvider(
+              builder.AddProvider(
                   (BirthEntryCreatedEvent bc) => bc.BookType,
                   new FuncProvider<BookType>(context => bookType));
 
-              builder.SetProvider(new EventDateTimeProvider()); //TODO: Support additional providers as well....
-              builder.SetProvider((CitizenEntryCreatedEvent bc)=> bc.CitizenEntryData.CitizenFormType, new CatalogRepositoryProvider(catalogRepository));
+              builder.AddProvider(new EventDateTimeProvider());
+
+              //TODO: set provider for type System.Attribute
+              builder.AddProvider(new CatalogRepositoryProvider(catalogRepository));
+
+              //TODO: this should also work...
+              builder.AddProvider(
+                  (CitizenEntryCreatedEvent c) => c.CitizenEntryData.CitizenFormType,
+                  new CatalogRepositoryProvider(catalogRepository));
+
+              /*builder.AddProvider((CitizenEntryCreatedEvent bc)=> bc.CitizenEntryData.CitizenFormType, new CatalogRepositoryProvider(catalogRepository));*/
             }
           });
 
-      var generateNullSpecimenBuilder = new NullObjectSpecimenBuilder(_randomGenerator.NullPercentage);
+      var generateNullSpecimenBuilder = new NullObjectSpecimenBuilder(_randomGenerator.NullPercentage); //TODO: null percentage
       var staticMunicipalityIdSpecimenBuilder = new StaticValueSpecimenBuilder<int>("MunicipalityId", parameters.MunicipalityId);
       var staticPrintingMunicipalityIdSpecimenBuilder = new StaticValueSpecimenBuilder<int>("PrintingMunicipalityId", parameters.PrintingMunicipalityId);
       var staticBookTypeSpecimenBuilder = new StaticBookTypeSpecimenBuilder(bookType);
@@ -334,7 +340,7 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
     }
   }
 
-  public class CatalogRepositoryProvider:ValueProvider<int?>
+  public class CatalogRepositoryProvider:AttributeValueProvider<int?, CatalogValueAttribute>
   {
     private readonly ICatalogRepository _catalogRepository;
 
@@ -343,13 +349,9 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
       _catalogRepository = catalogRepository;
     }
 
-    protected override int? CreateValue (ValueProviderContext<int?> context)
+    protected override int? CreateValue (AttributeValueProviderContext<int?, CatalogValueAttribute> context)
     {
-      var catalogValueAttribute = context.PropertyInfo.GetCustomAttribute<CatalogValueAttribute>();
-      if (catalogValueAttribute == null)
-        return null;
-
-      var allIds = _catalogRepository.GetAllEntries(catalogValueAttribute.Catalog).Select(x => x.Id).ToArray();
+      var allIds = _catalogRepository.GetAllEntries(context.Attribute.Catalog).Select(x => x.Id).ToArray();
       return allIds[context.Random.Next(allIds.Length)];
     }
   }
@@ -358,7 +360,7 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
   {
     protected override DateTime CreateValue (ValueProviderContext<DateTime> context)
     {
-      var dateTime = new DateTime(); //TODO: get previous value?/fill all values before...
+      var dateTime = context.GetPreviousValue();
 
       var dateTimeKindAttribute = context.PropertyInfo.GetCustomAttribute<RequiredDateTimeKindAttribute>();
 

@@ -188,6 +188,8 @@
     <Compile Include="TestData\CompoundValueProvider\ValueProviderDictionary.cs" />
     <Compile Include="TestData\CompoundValueProvider\CompoundValueProviderBuilder.cs" />
     <Compile Include="TestData\CompoundValueProvider\CompoundValueProviderBuilderFactory.cs" />
+    <Compile Include="TestData\ValueProvider\AttributeValueProvider.cs" />
+    <Compile Include="TestData\ValueProvider\AttributeValueProviderContext.cs" />
     <Compile Include="TestData\ValueProvider\ValueProviderContext.cs" />
     <Compile Include="Utilities\ExpressionExtensions.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\FuncProvider.cs" />
