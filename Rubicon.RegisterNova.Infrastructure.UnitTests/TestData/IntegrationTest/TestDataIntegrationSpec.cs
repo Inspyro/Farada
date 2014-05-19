@@ -171,9 +171,9 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       _additionalValue = additionalValue;
     }
 
-    protected override string CreateValue ()
+    protected override string CreateValue (ValueProviderContext<string> context)
     {
-      return Context.GetPreviousValue() +"_"+ _additionalValue;
+      return context.GetPreviousValue() +"_"+ _additionalValue;
     }
   }
 
@@ -258,9 +258,9 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
 internal class GenderGenerator : ValueProvider<Gender>
 {
-  protected override Gender CreateValue ()
+  protected override Gender CreateValue (ValueProviderContext<Gender> context)
   {
-    return (Gender) Context.Random.Next(0, 2);
+    return (Gender) context.Random.Next(0, 2);
   }
 }
 
@@ -352,7 +352,7 @@ internal enum Gender
 
 public class StringGenerator : ValueProvider<string>
 {
-  protected override string CreateValue ()
+  protected override string CreateValue (ValueProviderContext<string> context)
   {
     return "default string";
   }
@@ -410,7 +410,7 @@ public class StringMarryRule:Rule
 
   class CatGenerator:ValueProvider<Cat>
   {
-    protected override Cat CreateValue ()
+    protected override Cat CreateValue (ValueProviderContext<Cat> context)
     {
       return new Cat { Name = "Nice cat" };
     }
@@ -418,7 +418,7 @@ public class StringMarryRule:Rule
 
   class DogFriendInjector:ValueProvider<Dog>
   {
-    protected override Dog CreateValue ()
+    protected override Dog CreateValue (ValueProviderContext<Dog> context)
     {
       return new DogFriend();
     }
@@ -433,7 +433,7 @@ public class StringMarryRule:Rule
       _additionalContent = additionalContent;
     }
 
-    protected override string CreateValue ()
+    protected override string CreateValue (ValueProviderContext<string> context)
     {
       return "Dog_" + _additionalContent;
     }

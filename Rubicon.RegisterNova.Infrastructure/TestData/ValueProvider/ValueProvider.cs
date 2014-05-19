@@ -10,23 +10,16 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
   /// <typeparam name="TProperty">TODO</typeparam>
   public abstract class ValueProvider<TProperty> : IValueProvider
   {
-    protected ValueProviderContext<TProperty> Context { get; private set; }
-
-    internal void CreateContext()
-    {
-
-    }
-
     public object CreateObjectValue (IValueProviderContext context)
     {
-      Context = (ValueProviderContext<TProperty>) context;
-      return CreateValue();
+      return CreateValue( (ValueProviderContext<TProperty>) context);
     }
 
     /// <summary>
     /// TODO
     /// </summary>
-    protected abstract TProperty CreateValue ();
+    /// <param name="context"></param>
+    protected abstract TProperty CreateValue (ValueProviderContext<TProperty> context);
 
     public IValueProviderContext CreateContext (
         ICompoundValueProvider compoundValueProvider,

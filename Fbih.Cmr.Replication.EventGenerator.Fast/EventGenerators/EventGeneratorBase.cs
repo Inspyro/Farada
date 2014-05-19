@@ -77,7 +77,7 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
                   (BirthEntryCreatedEvent bc) => bc.BookType,
                   new FuncProvider<BookType>(context => bookType));
 
-              builder.SetProvider(new EventDateTimeProvider());
+              builder.SetProvider(new EventDateTimeProvider()); //TODO: Support additional providers as well....
               builder.SetProvider((CitizenEntryCreatedEvent bc)=> bc.CitizenEntryData.CitizenFormType, new CatalogRepositoryProvider(catalogRepository));
             }
           });
@@ -343,26 +343,26 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
       _catalogRepository = catalogRepository;
     }
 
-    protected override int? CreateValue ()
+    protected override int? CreateValue (ValueProviderContext<int?> context)
     {
-      var catalogValueAttribute = Context.PropertyInfo.GetCustomAttribute<CatalogValueAttribute>();
+      var catalogValueAttribute = context.PropertyInfo.GetCustomAttribute<CatalogValueAttribute>();
       if (catalogValueAttribute == null)
         return null;
 
       var allIds = _catalogRepository.GetAllEntries(catalogValueAttribute.Catalog).Select(x => x.Id).ToArray();
-      return allIds[Context.Random.Next(allIds.Length)];
+      return allIds[context.Random.Next(allIds.Length)];
     }
   }
 
   public class EventDateTimeProvider:ValueProvider<DateTime>
   {
-    protected override DateTime CreateValue ()
+    protected override DateTime CreateValue (ValueProviderContext<DateTime> context)
     {
       var dateTime = new DateTime(); //TODO: get previous value?/fill all values before...
 
-      var dateTimeKindAttribute = Context.PropertyInfo.GetCustomAttribute<RequiredDateTimeKindAttribute>();
+      var dateTimeKindAttribute = context.PropertyInfo.GetCustomAttribute<RequiredDateTimeKindAttribute>();
 
-      if (Context.PropertyInfo.IsDefined(typeof (DateAttribute)))
+      if (context.PropertyInfo.IsDefined(typeof (DateAttribute)))
         dateTime = DateTime.SpecifyKind(dateTime.Date, DateTimeKind.Unspecified);
       else if (dateTimeKindAttribute != null)
         dateTime = DateTime.SpecifyKind(dateTime, dateTimeKindAttribute.Kind);

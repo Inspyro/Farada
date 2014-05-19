@@ -15,16 +15,16 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
       _maxWordSyllabiles = maxWordSyllabiles;
     }
 
-    protected override string CreateValue ()
+    protected override string CreateValue (ValueProviderContext<string> context)
     {
-      var syllabiles = Context.Random.Next(_minWordSyllabiles, _maxWordSyllabiles);
+      var syllabiles = context.Random.Next(_minWordSyllabiles, _maxWordSyllabiles);
       var word = new StringBuilder();
       for (var i = 0; i < syllabiles; i++)
       {
-        word.Append(base.CreateValue());
+        word.Append(base.CreateValue(context));
       }
 
-      if (Context.Random.Next() > 0.5)
+      if (context.Random.Next() > 0.5)
       {
         word[0] = Char.ToUpper(word[0]);
       }
@@ -47,14 +47,14 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
       _max = max;
     }
 
-    protected override string CreateValue ()
+    protected override string CreateValue (ValueProviderContext<string> context)
     {
-     var len = Context.Random.Next(_min, _max);
+     var len = context.Random.Next(_min, _max);
 
       var syllabile = new StringBuilder();
       for (var i = 0; i < len; i++)
       {
-        var c = i == 1 ? s_vowels[Context.Random.Next(s_vowels.Length)] : s_consonants[Context.Random.Next(s_consonants.Length)];
+        var c = i == 1 ? s_vowels[context.Random.Next(s_vowels.Length)] : s_consonants[context.Random.Next(s_consonants.Length)];
         syllabile.Append(c);
       }
 

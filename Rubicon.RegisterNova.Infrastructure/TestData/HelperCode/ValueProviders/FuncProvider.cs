@@ -12,9 +12,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
       _valueFunc = valueFunc;
     }
 
-    protected override T CreateValue ()
+    protected override T CreateValue (ValueProviderContext<T> context)
     {
-      return _valueFunc(Context);
+      return _valueFunc(context);
     }
   }
 }
