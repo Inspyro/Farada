@@ -18,9 +18,26 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     internal CompoundValueProviderBuilder GetDefault ()
     {
       var defaultProvider = GetEmpty();
-      defaultProvider.SetProvider(new RandomWordGenerator());
-      defaultProvider.SetProvider(new RandomNumberGenerator());
-      //TODO: Add default providers, e.g. int, DateTime, IEnumerable!
+
+      //Value types:
+      defaultProvider.SetProvider(new RandomBoolGenerator());
+      defaultProvider.SetProvider(new RandomByteGenerator());
+      defaultProvider.SetProvider(new RandomCharGenerator());
+      defaultProvider.SetProvider(new RandomDecimalGenerator());
+      defaultProvider.SetProvider(new RandomDoubleGenerator());
+      defaultProvider.SetProvider(new RandomEnumGenerator());
+      defaultProvider.SetProvider(new RandomFloatGenerator());
+      defaultProvider.SetProvider(new RandomIntGenerator());
+      defaultProvider.SetProvider(new RandomLongGenerator());
+      defaultProvider.SetProvider(new RandomSByteGenerator());
+      defaultProvider.SetProvider(new RandomShortGenerator());
+      defaultProvider.SetProvider(new RandomUIntGenerator());
+      defaultProvider.SetProvider(new RandomULongGenerator());
+      defaultProvider.SetProvider(new RandomUShortGenerator());
+
+
+      defaultProvider.SetProvider(new RandomWordGenerator()); //string
+      defaultProvider.SetProvider(new RandomDateTimeGenerator());
 
       return defaultProvider;
     }

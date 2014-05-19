@@ -3,7 +3,7 @@ using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
 {
-  public class RandomNumberGenerator:ValueProvider<int>
+  public class RandomIntGenerator:ValueProvider<int>
   {
     protected override int CreateValue (ValueProviderContext<int> context)
     {

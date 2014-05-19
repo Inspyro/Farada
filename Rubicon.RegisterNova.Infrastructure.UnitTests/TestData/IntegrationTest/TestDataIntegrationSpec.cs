@@ -27,6 +27,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                            //TODO: decorator for base value provider.. - get value from chain, so do next provider first...?
                            //TODO: per type: 
                            builder.SetProvider(new StringGenerator());
+                           builder.SetProvider(new FuncProvider<int>(context => 0));
 
                            builder.SetProvider((Dog d) => d.FirstName, new DogNameGenerator("first name"));
                            builder.SetProvider((Dog d) => d.LastName, new DogNameGenerator("last name"));
@@ -234,7 +235,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       initialDataProvider.Add(new Person("Eve", Gender.Female));
 
       var initialData = initialDataProvider.Build();
-      var resultData = testDataGenerator.Generate(100, initialData);
+      var resultData = testDataGenerator.Generate(50, initialData);
 
       var resultPersons = resultData.GetResult<Person>();
 
