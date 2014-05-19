@@ -21,6 +21,7 @@ using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 using Rubicon.RegisterNova.Infrastructure.Validation;
 
 namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
+
 {
   public abstract class EventGeneratorBase<TEntryCreatedEvent, TEntryChangedEvent>
       where TEntryCreatedEvent : BookSpecificEntryEventBase
@@ -76,15 +77,7 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
 
               builder.AddProvider(new EventDateTimeProvider());
 
-              //TODO: set provider for type System.Attribute
               builder.AddProvider(new CatalogRepositoryProvider(catalogRepository));
-
-              //TODO: this should also work...
-              builder.AddProvider(
-                  (CitizenEntryCreatedEvent c) => c.CitizenEntryData.CitizenFormType,
-                  new CatalogRepositoryProvider(catalogRepository));
-
-              /*builder.AddProvider((CitizenEntryCreatedEvent bc)=> bc.CitizenEntryData.CitizenFormType, new CatalogRepositoryProvider(catalogRepository));*/
             }
           });
 
