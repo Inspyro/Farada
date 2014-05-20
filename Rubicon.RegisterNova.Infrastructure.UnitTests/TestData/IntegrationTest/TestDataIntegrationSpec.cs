@@ -5,6 +5,7 @@ using Machine.Specifications;
 using Rubicon.RegisterNova.Infrastructure.JetBrainsAnnotations;
 using Rubicon.RegisterNova.Infrastructure.TestData;
 using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
+using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.CompoundValueProvider;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.RuleBasedDataGeneration;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders;
 using Rubicon.RegisterNova.Infrastructure.TestData.RuleBasedDataGenerator;
@@ -25,7 +26,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                          BuildValueProvider = builder =>
                          {
                            builder.AddProvider(new StringGenerator());
-                           builder.AddProvider(new FuncProvider<int>(context => 0));
+                           builder.AddProvider<int>(context => 0);
 
                            builder.AddProvider((Dog d) => d.FirstName, new DogNameGenerator("first name"));
                            builder.AddProvider((Dog d) => d.LastName, new DogNameGenerator("last name"));
@@ -36,15 +37,16 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                            builder.AddProvider(new CatGenerator());
 
                            builder.AddProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
-                           builder.AddProvider((Cat c) => c.Name, new FuncProvider<string>((random) => "cat name...")); //TODO: replace funcprovider with func? - extension method?
-
+                           builder.AddProvider((Cat c) => c.Name, ctx => "cat name...");
+                           
                            builder.AddProvider(new SomeAttributeFiller());
                            builder.AddProvider((Dog d) => d.BestDogFriend.AttributedValue, new DogAttributeFiller());
                          }
                      };
 
-        //TODO: a.b is of type b1, b2 or b3 - how to specify this?
-        //TODO: What happens when Dog:Animal and both have LastName property (same) - want: Get<Dog>()
+        //TODO: a.b is of type b1, b2 or b3 - how to specify this: Random type injector...
+        //TODO: What happens when Dog:Animal and both have LastName property (same) - want: Get<Dog>(): Dog.LastName GetPrevious = Animal.LastName GetPrevious = string
+        //always: first attribute then property, then base type attribute then base property then back in chain...
         ValueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(domain);
       };
 
@@ -161,7 +163,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                          {
                            builder.AddProvider(new RandomWordGenerator());
                            builder.AddProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
-                           builder.AddProvider((Cat c) => c.Name, new FuncProvider<string>((random) => "cat name..."));
+                           builder.AddProvider((Cat c) => c.Name, ctx => "cat name...");
                          }
                      };
 

@@ -30,7 +30,5 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     void AddProvider<TProperty, TAttribute, TContainer> (
         Expression<Func<TContainer, TProperty>> chainExpression,
         AttributeValueProvider<TProperty, TAttribute> valueProvider) where TAttribute : Attribute;
-
-    //TODO: Extensions methods for funcs...
   }
 }

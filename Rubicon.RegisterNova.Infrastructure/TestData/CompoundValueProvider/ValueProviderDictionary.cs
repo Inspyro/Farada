@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DocumentFormat.OpenXml.Office2013.PowerPoint.Roaming;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
@@ -52,9 +53,15 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
 
     private IValueProvider GetValueProvider (Key currentKey, IValueProvider valueProviderToExclude)
     {
-      return _valueProviders.ContainsKey(currentKey)
-          ? _valueProviders[currentKey].FirstOrDefault(provider => provider != valueProviderToExclude)
-          : null;
+      if (!_valueProviders.ContainsKey(currentKey))
+        return null;
+
+      var stack = _valueProviders[currentKey];
+
+      if (valueProviderToExclude == null || !stack.Contains(valueProviderToExclude))
+        return stack.First();
+
+      return stack.SkipWhile(valueProvider => valueProvider != valueProviderToExclude).Skip(1).FirstOrDefault();
     }
   }
 }

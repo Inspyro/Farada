@@ -92,6 +92,7 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
           (f, d) => (decimal) ((double) f * d));
     }
 
+    //REVIEW: Compare with autofixture
     public static T Next<T> (
         this Random random,
         T minValue,

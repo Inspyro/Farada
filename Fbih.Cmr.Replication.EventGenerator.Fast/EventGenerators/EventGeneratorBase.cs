@@ -16,6 +16,7 @@ using Ploeh.AutoFixture.Kernel;
 using Rubicon.RegisterNova.Infrastructure.Events;
 using Rubicon.RegisterNova.Infrastructure.EventStore;
 using Rubicon.RegisterNova.Infrastructure.TestData;
+using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.CompoundValueProvider;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 using Rubicon.RegisterNova.Infrastructure.Validation;
@@ -65,15 +66,15 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
             {
               builder.AddProvider(
                   (BirthEntryCreatedEvent bc) => bc.MunicipalityId,
-                  new FuncProvider<int>(context => parameters.MunicipalityId));
-
-              builder.AddProvider(
-                  (PrintingData bc) => bc.PrintingMunicipalityId,
-                  new FuncProvider<int>(context => parameters.PrintingMunicipalityId));
+                 context => parameters.MunicipalityId);
 
               builder.AddProvider(
                   (BirthEntryCreatedEvent bc) => bc.BookType,
-                  new FuncProvider<BookType>(context => bookType));
+                  context => bookType);
+
+              builder.AddProvider(
+                  (PrintingData bc) => bc.PrintingMunicipalityId,
+                  context => parameters.PrintingMunicipalityId);
 
               builder.AddProvider(new EventDateTimeProvider());
 
