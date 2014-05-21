@@ -15,6 +15,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
   {
     public Random Random { get; private set; }
     public Func<TProperty> GetPreviousValue { get; private set; }
+    public Type PropertyType { get; private set; }
     public IFastPropertyInfo PropertyInfo { get; private set; }
     public ICompoundValueProvider ValueProvider { get; private set; }
 
@@ -22,11 +23,13 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
         ICompoundValueProvider valueProvider,
         Random random,
         Func<TProperty> getPreviousValue,
+        Type propertyType,
         IFastPropertyInfo fastPropertyInfo)
     {
       ValueProvider = valueProvider;
       Random = random;
       GetPreviousValue = getPreviousValue;
+      PropertyType = propertyType;
       PropertyInfo = fastPropertyInfo;
     }
   }

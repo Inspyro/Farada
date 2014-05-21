@@ -6,8 +6,8 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
 {
   public class AttributeValueProviderContext<TProperty, TAttribute>:ValueProviderContext<TProperty> where TAttribute:Attribute
   {
-    internal AttributeValueProviderContext (ICompoundValueProvider valueProvider, Random random, Func<TProperty> getPreviousValue, IFastPropertyInfo fastPropertyInfo, TAttribute attribute)
-        : base(valueProvider, random, getPreviousValue, fastPropertyInfo)
+    internal AttributeValueProviderContext (ICompoundValueProvider valueProvider, Random random, Func<TProperty> getPreviousValue, Type propertyType, IFastPropertyInfo fastPropertyInfo,TAttribute attribute)
+        : base(valueProvider, random, getPreviousValue, propertyType, fastPropertyInfo)
     {
       Attribute = attribute;
     }

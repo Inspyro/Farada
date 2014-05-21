@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
 using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
 
@@ -17,12 +18,14 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
         ICompoundValueProvider compoundValueProvider,
         Random random,
         Func<object> getPreviousValue,
+        Type propertyType,
         IFastPropertyInfo fastPropertyInfo)
     {
       return new AttributeValueProviderContext<TProperty, TAttribute>(
           compoundValueProvider,
           random,
           () => (TProperty) getPreviousValue(),
+          propertyType,
           fastPropertyInfo,
           fastPropertyInfo.GetCustomAttribute<TAttribute>());
     }

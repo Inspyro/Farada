@@ -8,6 +8,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
   {
     protected override double CreateValue (ValueProviderContext<double> context)
     {
+      // TODO: Contraints
       return context.Random.Next(double.MinValue);
     }
   }

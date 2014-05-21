@@ -25,9 +25,10 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
         ICompoundValueProvider compoundValueProvider,
         Random random,
         Func<object> getPreviousValue,
+        Type propertyType,
         IFastPropertyInfo fastPropertyInfo)
     {
-      return new ValueProviderContext<TProperty>(compoundValueProvider, random, () => (TProperty) getPreviousValue(), fastPropertyInfo);
+      return new ValueProviderContext<TProperty>(compoundValueProvider, random, () => (TProperty) getPreviousValue(), propertyType, fastPropertyInfo);
     }
   }
 }

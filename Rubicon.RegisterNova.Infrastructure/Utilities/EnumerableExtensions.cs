@@ -11,6 +11,11 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
   /// </summary>
   public static class EnumerableExtensions
   {
+    public static IEnumerable<T> CastOrDefault<T>(this IEnumerable<object> enumerable)
+    {
+      return enumerable.Select(content => content ?? default(T)).Cast<T>();
+    }
+
     public static IEnumerable<T> Repeat<T>(Func<T> createT, int count)
     {
       for(int i=0;i<count;i++)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Machine.Specifications;
 using Rubicon.RegisterNova.Infrastructure.JetBrainsAnnotations;
@@ -11,10 +12,11 @@ using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders;
 using Rubicon.RegisterNova.Infrastructure.TestData.RuleBasedDataGenerator;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 using Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest;
+using Rubicon.RegisterNova.Infrastructure.Validation;
 
 namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 {
-  [Subject(typeof(RuleBasedDataGenerator))]
+  [Subject (typeof (RuleBasedDataGenerator))]
   internal class TestDataIntegrationSpec
   {
     class when_using_TypeValueProvider
@@ -30,7 +32,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
                            builder.AddProvider((Dog d) => d.FirstName, new DogNameGenerator("first name"));
                            builder.AddProvider((Dog d) => d.LastName, new DogNameGenerator("last name"));
-                           builder.AddProvider((Dog d)=> d.BestDogFriend.FirstName, new DogNameGenerator("friend first name"));   
+                           builder.AddProvider((Dog d) => d.BestDogFriend.FirstName, new DogNameGenerator("friend first name"));
                            //TODO: can we cast bestdogfriend to DogFriend? or better: chain expressions
                            builder.AddProvider((Dog d) => d.BestDogFriend.LastName, new LastValueGenerator("friend last name"));
 
@@ -38,9 +40,11 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
                            builder.AddProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
                            builder.AddProvider((Cat c) => c.Name, ctx => "cat name...");
-                           
+
                            builder.AddProvider(new SomeAttributeFiller());
-                           builder.AddProvider((Dog d) => d.BestDogFriend.AttributedValue, new DogAttributeFiller());
+                           builder.AddProvider(new DogAttributeFiller());
+
+                           builder.AddProvider((Animal a) => a.HomePlanet, ctx => "Earth");
                          }
                      };
 
@@ -51,44 +55,119 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       };
 
       It sets_correctString =
-          () => ValueProvider.Create<string>().ShouldEqual("default string");
+        () => 
+          ValueProvider.Create<string>().ShouldEqual("default string");
 
-      It sets_correctDogFirstName = () => 
-        ValueProvider.Create<Dog>().FirstName.ShouldEqual("Dog_first name");
+      It sets_correctDogFirstName = () =>
+          ValueProvider.Create<Dog>().FirstName.ShouldEqual("Dog_first name");
 
       It sets_correctDogLastName = () => ValueProvider.Create<Dog>().LastName.ShouldEqual("Dog_last name");
 
-       It sets_correctDogDefault =
+      It sets_correctDogDefault =
           () => ValueProvider.Create<Dog>().Default.ShouldEqual("default string");
 
-       It sets_correctNonAttributeValue = () => ValueProvider.Create<Dog>().AttributedValue.ShouldEqual("default string_some value");
+      It sets_correctNonAttributeValue = () => 
+        ValueProvider.Create<Dog>().AttributedValue.ShouldEqual("default string_test dog attribute");
 
 
-      It sets_correctAttributeValue = () => ValueProvider.Create<Dog>().BestDogFriend.AttributedValue.ShouldEqual("default string_some value_test dog attribute");
+      It sets_correctAttributeValue =
+          () => ValueProvider.Create<Dog>().BestDogFriend.AttributedValue.ShouldEqual("default string_test dog attribute");
 
 
       It returns_correctDogType = () => ValueProvider.Create<Dog>().GetType().ShouldEqual(typeof (Dog));
 
       It sets_correctBestFriendDogFirstName =
-          () => 
-            ValueProvider.Create<Dog>().BestDogFriend.FirstName.ShouldEqual("Dog_friend first name");
+          () =>
+              ValueProvider.Create<Dog>().BestDogFriend.FirstName.ShouldEqual("Dog_friend first name");
 
-       It sets_correctBestFriendDogLastName =
-          () => 
-            ValueProvider.Create<Dog>().BestDogFriend.LastName.ShouldEqual("Dog_last name_friend last name");
+      It sets_correctBestFriendDogLastName =
+          () =>
+              ValueProvider.Create<Dog>().BestDogFriend.LastName.ShouldEqual("Dog_last name_friend last name");
 
-      It returns_correctBestFriendDogType = () => ValueProvider.Create<Dog>().BestDogFriend.GetType().ShouldEqual(typeof (DogFriend));
+      It returns_correctBestFriendDogType = () => 
+        ValueProvider.Create<Dog>().BestDogFriend.GetType().ShouldEqual(typeof (DogFriend));
 
       It sets_correctDogAge = () => ValueProvider.Create<Dog>().Age.ShouldEqual(0);
 
-      It sets_correctBestCatFriendsName = () => 
-        ValueProvider.Create<Dog>().BestCatFriend.Name.ShouldEqual("cat name...");
+      It sets_correctBestCatFriendsName = () =>
+          ValueProvider.Create<Dog>().BestCatFriend.Name.ShouldEqual("cat name...");
 
-      It sets_correctCatWithoutProperties = () => ValueProvider.Create<Cat>(0).Name.ShouldEqual("Nice cat");
+      It sets_correctCatWithoutProperties = () => 
+        ValueProvider.Create<Cat>(0).Name.ShouldEqual("Nice cat");
 
       It sets_correctInt = () => ValueProvider.Create<int>().ShouldEqual(0);
 
+      It sets_dogHomePlanet = () => ValueProvider.Create<Dog>().HomePlanet.ShouldEqual("Earth");
+      It sets_catHomePlanet = () => ValueProvider.Create<Cat>().HomePlanet.ShouldEqual("Earth");
+
       static ICompoundValueProvider ValueProvider;
+    }
+
+    class when_using_TypeValueProvider_WithNullModifier
+    {
+      Because of = () =>
+      {
+        var domain = new BaseDomainConfiguration
+                     {
+                         BuildValueProvider = builder => { builder.AddInstanceModifier(new NullModifier(1)); }
+                     };
+
+        ValueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(domain);
+      };
+
+      It generates_correctTestClass = () =>
+      {
+        var tc = ValueProvider.Create<TestClass>();
+        tc.NeverNullProp.ShouldNotBeNull();
+        tc.RequiredPrpo.ShouldNotBeNull();
+        tc.OtherProp.ShouldBeNull();
+      };
+
+      static ICompoundValueProvider ValueProvider;
+    }
+
+     class when_using_TypeValueProvider_WithMinMaxConstraints
+    {
+      Because of = () =>
+      {
+        ValueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(new BaseDomainConfiguration());
+      };
+
+      It generates_correctTestClass = () =>
+      {
+        var cwc = ValueProvider.Create<ClassWithConstraints>();
+        cwc.LongName.Length.ShouldBeGreaterThanOrEqualTo(10000);
+        cwc.ShortName.Length.ShouldBeLessThanOrEqualTo(1);
+
+        cwc.MediumName.Length.ShouldBeGreaterThanOrEqualTo(10);
+        cwc.MediumName.Length.ShouldBeLessThanOrEqualTo(20);
+      };
+
+      static ICompoundValueProvider ValueProvider;
+    }
+
+    class ClassWithConstraints
+    {
+      [MinLength (10000)]
+      public string LongName { get; set; }
+
+      [MaxLength (1)]
+      public string ShortName { get; set; }
+
+      [MinLength (10)]
+      [MaxLength (20)]
+      public string MediumName { get; set; }
+    }
+
+    class TestClass
+    {
+      [Required]
+      public string RequiredPrpo { get; set; }
+
+      [NeverNull]
+      public string NeverNullProp { get; set; }
+
+      public string OtherProp { get; set; }
     }
 
     class when_using_TypeValueProvider_DefaultTypes
@@ -145,12 +224,11 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
         var start = DateTime.Now;
 
         var result = valueProvider.CreateMany<Universe>(count);
-        
+
         Console.WriteLine("Took {0} s to generate {1} universes", (DateTime.Now - start).TotalSeconds, result.Count());
       };
 
       It doesNothing = () => true.ShouldBeTrue();
-
     }
 
     class when_using_TypeValueProvider_Word
@@ -168,7 +246,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                      };
 
         ValueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(domain, false);
-        
+
         for (int i = 0; i < 100; i++)
         {
           Console.WriteLine(ValueProvider.Create<string>());
@@ -180,6 +258,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
       static ICompoundValueProvider ValueProvider;
     }
+
     class when_using_TestDataGenerator_simple
     {
       Because of = () =>
@@ -210,11 +289,16 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     }
   }
 
-  internal class SomeAttributeFiller:AttributeValueProvider<string, SomeValue>
+  internal class Animal
   {
-     protected override string CreateValue (AttributeValueProviderContext<string, SomeValue> context)
+    public string HomePlanet { get; [UsedImplicitly] set; }
+  }
+
+  internal class SomeAttributeFiller : AttributeValueProvider<string, SomeValue>
+  {
+    protected override string CreateValue (AttributeValueProviderContext<string, SomeValue> context)
     {
-      return context.GetPreviousValue()+"_"+ context.Attribute.Text;
+      return context.GetPreviousValue() + "_" + context.Attribute.Text;
     }
   }
 
@@ -222,7 +306,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
   {
     public string Text { get; private set; }
 
-    public SomeValue(string text)
+    public SomeValue (string text)
     {
       Text = text;
     }
@@ -232,7 +316,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
   {
     protected override string CreateValue (AttributeValueProviderContext<string, DogValue> context)
     {
-      return context.GetPreviousValue()+"_"+ context.Attribute.Text;
+      return context.GetPreviousValue() + "_" + context.Attribute.Text;
     }
   }
 
@@ -240,7 +324,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
   {
     public string Text { get; private set; }
 
-    public DogValue(string text)
+    public DogValue (string text)
     {
       Text = text;
     }
@@ -257,32 +341,33 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
     protected override string CreateValue (ValueProviderContext<string> context)
     {
-      return context.GetPreviousValue() +"_"+ _additionalValue;
+      return context.GetPreviousValue() + "_" + _additionalValue;
     }
   }
 
   #region Performance
+
   internal class Universe
   {
     public string Name { get; set; }
     public float SizeInLightYears { get; set; }
     public int PeopleCount { get; set; }
 
-    public StarSystem StarSystem { get; set; }  //TODO declare as List as soon as available
+    public StarSystem StarSystem { get; set; } //TODO declare as List as soon as available
   }
 
   internal class StarSystem
   {
     public string Name { get; set; }
-    public float SizeInLightYears { get;set; }
-    public int PeopleCount { get;set; }
+    public float SizeInLightYears { get; set; }
+    public int PeopleCount { get; set; }
 
     public Planet Planet { get; set; } //TODO declare as List as soon as available
   }
 
   internal class Planet
   {
-    public string Name { get;set; }
+    public string Name { get; set; }
     public float SizeInKilometers { get; set; }
     public int PeopleCount { get; set; }
     public PlanetColor Color { get; set; }
@@ -290,7 +375,8 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
   internal enum PlanetColor
   {
-    Blue, Red
+    Blue,
+    Red
   }
 
   #endregion
@@ -304,11 +390,8 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
       var complexDomain = new DomainConfiguration
                           {
-                            Rules = lifeRuleSet,
-                            BuildValueProvider = builder=>
-                              {
-                                 builder.AddProvider(new GenderGenerator());
-                              }
+                              Rules = lifeRuleSet,
+                              BuildValueProvider = builder => { builder.AddProvider(new GenderGenerator()); }
                           };
 
       var testDataGenerator = TestDataGeneratorFactory.CreateRuleBasedDataGenerator(complexDomain);
@@ -335,7 +418,6 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
   {
     protected override void Execute ()
     {
-      
     }
   }
 }
@@ -361,11 +443,11 @@ internal class AgingRule : UnrestrictedRule<Person>
   }
 }
 
-internal class ProcreationRule : Rule 
+internal class ProcreationRule : Rule
 {
   public override float GetExecutionProbability ()
   {
-     //TODO: Rule Appliance Probability based on World.Fertility...
+    //TODO: Rule Appliance Probability based on World.Fertility...
     return LerpUtility.LerpFromLowToHigh(100000, World.Count<Person>(), 1f, 0.1f);
   }
 
@@ -374,24 +456,21 @@ internal class ProcreationRule : Rule
     //TODO: array? config parameter? - compound could mix multiple parameters (see below)
     //TODO: can we have relations between persons? a likes b,c,d hates f,g..?
     yield return new RuleParameter<Person>(
-      p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male);
+        p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male);
     yield return
         new RuleParameter<Person>(
-            (p) =>
-            {
-              return p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant);
-            });
+            (p) => { return p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant); });
 
     //TODO: do we need optional rule paramters?
   }
 
-  protected override IEnumerable<IRuleValue>  Execute (CompoundRuleInput inputData)
+  protected override IEnumerable<IRuleValue> Execute (CompoundRuleInput inputData)
   {
     var male = inputData.GetValue<Person>(0);
     var female = inputData.GetValue<Person>(1);
 
     var childCount = 1; // TODO: Get Random object from somewhere ValueProvider.Random.Next(1, 1);
-    for(var i=0;i<childCount;i++)
+    for (var i = 0; i < childCount; i++)
     {
       var child = ValueProvider.Create<Person>();
       child.Father = male.Value;
@@ -404,7 +483,7 @@ internal class ProcreationRule : Rule
   }
 }
 
-class Person
+internal class Person
 {
   public string Name { get; set; }
   public int Age { get; set; }
@@ -413,12 +492,11 @@ class Person
   public Person Father { get; set; }
   public Person Mother { get; set; }
 
-  public Person()
+  public Person ()
   {
-
   }
 
-  public Person (string name, Gender gender, int age=0)
+  public Person (string name, Gender gender, int age = 0)
   {
     Name = name;
     Gender = gender;
@@ -442,47 +520,47 @@ public class StringGenerator : ValueProvider<string>
   }
 }
 
-public class StringMarryRule:Rule
-  {
+public class StringMarryRule : Rule
+{
   public override float GetExecutionProbability ()
   {
     return 0.5f;
   }
 
   protected override IEnumerable<IRuleParameter> GetRuleInputs ()
-    {
-      Func<RuleValue<string>, bool> predicate = p => p.Value.Length > 3 && (p.UserData.IsMarried == null || !p.UserData.IsMarried);
-      yield return new RuleParameter<string>(predicate);
-      yield return new RuleParameter<string>(predicate); //TODO: how to define excludes on rule filter basis?
-    }
-
-    protected override IEnumerable<IRuleValue> Execute(CompoundRuleInput inputData) //e.g. one instance - stores all generation data..
-    {
-      var sexyString1 = inputData.GetValue<string>(0);
-      var sexyString2 = inputData.GetValue<string>(1);
-
-      sexyString1.Value += "[Married to:" + sexyString2.Value + "]";
-      sexyString2.Value += "[Married to:" + sexyString1.Value + "]";
-
-      sexyString1.UserData.IsMarried = true;
-      sexyString2.UserData.IsMarried = true;
-
-      yield break;
-    }
-  }
-
-  class Cat
   {
-    public string Name { get; set; }
+    Func<RuleValue<string>, bool> predicate = p => p.Value.Length > 3 && (p.UserData.IsMarried == null || !p.UserData.IsMarried);
+    yield return new RuleParameter<string>(predicate);
+    yield return new RuleParameter<string>(predicate); //TODO: how to define excludes on rule filter basis?
   }
 
-internal class Dog
+  protected override IEnumerable<IRuleValue> Execute (CompoundRuleInput inputData) //e.g. one instance - stores all generation data..
+  {
+    var sexyString1 = inputData.GetValue<string>(0);
+    var sexyString2 = inputData.GetValue<string>(1);
+
+    sexyString1.Value += "[Married to:" + sexyString2.Value + "]";
+    sexyString2.Value += "[Married to:" + sexyString1.Value + "]";
+
+    sexyString1.UserData.IsMarried = true;
+    sexyString2.UserData.IsMarried = true;
+
+    yield break;
+  }
+}
+
+internal class Cat : Animal
+{
+  public string Name { get; set; }
+}
+
+internal class Dog : Animal
 {
   public string FirstName { get; [UsedImplicitly] set; }
   public string LastName { get; [UsedImplicitly] set; }
   public string Default { get; [UsedImplicitly] set; }
 
-  [SomeValue("some value")]
+  //[SomeValue ("some value")]
   [DogValue ("test dog attribute")]
   public string AttributedValue { get; [UsedImplicitly] set; }
 
@@ -492,39 +570,39 @@ internal class Dog
   public Dog BestDogFriend { get; [UsedImplicitly] set; }
 }
 
-class DogFriend : Dog
+internal class DogFriend : Dog
+{
+}
+
+internal class CatGenerator : ValueProvider<Cat>
+{
+  protected override Cat CreateValue (ValueProviderContext<Cat> context)
   {
+    return new Cat { Name = "Nice cat" };
+  }
+}
+
+internal class DogFriendInjector : ValueProvider<Dog>
+{
+  protected override Dog CreateValue (ValueProviderContext<Dog> context)
+  {
+    return new DogFriend();
+  }
+}
+
+internal class DogNameGenerator : ValueProvider<string>
+{
+  readonly string _additionalContent;
+
+  public DogNameGenerator (string additionalContent)
+  {
+    _additionalContent = additionalContent;
   }
 
-  class CatGenerator:ValueProvider<Cat>
+  protected override string CreateValue (ValueProviderContext<string> context)
   {
-    protected override Cat CreateValue (ValueProviderContext<Cat> context)
-    {
-      return new Cat { Name = "Nice cat" };
-    }
+    return "Dog_" + _additionalContent;
   }
+}
 
-  class DogFriendInjector:ValueProvider<Dog>
-  {
-    protected override Dog CreateValue (ValueProviderContext<Dog> context)
-    {
-      return new DogFriend();
-    }
-  }
-
-  class DogNameGenerator:ValueProvider<string>
-  {
-    private readonly string _additionalContent;
-
-    public DogNameGenerator (string additionalContent)
-    {
-      _additionalContent = additionalContent;
-    }
-
-    protected override string CreateValue (ValueProviderContext<string> context)
-    {
-      return "Dog_" + _additionalContent;
-    }
-  }
 #endregion
-

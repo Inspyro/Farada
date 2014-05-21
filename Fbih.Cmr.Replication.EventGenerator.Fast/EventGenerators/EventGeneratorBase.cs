@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Fbih.Cmr.Domain.EntryData;
 using Fbih.Cmr.Domain.EntryData.Common;
 using Fbih.Cmr.Domain.EntryData.Printing;
 using Fbih.Cmr.Domain.Events;
-using Fbih.Cmr.Domain.Events.BookOfBirths;
-using Fbih.Cmr.Domain.Events.BookOfCitizens;
 using Fbih.Cmr.Domain.ExternalCatalogs;
 using Fbih.Cmr.Domain.TestInfrastructure;
 using Fbih.Cmr.Domain.Validation;
@@ -17,7 +16,6 @@ using Rubicon.RegisterNova.Infrastructure.Events;
 using Rubicon.RegisterNova.Infrastructure.EventStore;
 using Rubicon.RegisterNova.Infrastructure.TestData;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.CompoundValueProvider;
-using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 using Rubicon.RegisterNova.Infrastructure.Validation;
 
@@ -59,40 +57,42 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
       _randomGenerator = randomGenerator;
       _parameters = parameters;
 
+
+      var stopWatch = Stopwatch.StartNew();
       var generator = TestDataGeneratorFactory.CreateCompoundValueProvider(
           new BaseDomainConfiguration
           {
-            BuildValueProvider = builder =>
-            {
-              builder.AddProvider(
-                  (BirthEntryCreatedEvent bc) => bc.MunicipalityId,
-                 context => parameters.MunicipalityId);
+              BuildValueProvider = builder =>
+              {
+                builder.AddProvider(
+                    (BookSpecificEntryEventBase bc) => bc.MunicipalityId,
+                    context => parameters.MunicipalityId);
 
-              builder.AddProvider(
-                  (BirthEntryCreatedEvent bc) => bc.BookType,
-                  context => bookType);
+                builder.AddProvider(
+                    (BookSpecificEntryEventBase bc) => bc.BookType,
+                    context => bookType);
 
-              builder.AddProvider(
-                  (PrintingData bc) => bc.PrintingMunicipalityId,
-                  context => parameters.PrintingMunicipalityId);
+                builder.AddProvider(
+                    (PrintingData bc) => bc.PrintingMunicipalityId,
+                    context => parameters.PrintingMunicipalityId);
 
-              builder.AddProvider(new EventDateTimeProvider());
+                builder.AddProvider(new EventDateTimeProvider());
 
-              builder.AddProvider(new CatalogRepositoryProvider(catalogRepository));
-            }
+                builder.AddProvider(new CatalogRepositoryProvider(catalogRepository));
+
+                builder.AddInstanceModifier(new NullModifier(_randomGenerator.NullPercentage));
+              }
           });
 
-      var generateNullSpecimenBuilder = new NullObjectSpecimenBuilder(_randomGenerator.NullPercentage); //TODO: null percentage
-      var staticMunicipalityIdSpecimenBuilder = new StaticValueSpecimenBuilder<int>("MunicipalityId", parameters.MunicipalityId);
-      var staticPrintingMunicipalityIdSpecimenBuilder = new StaticValueSpecimenBuilder<int>("PrintingMunicipalityId", parameters.PrintingMunicipalityId);
-      var staticBookTypeSpecimenBuilder = new StaticBookTypeSpecimenBuilder(bookType);
-      var dateTimeSpecimenBuilder = new DateTimeSpecimenBuilder();
-      var catalogValueSpecimenBuilder = new CatalogValueSpecimenBuilder(catalogRepository);
+      Console.WriteLine("Setup time:" + stopWatch.Elapsed);
+      stopWatch.Restart();
 
       #region Entry created & changed
 
       _entryCreatedEvents = generator.CreateMany<TEntryCreatedEvent>(parameters.NumberOfEntryCreatedEvents).ToList();
       _entryChangedEvents = generator.CreateMany<TEntryChangedEvent>(parameters.NumberOfEntryChangedEvents).ToList();
+
+      Console.WriteLine("changed and created events (createmany):" + stopWatch.Elapsed);
       
       #endregion
 

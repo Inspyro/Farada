@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
@@ -13,11 +14,13 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
   {
     private readonly Random _random;
     private readonly ValueProviderDictionary _valueProviderDictionary;
+    private readonly IList<IInstanceModifier> _modifierList;
 
     internal CompoundValueProviderBuilder(Random random)
     {
       _random = random;
       _valueProviderDictionary = new ValueProviderDictionary();
+      _modifierList = new List<IInstanceModifier>();
     }
 
     public void AddProvider<TProperty>(ValueProvider<TProperty> valueProvider)
@@ -28,7 +31,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
 
     public void AddProvider<TProperty, TAttribute> (AttributeValueProvider<TProperty, TAttribute> attributeValueProvider) where TAttribute : Attribute
     {
-      var key = new Key(typeof (TProperty), null, typeof (TAttribute));
+      var key = new Key(typeof (TAttribute));
       _valueProviderDictionary.AddValueProvider(key, attributeValueProvider);
     }
 
@@ -40,22 +43,15 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       _valueProviderDictionary.AddValueProvider(key, valueProvider);
     }
 
-    public void AddProvider<TProperty, TAttribute, TContainer> (
-        Expression<Func<TContainer, TProperty>> chainExpression,
-        AttributeValueProvider<TProperty, TAttribute> valueProvider) where TAttribute : Attribute
+
+    public void AddInstanceModifier (IInstanceModifier instanceModifier)
     {
-      var expressionChain = chainExpression.ToChain().ToList();
-      var last=expressionChain.Last();
-
-      expressionChain[expressionChain.Count - 1] = new KeyPart(last.PropertyType, last.Property, typeof (TAttribute));
-
-      var key = new Key(expressionChain);
-      _valueProviderDictionary.AddValueProvider(key, valueProvider);
+      _modifierList.Add(instanceModifier);
     }
 
     internal CompoundValueProvider Build()
     {
-      return new CompoundValueProvider(_valueProviderDictionary, _random);
+      return new CompoundValueProvider(_valueProviderDictionary, _random, _modifierList);
     }
   }
 }

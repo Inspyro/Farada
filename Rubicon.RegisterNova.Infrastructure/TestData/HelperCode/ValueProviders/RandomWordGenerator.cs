@@ -4,32 +4,70 @@ using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
 {
-  public class RandomWordGenerator:RandomSyllabileGenerator
+  public class RandomWordGenerator : RandomSyllabileGenerator
   {
-    private readonly int _minWordSyllabiles;
-    private readonly int _maxWordSyllabiles;
+    private readonly int _minWordLength;
+    private readonly int _maxWordLength;
 
-    public RandomWordGenerator(int minWordSyllabiles=3, int maxWordSyllabiles=5, int minSyllabileLength=3, int maxSyllabileLength=5):base(minSyllabileLength, maxSyllabileLength)
+    public RandomWordGenerator (int minWordLength = 3, int maxWordLength = 10, int minSyllabileLength = 3, int maxSyllabileLength = 5)
+        : base(minSyllabileLength, maxSyllabileLength)
     {
-      _minWordSyllabiles = minWordSyllabiles;
-      _maxWordSyllabiles = maxWordSyllabiles;
+      //TODO chech
+      _minWordLength = minWordLength;
+      _maxWordLength = maxWordLength;
     }
 
     protected override string CreateValue (ValueProviderContext<string> context)
     {
-      var syllabiles = context.Random.Next(_minWordSyllabiles, _maxWordSyllabiles);
-      var word = new StringBuilder();
-      for (var i = 0; i < syllabiles; i++)
+      var constraints = context.PropertyInfo != null ? context.PropertyInfo.Constraints : null;
+
+      var minWordLength = _minWordLength;
+      var maxWordLength = _maxWordLength;
+
+      if (constraints != null)
       {
-        word.Append(base.CreateValue(context));
+        if (constraints.MinLength != null)
+        {
+          minWordLength = constraints.MinLength.Value;
+          
+          if (constraints.MaxLength != null)
+          {
+            maxWordLength = constraints.MaxLength.Value;
+          }
+          else
+          {
+            maxWordLength = minWordLength + 100;
+          }
+        }
+        else if (constraints.MaxLength != null)
+        {
+          maxWordLength = constraints.MaxLength.Value;
+
+          if (constraints.MinLength != null)
+          {
+            minWordLength = constraints.MinLength.Value;
+          }
+          else
+          {
+            minWordLength = 0;
+          }
+        }
       }
 
-      if (context.Random.Next() > 0.5)
+      var targetWordLength = context.Random.Next(minWordLength, maxWordLength);
+
+      var wordBuilder = new StringBuilder();
+      while (wordBuilder.Length < targetWordLength)
       {
-        word[0] = Char.ToUpper(word[0]);
+        wordBuilder.Append(base.CreateValue(context));
       }
 
-      return word.ToString();
+      if (context.Random.Next() > 0.5&&wordBuilder.Length>0)
+      {
+        wordBuilder[0] = Char.ToUpper(wordBuilder[0]);
+      }
+
+      return wordBuilder.ToString().Substring(0, targetWordLength);
     }
   }
 

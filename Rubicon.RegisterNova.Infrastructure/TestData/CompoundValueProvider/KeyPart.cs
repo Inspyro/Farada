@@ -8,21 +8,20 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
   /// <summary>
   ///  TODO
   /// </summary>
+  [System.Diagnostics.DebuggerDisplay("{ToString()}")]
   internal class KeyPart
   {
     internal Type PropertyType { get; private set; }
     internal IFastPropertyInfo Property { get; private set; }
-    internal Type[] Attributes { get; private set; }
 
     private readonly string _propertyName;
 
-    internal KeyPart (Type propertyType, IFastPropertyInfo property=null, params Type[] attributes)
+    internal KeyPart (Type propertyType, IFastPropertyInfo property=null)
     {
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
       PropertyType = propertyType;
       Property = property;
-      Attributes = attributes;
 
       _propertyName = Property != null ? Property.Name : null;
     }
@@ -36,26 +35,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       if (PropertyType != other.PropertyType)
         return false;
 
-      if (Attributes == other.Attributes)
-        return true;
-
-      if (Attributes.Length == 0 && other.Attributes.Length == 0)
-        return true;
-
-      if (Attributes == null || other.Attributes == null)
-        return false;
-
-      if(Attributes.Length==1)
-      {
-        return other.Attributes.Contains(Attributes[0]);
-      }
-      
-      if (other.Attributes.Length == 1)
-      {
-        return Attributes.Contains(other.Attributes[0]);
-      }
-
-      return false;
+      return true;
     }
 
     public override bool Equals (object obj)
@@ -75,10 +55,13 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       {
         var hashCode = (_propertyName != null ? _propertyName.GetHashCode() : 0);
         hashCode = (hashCode * 397) ^ (PropertyType != null ? PropertyType.GetHashCode() : 0);
-        hashCode = (hashCode * 397) ^ (Attributes != null && Attributes.Length>0 ? 100 : 0);
         return hashCode;
       }
     }
 
+    public override string ToString ()
+    {
+      return string.Format("PropertyType: {0}, Property: {1}", PropertyType.Name, Property != null ? Property.Name : "null");
+    }
   }
 }

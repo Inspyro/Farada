@@ -87,6 +87,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NEventStore.5.0.0.100\lib\net40\NEventStore.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Mixins">
+      <HintPath>..\prereq\Libraries\Remotion.Mixins.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -96,6 +99,7 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Workflow.ComponentModel" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
@@ -142,7 +146,13 @@
     <Compile Include="Reporting\ReportData.cs" />
     <Compile Include="Reporting\IReportColumn.cs" />
     <Compile Include="SimpleDbContext.cs" />
+    <Compile Include="TestData\CompoundValueProvider\IInstanceModifier.cs" />
+    <Compile Include="TestData\CompoundValueProvider\ModificationContext.cs" />
+    <Compile Include="TestData\FastReflection\Constraints.cs" />
+    <Compile Include="TestData\FastReflection\ContstraintUtility.cs" />
     <Compile Include="TestData\HelperCode\CompoundValueProvider\CompoundValueProviderBuilderExtensions.cs" />
+    <Compile Include="TestData\HelperCode\CompoundValueProvider\NullModifier.cs" />
+    <Compile Include="TestData\HelperCode\ValueProviders\EmailGenerator.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\FuncProviderForAttribute.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\RandomEnumGenerator.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\RandomBoolGenerator.cs" />
@@ -172,7 +182,6 @@
     <Compile Include="TestData\DomainConfiguration.cs" />
     <Compile Include="TestData\HelperCode\RuleBasedDataGeneration\LerpUtility.cs" />
     <Compile Include="TestData\HelperCode\RuleBasedDataGeneration\UnrestrictedRule.cs" />
-    <Compile Include="TestData\HelperCode\ValueProviders\RandomStringValueProvider.cs" />
     <Compile Include="TestData\RuleBasedDataGenerator\RuleSet.cs" />
     <Compile Include="TestData\RuleBasedDataGenerator\Rule.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\RandomWordGenerator.cs" />

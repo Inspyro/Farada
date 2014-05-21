@@ -27,8 +27,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     /// <summary>
     /// TODO
     /// </summary>
-    void AddProvider<TProperty, TAttribute, TContainer> (
-        Expression<Func<TContainer, TProperty>> chainExpression,
-        AttributeValueProvider<TProperty, TAttribute> valueProvider) where TAttribute : Attribute;
+    /// <param name="instanceModifier"></param>
+    void AddInstanceModifier (IInstanceModifier instanceModifier);
   }
 }

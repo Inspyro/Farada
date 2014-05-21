@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using DocumentFormat.OpenXml.Office2013.PowerPoint.Roaming;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
@@ -11,57 +9,55 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
   /// </summary>
   internal class ValueProviderDictionary
   {
-    private readonly Dictionary<Key, Stack<IValueProvider>> _valueProviders;
+    private readonly Dictionary<Key, ValueProviderLink> _valueProviders;
 
     public ValueProviderDictionary ()
     {
-      _valueProviders = new Dictionary<Key, Stack<IValueProvider>>(new KeyComparer());
+      _valueProviders = new Dictionary<Key, ValueProviderLink>(new KeyComparer());
     }
 
     internal void AddValueProvider (Key key, IValueProvider valueProvider)
     {
-      if(!_valueProviders.ContainsKey(key))
+      if (!_valueProviders.ContainsKey(key))
       {
-        _valueProviders[key] = new Stack<IValueProvider>();
+        _valueProviders[key] = new ValueProviderLink(valueProvider, key, () => GetLink(key.GetPreviousKey()));
       }
-
-      _valueProviders[key].Push(valueProvider);
+      else
+      {
+        var previousKey = _valueProviders[key];
+        _valueProviders[key] = new ValueProviderLink(valueProvider, key, () => previousKey);
+      }
     }
 
-    internal IValueProvider GetValueProviderFor (Key currentKey, IValueProvider valueProviderToExclude=null)
+    private ValueProviderLink GetOrDefault (Key key)
     {
-      while (currentKey != null)
-      {
-        var valueProvider = GetValueProvider(currentKey, valueProviderToExclude);
-        if (valueProvider != null)
-        {
-          return valueProvider;
-        }
-
-        valueProvider = GetValueProvider(currentKey.WithouthAttributes(), valueProviderToExclude);
-
-        if (valueProvider != null)
-        {
-          return valueProvider;
-        }
-
-        currentKey = currentKey.GetPreviousKey();
-      }
-
-      return null;
+      return key!=null&&_valueProviders.ContainsKey(key) ? _valueProviders[key] : null;
     }
 
-    private IValueProvider GetValueProvider (Key currentKey, IValueProvider valueProviderToExclude)
+    internal ValueProviderLink GetLink (Key key)
     {
-      if (!_valueProviders.ContainsKey(currentKey))
-        return null;
+      ValueProviderLink link = null;
+      while (link == null && key != null)
+      {
+        link = GetOrDefault(key);
+        key = key.GetPreviousKey();
+      }
 
-      var stack = _valueProviders[currentKey];
+      return link;
+    }
+  }
 
-      if (valueProviderToExclude == null || !stack.Contains(valueProviderToExclude))
-        return stack.First();
+  internal class ValueProviderLink
+  {
+    internal IValueProvider Value { get; private set; }
+    internal Key Key { get; private set; }
+    internal Func<ValueProviderLink> Previous { get; private set; }
 
-      return stack.SkipWhile(valueProvider => valueProvider != valueProviderToExclude).Skip(1).FirstOrDefault();
+    internal ValueProviderLink (IValueProvider value, Key key, Func<ValueProviderLink> previous)
+    {
+      Value = value;
+      Key = key;
+      Previous = previous;
     }
   }
 }

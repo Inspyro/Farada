@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DocumentFormat.OpenXml.Office2013.PowerPoint.Roaming;
+using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 using Rubicon.RegisterNova.Infrastructure.Utilities;
 
@@ -13,27 +13,29 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
   internal class CompoundValueProvider : ICompoundValueProvider
   {
     private readonly ValueProviderDictionary _valueProviderDictionary;
+    private readonly IList<IInstanceModifier> _instanceModifiers;
 
-    internal CompoundValueProvider (ValueProviderDictionary valueProviderDictionary, Random random)
+    internal CompoundValueProvider (ValueProviderDictionary valueProviderDictionary, Random random, IList<IInstanceModifier> instanceModifiers)
     {
       _valueProviderDictionary = valueProviderDictionary;
+      _instanceModifiers = instanceModifiers;
       Random = random;
     }
 
     // TODO: Unschönheit, warum muss das public sein?
     public Random Random { get; private set; }
 
-    public TValue Create<TValue> (int maxRecursionDepth = 2)
+    public TValue Create<TValue> (int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo=null)
     {
-      return CreateMany<TValue>(1, maxRecursionDepth).Single();
+      return CreateMany<TValue>(1, maxRecursionDepth, propertyInfo).Single();
     }
 
-    public ICollection<TValue> CreateMany<TValue> (int numberOfObjects, int maxRecursionDepth = 2)
+    public ICollection<TValue> CreateMany<TValue> (int numberOfObjects, int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo=null)
     {
-      var rootKey = new Key(typeof (TValue));
+      var rootKey = new Key(typeof (TValue), propertyInfo);
       var instances = CreateMany(rootKey, numberOfObjects, maxRecursionDepth);
 
-      return instances == null ? CreateManyDefaultObjects<TValue>(numberOfObjects) : instances.Cast<TValue>().ToList();
+      return instances == null ? CreateManyDefaultObjects<TValue>(numberOfObjects) : instances.CastOrDefault<TValue>().ToList();
     }
 
     private static ICollection<TValue> CreateManyDefaultObjects<TValue> (int numberOfObjects)
@@ -46,9 +48,12 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     {
       var instances = CreateInstances(currentKey, numberOfObjects);
 
-      if (instances == null || !currentKey.Top.PropertyType.IsCompoundType() || ReachedMaxRecursionDepth(currentKey, maxRecursionDepth))
+      if (instances != null)
+        instances = ModifyInstances(currentKey, instances);
+
+      if (instances == null || !currentKey.Top.PropertyType.IsCompoundType() || currentKey.RecursionDepth > maxRecursionDepth)
         return instances;
-      
+
       var properties = FastReflection.FastReflection.GetTypeInfo(currentKey.Top.PropertyType).Properties;
       foreach (var property in properties)
       {
@@ -59,38 +64,73 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
           continue;
 
         for (var i = 0; i < numberOfObjects; ++i)
+        {
+          if (instances[i] == null)
+            continue;
+
           property.SetValue(instances[i], propertyValues[i]);
+        }
       }
 
       return instances;
     }
 
-    private IList<object> CreateInstances (Key key, int numberOfObjects, IValueProvider valueProviderToExclude=null)
+    private IList<object> ModifyInstances (Key currentKey, IList<object> instances)
     {
-      if (key == null)
-        return null;
+      return _instanceModifiers.Aggregate(
+          instances,
+          (current, instanceModifier) =>
+              instanceModifier.Modify(new ModificationContext(currentKey.Top.PropertyType, currentKey.Top.Property, Random), current));
+    }
 
-      var valueProvider = _valueProviderDictionary.GetValueProviderFor(key, valueProviderToExclude);
-      if (valueProvider == null)
+    private IList<object> CreateInstances(Key key, int numberOfObjects)
+    {
+      var attributeProviderLink = key.Top.Property == null
+          ? null
+          : key.Top.Property.Attributes.Select(a => _valueProviderDictionary.GetLink(new Key(a))).SingleOrDefault(link => link != null);
+
+     var rootLink = _valueProviderDictionary.GetLink(key);
+
+      if(attributeProviderLink!=null)
+      {
+        attributeProviderLink = new ValueProviderLink(
+            attributeProviderLink.Value,
+            attributeProviderLink.Key,
+            () => _valueProviderDictionary.GetLink(key));
+
+        rootLink = attributeProviderLink;
+      }
+
+      return CreateInstances(key, rootLink==null?null:rootLink.Value, CreateValueProviderContext(rootLink, key), numberOfObjects);
+    }
+
+    private static IList<object> CreateInstances (Key key, IValueProvider valueProvider, IValueProviderContext valueProviderContext, int numberOfObjects)
+    {
+      if (valueProvider == null||valueProviderContext==null)
       {
         return key.Top.PropertyType.CanBeInstantiated()
             ? EnumerableExtensions.Repeat(() => Activator.CreateInstance(key.Top.PropertyType), numberOfObjects).ToList()
             : null;
       }
 
-      var previousContext = CreateValueProviderContext(key, valueProvider);
-      return EnumerableExtensions.Repeat(() => valueProvider.CreateObjectValue(previousContext), numberOfObjects).ToList();
+      return EnumerableExtensions.Repeat(() => valueProvider.CreateObjectValue(valueProviderContext), numberOfObjects).ToList();
     }
 
-    private IValueProviderContext CreateValueProviderContext (Key key, IValueProvider valueProvider)
+    private IValueProviderContext CreateValueProviderContext (ValueProviderLink providerLink, Key key)
     {
-      var previousKey = key.GetPreviousKey();
-      return valueProvider.CreateContext(this, Random, () => CreateInstances(previousKey, 1, valueProvider).Single(), key.Top.Property);
+      if (providerLink == null)
+        return null;
+
+      var previousLink = providerLink.Previous==null?null:providerLink.Previous();
+      var previousContext = previousLink == null ? null : CreateValueProviderContext(previousLink, key);
+
+      return providerLink.Value.CreateContext(
+          this,
+          Random,
+          () => previousLink == null ? null : CreateInstances(previousLink.Key, previousLink.Value, previousContext, 1).Single(),
+          key.Top.PropertyType,
+          key.Top.Property);
     }
 
-    private static bool ReachedMaxRecursionDepth (Key currentKey, int maxDepth)
-    {
-      return currentKey.RecursionDepth > maxDepth;
-    }
   }
 }

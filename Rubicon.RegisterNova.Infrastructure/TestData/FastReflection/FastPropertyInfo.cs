@@ -11,7 +11,8 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
     private readonly PropertyInfo _propertyInfo;
     private readonly Func<object, object> _getFunction;
     private readonly Action<object, object> _setAction;
-    private readonly List<Type> _attributes;
+    private readonly List<Type> _attributeTypes;
+    private List<Attribute> _attributes;
 
     public string Name { get; private set; }
     public Type PropertyType { get; private set; }
@@ -28,7 +29,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
       Name = propertyInfo.Name;
       PropertyType = propertyInfo.PropertyType;
 
-      _attributes = propertyInfo.GetCustomAttributes().Select(a => a.GetType()).ToList();
+      _attributes = propertyInfo.GetCustomAttributes().ToList();
+      _attributeTypes = _attributes.Select(a=>a.GetType()).ToList();
+      Constraints = ContstraintUtility.GetConstraints(this);
 
        _getFunction = CreateGetFunction(propertyInfo, targetType);
       _setAction=CreateSetAction(propertyInfo, targetType);
@@ -76,17 +79,19 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
 
     public T GetCustomAttribute<T> () where T : Attribute
     {
-      return _propertyInfo.GetCustomAttribute<T>(); //TODO custom attribute cache?
+      return (T) _attributes.FirstOrDefault(a => a is T); 
     }
 
     public IEnumerable<Type> Attributes
     {
-      get { return _attributes; }
+      get { return _attributeTypes; }
     }
+
+    public Constraints Constraints { get; private set; }
 
     public bool IsDefined (Type type)
     {
-      return _propertyInfo.IsDefined(type);
+      return _attributeTypes.Any(type.IsAssignableFrom);
     }
   }
 
@@ -94,6 +99,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
   {
     T GetCustomAttribute<T> () where T : Attribute;
     IEnumerable<Type> Attributes { get; }
+    Constraints Constraints { get; }
 
     bool IsDefined (Type type);
     object GetValue (object instance);
