@@ -15,6 +15,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     /// <summary>
     /// TODO
     /// </summary>
-    ICollection<TCompoundValue> CreateMany<TCompoundValue> (int numberOfObjects, int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo=null);
+    IReadOnlyList<TCompoundValue> CreateMany<TCompoundValue> (int numberOfObjects, int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo=null);
   }
 }

@@ -6,6 +6,8 @@ using Fbih.Cmr.Domain.EntryData;
 using Fbih.Cmr.Domain.EntryData.Common;
 using Fbih.Cmr.Domain.EntryData.Printing;
 using Fbih.Cmr.Domain.Events;
+using Fbih.Cmr.Domain.Events.Notes;
+using Fbih.Cmr.Domain.Events.Printing;
 using Fbih.Cmr.Domain.ExternalCatalogs;
 using Fbih.Cmr.Domain.TestInfrastructure;
 using Fbih.Cmr.Domain.Validation;
@@ -34,14 +36,14 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
     private readonly IReadOnlyList<TEntryCreatedEvent> _entryCreatedEvents;
     private readonly IReadOnlyList<TEntryChangedEvent> _entryChangedEvents;
 
-    //private readonly IReadOnlyList<NoteCreatedEvent> _noteCreatedEvents;
-    //private readonly IReadOnlyList<NoteChangedEvent> _noteChangedEvents;
-    //private readonly IReadOnlyList<NoteDeletedEvent> _noteDeletedEvents;
+    private readonly IReadOnlyList<NoteCreatedEvent> _noteCreatedEvents;
+    private readonly IReadOnlyList<NoteChangedEvent> _noteChangedEvents;
+    private readonly IReadOnlyList<NoteDeletedEvent> _noteDeletedEvents;
 
-    //private readonly IReadOnlyList<PrintingCreatedEvent> _printingCreatedEvents;
-    //private readonly IReadOnlyList<PrintingDeletedEvent> _printingDeletedEvents;
+    private readonly IReadOnlyList<PrintingCreatedEvent> _printingCreatedEvents;
+    private readonly IReadOnlyList<PrintingDeletedEvent> _printingDeletedEvents;
 
-    //private readonly IReadOnlyList<EntryDeletedEvent> _entryDeletedEvents;
+    private readonly IReadOnlyList<EntryDeletedEvent> _entryDeletedEvents;
 
     // IDEA: Move all (int) parameters into a parameter object for easier refactoring.
     protected EventGeneratorBase (
@@ -57,8 +59,6 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
       _randomGenerator = randomGenerator;
       _parameters = parameters;
 
-
-      var stopWatch = Stopwatch.StartNew();
       var generator = TestDataGeneratorFactory.CreateCompoundValueProvider(
           new BaseDomainConfiguration
           {
@@ -84,78 +84,30 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
               }
           });
 
-      Console.WriteLine("Setup time:" + stopWatch.Elapsed);
-      stopWatch.Restart();
-
       #region Entry created & changed
 
-      _entryCreatedEvents = generator.CreateMany<TEntryCreatedEvent>(parameters.NumberOfEntryCreatedEvents).ToList();
-      _entryChangedEvents = generator.CreateMany<TEntryChangedEvent>(parameters.NumberOfEntryChangedEvents).ToList();
-
-      Console.WriteLine("changed and created events (createmany):" + stopWatch.Elapsed);
-      
+      _entryCreatedEvents = generator.CreateMany<TEntryCreatedEvent>(parameters.NumberOfEntryCreatedEvents);
+      _entryChangedEvents = generator.CreateMany<TEntryChangedEvent>(parameters.NumberOfEntryChangedEvents);
       #endregion
 
       //#region Note created & changed & deleted
 
-      //_noteCreatedEvents = CreateEvents<NoteCreatedEvent>(
-      //    parameters.NumberOfNoteCreatedEvents,
-      //    generateNullSpecimenBuilder,
-      //    staticMunicipalityIdSpecimenBuilder,
-      //    staticBookTypeSpecimenBuilder,
-      //    dateTimeSpecimenBuilder,
-      //    catalogValueSpecimenBuilder);
+      _noteCreatedEvents = generator.CreateMany<NoteCreatedEvent>(parameters.NumberOfNoteCreatedEvents);
+      _noteChangedEvents = generator.CreateMany<NoteChangedEvent>(parameters.NumberOfNoteChangedEvents);
+      _noteDeletedEvents = generator.CreateMany<NoteDeletedEvent>(parameters.NumberOfNoteDeletedEvents);
 
-      //_noteChangedEvents = CreateEvents<NoteChangedEvent>(
-      //    parameters.NumberOfNoteChangedEvents,
-      //    generateNullSpecimenBuilder,
-      //    staticMunicipalityIdSpecimenBuilder,
-      //    staticBookTypeSpecimenBuilder,
-      //    dateTimeSpecimenBuilder,
-      //    catalogValueSpecimenBuilder);
-
-      //_noteDeletedEvents = CreateEvents<NoteDeletedEvent>(
-      //    parameters.NumberOfNoteDeletedEvents,
-      //    generateNullSpecimenBuilder,
-      //    staticMunicipalityIdSpecimenBuilder,
-      //    staticBookTypeSpecimenBuilder,
-      //    dateTimeSpecimenBuilder,
-      //    catalogValueSpecimenBuilder);
 
       //#endregion
 
       //#region Printings created & deleted
 
-      //_printingCreatedEvents = CreateEvents<PrintingCreatedEvent>(
-      //    parameters.NumberOfPrintingCreatedEvents,
-      //    generateNullSpecimenBuilder,
-      //    staticMunicipalityIdSpecimenBuilder,
-      //    staticPrintingMunicipalityIdSpecimenBuilder,
-      //    staticBookTypeSpecimenBuilder,
-      //    dateTimeSpecimenBuilder,
-      //    catalogValueSpecimenBuilder);
-
-      //_printingDeletedEvents = CreateEvents<PrintingDeletedEvent>(
-      //    parameters.NumberOfPrintingDeletedEvents,
-      //    generateNullSpecimenBuilder,
-      //    staticMunicipalityIdSpecimenBuilder,
-      //    staticPrintingMunicipalityIdSpecimenBuilder,
-      //    staticBookTypeSpecimenBuilder,
-      //    dateTimeSpecimenBuilder,
-      //    catalogValueSpecimenBuilder);
+      _printingCreatedEvents = generator.CreateMany<PrintingCreatedEvent>(parameters.NumberOfPrintingCreatedEvents);
+      _printingDeletedEvents = generator.CreateMany<PrintingDeletedEvent>(parameters.NumberOfPrintingDeletedEvents);
 
       //#endregion
 
       //#region Entry deleted
-
-      //_entryDeletedEvents = CreateEvents<EntryDeletedEvent>(
-      //    parameters.NumberOfEntryDeletedEvents,
-      //    generateNullSpecimenBuilder,
-      //    staticMunicipalityIdSpecimenBuilder,
-      //    staticBookTypeSpecimenBuilder,
-      //    dateTimeSpecimenBuilder,
-      //    catalogValueSpecimenBuilder);
-
+      _entryDeletedEvents = generator.CreateMany<EntryDeletedEvent>(parameters.NumberOfEntryDeletedEvents);
       //#endregion
 
       Console.WriteLine();

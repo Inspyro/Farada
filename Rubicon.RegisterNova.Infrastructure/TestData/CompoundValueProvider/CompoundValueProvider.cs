@@ -30,7 +30,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       return CreateMany<TValue>(1, maxRecursionDepth, propertyInfo).Single();
     }
 
-    public ICollection<TValue> CreateMany<TValue> (int numberOfObjects, int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo=null)
+    public IReadOnlyList<TValue> CreateMany<TValue> (int numberOfObjects, int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo=null)
     {
       var rootKey = new Key(typeof (TValue), propertyInfo);
       var instances = CreateMany(rootKey, numberOfObjects, maxRecursionDepth);
@@ -38,7 +38,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       return instances == null ? CreateManyDefaultObjects<TValue>(numberOfObjects) : instances.CastOrDefault<TValue>().ToList();
     }
 
-    private static ICollection<TValue> CreateManyDefaultObjects<TValue> (int numberOfObjects)
+    private static IReadOnlyList<TValue> CreateManyDefaultObjects<TValue> (int numberOfObjects)
     {
       return EnumerableExtensions.Repeat(() => default(TValue), numberOfObjects).ToList();
     }
