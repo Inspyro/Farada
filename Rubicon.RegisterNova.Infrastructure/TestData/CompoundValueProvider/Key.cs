@@ -42,6 +42,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       if (baseKey != null)
         return baseKey;
 
+      if (_keyParts.Count == 1 && _keyParts[0].Property != null)
+        return new Key(_keyParts[0].PropertyType);
+
       var keyPartsOfPreviousKey = _keyParts.Slice(1);
       if (keyPartsOfPreviousKey.Count == 0)
         return null;
@@ -54,7 +57,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     private Key GetBaseKey ()
     {
       var baseType = Bottom.PropertyType.BaseType;
-      if (baseType == typeof (object))
+      if (baseType == typeof (object)|| baseType == typeof(ValueType))
         return null;
 
       var newBottomKeyPart = new KeyPart(baseType);

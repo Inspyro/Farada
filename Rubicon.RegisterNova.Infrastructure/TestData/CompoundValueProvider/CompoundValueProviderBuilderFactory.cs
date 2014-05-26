@@ -53,7 +53,8 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       defaultProvider.AddProvider(new RandomWordGenerator()); //string
       defaultProvider.AddProvider(new RandomPastDateTimeGenerator());
 
-      defaultProvider.AddProvider<DateTime?>(ctx => ctx.ValueProvider.Create<DateTime>(propertyInfo: ctx.PropertyInfo)); //TODO: Create<DateTime> calls event date time generator, but then r
+      defaultProvider.AddProvider<DateTime?>(ctx => 
+        ctx.ValueProvider.Create<DateTime>(propertyInfo: ctx.PropertyInfo)); //TODO: Create<DateTime> calls event date time generator, but then r
 
       //constraint providers
       defaultProvider.AddProvider(new EmailGenerator());
