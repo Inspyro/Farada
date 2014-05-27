@@ -11,16 +11,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.CompoundValueP
   /// </summary>
   public static class CompoundValueProviderBuilderExtensions
   {
-    public static void AddProvider<TProperty> (
-        this ICompoundValueProviderBuilder builder,
-        Func<ValueProviderContext<TProperty>, TProperty> valueProviderFunc)
+    public static void AddProvider<TProperty, TAttribute, TContainer> (this ICompoundValueProviderBuilder builder,  Expression<Func<TContainer, TAttribute, TProperty>> chainExpression, Func<AttributeValueProviderContext<TProperty, TAttribute>, TProperty> attributeValueProviderFunc) where TAttribute : Attribute
     {
-      builder.AddProvider(new FuncProvider<TProperty>(valueProviderFunc));
-    }
-
-    public static void AddProvider<TProperty, TAttribute> (this ICompoundValueProviderBuilder builder, Func<AttributeValueProviderContext<TProperty, TAttribute>, TProperty> attributeValueProviderFunc) where TAttribute : Attribute
-    {
-      builder.AddProvider(new FuncProviderForAttribute<TProperty, TAttribute>(attributeValueProviderFunc));
+      builder.AddProvider(chainExpression, new FuncProviderForAttribute<TProperty, TAttribute>(attributeValueProviderFunc));
     }
 
     public static void AddProvider<TProperty, TContainer> (this ICompoundValueProviderBuilder builder, Expression<Func<TContainer, TProperty>> chainExpression, Func<ValueProviderContext<TProperty>, TProperty> valueProviderFunc)

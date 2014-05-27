@@ -76,9 +76,9 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
                     (PrintingData bc) => bc.PrintingMunicipalityId,
                     context => parameters.PrintingMunicipalityId);
 
-                builder.AddProvider(new EventDateTimeProvider());
+                builder.AddProvider((DateTime dt)=>dt, new EventDateTimeProvider());
 
-                builder.AddProvider(new CatalogRepositoryProvider(catalogRepository));
+                builder.AddProvider((int? i, CatalogValueAttribute cva) => i, new CatalogRepositoryProvider(catalogRepository));
 
                 builder.AddInstanceModifier(new NullModifier(_randomGenerator.NullPercentage));
               }

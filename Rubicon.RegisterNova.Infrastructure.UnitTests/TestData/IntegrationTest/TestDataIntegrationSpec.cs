@@ -27,8 +27,8 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                      {
                          BuildValueProvider = builder =>
                          {
-                           builder.AddProvider(new StringGenerator());
-                           builder.AddProvider<int>(context => 0);
+                           builder.AddProvider((string s)=>s, new StringGenerator());
+                           builder.AddProvider((int i)=>i, context => 0);
 
                            builder.AddProvider((Dog d) => d.FirstName, new DogNameGenerator("first name"));
                            builder.AddProvider((Dog d) => d.LastName, new DogNameGenerator("last name"));
@@ -42,8 +42,8 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                            builder.AddProvider((Cat c) => c.Name, ctx => "cat name...");
 
                            // TODO: Attributes _between_ property chain and type lookup?
-                           builder.AddProvider(new SomeAttributeFiller());
-                           builder.AddProvider(new DogAttributeFiller());
+                           builder.AddProvider((string s, SomeValue sv)=>s, new SomeAttributeFiller());
+                           builder.AddProvider((string s, DogValue dv) => s, new DogAttributeFiller());
 
                            builder.AddProvider((Animal a) => a.HomePlanet, ctx => "Earth");
                          }
@@ -240,7 +240,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                      {
                          BuildValueProvider = builder =>
                          {
-                           builder.AddProvider(new RandomWordGenerator());
+                           builder.AddProvider((string s)=>s, new RandomWordGenerator());
                            builder.AddProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
                            builder.AddProvider((Cat c) => c.Name, ctx => "cat name...");
                          }
@@ -392,7 +392,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       var complexDomain = new DomainConfiguration
                           {
                               Rules = lifeRuleSet,
-                              BuildValueProvider = builder => { builder.AddProvider(new GenderGenerator()); }
+                              BuildValueProvider = builder => { builder.AddProvider((Gender g)=>g, new GenderGenerator()); }
                           };
 
       var testDataGenerator = TestDataGeneratorFactory.CreateRuleBasedDataGenerator(complexDomain);

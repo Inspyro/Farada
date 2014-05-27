@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.CompoundValueProvider;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders;
 
@@ -21,44 +22,43 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       var defaultProvider = GetEmpty();
 
       //Value types:
-      defaultProvider.AddProvider(new RandomBoolGenerator());
-      defaultProvider.AddProvider(new RandomByteGenerator());
-      defaultProvider.AddProvider(new RandomCharGenerator());
-      defaultProvider.AddProvider(new RandomDecimalGenerator());
-      defaultProvider.AddProvider(new RandomDoubleGenerator());
-      defaultProvider.AddProvider(new RandomEnumGenerator());
-      defaultProvider.AddProvider(new RandomFloatGenerator());
-      defaultProvider.AddProvider(new RandomIntGenerator());
-      defaultProvider.AddProvider(new RandomLongGenerator());
-      defaultProvider.AddProvider(new RandomSByteGenerator());
-      defaultProvider.AddProvider(new RandomShortGenerator());
-      defaultProvider.AddProvider(new RandomUIntGenerator());
-      defaultProvider.AddProvider(new RandomULongGenerator());
-      defaultProvider.AddProvider(new RandomUShortGenerator());
+      defaultProvider.AddProvider((bool b) => b, new RandomBoolGenerator());
+      defaultProvider.AddProvider((byte b) => b, new RandomByteGenerator());
+      defaultProvider.AddProvider((char b) => b, new RandomCharGenerator());
+      defaultProvider.AddProvider((decimal b) => b, new RandomDecimalGenerator());
+      defaultProvider.AddProvider((double b) => b, new RandomDoubleGenerator());
+      defaultProvider.AddProvider((Enum b) => b, new RandomEnumGenerator());
+      defaultProvider.AddProvider((float b) => b, new RandomFloatGenerator());
+      defaultProvider.AddProvider((int b) => b, new RandomIntGenerator());
+      defaultProvider.AddProvider((long b) => b, new RandomLongGenerator());
+      defaultProvider.AddProvider((sbyte b) => b, new RandomSByteGenerator());
+      defaultProvider.AddProvider((short b) => b, new RandomShortGenerator());
+      defaultProvider.AddProvider((uint b) => b, new RandomUIntGenerator());
+      defaultProvider.AddProvider((ulong b) => b, new RandomULongGenerator());
+      defaultProvider.AddProvider((ushort b) => b, new RandomUShortGenerator());
 
       //TODO: include nullable types in the type stepping logic (key.getpreviouskey)
-      defaultProvider.AddProvider<bool?>(ctx => ctx.ValueProvider.Create<bool>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider<byte?>(ctx => ctx.ValueProvider.Create<byte>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider<char?>(ctx => ctx.ValueProvider.Create<char>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider<decimal?>(ctx => ctx.ValueProvider.Create<decimal>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider<double?>(ctx => ctx.ValueProvider.Create<double>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider<float?>(ctx => ctx.ValueProvider.Create<float>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider<int?>(ctx => ctx.ValueProvider.Create<int>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider<long?>(ctx => ctx.ValueProvider.Create<long>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider<sbyte?>(ctx => ctx.ValueProvider.Create<sbyte>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider<short?>(ctx => ctx.ValueProvider.Create<short>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider<uint?>(ctx => ctx.ValueProvider.Create<uint>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider<ulong?>(ctx => ctx.ValueProvider.Create<ulong>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider<ushort?>(ctx => ctx.ValueProvider.Create<ushort>(propertyInfo: ctx.PropertyInfo));
+      defaultProvider.AddProvider((bool? b)=>b, ctx => ctx.ValueProvider.Create<bool>(propertyInfo: ctx.PropertyInfo));
+      defaultProvider.AddProvider((byte? b)=>b, ctx => ctx.ValueProvider.Create<byte>(propertyInfo: ctx.PropertyInfo));
+      defaultProvider.AddProvider((char? b)=>b, ctx => ctx.ValueProvider.Create<char>(propertyInfo: ctx.PropertyInfo));
+      defaultProvider.AddProvider((decimal? b)=>b, ctx => ctx.ValueProvider.Create<decimal>(propertyInfo: ctx.PropertyInfo));
+      defaultProvider.AddProvider((double? b)=>b, ctx => ctx.ValueProvider.Create<double>(propertyInfo: ctx.PropertyInfo));
+      defaultProvider.AddProvider((float? b)=>b, ctx => ctx.ValueProvider.Create<float>(propertyInfo: ctx.PropertyInfo));
+      defaultProvider.AddProvider((int? b)=>b, ctx => ctx.ValueProvider.Create<int>(propertyInfo: ctx.PropertyInfo));
+      defaultProvider.AddProvider((long? b)=>b, ctx => ctx.ValueProvider.Create<long>(propertyInfo: ctx.PropertyInfo));
+      defaultProvider.AddProvider((sbyte? b)=>b, ctx => ctx.ValueProvider.Create<sbyte>(propertyInfo: ctx.PropertyInfo));
+      defaultProvider.AddProvider((short? b)=>b, ctx => ctx.ValueProvider.Create<short>(propertyInfo: ctx.PropertyInfo));
+      defaultProvider.AddProvider((uint? b)=>b, ctx => ctx.ValueProvider.Create<uint>(propertyInfo: ctx.PropertyInfo));
+      defaultProvider.AddProvider((ulong? b)=>b, ctx => ctx.ValueProvider.Create<ulong>(propertyInfo: ctx.PropertyInfo));
+      defaultProvider.AddProvider((ushort? b)=>b, ctx => ctx.ValueProvider.Create<ushort>(propertyInfo: ctx.PropertyInfo));
 
-      defaultProvider.AddProvider(new RandomWordGenerator()); //string
-      defaultProvider.AddProvider(new RandomPastDateTimeGenerator());
+      defaultProvider.AddProvider((string s)=>s, new RandomWordGenerator()); //string
+      defaultProvider.AddProvider((DateTime dt)=>dt, new RandomPastDateTimeGenerator());
 
-      defaultProvider.AddProvider<DateTime?>(ctx => 
-        ctx.ValueProvider.Create<DateTime>(propertyInfo: ctx.PropertyInfo)); 
+      defaultProvider.AddProvider((DateTime? dt)=>dt, ctx => ctx.ValueProvider.Create<DateTime>(propertyInfo: ctx.PropertyInfo)); 
 
       //constraint providers
-      defaultProvider.AddProvider(new EmailGenerator());
+      defaultProvider.AddProvider((string s, EmailAddressAttribute at) => s, new EmailGenerator());
 
       return defaultProvider;
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Keys;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
@@ -9,18 +10,18 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
   /// </summary>
   internal class ValueProviderDictionary
   {
-    private readonly Dictionary<Key, ValueProviderLink> _valueProviders;
+    private readonly Dictionary<IKey, ValueProviderLink> _valueProviders;
 
     public ValueProviderDictionary ()
     {
-      _valueProviders = new Dictionary<Key, ValueProviderLink>(new KeyComparer());
+      _valueProviders = new Dictionary<IKey, ValueProviderLink>();
     }
 
-    internal void AddValueProvider (Key key, IValueProvider valueProvider)
+    internal void AddValueProvider (IKey key, IValueProvider valueProvider)
     {
       if (!_valueProviders.ContainsKey(key))
       {
-        _valueProviders[key] = new ValueProviderLink(valueProvider, key, () => GetLink(key.GetPreviousKey()));
+        _valueProviders[key] = new ValueProviderLink(valueProvider, key, () => GetLink(key.PreviousKey));
       }
       else
       {
@@ -29,12 +30,12 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       }
     }
 
-    private ValueProviderLink GetOrDefault (Key key)
+    private ValueProviderLink GetOrDefault (IKey key)
     {
       return key!=null&&_valueProviders.ContainsKey(key) ? _valueProviders[key] : null;
     }
 
-    internal ValueProviderLink GetLink (Key key)
+    internal ValueProviderLink GetLink (IKey key)
     {
       ValueProviderLink link = null;
       while (link == null && key != null)
@@ -42,7 +43,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
         link = GetOrDefault(key);
       
         // TODO: Differentiate fixed and subtype value providers
-        key = key.GetPreviousKey();
+        key = key.PreviousKey;
       }
 
       return link;
@@ -52,10 +53,10 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
   internal class ValueProviderLink
   {
     internal IValueProvider Value { get; private set; }
-    internal Key Key { get; private set; }
+    internal IKey Key { get; private set; }
     internal Func<ValueProviderLink> Previous { get; private set; }
 
-    internal ValueProviderLink (IValueProvider value, Key key, Func<ValueProviderLink> previous)
+    internal ValueProviderLink (IValueProvider value, IKey key, Func<ValueProviderLink> previous)
     {
       Value = value;
       Key = key;
