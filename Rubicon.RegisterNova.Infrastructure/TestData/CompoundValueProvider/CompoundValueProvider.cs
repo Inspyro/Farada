@@ -16,15 +16,14 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     private readonly ValueProviderDictionary _valueProviderDictionary;
     private readonly IList<IInstanceModifier> _instanceModifiers;
 
+    private readonly Random _random;
+
     internal CompoundValueProvider (ValueProviderDictionary valueProviderDictionary, Random random, IList<IInstanceModifier> instanceModifiers)
     {
       _valueProviderDictionary = valueProviderDictionary;
       _instanceModifiers = instanceModifiers;
-      Random = random;
+      _random = random;
     }
-
-    // TODO: Unschönheit, warum muss das public sein?
-    public Random Random { get; private set; }
 
     public TValue Create<TValue> (int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo=null)
     {
@@ -84,7 +83,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       return _instanceModifiers.Aggregate(
           instances,
           (current, instanceModifier) =>
-              instanceModifier.Modify(new ModificationContext(currentKey.PropertyType, currentKey.Property, Random), current));
+              instanceModifier.Modify(new ModificationContext(currentKey.PropertyType, currentKey.Property, _random), current));
     }
 
     private IList<object> CreateInstances (IKey key, int numberOfObjects)
@@ -115,7 +114,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
 
       return providerLink.Value.CreateContext(
           this,
-          Random,
+          _random,
           () => previousLink == null ? null : CreateInstances(previousLink.Key, previousLink.Value, previousContext, 1).Single(),
           key.PropertyType,
           key.Property);
