@@ -6,12 +6,12 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
   /// <summary>
   /// TODO
   /// </summary>
-  public class FuncProviderForAttribute<TProperty, TAttribute>:AttributeValueProvider<TProperty, TAttribute>
+  public class FuncProviderForAttributeBased<TProperty, TAttribute>:AttributeBasedValueProvider<TProperty, TAttribute>
     where TAttribute : Attribute
   {
     private readonly Func<AttributeValueProviderContext<TProperty, TAttribute>, TProperty> _valueFunc;
 
-    public FuncProviderForAttribute (Func<AttributeValueProviderContext<TProperty, TAttribute>, TProperty> valueFunc)
+    public FuncProviderForAttributeBased (Func<AttributeValueProviderContext<TProperty, TAttribute>, TProperty> valueFunc)
     {
       _valueFunc = valueFunc;
     }

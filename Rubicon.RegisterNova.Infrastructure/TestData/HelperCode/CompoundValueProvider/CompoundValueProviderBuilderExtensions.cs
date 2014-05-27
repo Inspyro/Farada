@@ -13,7 +13,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.CompoundValueP
   {
     public static void AddProvider<TProperty, TAttribute, TContainer> (this ICompoundValueProviderBuilder builder,  Expression<Func<TContainer, TAttribute, TProperty>> chainExpression, Func<AttributeValueProviderContext<TProperty, TAttribute>, TProperty> attributeValueProviderFunc) where TAttribute : Attribute
     {
-      builder.AddProvider(chainExpression, new FuncProviderForAttribute<TProperty, TAttribute>(attributeValueProviderFunc));
+      builder.AddProvider(chainExpression, new FuncProviderForAttributeBased<TProperty, TAttribute>(attributeValueProviderFunc));
     }
 
     public static void AddProvider<TProperty, TContainer> (this ICompoundValueProviderBuilder builder, Expression<Func<TContainer, TProperty>> chainExpression, Func<ValueProviderContext<TProperty>, TProperty> valueProviderFunc)

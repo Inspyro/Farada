@@ -14,7 +14,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     /// </summary>
     void AddProvider<TProperty, TAttribute, TContainer> (
         Expression<Func<TContainer, TAttribute, TProperty>> chainExpression,
-        AttributeValueProvider<TProperty, TAttribute> attributeValueProvider) where TAttribute : Attribute;
+        AttributeBasedValueProvider<TProperty, TAttribute> attributeBasedValueProvider) where TAttribute : Attribute;
 
     /// <summary>
     /// TODO

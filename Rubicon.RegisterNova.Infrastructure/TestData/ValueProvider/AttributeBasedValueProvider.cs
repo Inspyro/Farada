@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Linq;
 using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
 using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
 {
   //TODO: introducte TContext as in ValueProvider
-  //TODO: Rename (E.g. AttributeBasedValueProvider)
-  public abstract class AttributeValueProvider<TProperty, TAttribute>:IValueProvider where TAttribute:Attribute
+  public abstract class AttributeBasedValueProvider<TProperty, TAttribute>:IValueProvider where TAttribute:Attribute
   {
     protected abstract TProperty CreateValue (AttributeValueProviderContext<TProperty, TAttribute> context);
 

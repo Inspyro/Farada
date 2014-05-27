@@ -26,7 +26,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
 
     public void AddProvider<TProperty, TAttribute, TContainer> (
         Expression<Func<TContainer, TAttribute, TProperty>> chainExpression,
-        AttributeValueProvider<TProperty, TAttribute> attributeValueProvider) where TAttribute : Attribute
+        AttributeBasedValueProvider<TProperty, TAttribute> attributeBasedValueProvider) where TAttribute : Attribute
     {
       if(chainExpression.ToChain().Any())
       {
@@ -34,7 +34,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       }
 
       var key = new AttributeKey(typeof (TProperty), typeof (TAttribute));
-      _valueProviderDictionary.AddValueProvider(key, attributeValueProvider);
+      _valueProviderDictionary.AddValueProvider(key, attributeBasedValueProvider);
     }
 
     public void AddProvider<TProperty, TContainer> (Expression<Func<TContainer, TProperty>> chainExpression, ValueProvider<TProperty> valueProvider)

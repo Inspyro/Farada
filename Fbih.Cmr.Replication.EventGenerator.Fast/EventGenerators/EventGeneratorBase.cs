@@ -286,7 +286,7 @@ namespace Fbih.Cmr.Replication.EventGenerator.Tool.Fast.EventGenerators
     }
   }
 
-  public class CatalogRepositoryProvider:AttributeValueProvider<int?, CatalogValueAttribute>
+  public class CatalogRepositoryProvider:AttributeBasedValueProvider<int?, CatalogValueAttribute>
   {
     private readonly ICatalogRepository _catalogRepository;
 

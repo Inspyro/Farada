@@ -160,7 +160,7 @@
     <Compile Include="TestData\HelperCode\CompoundValueProvider\CompoundValueProviderBuilderExtensions.cs" />
     <Compile Include="TestData\HelperCode\CompoundValueProvider\NullModifier.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\EmailGenerator.cs" />
-    <Compile Include="TestData\HelperCode\ValueProviders\FuncProviderForAttribute.cs" />
+    <Compile Include="TestData\HelperCode\ValueProviders\FuncProviderForAttributeBased.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\RandomEnumGenerator.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\RandomBoolGenerator.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\RandomByteGenerator.cs" />
@@ -205,7 +205,7 @@
     <Compile Include="TestData\CompoundValueProvider\ValueProviderDictionary.cs" />
     <Compile Include="TestData\CompoundValueProvider\CompoundValueProviderBuilder.cs" />
     <Compile Include="TestData\CompoundValueProvider\CompoundValueProviderBuilderFactory.cs" />
-    <Compile Include="TestData\ValueProvider\AttributeValueProvider.cs" />
+    <Compile Include="TestData\ValueProvider\AttributeBasedValueProvider.cs" />
     <Compile Include="TestData\ValueProvider\AttributeValueProviderContext.cs" />
     <Compile Include="TestData\ValueProvider\ValueProviderContext.cs" />
     <Compile Include="Utilities\EqualityUtility.cs" />

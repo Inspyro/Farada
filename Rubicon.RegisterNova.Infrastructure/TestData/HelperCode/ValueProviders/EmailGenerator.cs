@@ -4,7 +4,7 @@ using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
 {
-  public class EmailGenerator:AttributeValueProvider<string, EmailAddressAttribute>
+  public class EmailGenerator:AttributeBasedValueProvider<string, EmailAddressAttribute>
   {
     protected override string CreateValue (AttributeValueProviderContext<string, EmailAddressAttribute> context)
     {

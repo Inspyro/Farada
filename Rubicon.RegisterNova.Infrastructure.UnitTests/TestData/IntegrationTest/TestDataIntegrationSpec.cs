@@ -40,8 +40,8 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                            builder.AddProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
                            builder.AddProvider((Cat c) => c.Name, ctx => "cat name...");
 
-                           builder.AddProvider((string s, SomeValue sv)=>s, new SomeAttributeFiller());
-                           builder.AddProvider((string s, DogValue dv) => s, new DogAttributeFiller());
+                           builder.AddProvider((string s, SomeValue sv)=>s, new SomeAttributeBasedFiller());
+                           builder.AddProvider((string s, DogValue dv) => s, new DogAttributeBasedFiller());
 
                            builder.AddProvider((Animal a) => a.HomePlanet, ctx => "Earth");
                          }
@@ -290,7 +290,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     public string HomePlanet { get; [UsedImplicitly] set; }
   }
 
-  internal class SomeAttributeFiller : AttributeValueProvider<string, SomeValue>
+  internal class SomeAttributeBasedFiller : AttributeBasedValueProvider<string, SomeValue>
   {
     protected override string CreateValue (AttributeValueProviderContext<string, SomeValue> context)
     {
@@ -308,7 +308,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     }
   }
 
-  internal class DogAttributeFiller : AttributeValueProvider<string, DogValue>
+  internal class DogAttributeBasedFiller : AttributeBasedValueProvider<string, DogValue>
   {
     protected override string CreateValue (AttributeValueProviderContext<string, DogValue> context)
     {
