@@ -19,7 +19,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
 
     protected override string CreateValue (ValueProviderContext<string> context)
     {
-      var constraints = context.PropertyInfo != null ? context.PropertyInfo.Constraints : null;
+      var constraints = context.PropertyInfo != null ? context.PropertyInfo.Constraints : null; //TODO: Generalize constraints to support custom attributes
 
       var minWordLength = _minWordLength;
       var maxWordLength = _maxWordLength;

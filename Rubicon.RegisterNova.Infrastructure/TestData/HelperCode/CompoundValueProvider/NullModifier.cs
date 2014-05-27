@@ -23,6 +23,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.CompoundValueP
 
     public IList<object> Modify (ModificationContext context, IList<object> instances)
     {
+      //TODO: Remove compound type check? - int? is filtered through "IsValueType"
       if (context.PropertyType.IsCompoundType() || context.PropertyType.IsValueType)
         return instances;
 
