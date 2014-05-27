@@ -33,7 +33,6 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                            builder.AddProvider((Dog d) => d.FirstName, new DogNameGenerator("first name"));
                            builder.AddProvider((Dog d) => d.LastName, new DogNameGenerator("last name"));
                            builder.AddProvider((Dog d) => d.BestDogFriend.FirstName, new DogNameGenerator("friend first name"));
-                           //TODO: can we cast bestdogfriend to DogFriend? or better: chain expressions
                            builder.AddProvider((Dog d) => d.BestDogFriend.LastName, new LastValueGenerator("friend last name"));
 
                            builder.AddProvider((Cat c) => c, new CatGenerator());
@@ -41,7 +40,6 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                            builder.AddProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
                            builder.AddProvider((Cat c) => c.Name, ctx => "cat name...");
 
-                           // TODO: Attributes _between_ property chain and type lookup?
                            builder.AddProvider((string s, SomeValue sv)=>s, new SomeAttributeFiller());
                            builder.AddProvider((string s, DogValue dv) => s, new DogAttributeFiller());
 
@@ -49,9 +47,6 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                          }
                      };
 
-        //TODO: a.b is of type b1, b2 or b3 - how to specify this: Random type injector...
-        //TODO: What happens when Dog:Animal and both have LastName property (same) - want: Get<Dog>(): Dog.LastName GetPrevious = Animal.LastName GetPrevious = string
-        //always: first attribute then property, then base type attribute then base property then back in chain...
         ValueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(domain);
       };
 
