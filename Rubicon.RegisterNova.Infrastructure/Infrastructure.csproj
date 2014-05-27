@@ -87,6 +87,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NEventStore.5.0.0.100\lib\net40\NEventStore.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion, Version=1.13.205.1, Culture=neutral, PublicKeyToken=f3ba426b71438a3b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\prereq\Libraries\Remotion.dll</HintPath>
+    </Reference>
     <Reference Include="Remotion.Mixins">
       <HintPath>..\prereq\Libraries\Remotion.Mixins.dll</HintPath>
     </Reference>

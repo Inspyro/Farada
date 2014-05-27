@@ -40,6 +40,8 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       while (link == null && key != null)
       {
         link = GetOrDefault(key);
+      
+        // TODO: Differentiate fixed and subtype value providers
         key = key.GetPreviousKey();
       }
 

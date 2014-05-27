@@ -36,6 +36,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       defaultProvider.AddProvider(new RandomULongGenerator());
       defaultProvider.AddProvider(new RandomUShortGenerator());
 
+      //TODO: include nullable types in the type stepping logic (key.getpreviouskey)
       defaultProvider.AddProvider<bool?>(ctx => ctx.ValueProvider.Create<bool>(propertyInfo: ctx.PropertyInfo));
       defaultProvider.AddProvider<byte?>(ctx => ctx.ValueProvider.Create<byte>(propertyInfo: ctx.PropertyInfo));
       defaultProvider.AddProvider<char?>(ctx => ctx.ValueProvider.Create<char>(propertyInfo: ctx.PropertyInfo));
@@ -54,7 +55,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       defaultProvider.AddProvider(new RandomPastDateTimeGenerator());
 
       defaultProvider.AddProvider<DateTime?>(ctx => 
-        ctx.ValueProvider.Create<DateTime>(propertyInfo: ctx.PropertyInfo)); //TODO: Create<DateTime> calls event date time generator, but then r
+        ctx.ValueProvider.Create<DateTime>(propertyInfo: ctx.PropertyInfo)); 
 
       //constraint providers
       defaultProvider.AddProvider(new EmailGenerator());

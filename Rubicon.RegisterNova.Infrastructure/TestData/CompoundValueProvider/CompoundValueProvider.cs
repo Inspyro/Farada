@@ -113,7 +113,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
             : null;
       }
 
-      return EnumerableExtensions.Repeat(() => valueProvider.CreateObjectValue(valueProviderContext), numberOfObjects).ToList();
+      return EnumerableExtensions.Repeat(() => valueProvider.CreateValue(valueProviderContext), numberOfObjects).ToList();
     }
 
     private IValueProviderContext CreateValueProviderContext (ValueProviderLink providerLink, Key key)

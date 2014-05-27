@@ -8,20 +8,44 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
   /// TODO
   /// </summary>
   /// <typeparam name="TProperty">TODO</typeparam>
-  public abstract class ValueProvider<TProperty> : IValueProvider
+  /// <typeparam name="TContext"></typeparam>
+  public abstract class ValueProvider<TProperty, TContext> : IValueProvider
+    where TContext : ValueProviderContext<TProperty>
   {
-    public object CreateObjectValue (IValueProviderContext context)
+    object IValueProvider.CreateValue (IValueProviderContext context)
     {
-      return CreateValue( (ValueProviderContext<TProperty>) context);
+      return CreateValue( (TContext) context);
+    }
+
+    public abstract TContext CreateContext (
+        ICompoundValueProvider compoundValueProvider,
+        Random random,
+        Func<object> getPreviousValue,
+        Type propertyType,
+        IFastPropertyInfo fastPropertyInfo);
+
+    IValueProviderContext IValueProvider.CreateContext (
+        ICompoundValueProvider compoundValueProvider,
+        Random random,
+        Func<object> getPreviousValue,
+        Type propertyType,
+        IFastPropertyInfo fastPropertyInfo)
+    {
+      return CreateContext(compoundValueProvider, random, getPreviousValue, propertyType, fastPropertyInfo);
     }
 
     /// <summary>
     /// TODO
     /// </summary>
     /// <param name="context"></param>
-    protected abstract TProperty CreateValue (ValueProviderContext<TProperty> context);
+    protected abstract TProperty CreateValue (TContext context);
 
-    public IValueProviderContext CreateContext (
+    
+  }
+
+    public abstract class ValueProvider<TProperty> : ValueProvider<TProperty, ValueProviderContext<TProperty>>
+  {
+      public override ValueProviderContext<TProperty> CreateContext (
         ICompoundValueProvider compoundValueProvider,
         Random random,
         Func<object> getPreviousValue,
@@ -31,4 +55,5 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
       return new ValueProviderContext<TProperty>(compoundValueProvider, random, () => (TProperty) getPreviousValue(), propertyType, fastPropertyInfo);
     }
   }
+
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Remotion.Utilities;
 using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
 using Rubicon.RegisterNova.Infrastructure.Utilities;
 
@@ -10,8 +11,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
   /// <summary>
   /// TODO
   /// </summary>
+  // TODO: Maybe refactor to use polymorphism to express the chaining rules?
   [System.Diagnostics.DebuggerDisplay("{ToString()}")]
-  public class Key
+  public class Key // TODO : IEquatable<Key>
   {
     private readonly IList<KeyPart> _keyParts;
     private readonly Key _cachedPreviousKey;
@@ -102,7 +104,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
 
     public override int GetHashCode ()
     {
-      return _keyParts.Aggregate(0, (current, value) => current ^ value.GetHashCode());
+      return EqualityUtility.GetRotatedHashCode(_keyParts);
     }
 
     public override string ToString ()
