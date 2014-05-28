@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 
@@ -7,19 +7,17 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
 {
   public static class FastReflection
   {
-    private readonly static Dictionary<Type, IFastTypeInfo> s_typeInfos = new Dictionary<Type, IFastTypeInfo>();
-    public static IFastTypeInfo GetTypeInfo(Type type) //TODO: thread safe..
+    private readonly static ConcurrentDictionary<Type, IFastTypeInfo> s_typeInfos = new ConcurrentDictionary<Type, IFastTypeInfo>();
+
+    public static IFastTypeInfo GetTypeInfo (Type type)
     {
-      if(s_typeInfos.ContainsKey(type))
-      {
-        return s_typeInfos[type];
-      }
+      return s_typeInfos.GetOrAdd(type, CreateTypeInfo);
+    }
 
+    private static IFastTypeInfo CreateTypeInfo (Type type)
+    {
       var fastProperties = type.GetProperties().Select(GetPropertyInfo).ToList();
-      var fastTypeInfo = new FastTypeInfo(fastProperties);
-      s_typeInfos.Add(type, fastTypeInfo);
-
-      return fastTypeInfo;
+      return new FastTypeInfo(fastProperties);
     }
 
     public static IFastPropertyInfo GetPropertyInfo (PropertyInfo propertyInfo)
