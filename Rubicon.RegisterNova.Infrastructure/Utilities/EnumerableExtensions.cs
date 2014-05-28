@@ -26,14 +26,14 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
       }
     }
 
-    public static IEnumerable<T> RepeatParallel<T> (Func<T> createT, int count)
+    public static IEnumerable<T> RepeatParallel<T> (Func<T> createT, int count, int threadCount = 0)
     {
-      const int threadCount = 8;
+      threadCount = threadCount > 0 ? threadCount : Environment.ProcessorCount;
       var countPerThread = (int) ((double) count / threadCount);
 
       var listOfLists = Repeat(() => new List<T>(), threadCount).ToList();
 
-      var tasks  = new Task[threadCount];
+      var tasks = new Task[threadCount];
       for (var i = 0; i < threadCount; i++)
       {
         var list = listOfLists[i];

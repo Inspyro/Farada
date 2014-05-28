@@ -9,10 +9,10 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.Parallelization
   {
     public static IEnumerable<T> DistributeParallel<T>(Func<int, IEnumerable<T>> enumerableFunc, int count)
     {
-      var threadNumber = 8;
-      var trueCount = (int) ((double) count / threadNumber);
+      var threadCount = Environment.ProcessorCount;
+      var countPerThread = (int) ((double) count / threadCount);
 
-      return EnumerableExtensions.RepeatParallel(() => enumerableFunc(trueCount).ToList(), threadNumber).SelectMany(list => list);
+      return EnumerableExtensions.RepeatParallel(() => enumerableFunc(countPerThread).ToList(), threadCount, threadCount).SelectMany(list => list);
     }
   }
 }

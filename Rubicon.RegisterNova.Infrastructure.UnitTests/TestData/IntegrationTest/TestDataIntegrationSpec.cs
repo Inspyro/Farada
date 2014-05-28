@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using Machine.Specifications;
 using Rubicon.RegisterNova.Infrastructure.JetBrainsAnnotations;
 using Rubicon.RegisterNova.Infrastructure.TestData;
@@ -249,7 +245,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       It doesNothing = () => true.ShouldBeTrue();
     }
 
-    class when_using_TypeValueProvider_PLinqThreadedPerformance
+    class when_using_TypeValueProvider_ThreadedPerformance
     {
       Because of = () =>
       {
