@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoMapper.Internal;
 using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
 using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
 
@@ -19,7 +20,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
 
     public virtual bool CanHandle (Type propertyType)
     {
-      return propertyType == typeof (TProperty);
+      return propertyType == typeof (TProperty) || (propertyType.IsNullableType() && propertyType.GetTypeOfNullable() == typeof (TProperty));
     }
 
     public abstract TContext CreateContext (ValueProviderObjectContext objectContext);

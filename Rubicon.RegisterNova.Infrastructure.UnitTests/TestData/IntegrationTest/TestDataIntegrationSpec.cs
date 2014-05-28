@@ -28,7 +28,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                          BuildValueProvider = builder =>
                          {
                            builder.AddProvider((string s)=>s, new StringGenerator());
-                           builder.AddProvider((int i)=>i, context => 0);
+                           builder.AddProvider((int i)=>i, context => 10);
 
                            builder.AddProvider((Dog d) => d.FirstName, new DogNameGenerator("first name"));
                            builder.AddProvider((Dog d) => d.LastName, new DogNameGenerator("last name"));
@@ -38,6 +38,8 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                            builder.AddProvider((Cat c) => c, new CatGenerator());
                            builder.AddProvider((Animal a) => a, new AnimalMouseFiller());
                            builder.AddProvider((Elephant e) => e, new ElephantInjector());
+
+                           builder.AddProvider((Elephant e) => e.DefinedNullable, context => 100);
 
                            builder.AddProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
                            builder.AddProvider((Cat c) => c.Name, ctx => "cat name...");
@@ -55,6 +57,10 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       It sets_correctString =
         () => 
           ValueProvider.Create<string>().ShouldEqual("default string");
+
+      It sets_correctNullableValue =
+          () =>
+              ValueProvider.Create<int?>().Value.ShouldEqual(10);
 
       It sets_correctDogFirstName = () =>
           ValueProvider.Create<Dog>().FirstName.ShouldEqual("Dog_first name");
@@ -86,7 +92,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       It returns_correctBestFriendDogType = () => 
         ValueProvider.Create<Dog>().BestDogFriend.GetType().ShouldEqual(typeof (DogFriend));
 
-      It sets_correctDogAge = () => ValueProvider.Create<Dog>().Age.ShouldEqual(0);
+      It sets_correctDogAge = () => ValueProvider.Create<Dog>().Age.ShouldEqual(10);
 
       It sets_correctBestCatFriendsName = () =>
           ValueProvider.Create<Dog>().BestCatFriend.Name.ShouldEqual("cat name...");
@@ -94,7 +100,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       It sets_correctCatWithoutProperties = () => 
         ValueProvider.Create<Cat>(0).Name.ShouldEqual("Nice cat");
 
-      It sets_correctInt = () => ValueProvider.Create<int>().ShouldEqual(0);
+      It sets_correctInt = () => ValueProvider.Create<int>().ShouldEqual(10);
 
       It sets_dogHomePlanet = () => ValueProvider.Create<Dog>().HomePlanet.ShouldEqual("Earth");
       It sets_catHomePlanet = () => ValueProvider.Create<Cat>().HomePlanet.ShouldEqual("Earth");
@@ -102,6 +108,10 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       It sets_correctAnimal = () => ValueProvider.Create<Zoo>().SomeAnimal.GetType().ShouldEqual(typeof (Mouse));
       It sets_correctMouse = () => ValueProvider.Create<Zoo>().Mouse.GetType().ShouldEqual(typeof (Mouse));
       It sets_correctElephant = () => ValueProvider.Create<Zoo>().Elephant.GetType().ShouldEqual(typeof (Elephant));
+
+      
+      It sets_DefaultValueOfElephant = () => ValueProvider.Create<Elephant>().DefaultNullable.Value.ShouldEqual(10);
+      It sets_DefinedValueOfElephant = () => ValueProvider.Create<Elephant>().DefinedNullable.Value.ShouldEqual(100);
 
       static ICompoundValueProvider ValueProvider;
     }
@@ -329,6 +339,9 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
   internal class Elephant:Animal
   {
     public string Name { get; [UsedImplicitly]set; }
+
+    public int? DefaultNullable { get; [UsedImplicitly] set; }
+    public int? DefinedNullable { get; [UsedImplicitly] set; }
   }
 
   internal class SomeAttributeBasedFiller : AttributeBasedValueProvider<string, SomeValue>

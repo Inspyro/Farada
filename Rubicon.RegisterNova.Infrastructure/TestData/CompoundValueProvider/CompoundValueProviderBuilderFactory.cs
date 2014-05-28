@@ -37,25 +37,8 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       defaultProvider.AddProvider((ulong ul) => ul, new RandomULongGenerator());
       defaultProvider.AddProvider((ushort us) => us, new RandomUShortGenerator());
 
-      //TODO: include nullable types in the type stepping logic (key.getpreviouskey)
-      defaultProvider.AddProvider((bool? b)=>b, ctx => ctx.ValueProvider.Create<bool>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider((byte? b)=>b, ctx => ctx.ValueProvider.Create<byte>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider((char? c)=>c, ctx => ctx.ValueProvider.Create<char>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider((decimal? d)=>d, ctx => ctx.ValueProvider.Create<decimal>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider((double? d)=>d, ctx => ctx.ValueProvider.Create<double>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider((float? f)=>f, ctx => ctx.ValueProvider.Create<float>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider((int? i)=>i, ctx => ctx.ValueProvider.Create<int>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider((long? l)=>l, ctx => ctx.ValueProvider.Create<long>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider((sbyte? sb)=>sb, ctx => ctx.ValueProvider.Create<sbyte>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider((short? s)=>s, ctx => ctx.ValueProvider.Create<short>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider((uint? ui)=>ui, ctx => ctx.ValueProvider.Create<uint>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider((ulong? ul)=>ul, ctx => ctx.ValueProvider.Create<ulong>(propertyInfo: ctx.PropertyInfo));
-      defaultProvider.AddProvider((ushort? us)=>us, ctx => ctx.ValueProvider.Create<ushort>(propertyInfo: ctx.PropertyInfo));
-
       defaultProvider.AddProvider((string s)=>s, new RandomWordGenerator(new RandomSyllabileGenerator())); //string
       defaultProvider.AddProvider((DateTime dt)=>dt, new RandomPastDateTimeGenerator());
-
-      defaultProvider.AddProvider((DateTime? dt)=>dt, ctx => ctx.ValueProvider.Create<DateTime>(propertyInfo: ctx.PropertyInfo)); 
 
       //constraint providers
       defaultProvider.AddProvider((string s, EmailAddressAttribute eaa) => s, new EmailGenerator());

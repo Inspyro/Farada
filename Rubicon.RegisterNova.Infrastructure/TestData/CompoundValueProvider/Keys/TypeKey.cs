@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using AutoMapper.Internal;
 using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Keys
@@ -16,6 +17,14 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
 
     private IKey CreatePreviousKey ()
     {
+      if (_type.IsNullableType())
+      {
+        var typeOfNullable = _type.GetTypeOfNullable();
+
+        if (typeOfNullable != null)
+          return new TypeKey(typeOfNullable);
+      }
+
       var baseType = _type.BaseType;
       if (baseType != null)
         return new TypeKey(baseType);

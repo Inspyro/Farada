@@ -201,8 +201,8 @@
     <Compile Include="TestData\TestDataGeneratorFactory.cs" />
     <Compile Include="TestData\CompoundValueProvider\ICompoundValueProvider.cs" />
     <Compile Include="TestData\CompoundValueProvider\ICompoundValueProviderBuilder.cs" />
-    <Compile Include="TestData\CompoundValueProvider\Keys\Key.cs" />
-    <Compile Include="TestData\CompoundValueProvider\Keys\KeyPart.cs" />
+    <Compile Include="TestData\CompoundValueProvider\Keys\IKey.cs" />
+    <Compile Include="TestData\CompoundValueProvider\Keys\PropertyKeyPart.cs" />
     <Compile Include="TestData\CompoundValueProvider\ValueProviderDictionary.cs" />
     <Compile Include="TestData\CompoundValueProvider\CompoundValueProviderBuilder.cs" />
     <Compile Include="TestData\CompoundValueProvider\CompoundValueProviderBuilderFactory.cs" />
