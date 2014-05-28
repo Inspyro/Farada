@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using Machine.Specifications;
 using Rubicon.RegisterNova.Infrastructure.JetBrainsAnnotations;
 using Rubicon.RegisterNova.Infrastructure.TestData;
@@ -244,6 +248,74 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       It doesNothing = () => true.ShouldBeTrue();
     }
 
+    class when_using_TypeValueProvider_PLinqThreadedPerformance
+    {
+      Because of = () =>
+      {
+        var basicDomain = new DomainConfiguration();
+        var valueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(basicDomain);
+
+        const int count = 4000000; //4 million
+
+        var start = DateTime.Now;
+
+        var threadNumber = 8;
+        var trueCount = (int) ((double) count / threadNumber);
+
+        var listOfLists = Infrastructure.Utilities.EnumerableExtensions.Repeat(() => new UniverseList(), threadNumber).ToList();
+
+        Parallel.ForEach(
+            listOfLists,
+            list => 
+              list.InternalList = valueProvider.CreateMany<Universe>(trueCount));
+
+        Console.WriteLine("Took {0} s to generate {1} universes", (DateTime.Now - start).TotalSeconds, listOfLists.Count);
+      };
+
+      It doesNothing = () => true.ShouldBeTrue();
+    }
+
+     class when_using_TypeValueProvider_ClassicThreadedPerformance
+    {
+      Because of = () =>
+      {
+        var basicDomain = new DomainConfiguration();
+        var valueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(basicDomain);
+
+        const int count = 4000000; //4 million
+
+        var start = DateTime.Now;
+
+        var threadNumber = 4;
+        var trueCount = (int) ((double) count / threadNumber);
+
+        var listOfLists = Infrastructure.Utilities.EnumerableExtensions.Repeat(() => new UniverseList(), threadNumber).ToList();
+
+        var threads = new Thread[threadNumber];
+        for (int i = 0; i < threadNumber; i++)
+        {
+          var list = listOfLists[i];
+
+          threads[i] = new Thread(
+              () =>
+              {
+                list.InternalList = valueProvider.CreateMany<Universe>(trueCount);
+              });
+
+          threads[i].Start();
+        }
+
+        foreach (var thread in threads)
+        {
+          thread.Join();
+        }
+
+        Console.WriteLine("Took {0} s to generate {1} universes", (DateTime.Now - start).TotalSeconds, listOfLists.Count);
+      };
+
+      It doesNothing = () => true.ShouldBeTrue();
+    }
+
     class when_using_TypeValueProvider_Word
     {
       Because of = () =>
@@ -300,6 +372,11 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
       It doesNothing = () => true.ShouldBeTrue();
     }
+  }
+
+  internal class UniverseList
+  {
+    public IReadOnlyList<Universe> InternalList { get; set; }
   }
 
   internal class ElephantInjector : ValueProvider<Elephant>

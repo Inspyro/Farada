@@ -9,9 +9,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
   {
     private static readonly ConcurrentDictionary<Type, IFastTypeInfo> s_typeInfos = new ConcurrentDictionary<Type, IFastTypeInfo>();
 
-    private static readonly ConcurrentDictionary<PropertyInfo, IFastPropertyInfo> s_propertyInfos =
-        new ConcurrentDictionary<PropertyInfo, IFastPropertyInfo>();
-
     public static IFastTypeInfo GetTypeInfo (Type type)
     {
       return s_typeInfos.GetOrAdd(type, CreateTypeInfo);
@@ -25,7 +22,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
 
     public static IFastPropertyInfo GetPropertyInfo (PropertyInfo propertyInfo)
     {
-      return s_propertyInfos.GetOrAdd(propertyInfo, CreatePropertyInfo);
+      return CreatePropertyInfo(propertyInfo);
     }
 
     private static IFastPropertyInfo CreatePropertyInfo (PropertyInfo propertyInfo)
