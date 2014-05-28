@@ -242,7 +242,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                      {
                          BuildValueProvider = builder =>
                          {
-                           builder.AddProvider((string s)=>s, new RandomWordGenerator());
+                           builder.AddProvider((string s) => s, new RandomWordGenerator(new RandomSyllabileGenerator()));
                            builder.AddProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
                            builder.AddProvider((Cat c) => c.Name, ctx => "cat name...");
                          }

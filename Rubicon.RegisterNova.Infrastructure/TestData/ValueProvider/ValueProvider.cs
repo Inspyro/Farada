@@ -22,21 +22,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
       return propertyType == typeof (TProperty);
     }
 
-    public abstract TContext CreateContext (
-        ICompoundValueProvider compoundValueProvider,
-        Random random,
-        Func<object> getPreviousValue,
-        Type propertyType,
-        IFastPropertyInfo fastPropertyInfo);
+    public abstract TContext CreateContext (ValueProviderObjectContext objectContext);
 
-    IValueProviderContext IValueProvider.CreateContext (
-        ICompoundValueProvider compoundValueProvider,
-        Random random,
-        Func<object> getPreviousValue,
-        Type propertyType,
-        IFastPropertyInfo fastPropertyInfo)
+    IValueProviderContext IValueProvider.CreateContext (ValueProviderObjectContext objectContext)
     {
-      return CreateContext(compoundValueProvider, random, getPreviousValue, propertyType, fastPropertyInfo);
+      return CreateContext(objectContext);
     }
 
     /// <summary>
@@ -48,14 +38,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
 
   public abstract class ValueProvider<TProperty> : ValueProvider<TProperty, ValueProviderContext<TProperty>>
   {
-    public override ValueProviderContext<TProperty> CreateContext (
-        ICompoundValueProvider compoundValueProvider,
-        Random random,
-        Func<object> getPreviousValue,
-        Type propertyType,
-        IFastPropertyInfo fastPropertyInfo)
+    public override ValueProviderContext<TProperty> CreateContext (ValueProviderObjectContext objectContext)
     {
-      return new ValueProviderContext<TProperty>(compoundValueProvider, random, () => (TProperty) getPreviousValue(), propertyType, fastPropertyInfo);
+      return new ValueProviderContext<TProperty>(objectContext);
     }
   }
 

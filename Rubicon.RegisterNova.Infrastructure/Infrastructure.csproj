@@ -156,8 +156,6 @@
     <Compile Include="TestData\CompoundValueProvider\Keys\TypeKey.cs" />
     <Compile Include="TestData\CompoundValueProvider\ModificationContext.cs" />
     <Compile Include="TestData\CompoundValueProvider\ValueProviderLink.cs" />
-    <Compile Include="TestData\FastReflection\Constraints.cs" />
-    <Compile Include="TestData\FastReflection\ContstraintUtility.cs" />
     <Compile Include="TestData\HelperCode\CompoundValueProvider\CompoundValueProviderBuilderExtensions.cs" />
     <Compile Include="TestData\HelperCode\CompoundValueProvider\NullModifier.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\EmailGenerator.cs" />
@@ -177,6 +175,8 @@
     <Compile Include="TestData\HelperCode\ValueProviders\RandomULongGenerator.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\RandomUShortGenerator.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\RandomIntGenerator.cs" />
+    <Compile Include="TestData\HelperCode\Constraints\RangeConstrainedValueProviderContext.cs" />
+    <Compile Include="TestData\HelperCode\Constraints\StringConstrainedValueProviderContext.cs" />
     <Compile Include="TestData\RuleBasedDataGenerator\GeneratorDataProvider.cs" />
     <Compile Include="TestData\RuleBasedDataGenerator\GeneratorResult.cs" />
     <Compile Include="TestData\RuleBasedDataGenerator\GlobalRule.cs" />

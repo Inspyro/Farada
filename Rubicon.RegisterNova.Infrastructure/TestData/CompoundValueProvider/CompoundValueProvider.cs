@@ -113,11 +113,12 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       var previousContext = previousLink == null ? null : CreateValueProviderContext(previousLink, key);
 
       return providerLink.Value.CreateContext(
-          this,
-          _random,
-          () => previousLink == null ? null : CreateInstances(previousLink.Key, previousLink.Value, previousContext, 1).Single(),
-          key.PropertyType,
-          key.Property);
+          new ValueProviderObjectContext(
+              this,
+              _random,
+              () => previousLink == null ? null : CreateInstances(previousLink.Key, previousLink.Value, previousContext, 1).Single(),
+              key.PropertyType,
+              key.Property));
     }
 
   }

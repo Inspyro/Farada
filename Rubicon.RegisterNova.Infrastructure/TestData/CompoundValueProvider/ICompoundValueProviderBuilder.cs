@@ -19,7 +19,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     /// <summary>
     /// TODO
     /// </summary>
-    void AddProvider<TProperty, TContainer> (Expression<Func<TContainer, TProperty>> chainExpression, ValueProvider<TProperty> valueProvider);
+    void AddProvider<TProperty, TContainer, TContext> (Expression<Func<TContainer, TProperty>> chainExpression, ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>;
 
     /// <summary>
     /// TODO

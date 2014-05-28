@@ -52,7 +52,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       defaultProvider.AddProvider((ulong? ul)=>ul, ctx => ctx.ValueProvider.Create<ulong>(propertyInfo: ctx.PropertyInfo));
       defaultProvider.AddProvider((ushort? us)=>us, ctx => ctx.ValueProvider.Create<ushort>(propertyInfo: ctx.PropertyInfo));
 
-      defaultProvider.AddProvider((string s)=>s, new RandomWordGenerator()); //string
+      defaultProvider.AddProvider((string s)=>s, new RandomWordGenerator(new RandomSyllabileGenerator())); //string
       defaultProvider.AddProvider((DateTime dt)=>dt, new RandomPastDateTimeGenerator());
 
       defaultProvider.AddProvider((DateTime? dt)=>dt, ctx => ctx.ValueProvider.Create<DateTime>(propertyInfo: ctx.PropertyInfo)); 

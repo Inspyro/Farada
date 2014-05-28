@@ -37,7 +37,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       _valueProviderDictionary.AddValueProvider(key, attributeBasedValueProvider);
     }
 
-    public void AddProvider<TProperty, TContainer> (Expression<Func<TContainer, TProperty>> chainExpression, ValueProvider<TProperty> valueProvider)
+    public void AddProvider<TProperty, TContainer, TContext> (Expression<Func<TContainer, TProperty>> chainExpression, ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>
     {
       var declaringType = chainExpression.GetParameterType();
       var expressionChain = chainExpression.ToChain().ToList();

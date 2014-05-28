@@ -31,7 +31,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
 
       _attributes = propertyInfo.GetCustomAttributes().ToList();
       _attributeTypes = _attributes.Select(a=>a.GetType()).ToList();
-      Constraints = ContstraintUtility.GetConstraints(this);
 
        _getFunction = CreateGetFunction(propertyInfo, targetType);
       _setAction=CreateSetAction(propertyInfo, targetType);
@@ -87,8 +86,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
       get { return _attributeTypes; }
     }
 
-    public Constraints Constraints { get; private set; }
-
     public bool IsDefined (Type type)
     {
       return _attributeTypes.Any(type.IsAssignableFrom);
@@ -99,7 +96,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
   {
     T GetCustomAttribute<T> () where T : Attribute;
     IEnumerable<Type> Attributes { get; }
-    Constraints Constraints { get; }
 
     bool IsDefined (Type type);
     object GetValue (object instance);

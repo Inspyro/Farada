@@ -1,6 +1,4 @@
 ﻿using System;
-using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
-using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
 {
@@ -19,20 +17,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
       return propertyType == typeof (TProperty);
     }
 
-    public IValueProviderContext CreateContext (
-        ICompoundValueProvider compoundValueProvider,
-        Random random,
-        Func<object> getPreviousValue,
-        Type propertyType,
-        IFastPropertyInfo fastPropertyInfo)
+    public IValueProviderContext CreateContext (ValueProviderObjectContext objectContext)
     {
-      return new AttributeValueProviderContext<TProperty, TAttribute>(
-          compoundValueProvider,
-          random,
-          () => (TProperty) getPreviousValue(),
-          propertyType,
-          fastPropertyInfo,
-          fastPropertyInfo.GetCustomAttribute<TAttribute>());
+      return new AttributeValueProviderContext<TProperty, TAttribute>(objectContext, objectContext.PropertyInfo.GetCustomAttribute<TAttribute>());
     }
   }
 }

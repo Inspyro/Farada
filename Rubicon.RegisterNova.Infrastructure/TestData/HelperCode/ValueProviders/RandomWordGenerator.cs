@@ -1,65 +1,42 @@
 ﻿using System;
 using System.Text;
+using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
+using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.Constraints;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
 {
-  public class RandomWordGenerator : RandomSyllabileGenerator
+  public class RandomWordGenerator:ValueProvider<string, StringConstrainedValueProviderContext>
   {
+    private readonly RandomSyllabileGenerator _randomSyllabileGenerator;
+
     private readonly int _minWordLength;
     private readonly int _maxWordLength;
 
-    public RandomWordGenerator (int minWordLength = 3, int maxWordLength = 10, int minSyllabileLength = 3, int maxSyllabileLength = 5)
-        : base(minSyllabileLength, maxSyllabileLength)
+    public RandomWordGenerator (RandomSyllabileGenerator randomSyllabileGenerator, int minWordLength = 3, int maxWordLength = 10)
     {
       //TODO chech
       _minWordLength = minWordLength;
       _maxWordLength = maxWordLength;
+
+      _randomSyllabileGenerator = randomSyllabileGenerator;
     }
 
-    protected override string CreateValue (ValueProviderContext<string> context)
+    public override StringConstrainedValueProviderContext CreateContext (ValueProviderObjectContext objectContext)
     {
-      var constraints = context.PropertyInfo != null ? context.PropertyInfo.Constraints : null; //TODO: Generalize constraints to support custom attributes
+      var stringConstraints = StringConstraints.FromProperty(objectContext.PropertyInfo) ?? new StringConstraints(_minWordLength, _maxWordLength);
+      
+      return new StringConstrainedValueProviderContext(objectContext, stringConstraints);
+    }
 
-      var minWordLength = _minWordLength;
-      var maxWordLength = _maxWordLength;
-
-      if (constraints != null)
-      {
-        if (constraints.MinLength != null)
-        {
-          minWordLength = constraints.MinLength.Value;
-          
-          if (constraints.MaxLength != null)
-          {
-            maxWordLength = constraints.MaxLength.Value;
-          }
-          else
-          {
-            maxWordLength = minWordLength + 100;
-          }
-        }
-        else if (constraints.MaxLength != null)
-        {
-          maxWordLength = constraints.MaxLength.Value;
-
-          if (constraints.MinLength != null)
-          {
-            minWordLength = constraints.MinLength.Value;
-          }
-          else
-          {
-            minWordLength = 0;
-          }
-        }
-      }
-
-      var targetWordLength = context.Random.Next(minWordLength, maxWordLength);
+    protected override string CreateValue (StringConstrainedValueProviderContext context)
+    {
+      var targetWordLength = context.Random.Next(context.StringConstraints.MinLength, context.StringConstraints.MaxLength);
 
       var wordBuilder = new StringBuilder();
       while (wordBuilder.Length < targetWordLength)
       {
-        wordBuilder.Append(base.CreateValue(context));
+        _randomSyllabileGenerator.Fill(context, wordBuilder);
       }
 
       if (context.Random.Next() > 0.5&&wordBuilder.Length>0)
@@ -71,7 +48,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
     }
   }
 
-  public class RandomSyllabileGenerator:ValueProvider<string>
+  public class RandomSyllabileGenerator
   {
     private readonly int _min;
     private readonly int _max;
@@ -85,18 +62,15 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
       _max = max;
     }
 
-    protected override string CreateValue (ValueProviderContext<string> context)
+    internal void Fill (ValueProviderContext<string> context, StringBuilder stringBuilder)
     {
      var len = context.Random.Next(_min, _max);
 
-      var syllabile = new StringBuilder();
       for (var i = 0; i < len; i++)
       {
         var c = i == 1 ? s_vowels[context.Random.Next(s_vowels.Length)] : s_consonants[context.Random.Next(s_consonants.Length)];
-        syllabile.Append(c);
+        stringBuilder.Append(c);
       }
-
-      return syllabile.ToString();
     }
   }
 }
