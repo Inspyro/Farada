@@ -156,6 +156,7 @@
     <Compile Include="TestData\CompoundValueProvider\Keys\TypeKey.cs" />
     <Compile Include="TestData\CompoundValueProvider\ModificationContext.cs" />
     <Compile Include="TestData\CompoundValueProvider\ValueProviderLink.cs" />
+    <Compile Include="TestData\FastReflection\FastActivator.cs" />
     <Compile Include="TestData\HelperCode\CompoundValueProvider\CompoundValueProviderBuilderExtensions.cs" />
     <Compile Include="TestData\HelperCode\CompoundValueProvider\NullModifier.cs" />
     <Compile Include="TestData\HelperCode\ValueProviders\EmailGenerator.cs" />

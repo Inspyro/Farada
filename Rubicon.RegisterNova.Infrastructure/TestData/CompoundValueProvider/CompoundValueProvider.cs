@@ -94,10 +94,12 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
 
     private static IList<object> CreateInstances (IKey key, IValueProvider valueProvider, IValueProviderContext valueProviderContext, int numberOfObjects)
     {
-      if (valueProvider == null||valueProviderContext==null)
+      if (valueProvider == null || valueProviderContext == null)
       {
+        var propertyFactory = FastActivator.GetFactory(key.PropertyType);
+
         return key.PropertyType.CanBeInstantiated()
-            ? EnumerableExtensions.Repeat(() => Activator.CreateInstance(key.PropertyType), numberOfObjects).ToList()
+            ? EnumerableExtensions.Repeat(() => propertyFactory(), numberOfObjects).ToList()
             : null;
       }
 
