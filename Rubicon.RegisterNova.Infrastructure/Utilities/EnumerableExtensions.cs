@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Rubicon.RegisterNova.Infrastructure.JetBrainsAnnotations;
 
 namespace Rubicon.RegisterNova.Infrastructure.Utilities
@@ -22,6 +24,33 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
       {
         yield return createT();
       }
+    }
+
+    public static IEnumerable<T> RepeatParallel<T> (Func<T> createT, int count)
+    {
+      const int threadCount = 8;
+      var countPerThread = (int) ((double) count / threadCount);
+
+      var listOfLists = Repeat(() => new List<T>(), threadCount).ToList();
+
+      var tasks  = new Task[threadCount];
+      for (var i = 0; i < threadCount; i++)
+      {
+        var list = listOfLists[i];
+
+        tasks[i] = Task.Factory.StartNew(
+            () =>
+            {
+              for (var c = 0; c < countPerThread; c++)
+              {
+                list.Add(createT());
+              }
+            });
+      }
+
+      Task.WaitAll(tasks);
+
+      return listOfLists.SelectMany(list => list);
     }
 
     /// <summary>

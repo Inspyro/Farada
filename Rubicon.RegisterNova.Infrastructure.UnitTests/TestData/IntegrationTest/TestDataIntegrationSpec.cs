@@ -13,6 +13,7 @@ using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.CompoundValueProvider;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.RuleBasedDataGeneration;
 using Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders;
+using Rubicon.RegisterNova.Infrastructure.TestData.Parallelization;
 using Rubicon.RegisterNova.Infrastructure.TestData.RuleBasedDataGenerator;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 using Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest;
@@ -236,7 +237,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
         var basicDomain = new DomainConfiguration();
         var valueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(basicDomain);
 
-        const int count = 1000000; //1 million
+        const int count = 4000000; //1 million
 
         var start = DateTime.Now;
 
@@ -255,62 +256,14 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
         var basicDomain = new DomainConfiguration();
         var valueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(basicDomain);
 
-        const int count = 4000000; //4 million
+        const int count = 1000000; //1 million
 
         var start = DateTime.Now;
+        var listOfUniverses = Parallelization.DistributeParallel(chunkCount => valueProvider.CreateMany<Universe>(chunkCount), count).ToList();
 
-        var threadNumber = 8;
-        var trueCount = (int) ((double) count / threadNumber);
-
-        var listOfLists = Infrastructure.Utilities.EnumerableExtensions.Repeat(() => new UniverseList(), threadNumber).ToList();
-
-        Parallel.ForEach(
-            listOfLists,
-            list => 
-              list.InternalList = valueProvider.CreateMany<Universe>(trueCount));
-
-        Console.WriteLine("Took {0} s to generate {1} universes", (DateTime.Now - start).TotalSeconds, listOfLists.Count);
-      };
-
-      It doesNothing = () => true.ShouldBeTrue();
-    }
-
-     class when_using_TypeValueProvider_ClassicThreadedPerformance
-    {
-      Because of = () =>
-      {
-        var basicDomain = new DomainConfiguration();
-        var valueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(basicDomain);
-
-        const int count = 4000000; //4 million
-
-        var start = DateTime.Now;
-
-        var threadNumber = 4;
-        var trueCount = (int) ((double) count / threadNumber);
-
-        var listOfLists = Infrastructure.Utilities.EnumerableExtensions.Repeat(() => new UniverseList(), threadNumber).ToList();
-
-        var threads = new Thread[threadNumber];
-        for (int i = 0; i < threadNumber; i++)
-        {
-          var list = listOfLists[i];
-
-          threads[i] = new Thread(
-              () =>
-              {
-                list.InternalList = valueProvider.CreateMany<Universe>(trueCount);
-              });
-
-          threads[i].Start();
-        }
-
-        foreach (var thread in threads)
-        {
-          thread.Join();
-        }
-
-        Console.WriteLine("Took {0} s to generate {1} universes", (DateTime.Now - start).TotalSeconds, listOfLists.Count);
+        Console.WriteLine(
+            "Took {0} s to generate {1} universes",
+            (DateTime.Now - start).TotalSeconds,listOfUniverses.Count);
       };
 
       It doesNothing = () => true.ShouldBeTrue();

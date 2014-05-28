@@ -177,6 +177,7 @@
     <Compile Include="TestData\HelperCode\ValueProviders\RandomIntGenerator.cs" />
     <Compile Include="TestData\HelperCode\Constraints\RangeConstrainedValueProviderContext.cs" />
     <Compile Include="TestData\HelperCode\Constraints\StringConstrainedValueProviderContext.cs" />
+    <Compile Include="TestData\Parallelization\Parallelization.cs" />
     <Compile Include="TestData\RuleBasedDataGenerator\GeneratorDataProvider.cs" />
     <Compile Include="TestData\RuleBasedDataGenerator\GeneratorResult.cs" />
     <Compile Include="TestData\RuleBasedDataGenerator\GlobalRule.cs" />
