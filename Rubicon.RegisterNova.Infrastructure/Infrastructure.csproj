@@ -155,6 +155,7 @@
     <Compile Include="TestData\CompoundValueProvider\Keys\ChainedKey.cs" />
     <Compile Include="TestData\CompoundValueProvider\Keys\TypeKey.cs" />
     <Compile Include="TestData\CompoundValueProvider\ModificationContext.cs" />
+    <Compile Include="TestData\CompoundValueProvider\ValueProviderLink.cs" />
     <Compile Include="TestData\FastReflection\Constraints.cs" />
     <Compile Include="TestData\FastReflection\ContstraintUtility.cs" />
     <Compile Include="TestData\HelperCode\CompoundValueProvider\CompoundValueProviderBuilderExtensions.cs" />
@@ -207,6 +208,7 @@
     <Compile Include="TestData\CompoundValueProvider\CompoundValueProviderBuilderFactory.cs" />
     <Compile Include="TestData\ValueProvider\AttributeBasedValueProvider.cs" />
     <Compile Include="TestData\ValueProvider\AttributeValueProviderContext.cs" />
+    <Compile Include="TestData\ValueProvider\SubTypeValueProvider.cs" />
     <Compile Include="TestData\ValueProvider\ValueProviderContext.cs" />
     <Compile Include="Utilities\EqualityUtility.cs" />
     <Compile Include="Utilities\ExpressionExtensions.cs" />

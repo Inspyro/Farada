@@ -10,6 +10,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
   internal interface IValueProvider
   {
     object CreateValue (IValueProviderContext context);
+    bool CanHandle (Type propertyType);
 
     IValueProviderContext CreateContext (
         ICompoundValueProvider compoundValueProvider,

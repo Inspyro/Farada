@@ -10,11 +10,16 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
   /// <typeparam name="TProperty">TODO</typeparam>
   /// <typeparam name="TContext"></typeparam>
   public abstract class ValueProvider<TProperty, TContext> : IValueProvider
-    where TContext : ValueProviderContext<TProperty>
+      where TContext : ValueProviderContext<TProperty>
   {
     object IValueProvider.CreateValue (IValueProviderContext context)
     {
-      return CreateValue( (TContext) context);
+      return CreateValue((TContext) context);
+    }
+
+    public virtual bool CanHandle (Type propertyType)
+    {
+      return propertyType == typeof (TProperty);
     }
 
     public abstract TContext CreateContext (
@@ -39,13 +44,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
     /// </summary>
     /// <param name="context"></param>
     protected abstract TProperty CreateValue (TContext context);
-
-    
   }
 
-    public abstract class ValueProvider<TProperty> : ValueProvider<TProperty, ValueProviderContext<TProperty>>
+  public abstract class ValueProvider<TProperty> : ValueProvider<TProperty, ValueProviderContext<TProperty>>
   {
-      public override ValueProviderContext<TProperty> CreateContext (
+    public override ValueProviderContext<TProperty> CreateContext (
         ICompoundValueProvider compoundValueProvider,
         Random random,
         Func<object> getPreviousValue,

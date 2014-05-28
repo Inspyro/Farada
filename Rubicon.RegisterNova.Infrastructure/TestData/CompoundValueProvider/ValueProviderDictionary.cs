@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Keys;
 using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 
@@ -38,11 +39,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     internal ValueProviderLink GetLink (IKey key)
     {
       ValueProviderLink link = null;
-      while (link == null && key != null)
+      var concreteType = key.PropertyType;
+
+      while ((link == null||link.Value==null||!link.Value.CanHandle(concreteType)) && key != null)
       {
         link = GetOrDefault(key);
-      
-        // TODO: Differentiate fixed and subtype value providers
         key = key.PreviousKey;
       }
 

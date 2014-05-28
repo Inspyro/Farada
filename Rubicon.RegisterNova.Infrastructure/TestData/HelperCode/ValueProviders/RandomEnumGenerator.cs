@@ -3,7 +3,7 @@ using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
 {
-  internal class RandomEnumGenerator:ValueProvider<Enum>
+  internal class RandomEnumGenerator:SubTypeValueProvider<Enum>
   {
     protected override Enum CreateValue (ValueProviderContext<Enum> context)
     {

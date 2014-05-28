@@ -36,6 +36,8 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                            builder.AddProvider((Dog d) => d.BestDogFriend.LastName, new LastValueGenerator("friend last name"));
 
                            builder.AddProvider((Cat c) => c, new CatGenerator());
+                           builder.AddProvider((Animal a) => a, new AnimalMouseFiller());
+                           builder.AddProvider((Elephant e) => e, new ElephantInjector());
 
                            builder.AddProvider((Dog d) => d.BestDogFriend, new DogFriendInjector());
                            builder.AddProvider((Cat c) => c.Name, ctx => "cat name...");
@@ -60,7 +62,8 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       It sets_correctDogLastName = () => ValueProvider.Create<Dog>().LastName.ShouldEqual("Dog_last name");
 
       It sets_correctDogDefault =
-          () => ValueProvider.Create<Dog>().Default.ShouldEqual("default string");
+          () =>
+            ValueProvider.Create<Dog>().Default.ShouldEqual("default string");
 
       It sets_correctNonAttributeValue = () => 
         ValueProvider.Create<Dog>().AttributedValue.ShouldEqual("default string_test dog attribute");
@@ -95,6 +98,10 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
       It sets_dogHomePlanet = () => ValueProvider.Create<Dog>().HomePlanet.ShouldEqual("Earth");
       It sets_catHomePlanet = () => ValueProvider.Create<Cat>().HomePlanet.ShouldEqual("Earth");
+
+      It sets_correctAnimal = () => ValueProvider.Create<Zoo>().SomeAnimal.GetType().ShouldEqual(typeof (Mouse));
+      It sets_correctMouse = () => ValueProvider.Create<Zoo>().Mouse.GetType().ShouldEqual(typeof (Mouse));
+      It sets_correctElephant = () => ValueProvider.Create<Zoo>().Elephant.GetType().ShouldEqual(typeof (Elephant));
 
       static ICompoundValueProvider ValueProvider;
     }
@@ -285,9 +292,43 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     }
   }
 
+  internal class ElephantInjector : ValueProvider<Elephant>
+  {
+    protected override Elephant CreateValue (ValueProviderContext<Elephant> context)
+    {
+      return new Elephant();
+    }
+  }
+
+  internal class AnimalMouseFiller : ValueProvider<Animal>
+  {
+    protected override Animal CreateValue (ValueProviderContext<Animal> context)
+    {
+      return new Mouse();
+    }
+  }
+
   internal class Animal
   {
     public string HomePlanet { get; [UsedImplicitly] set; }
+  }
+
+  internal class Zoo
+  {
+    public Animal SomeAnimal { get; [UsedImplicitly] set; }
+
+    public Elephant Elephant { get; [UsedImplicitly] set; }
+    public Mouse Mouse { get; [UsedImplicitly] set; }
+  }
+
+  internal class Mouse:Animal
+  {
+    public string Name { get; [UsedImplicitly]set; }
+  }
+  
+  internal class Elephant:Animal
+  {
+    public string Name { get; [UsedImplicitly]set; }
   }
 
   internal class SomeAttributeBasedFiller : AttributeBasedValueProvider<string, SomeValue>

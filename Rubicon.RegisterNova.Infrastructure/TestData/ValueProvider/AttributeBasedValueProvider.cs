@@ -14,6 +14,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
       return CreateValue((AttributeValueProviderContext<TProperty, TAttribute>) context);
     }
 
+    public bool CanHandle (Type propertyType)
+    {
+      return propertyType == typeof (TProperty);
+    }
+
     public IValueProviderContext CreateContext (
         ICompoundValueProvider compoundValueProvider,
         Random random,
