@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Rubicon.RegisterNova.Infrastructure.TestData;
-using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
 using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Keys;
 using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
 
