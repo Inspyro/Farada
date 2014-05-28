@@ -12,7 +12,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
   {
     public override bool CanHandle (Type propertyType)
     {
-      return propertyType.IsAssignableFrom(typeof (TProperty));
+      return typeof (TProperty).IsAssignableFrom(propertyType);
     }
   }
 
@@ -20,7 +20,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
   {
     public override bool CanHandle (Type propertyType)
     {
-      return propertyType.IsAssignableFrom(typeof (TProperty));
+      return typeof (TProperty).IsAssignableFrom(propertyType);
     }
   }
 }
