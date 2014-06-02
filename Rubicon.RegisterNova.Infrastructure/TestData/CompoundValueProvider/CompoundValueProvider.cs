@@ -96,11 +96,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     {
       if (valueProvider == null || valueProviderContext == null)
       {
-        var propertyFactory = FastActivator.GetFactory(key.PropertyType);
+        if (!key.PropertyType.CanBeInstantiated())
+          return null;
 
-        return key.PropertyType.CanBeInstantiated()
-            ? EnumerableExtensions.Repeat(() => propertyFactory(), numberOfObjects).ToList()
-            : null;
+        var propertyFactory = FastActivator.GetFactory(key.PropertyType);
+        return EnumerableExtensions.Repeat(() => propertyFactory(), numberOfObjects).ToList();
       }
 
       return EnumerableExtensions.Repeat(() => valueProvider.CreateValue(valueProviderContext), numberOfObjects).ToList();
