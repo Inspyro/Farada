@@ -6,6 +6,7 @@ using SpecK;
 using SpecK.Extensibility;
 using SpecK.Specifications;
 using SpecK.Specifications.InferredApi;
+using SpecK;
 
 namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 {
