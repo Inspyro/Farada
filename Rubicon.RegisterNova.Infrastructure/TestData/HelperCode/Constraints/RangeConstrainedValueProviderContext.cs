@@ -6,6 +6,7 @@ using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.Constraints
 {
   public class RangeConstrainedValueProviderContext<T>:ValueProviderContext<T>
+      where T : IComparable
   {
     public RangeContstraints<T> RangeContstraints { get; private set; }
 
@@ -16,7 +17,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.Constraints
     }
   }
 
-   public class RangeContstraints<T>
+   public class RangeContstraints<T> where T:IComparable
   {
     public T MinValue { get; private set; }
     public T MaxValue { get; private set; }
@@ -36,6 +37,12 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.Constraints
 
       if (rangeAttribute.OperandType != typeof (T))
         return null;
+
+      if (((T) rangeAttribute.Minimum).CompareTo((T) rangeAttribute.Maximum) > 0)
+      {
+        throw new ArgumentOutOfRangeException(
+            string.Format("On the property {0} {1} the Range attribute has an invalid range", property.PropertyType, property.Name));
+      }
 
       return new RangeContstraints<T>((T) rangeAttribute.Minimum, (T) rangeAttribute.Maximum);
     }

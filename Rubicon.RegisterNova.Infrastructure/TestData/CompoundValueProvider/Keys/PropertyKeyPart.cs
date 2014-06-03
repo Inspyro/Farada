@@ -8,16 +8,18 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
   /// </summary>
   internal class PropertyKeyPart: IEquatable<PropertyKeyPart>
   {
+    public Type PropertyType { get; private set; }
     public IFastPropertyInfo Property { get; private set; }
 
-    internal PropertyKeyPart (IFastPropertyInfo property)
+    internal PropertyKeyPart (IFastPropertyInfo property, Type concreteType=null)
     {
       Property = property;
+      PropertyType = concreteType ?? Property.PropertyType;
     }
 
     public override string ToString ()
     {
-      return string.Format("PropertyType: {0}, Property: {1}", Property.PropertyType.Name, Property.Name);
+      return string.Format("PropertyType: {0}, Property: {1}", PropertyType.Name, Property.Name);
     }
 
     public bool Equals (PropertyKeyPart other)
@@ -25,7 +27,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
       if (!Utilities.EqualityUtility.ClassEquals(this, other))
         return false;
 
-      return Property.Name == other.Property.Name && Property.PropertyType == other.Property.PropertyType;
+      return Property.Name == other.Property.Name && PropertyType == other.PropertyType;
     }
 
     public override bool Equals (object obj)
@@ -38,7 +40,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
       unchecked
       {
         var hashCode = (Property.Name.GetHashCode());
-        hashCode = (hashCode * 397) ^ (Property.PropertyType.GetHashCode());
+        hashCode = (hashCode * 397) ^ (PropertyType.GetHashCode());
         return hashCode;
       }
     }

@@ -12,6 +12,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
     private readonly IList<PropertyKeyPart> _propertyChain;
 
     private readonly PropertyKeyPart _top;
+    private Type _concreteDeclaringType;
 
     public IFastPropertyInfo Property
     {
@@ -20,6 +21,14 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
 
     public int RecursionDepth { get; private set; }
 
+    public IKey ChangePropertyType (Type newPropertyType)
+    {
+      var newPropertyChain = new List<PropertyKeyPart>(_propertyChain);
+      newPropertyChain[newPropertyChain.Count - 1] = new PropertyKeyPart(Property, newPropertyType);
+
+      return new ChainedKey(_declaringType, newPropertyChain);
+    }
+
     public IKey PreviousKey { get; private set; }
 
     internal ChainedKey(Type declaringType, IFastPropertyInfo propertyInfo)
@@ -27,16 +36,22 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
     {
     }
 
-    internal ChainedKey (Type declaringType, IList<PropertyKeyPart> propertyChain)
+    internal ChainedKey (Type declaringType, IList<PropertyKeyPart> propertyChain):this(declaringType, declaringType, propertyChain)
+    {
+      
+    }
+
+    private ChainedKey(Type declaringType, Type concreteDeclaringType, IList<PropertyKeyPart> propertyChain)
     {
       ArgumentUtility.CheckNotNull("declaringType", declaringType);
 
       _declaringType = declaringType;
+      _concreteDeclaringType = concreteDeclaringType;
       _propertyChain = propertyChain;
 
       _top = propertyChain.Last();
 
-      RecursionDepth = _propertyChain.Count(keyPart => keyPart.Property.PropertyType == _top.Property.PropertyType);
+      RecursionDepth = _propertyChain.Count(keyPart => keyPart.PropertyType == _top.PropertyType);
       PreviousKey = CreatePreviousKey();
     }
 
@@ -44,7 +59,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
     {
       var baseType = _declaringType.BaseType;
       if (baseType != typeof (object) && baseType != typeof (ValueType)&&baseType!=null)
-        return new ChainedKey(baseType, _propertyChain);
+        return new ChainedKey(baseType, _concreteDeclaringType, _propertyChain);
 
       var bottomProperty = _propertyChain[0];
       var previousProperties = _propertyChain.Slice(1);
@@ -53,11 +68,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
       {
         var attributes = bottomProperty.Property.Attributes.ToList();
         return attributes.Count > 0
-            ? (IKey) new AttributeKey(bottomProperty.Property.PropertyType, attributes)
-            : new TypeKey(bottomProperty.Property.PropertyType);
+            ? (IKey) new AttributeKey(bottomProperty.PropertyType, attributes)
+            : new TypeKey(bottomProperty.PropertyType);
       }
 
-      var previousDeclaringType = bottomProperty.Property.PropertyType;
+      var previousDeclaringType = bottomProperty.PropertyType;
       return new ChainedKey(previousDeclaringType, previousProperties);
     }
 
@@ -68,7 +83,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
 
     public Type PropertyType
     {
-      get { return _top.Property.PropertyType; }
+      get { return _top.PropertyType; }
     }
 
     public bool Equals (ChainedKey other)

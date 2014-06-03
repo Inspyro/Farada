@@ -56,6 +56,21 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.Constraints
       if (minLength < 0 && maxLength < 0)
         return null;
 
+      if(maxLength<minLength)
+      {
+        maxLength = minLength + 100;
+      }
+
+      if (minLength > maxLength)
+      {
+        minLength = maxLength - 100;
+      }
+
+      if(minLength<0)
+      {
+        minLength = 0;
+      }
+
       return new StringConstraints(minLength, maxLength);
     }
   }

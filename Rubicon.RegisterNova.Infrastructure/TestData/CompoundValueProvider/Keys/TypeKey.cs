@@ -54,6 +54,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
       get { return 0; }
     }
 
+    public IKey ChangePropertyType (Type newPropertyType)
+    {
+      return new TypeKey(newPropertyType);
+    }
+
     public bool Equals (TypeKey other)
     {
       if (!Utilities.EqualityUtility.ClassEquals(this, other))

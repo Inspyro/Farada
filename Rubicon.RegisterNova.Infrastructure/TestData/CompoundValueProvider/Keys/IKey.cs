@@ -14,5 +14,6 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
     Type PropertyType { get; }
     IFastPropertyInfo Property { get; }
     int RecursionDepth { get; }
+    IKey ChangePropertyType (Type newPropertyType);
   }
 }

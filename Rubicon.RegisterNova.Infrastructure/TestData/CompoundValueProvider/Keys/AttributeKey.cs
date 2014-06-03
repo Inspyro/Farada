@@ -11,18 +11,28 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
     private readonly Type _propertyType;
     private readonly Type _attributeType;
 
+    private readonly Type _mostConcretePropertyType;
+    private IList<Type> _remainingAttributes;
+
     internal AttributeKey(Type propertyType, Type attributeType)
       : this(propertyType, new List<Type> { attributeType})
     {
     }
 
-    internal AttributeKey (Type propertyType, IList<Type> remainingAttributes)
+    internal AttributeKey (Type propertyType, IList<Type> remainingAttributes):this(propertyType, propertyType, remainingAttributes)
+    {
+      
+    }
+
+    private AttributeKey(Type propertyType, Type mostConcretePropertyType, IList<Type> remainingAttributes )
     {
       if (remainingAttributes.Count < 1)
         throw new ArgumentException("Cannot create attribute key with less then one remaining attribute");
 
       _propertyType = propertyType;
+      _mostConcretePropertyType = mostConcretePropertyType;
       _attributeType = remainingAttributes.First();
+      _remainingAttributes = remainingAttributes;
 
       PreviousKey = CreatePreviousKey(remainingAttributes);
     }
@@ -31,14 +41,13 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
     {
       if (remainingAttributes.Count == 1)
       {
-        return new TypeKey(_propertyType);
+        return new TypeKey(_mostConcretePropertyType);
       }
 
-      var baseType = _propertyType.BaseType;
-      if (baseType != null)
-        return new AttributeKey(baseType, remainingAttributes);
+      if (_propertyType.BaseType != null)
+        return new AttributeKey(_propertyType.BaseType, _propertyType, remainingAttributes);
 
-      return new AttributeKey(_propertyType, remainingAttributes.Slice(1));
+      return new AttributeKey(_propertyType, _mostConcretePropertyType, remainingAttributes.Slice(1));
     }
 
     public IKey PreviousKey { get; private set; }
@@ -61,6 +70,11 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider.Key
     public int RecursionDepth
     {
       get { return 0; }
+    }
+
+    public IKey ChangePropertyType (Type newPropertyType)
+    {
+      return new AttributeKey(newPropertyType, _remainingAttributes);
     }
 
     public bool Equals (AttributeKey other)

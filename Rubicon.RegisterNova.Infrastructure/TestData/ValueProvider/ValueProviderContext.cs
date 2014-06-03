@@ -19,7 +19,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
     public IFastPropertyInfo PropertyInfo { get; private set; }
     public ICompoundValueProvider ValueProvider { get; private set; }
 
-    internal ValueProviderContext (ValueProviderObjectContext objectContext)
+    protected internal ValueProviderContext (ValueProviderObjectContext objectContext)
     {
       ValueProvider = objectContext.ValueProvider;
       Random = objectContext.Random;
