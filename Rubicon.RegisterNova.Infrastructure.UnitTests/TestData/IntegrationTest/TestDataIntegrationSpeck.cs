@@ -525,7 +525,39 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
               .It ("should fill jet engine fuel per second", x => ((Vehicle.JetEngine)x.Result.Engines).FuelUsePerSecond.Should ().Be (20)));
     }
 
-    //TODO: ValueProviderWithoutSubTypes
+    Context ValueProviderNoSubTypeContext ()
+    {
+      return c => c.Given ("domain provider with sub type provider", x =>
+      {
+        Domain = new BaseDomainConfiguration
+                 {
+                     BuildValueProvider =
+                         builder =>
+                         builder.AddProvider ((Vehicle v) => v,
+                             context =>
+                         context.PropertyType == typeof (Vehicle.AirVehicle)
+                             ? (Vehicle) new Vehicle.AirVehicle { Engines = new Vehicle.PropellorEngine () }
+                             : new Vehicle.LandVehicle { Tires = new Vehicle.Tire () })
+                 };
+      })
+          .Given (BasePropertyContext (false, 1)); //TODO: is 1 correct?
+    }
+
+    [Group]
+    void ValueProviderNotForSubTypes()
+    {
+      Specify (x =>
+          ValueProvider.Create<Vehicle.LandVehicle> (MaxRecursionDepth, null))
+          .Elaborate ("should not fill (no exception)", _ => _
+              .Given (ValueProviderNoSubTypeContext ())
+              .It ("should not create land vehicle", x => x.Result.Tires.Should().BeNull()));
+
+       Specify (x =>
+          ValueProvider.Create<Vehicle.AirVehicle> (MaxRecursionDepth, null))
+          .Elaborate ("should not fill (no exception)", _ => _
+              .Given (ValueProviderNoSubTypeContext ())
+              .It ("should not create air vehicle", x =>x.Result.Engines.Should().BeNull()));
+    }
 
     void GenericCase<T> (string caseDescription, Func<IAgainstOrArrangeOrAssert<DontCare, T>, IAssert<DontCare, T>> succession)
     {
