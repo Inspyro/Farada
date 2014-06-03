@@ -13,7 +13,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
   {
     private readonly Dictionary<IKey, ValueProviderLink> _valueProviders;
 
-    public ValueProviderDictionary ()
+    internal ValueProviderDictionary ()
     {
       _valueProviders = new Dictionary<IKey, ValueProviderLink>();
     }

@@ -9,7 +9,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
     public IFastPropertyInfo Property { get; private set; }
     public Random Random { get; private set; }
 
-    public ModificationContext (Type propertyType, IFastPropertyInfo property, Random random)
+    internal ModificationContext (Type propertyType, IFastPropertyInfo property, Random random)
     {
       PropertyType = propertyType;
       Property = property;

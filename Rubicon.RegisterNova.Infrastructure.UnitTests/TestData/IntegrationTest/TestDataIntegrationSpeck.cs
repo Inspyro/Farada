@@ -236,10 +236,37 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                 x.Result.LongName.Length.Should ().BeGreaterOrEqualTo (10000))
               .It ("short name considering MaxLength attribute", x => x.Result.ShortName.Length.Should ().BeLessOrEqualTo (1))
               .It ("medium name considering Min and MaxLength attribute", x => x.Result.MediumName.Length.Should ().BeInRange (10, 20))
+              .It("ranged name considering StringLength attribute", x=>x.Result.RangedName.Length.Should().BeInRange(10,100))
               .It ("ranged number considering Range attribute", x => x.Result.RangedNumber.Should ().BeInRange (10, 100))
               .It ("required prop considering Required attribute", x => x.Result.RequiredProp.Should ().NotBeNull ())
               .It ("never null prop considering NeverNull attribute", x => x.Result.NeverNullProp.Should ().NotBeNull ())
               .It ("other prop considering no attribute", x => x.Result.OtherProp.Should ().BeNull ()));
+    }
+
+    [Group]
+    void ValueProviderWithInvalidConstraints ()
+    {
+      Specify (x =>
+          ValueProvider.Create<ClassWithInvalidStringLengthConstraint> (MaxRecursionDepth, null))
+          .Elaborate ("should raise argument exception", _ => _
+              .Given (BaseDomainContext ())
+              .ItThrows (typeof (ArgumentOutOfRangeException)
+              )
+              .It ("has correct message",
+                  x =>
+                      x.Exception.Message.Should ()
+                          .Contain ("On the property System.String InvalidRangedName the StringLength attribute has an invalid range")));
+
+      Specify (x =>
+          ValueProvider.Create<ClassWithInvalidRangeConstraint> (MaxRecursionDepth, null))
+          .Elaborate ("should raise argument exception", _ => _
+              .Given (BaseDomainContext ())
+              .ItThrows (typeof (ArgumentOutOfRangeException))
+              .It ("has correct message",
+                  x =>
+                      x.Exception.Message.Should ()
+                          .Contain (
+                              "On the property System.Int32 InvalidRangedNumber the Range attribute has an invalid range")));
     }
 
     Context SimpleStringContext (int recursionDepth)
@@ -470,15 +497,61 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
               .It ("should fill int", x => x.Result.Should ().Be (20)));
     }
 
+     Context ValueProviderSubTypeContext ()
+    {
+      return c => c.Given ("domain provider with sub type provider", x =>
+      {
+        Domain = new BaseDomainConfiguration
+                 {
+                     BuildValueProvider = builder => builder.AddProvider ((Vehicle v) => v, new VehicleSubTypeProvider())
+                 };
+      })
+      .Given(BasePropertyContext(false,1)); //TODO: is 1 correct?
+    }
+
+    [Group]
+    void ValueProviderForSubTypes()
+    {
+      Specify (x =>
+          ValueProvider.Create<Vehicle.LandVehicle> (MaxRecursionDepth, null))
+          .Elaborate ("should fill all according to context", _ => _
+              .Given (ValueProviderSubTypeContext ())
+              .It ("should fill tire diameter", x => x.Result.Tires.Diameter.Should ().Be (10)));
+
+       Specify (x =>
+          ValueProvider.Create<Vehicle.AirVehicle> (MaxRecursionDepth, null))
+          .Elaborate ("should fill all according to context", _ => _
+              .Given (ValueProviderSubTypeContext ())
+              .It ("should fill jet engine fuel per second", x => ((Vehicle.JetEngine)x.Result.Engines).FuelUsePerSecond.Should ().Be (20)));
+    }
+
+    //TODO: ValueProviderWithoutSubTypes
+
     void GenericCase<T> (string caseDescription, Func<IAgainstOrArrangeOrAssert<DontCare, T>, IAssert<DontCare, T>> succession)
     {
       Specify (x => ValueProvider.Create<T> (MaxRecursionDepth, null)).Elaborate (caseDescription, succession);
     }
   }
 
-  
-
   #region HelperCode
+
+  class VehicleSubTypeProvider:SubTypeValueProvider<Vehicle>
+  {
+    protected override Vehicle CreateValue (ValueProviderContext<Vehicle> context)
+    {
+      if(context.PropertyType==typeof(Vehicle.AirVehicle))
+      {
+        return new Vehicle.AirVehicle { Engines = new Vehicle.JetEngine { FuelUsePerSecond = 20 } };
+      }
+      
+      if(context.PropertyType==typeof(Vehicle.LandVehicle))
+      {
+        return new Vehicle.LandVehicle { Tires = new Vehicle.Tire { Diameter = 10 } };
+      }
+
+      throw new InvalidOperationException ("property of type " + context.PropertyType + " is not supported by " + this.GetType ().FullName);
+    }
+  }
 
   class IntProviderWithCustomContext:ValueProvider<int, IntProviderWithCustomContext.CustomIntContext>
   {
@@ -619,6 +692,18 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     }
   }
 
+  class ClassWithInvalidStringLengthConstraint
+  {
+    [StringLength (10, MinimumLength = 20)]
+    public string InvalidRangedName { get; set; }
+  }
+
+  class ClassWithInvalidRangeConstraint
+  {
+    [Range (20, 10)]
+    public int InvalidRangedNumber { get; set; }
+  }
+
   class ClassWithConstraints
   {
     [MinLength (10000)]
@@ -633,6 +718,10 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     [MaxLength (20)]
     [Required]
     public string MediumName { get; set; }
+
+    [StringLength(100,MinimumLength = 10)]
+    [Required]
+    public string RangedName { get; set; }
 
     [Range (10, 100)]
     public int RangedNumber { get; set; }

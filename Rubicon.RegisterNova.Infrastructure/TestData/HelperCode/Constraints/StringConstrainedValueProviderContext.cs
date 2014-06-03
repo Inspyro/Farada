@@ -51,6 +51,12 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.Constraints
         var stringLengthAttribute = property.GetCustomAttribute<StringLengthAttribute>();
         minLength = stringLengthAttribute.MinimumLength;
         maxLength = stringLengthAttribute.MaximumLength;
+
+        if(maxLength<minLength)
+        {
+          throw new ArgumentOutOfRangeException(
+              string.Format("On the property {0} {1} the StringLength attribute has an invalid range", property.PropertyType, property.Name));
+        }
       }
 
       if (minLength < 0 && maxLength < 0)

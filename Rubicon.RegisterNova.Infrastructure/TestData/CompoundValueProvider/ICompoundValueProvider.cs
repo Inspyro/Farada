@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
-using Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider;
 
 namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
 {

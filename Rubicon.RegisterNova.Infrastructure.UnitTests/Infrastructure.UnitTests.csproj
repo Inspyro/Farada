@@ -111,17 +111,21 @@
     <Reference Include="Remotion.Development">
       <HintPath>..\prereq\Libraries\Remotion.Development.dll</HintPath>
     </Reference>
-    <Reference Include="SpecK.Extension.AutoFixture">
-      <HintPath>..\packages\SpecK.AutoFixture.0.0.1-Pre00707\lib\net40\SpecK.Extension.AutoFixture.dll</HintPath>
+    <Reference Include="SpecK.Extension.AutoFixture, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SpecK.AutoFixture.0.0.1-Pre00716\lib\net40\SpecK.Extension.AutoFixture.dll</HintPath>
     </Reference>
-    <Reference Include="SpecK.Extension.FakeItEasy">
-      <HintPath>..\packages\SpecK.FakeItEasy.0.0.1-Pre00707\lib\net40\SpecK.Extension.FakeItEasy.dll</HintPath>
+    <Reference Include="SpecK.Extension.FakeItEasy, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SpecK.FakeItEasy.0.0.1-Pre00716\lib\net40\SpecK.Extension.FakeItEasy.dll</HintPath>
     </Reference>
-    <Reference Include="SpecK.Extension.FluentAssertions">
-      <HintPath>..\packages\SpecK.FluentAssertions.0.0.1-Pre00707\lib\net40\SpecK.Extension.FluentAssertions.dll</HintPath>
+    <Reference Include="SpecK.Extension.FluentAssertions, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SpecK.FluentAssertions.0.0.1-Pre00716\lib\net40\SpecK.Extension.FluentAssertions.dll</HintPath>
     </Reference>
-    <Reference Include="SpecK.Framework">
-      <HintPath>..\packages\SpecK.0.0.1-Pre00707\lib\net20\SpecK.Framework.dll</HintPath>
+    <Reference Include="SpecK.Framework, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SpecK.0.0.1-Pre00716\lib\net20\SpecK.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
