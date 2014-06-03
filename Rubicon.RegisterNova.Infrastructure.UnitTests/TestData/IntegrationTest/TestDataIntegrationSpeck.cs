@@ -261,14 +261,14 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
           ValueProvider.Create<Universe> (MaxRecursionDepth, null))
           .Elaborate ("should fill normal property deep in hierarchy", _ => _
               .Given (SimpleStringContext (3))
-              .It ("sets mayor name in 1st level deep hierarchy", x => x.Result.Galaxy1.StarSystem1.Planet1.Major.Name.Should ().Be ("SomeString"))
+              .It ("sets mayor name in 1st level deep hierarchy", x => x.Result.Galaxy1.StarSystem1.Planet1.President.Name.Should ().Be ("SomeString"))
               .It ("sets mayor name in 2nd level deep hierarchy",
                   x =>
-                      x.Result.Galaxy1.StarSystem1.Planet1.Major.Atom1.Particle1.QuantumUniverse.Galaxy1.StarSystem1.Planet1.Major.Name.Should ()
+                      x.Result.Galaxy1.StarSystem1.Planet1.President.Atom1.Particle1.QuantumUniverse.Galaxy1.StarSystem1.Planet1.President.Name.Should ()
                           .Be ("SomeString"))
               .It ("aborts hierarchy filling at 3rd level top element (QuantumUniverse)",
                   x =>
-                      x.Result.Galaxy1.StarSystem1.Planet1.Major.Atom1.Particle1.QuantumUniverse.Galaxy1.StarSystem1.Planet1.Major.Atom1.Particle1
+                      x.Result.Galaxy1.StarSystem1.Planet1.President.Atom1.Particle1.QuantumUniverse.Galaxy1.StarSystem1.Planet1.President.Atom1.Particle1
                           .QuantumUniverse.Galaxy1.Should ()
                           .BeNull ()));
     }
@@ -587,7 +587,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
         internal class Planet
         {
-          public Human Major{ get; set; }
+          public Human President{ get; set; }
 
           internal class Human
           {
