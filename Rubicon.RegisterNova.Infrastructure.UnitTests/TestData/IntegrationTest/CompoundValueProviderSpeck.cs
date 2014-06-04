@@ -136,7 +136,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     [Group]
     void ValueProviderWithEmptyDomain ()
     {
-       GenericCase<byte> ("simple byte case", _ => _
+      GenericCase<byte> ("simple byte case", _ => _
          .Given(BaseDomainContext(false))
           //
           .It ("should be a valid byte", x => x.Result.Should ().Be(default(byte))));
