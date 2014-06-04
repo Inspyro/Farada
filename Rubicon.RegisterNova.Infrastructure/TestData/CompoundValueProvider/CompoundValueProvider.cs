@@ -46,46 +46,70 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       return EnumerableExtensions.Repeat(() => default(TValue), numberOfObjects).ToList();
     }
 
-    // TODO: Maybe add some comments to algorithm?
+    ///Note: The create many method is optimized in many ways
+    ///1: If you create 100 Dog objects it will first created 100 instances of Dog (with a fast version of the Activator)
+    ///   Then it will create 100 properties of each type, by calling the value provider it search only once per property 100 times
+    ///   Then it will fill those 100 properties
+    /// 2: It uses a cached but thread safe version of reflection call <see cref="FastReflection"/>
     private IList<object> CreateMany (IKey currentKey, int numberOfObjects, int maxRecursionDepth)
     {
+      //we check for recursion depth in order to avoid endless recursions (e.g. a->b->a->b->a->...)
       if (currentKey.RecursionDepth >= maxRecursionDepth)
         return null;
 
+      //Here we create the actual instances of the type (this are values created by either the fast activator or the registered value providers)
       var instances = CreateInstances(currentKey, numberOfObjects);
-
-      if (instances != null)
-        instances = ModifyInstances(currentKey, instances);
-
+      
+      //in case the instances were not created (no value provider, not instantiable, we just return null values, that will later be casted to default(T))
       if (instances == null)
         return null;
+      
+      //now that we have valid instances we can modify them all in a batch by the registered modifiers (example: a null modifier, that makes 30% of the instances null)
+      instances = ModifyInstances(currentKey, instances);
 
-      //check if type injection has taken place (important for base class properties)
+      //check if type injection has taken place and split the base type into the correct sub types (important for base class properties)
       var typeToInstances = SplitUpSubTypes(currentKey, instances);
+
+      //no we go over all instances for each sub type (this is more effient)
       foreach (var instancesForType in typeToInstances.Values)
       {
+        //if the sub type cannot be instantiated, we just skip it, it will not be filled (maybe it is a value type)
         if (!instancesForType.Key.PropertyType.IsCompoundType())
           continue;
 
+        //now we reflect the properties of the concrete sub type (note:this is cached in a concurrent dictionary) 
         var properties = FastReflection.FastReflection.GetTypeInfo(instancesForType.Key.PropertyType).Properties;
+
+        //now we fill each property
         foreach (var property in properties)
         {
+          //first we need to create the key that the property has in our creator chain
           var nextKey = instancesForType.Key.CreateKey(property);
 
+          //next we will recursivly call this function (in case the property is compound/complex)
+          //Note: we create many values, in order to execute the logic of the method less often
           var propertyValues = CreateMany(nextKey, instancesForType.Instances.Count, maxRecursionDepth);
+
+          //in case we could not fill the property we just skip filling it, leave it to it's current (probably default) value (e.g. because it was not suported) 
           if (propertyValues == null)
             continue;
 
+          //no we go over all created values and set them for the corresponding previously created instane
+          //Example: if you call CreatMany<Dog>(100) - all dog properties will be created 100 times and filled into the 100 dog instances
           for (var i = 0; i < instancesForType.Instances.Count; ++i)
           {
+            //Of course some of the instances might be null (due to modifieres or sub types or sub type value providers or randomness of value providers)
+            //we can safely skip them
             if (instancesForType.Instances[i] == null)
               continue;
 
+            //in case we got a value we set the property
             property.SetValue(instancesForType.Instances[i], propertyValues[i]);
           }
         }
       }
 
+      //here we return the instances that were created and filled (with all properties and sub properties)
       return instances;
     }
 

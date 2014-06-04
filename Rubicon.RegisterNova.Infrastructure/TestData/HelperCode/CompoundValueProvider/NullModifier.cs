@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using AutoMapper.Internal;
 using Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider;
 using Rubicon.RegisterNova.Infrastructure.Utilities;
 using Rubicon.RegisterNova.Infrastructure.Validation;
@@ -10,15 +9,15 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.CompoundValueP
 {
   public class NullModifier : IInstanceModifier
   {
-    readonly double _nullProbability;
+    readonly double _nullPercentage;
 
     /// <summary>
-    /// TODO: document, nullProbability from 0.0 to 1.0
+    /// Creates a new modifier that modifies exactly the percentage specified
     /// </summary>
-    /// <param name="nullProbability"></param>
-    public NullModifier (double nullProbability)
+    /// <param name="nullPercentage">This value ranges from 0.0 to 1.0 where 0.0 means 0% null and 1.0 means 100% null</param>
+    public NullModifier (double nullPercentage)
     {
-      _nullProbability = nullProbability;
+      _nullPercentage = nullPercentage;
     }
 
     public IList<object> Modify (ModificationContext context, IList<object> instances)
@@ -33,7 +32,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.CompoundValueP
         return instances;
       }
 
-      var instancesToNull = (int) (instances.Count * _nullProbability);
+      var instancesToNull = (int) (instances.Count * _nullPercentage);
 
       for(var i=0;i<instancesToNull;i++)
         instances[i] = null;
