@@ -224,6 +224,7 @@
     <Compile Include="Utilities\CultureContextSpec.cs" />
     <Compile Include="Utilities\CultureInfoUtilitySpec.cs" />
     <Compile Include="Utilities\ExceptionExtensionsSpec.cs" />
+    <Compile Include="Utilities\EnumerableExtensionsSpeck.cs" />
     <Compile Include="Utilities\TypeExtensionsSpec.cs" />
     <Compile Include="Utilities\EnumerableExtensionsSpec.cs" />
     <Compile Include="Utilities\ExpressionUtilitySpec.cs" />
