@@ -7,7 +7,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
   {
     public IList<IFastPropertyInfo> Properties { get; private set; }
 
-    public FastTypeInfo(IList<IFastPropertyInfo> properties )
+    internal FastTypeInfo(IList<IFastPropertyInfo> properties )
     {
       Properties = properties;
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Rubicon.RegisterNova.Infrastructure.Utilities
 {
@@ -20,9 +21,10 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
       return !type.IsValueType && type.CanBeInstantiated();
     }
 
-    public static bool CanBeInstantiated(this Type type)
+    public static bool CanBeInstantiated(this Type type, bool nonPublic=false)
     {
-      return type.GetConstructor(Type.EmptyTypes) != null;
+      return type.GetConstructor(nonPublic ? (BindingFlags.NonPublic|BindingFlags.Instance) : (BindingFlags.Public | BindingFlags.Instance), null, Type.EmptyTypes, null)
+             != null;
     }
   }
 }

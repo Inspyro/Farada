@@ -8,18 +8,16 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.FastReflection
 {
   public class FastPropertyInfo:IFastPropertyInfo
   {
-    private readonly PropertyInfo _propertyInfo;
     private readonly Func<object, object> _getFunction;
     private readonly Action<object, object> _setAction;
     private readonly List<Type> _attributeTypes;
-    private List<Attribute> _attributes;
+    private readonly List<Attribute> _attributes;
 
     public string Name { get; private set; }
     public Type PropertyType { get; private set; }
 
-    public FastPropertyInfo (PropertyInfo propertyInfo)
+    internal FastPropertyInfo (PropertyInfo propertyInfo)
     {
-      _propertyInfo = propertyInfo;
       var targetType = propertyInfo.DeclaringType;
       if(targetType==null)
       {
