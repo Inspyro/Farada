@@ -15,7 +15,7 @@ using SpecK.Specifications.InferredApi;
 namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 {
   [Subject (typeof (ICompoundValueProvider))]
-  public class TestDataIntegrationSpeck : Specs
+  public class CompoundValueProviderSpeck : Specs
   {
     BaseDomainConfiguration Domain;
     bool UseDefaults;

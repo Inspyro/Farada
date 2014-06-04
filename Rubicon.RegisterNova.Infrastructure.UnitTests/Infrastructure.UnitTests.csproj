@@ -214,7 +214,8 @@
     <Compile Include="Reporting\CsvHelperCsvReportGeneratorSpec.cs" />
     <Compile Include="TestData\FastReflection\FastReflectionSpeck.cs" />
     <Compile Include="TestData\FastReflection\FastActivatorSpeck.cs" />
-    <Compile Include="TestData\IntegrationTest\TestDataIntegrationSpeck.cs" />
+    <Compile Include="TestData\IntegrationTest\CompoundValueProviderSpeck.cs" />
+    <Compile Include="TestData\IntegrationTest\RuleBasedDataGeneratorSpeck.cs" />
     <Compile Include="TestData\IntegrationTest\TestDataIntegrationSpec.cs" />
     <Compile Include="Transactions\LazyQueryExecutorSpec.cs" />
     <Compile Include="Transactions\TransactionScopeFactorySpec.cs" />
