@@ -7,7 +7,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
 {
   internal class RandomDoubleGenerator:ValueProvider<double, RangeConstrainedValueProviderContext<double>>
   {
-    public override RangeConstrainedValueProviderContext<double> CreateContext (ValueProviderObjectContext objectContext)
+    protected override RangeConstrainedValueProviderContext<double> CreateContext (ValueProviderObjectContext objectContext)
     {
       var rangeContstraints = RangeContstraints<double>.FromProperty(objectContext.PropertyInfo)
                               ?? new RangeContstraints<double>(double.MinValue, double.MaxValue);

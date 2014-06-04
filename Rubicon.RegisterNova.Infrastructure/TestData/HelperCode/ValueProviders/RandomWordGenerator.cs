@@ -22,7 +22,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
       _randomSyllabileGenerator = randomSyllabileGenerator;
     }
 
-    public override StringConstrainedValueProviderContext CreateContext (ValueProviderObjectContext objectContext)
+    protected override StringConstrainedValueProviderContext CreateContext (ValueProviderObjectContext objectContext)
     {
       var stringConstraints = StringConstraints.FromProperty(objectContext.PropertyInfo) ?? new StringConstraints(_minWordLength, _maxWordLength);
       return new StringConstrainedValueProviderContext(objectContext, stringConstraints);

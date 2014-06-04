@@ -23,7 +23,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
       return propertyType == typeof (TProperty) || (propertyType.IsNullableType() && propertyType.GetTypeOfNullable() == typeof (TProperty));
     }
 
-    public abstract TContext CreateContext (ValueProviderObjectContext objectContext);
+    protected abstract TContext CreateContext (ValueProviderObjectContext objectContext);
 
     IValueProviderContext IValueProvider.CreateContext (ValueProviderObjectContext objectContext)
     {
@@ -39,7 +39,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
 
   public abstract class ValueProvider<TProperty> : ValueProvider<TProperty, ValueProviderContext<TProperty>>
   {
-    public override ValueProviderContext<TProperty> CreateContext (ValueProviderObjectContext objectContext)
+    protected override ValueProviderContext<TProperty> CreateContext (ValueProviderObjectContext objectContext)
     {
       return new ValueProviderContext<TProperty>(objectContext);
     }

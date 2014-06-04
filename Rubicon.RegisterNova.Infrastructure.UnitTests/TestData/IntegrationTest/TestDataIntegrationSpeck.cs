@@ -497,6 +497,28 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
               .It ("should fill int", x => x.Result.Should ().Be (20)));
     }
 
+    Context CustomAttributeContext (int contextValue)
+    {
+      return c => c.Given ("simple domain provider using custom context", x =>
+      {
+        Domain = new BaseDomainConfiguration
+                 {
+                     BuildValueProvider = builder => builder.AddProvider ((int i, ClassWithAttribute.CoolIntAttribute cia) => i, new CoolIntCustomContextValueProvider(contextValue))
+                 };
+      })
+      .Given(BasePropertyContext(false));
+    }
+
+    [Group]
+    void ValueProviderWithCustomAttributeContext ()
+    {
+      Specify (x =>
+          ValueProvider.Create<ClassWithAttribute> (MaxRecursionDepth, null))
+          .Elaborate ("should fill all according to context", _ => _
+              .Given (CustomAttributeContext (20))
+              .It ("should fill int", x => x.Result.AttributedInt.Should ().Be (31)));
+    }
+
      Context ValueProviderSubTypeContext ()
     {
       return c => c.Given ("domain provider with sub type provider", x =>
@@ -565,6 +587,38 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     }
   }
 
+  class CoolIntCustomContextValueProvider : AttributeBasedValueProvider<int, ClassWithAttribute.CoolIntAttribute,CoolIntCustomContextValueProvider.CoolIntCustomContext>
+  {
+    private readonly int _additionalValue;
+
+    public CoolIntCustomContextValueProvider (int additionalValue)
+    {
+      _additionalValue = additionalValue;
+    }
+
+    protected override CoolIntCustomContext CreateContext (ValueProviderObjectContext objectContext)
+    {
+      return new CoolIntCustomContext (objectContext, _additionalValue);
+    }
+
+    protected override int CreateValue (CoolIntCustomContext context)
+    {
+      return context.AdditionalValue + context.Attribute.Value;
+    }
+
+    internal class CoolIntCustomContext : AttributeValueProviderContext<int, ClassWithAttribute.CoolIntAttribute>
+    {
+      public int AdditionalValue { get; private set; }
+
+      protected internal CoolIntCustomContext (ValueProviderObjectContext objectContext, int additionalValue)
+          : base (objectContext)
+      {
+        AdditionalValue = additionalValue;
+      }
+    }
+
+  }
+
   #region HelperCode
 
   class VehicleSubTypeProvider:SubTypeValueProvider<Vehicle>
@@ -605,7 +659,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       }
     }
 
-    public override CustomIntContext CreateContext (ValueProviderObjectContext objectContext)
+    protected override CustomIntContext CreateContext (ValueProviderObjectContext objectContext)
     {
       return new CustomIntContext(objectContext, _contextValue);
     }
@@ -766,6 +820,24 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
 
     public string OtherProp { get; set; }
   }
+
+  class ClassWithAttribute
+  {
+    [CoolInt(11)]
+    public int AttributedInt { get; set; }
+
+    internal class CoolIntAttribute : Attribute
+    {
+      internal int Value { get; private set; }
+
+      public CoolIntAttribute(int value)
+      {
+        Value = value;
+      }
+    }
+  }
+
+  
 
   enum SomeEnum
   {

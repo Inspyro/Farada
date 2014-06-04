@@ -3,23 +3,36 @@
 namespace Rubicon.RegisterNova.Infrastructure.TestData.ValueProvider
 {
   //TODO: introducte TContext as in ValueProvider
-  public abstract class AttributeBasedValueProvider<TProperty, TAttribute>:IValueProvider where TAttribute:Attribute
+  public abstract class AttributeBasedValueProvider<TProperty, TAttribute, TContext>:IValueProvider where TContext:IValueProviderContext
+      where TAttribute : Attribute
   {
-    protected abstract TProperty CreateValue (AttributeValueProviderContext<TProperty, TAttribute> context);
+    protected abstract TProperty CreateValue (TContext context);
 
     public object CreateValue (IValueProviderContext context)
     {
-      return CreateValue((AttributeValueProviderContext<TProperty, TAttribute>) context);
+      return CreateValue((TContext) context);
     }
+
+    protected abstract TContext CreateContext (ValueProviderObjectContext objectContext);
 
     public bool CanHandle (Type propertyType)
     {
       return propertyType == typeof (TProperty);
     }
 
-    public IValueProviderContext CreateContext (ValueProviderObjectContext objectContext)
+    IValueProviderContext IValueProvider.CreateContext (ValueProviderObjectContext objectContext)
     {
-      return new AttributeValueProviderContext<TProperty, TAttribute>(objectContext, objectContext.PropertyInfo.GetCustomAttribute<TAttribute>());
+      return CreateContext(objectContext);
     }
   }
+
+  public abstract class AttributeBasedValueProvider<TProperty, TAttribute>:AttributeBasedValueProvider<TProperty, TAttribute, AttributeValueProviderContext<TProperty, TAttribute>>
+      where TAttribute : Attribute
+  {
+    protected override AttributeValueProviderContext<TProperty, TAttribute> CreateContext (ValueProviderObjectContext objectContext)
+    {
+      return new AttributeValueProviderContext<TProperty, TAttribute>(objectContext);
+    }
+  }
+  
 }

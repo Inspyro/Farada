@@ -6,7 +6,7 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.HelperCode.ValueProviders
 {
   public class RandomIntGenerator:ValueProvider<int, RangeConstrainedValueProviderContext<int>>
   {
-    public override RangeConstrainedValueProviderContext<int> CreateContext (ValueProviderObjectContext objectContext)
+    protected override RangeConstrainedValueProviderContext<int> CreateContext (ValueProviderObjectContext objectContext)
     {
       var rangeContstraints = RangeContstraints<int>.FromProperty(objectContext.PropertyInfo)
                               ?? new RangeContstraints<int>(int.MinValue, int.MaxValue);

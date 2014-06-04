@@ -24,9 +24,9 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.CompoundValueProvider
       _modifierList = new List<IInstanceModifier>();
     }
 
-    public void AddProvider<TProperty, TAttribute, TContainer> (
+    public void AddProvider<TProperty, TAttribute, TContainer, TContext> (
         Expression<Func<TContainer, TAttribute, TProperty>> chainExpression,
-        AttributeBasedValueProvider<TProperty, TAttribute> attributeBasedValueProvider) where TAttribute : Attribute
+        AttributeBasedValueProvider<TProperty, TAttribute, TContext> attributeBasedValueProvider) where TAttribute : Attribute where TContext : IValueProviderContext
     {
       if(chainExpression.ToChain().Any())
       {
