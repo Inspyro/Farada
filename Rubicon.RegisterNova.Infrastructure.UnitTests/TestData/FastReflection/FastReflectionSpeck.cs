@@ -6,6 +6,7 @@ using System.Reflection;
 using FluentAssertions;
 using Rubicon.RegisterNova.Infrastructure.TestData.FastReflection;
 using SpecK;
+using SpecK.Extensibility;
 using SpecK.Specifications;
 using SpecK.Specifications.Extensions;
 using FastReflectionUtil=Rubicon.RegisterNova.Infrastructure.TestData.FastReflection.FastReflection;
@@ -52,7 +53,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.FastReflection
           //
           .Elaborate ("returns valid property info", _ => _
               //
-              .Given ("SimpleDTO.SomeProperty", x => PropertyInfoToConvert = TypeExtensions.GetPropertyInfo<SimpleDTO> (y => y.SomeProperty))
+              .Given ("SimpleDTO.SomeProperty", x => PropertyInfoToConvert = Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<SimpleDTO, bool> (y => y.SomeProperty))
               //
               .It ("creates an valid type info", x => x.Result.Should ().NotBeNull ())
               .It ("finds correct property",
@@ -60,7 +61,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.FastReflection
           //
           .Elaborate ("returns property info with valid getter and setter actions", _ => _
               //
-              .Given ("SimpleDTO.SomeProperty", x => PropertyInfoToConvert = TypeExtensions.GetPropertyInfo<DerivedDTO> (y => y.CustomProperty))
+              .Given ("SimpleDTO.SomeProperty", x => PropertyInfoToConvert = Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<DerivedDTO, int> (y => y.CustomProperty))
               .Given ("SimpleDTO instance", x => Instance = new DerivedDTO { CustomProperty = 5 })
               //
               .It ("gets inital value", x => x.Result.GetValue (Instance).Should ().Be (5))
@@ -70,7 +71,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.FastReflection
           .Elaborate ("returns property info with valid attributes", _ => _
               //
               .Given ("AttributedDTO.AttributedProperty",
-                  x => PropertyInfoToConvert = TypeExtensions.GetPropertyInfo<AttributedDTO> (y => y.AttributedProperty))
+                  x => PropertyInfoToConvert = Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<AttributedDTO, int> (y => y.AttributedProperty))
               //
               .It ("gets 2 attributes", x => x.Result.Attributes.Count ().Should ().Be (2))
               .It ("gets correct attributes types",
@@ -79,7 +80,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.FastReflection
           .Elaborate ("returns property info with is defined valid", _ => _
               //
               .Given ("AttributedDTO.AttributedProperty",
-                  x => PropertyInfoToConvert = TypeExtensions.GetPropertyInfo<AttributedDTO> (y => y.AttributedProperty))
+                  x => PropertyInfoToConvert = Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<AttributedDTO, int> (y => y.AttributedProperty))
               //
               .It ("gets cool int attribute", x => x.Result.IsDefined (typeof (CoolIntAttribute)).Should ().BeTrue ())
               .It ("gets fancy number attribute", x => x.Result.IsDefined (typeof (FancyNumberAttribute)).Should ().BeTrue ())
@@ -88,7 +89,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.FastReflection
           .Elaborate ("returns concrete attributes", _ => _
               //
               .Given ("AttributedDTO.AttributedProperty",
-                  x => PropertyInfoToConvert = TypeExtensions.GetPropertyInfo<AttributedDTO> (y => y.AttributedProperty))
+                  x => PropertyInfoToConvert = Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<AttributedDTO, int> (y => y.AttributedProperty))
               //
               .It ("returns value of cool int attribute", x => x.Result.GetCustomAttribute<CoolIntAttribute> ().Value.Should ().Be (5))
               .It ("returns fanciness of fancy number attribute",
@@ -125,30 +126,6 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.FastReflection
 
   class OtherAttribute:Attribute
   {
-  }
-
-  static class TypeExtensions
-  {
-    public static PropertyInfo GetPropertyInfo<TSource> (
-        Expression<Func<TSource, object>> propertyLambda)
-    {
-      var unaryExpression = propertyLambda.Body as UnaryExpression;
-      var operandExpression = unaryExpression != null ? unaryExpression.Operand : propertyLambda.Body;
-
-      var member = operandExpression as MemberExpression;
-      if (member == null)
-      {
-        throw new ArgumentException (string.Format ("Expression '{0}' refers to a method, not a property.", propertyLambda));
-      }
-
-      var propInfo = member.Member as PropertyInfo;
-      if (propInfo == null)
-      {
-        throw new ArgumentException (string.Format ("Expression '{0}' refers to a field, not a property.", propertyLambda));
-      }
-
-      return propInfo;
-    }
   }
 
   class SimpleDTO

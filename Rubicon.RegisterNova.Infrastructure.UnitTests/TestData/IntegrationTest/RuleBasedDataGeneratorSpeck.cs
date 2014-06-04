@@ -153,6 +153,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     {
       protected override void Execute ()
       {
+        World.Write (x => x.Fertility = 100);
       }
     }
 
@@ -174,12 +175,13 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
       public override float GetExecutionProbability ()
       {
         //TODO: Rule Appliance Probability based on World.Fertility...
+        var fertility = World.Read<int?> (x => x.Fertility);
+       
         return LerpUtility.LerpFromLowToHigh (100000, World.Count<Person> (), 1f, 0.1f);
       }
 
       protected override IEnumerable<IRuleParameter> GetRuleInputs ()
       {
-        //TODO: array? config parameter? - compound could mix multiple parameters (see below)
         //TODO: can we have relations between persons? a likes b,c,..  d hates f,g..?
         yield return new RuleParameter<Person> ( p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male);
         yield return new RuleParameter<Person> (p => p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant));

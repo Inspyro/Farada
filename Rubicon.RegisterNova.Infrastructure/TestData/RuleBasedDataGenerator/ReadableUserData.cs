@@ -13,6 +13,16 @@ namespace Rubicon.RegisterNova.Infrastructure.TestData.RuleBasedDataGenerator
        Data= new Dictionary<string, object>();
     }
 
+    public ReadableUserData(ReadableUserData clone)
+    {
+      Data=new Dictionary<string, object>(clone.Data);
+    }
+
+    public object this [string name]
+    {
+      get { return Data[name]; }
+    }
+
     public override bool TryGetMember (GetMemberBinder binder, out object result)
     {
       Data.TryGetValue(binder.Name, out result);

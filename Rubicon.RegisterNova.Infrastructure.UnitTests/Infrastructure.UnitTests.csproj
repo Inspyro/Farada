@@ -216,7 +216,6 @@
     <Compile Include="TestData\FastReflection\FastActivatorSpeck.cs" />
     <Compile Include="TestData\IntegrationTest\CompoundValueProviderSpeck.cs" />
     <Compile Include="TestData\IntegrationTest\RuleBasedDataGeneratorSpeck.cs" />
-    <Compile Include="TestData\IntegrationTest\TestDataIntegrationSpec.cs" />
     <Compile Include="Transactions\LazyQueryExecutorSpec.cs" />
     <Compile Include="Transactions\TransactionScopeFactorySpec.cs" />
     <Compile Include="Utilities\AutofacServiceProviderSpec.cs" />
