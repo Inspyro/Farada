@@ -34,7 +34,7 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
           Math.Min(double.MaxValue / 2 - 1, maxValue),
           (f, f1) => f + f1,
           (f, f1) => f - f1,
-          (f, d) => (double) (f * d));
+          (f, d) => f * d);
     }
 
     public static ulong Next (this Random random, ulong minValue = ulong.MinValue, ulong maxValue = ulong.MaxValue)
@@ -92,7 +92,6 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
           (f, d) => (decimal) ((double) f * d));
     }
 
-    //REVIEW: Compare with autofixture
     public static T Next<T> (
         this Random random,
         T minValue,

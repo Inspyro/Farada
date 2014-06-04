@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,7 +21,7 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
       }
     }
 
-    public static IList<T> Slice<T>(this IList<T> list, int count)
+    public static IList<T> Slice<T>(this IEnumerable<T> list, int count)
     {
       var slicedList = new List<T>(list);
       slicedList.RemoveRange(0, count);
@@ -30,14 +29,10 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
       return slicedList;
     }
 
-    public static IList<object> Adapt(this IList list)
-    {
-      return list.Cast<object>().ToList();
-    }
-
+    // ReSharper disable once ParameterTypeCanBeEnumerable.Global
     public static IEnumerable<T> WhereValues<T> (this IList<T> list, Func<T, bool> predicate, T[] excludes)
     {
-      return list.WhereIndices(predicate).Select(index => list[index]).Where(value => !excludes.Contains(value));
+      return list.WhereIndices(predicate).Select(index => list[index]).Where(value =>!excludes.Contains(value));
     }
 
     /// <summary>

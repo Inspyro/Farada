@@ -113,19 +113,19 @@
     </Reference>
     <Reference Include="SpecK.Extension.AutoFixture, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SpecK.AutoFixture.0.0.1-Pre00716\lib\net40\SpecK.Extension.AutoFixture.dll</HintPath>
+      <HintPath>..\packages\SpecK.AutoFixture.0.0.1-Pre00722\lib\net40\SpecK.Extension.AutoFixture.dll</HintPath>
     </Reference>
     <Reference Include="SpecK.Extension.FakeItEasy, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SpecK.FakeItEasy.0.0.1-Pre00716\lib\net40\SpecK.Extension.FakeItEasy.dll</HintPath>
+      <HintPath>..\packages\SpecK.FakeItEasy.0.0.1-Pre00722\lib\net40\SpecK.Extension.FakeItEasy.dll</HintPath>
     </Reference>
     <Reference Include="SpecK.Extension.FluentAssertions, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SpecK.FluentAssertions.0.0.1-Pre00716\lib\net40\SpecK.Extension.FluentAssertions.dll</HintPath>
+      <HintPath>..\packages\SpecK.FluentAssertions.0.0.1-Pre00722\lib\net40\SpecK.Extension.FluentAssertions.dll</HintPath>
     </Reference>
     <Reference Include="SpecK.Framework, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SpecK.0.0.1-Pre00716\lib\net20\SpecK.Framework.dll</HintPath>
+      <HintPath>..\packages\SpecK.0.0.1-Pre00722\lib\net20\SpecK.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -223,6 +223,8 @@
     <Compile Include="EventHandling\EventHandlerInvokerSpec.cs" />
     <Compile Include="Utilities\CultureContextSpec.cs" />
     <Compile Include="Utilities\CultureInfoUtilitySpec.cs" />
+    <Compile Include="Utilities\ListExtensionsSpeck.cs" />
+    <Compile Include="Utilities\RandomExtensionsSpeck.cs" />
     <Compile Include="Utilities\ExceptionExtensionsSpec.cs" />
     <Compile Include="Utilities\EnumerableExtensionsSpeck.cs" />
     <Compile Include="Utilities\TypeExtensionsSpec.cs" />
