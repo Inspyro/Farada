@@ -3,7 +3,7 @@ using System.Linq;
 using Rubicon.RegisterNova.Infrastructure.TestData;
 using Rubicon.RegisterNova.Infrastructure.TestData.Parallelization;
 
-namespace PerformanceTests
+namespace Rubicon.RegisterNova.PerformanceTests
 {
   internal class Program
   {
