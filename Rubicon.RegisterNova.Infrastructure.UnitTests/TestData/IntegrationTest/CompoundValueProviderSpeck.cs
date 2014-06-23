@@ -47,10 +47,10 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
           .Given (ValueProviderContext ());
     }
 
-    Context BaseDomainContext (bool useDefaults=true)
+    Context BaseDomainContext (bool useDefaults=true, int? seed=null)
     {
       return c => c
-          .Given ("empty base domain", x => Domain = new BaseDomainConfiguration ())
+          .Given ("empty base domain", x => Domain = new BaseDomainConfiguration {Random = seed.HasValue?new Random(seed.Value):new Random()})
           .Given (BasePropertyContext (useDefaults));
     }
 
@@ -58,79 +58,79 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     void ValueProviderWithDefaultDomain ()
     {
         GenericCase<byte> ("simple byte case", _ => _
-          .Given(BaseDomainContext())
+          .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid byte", x => x.Result.Should ().BeInRange(byte.MinValue, byte.MaxValue)));
+          .It ("should be a random byte", x => x.Result.Should ().Be(244)));
 
       GenericCase<char> ("simple char case", _ => _
-        .Given(BaseDomainContext())
+        .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid char", x => x.Result.Should ().BeOfType (typeof (char))));
+          .It ("should be a random char", x => x.Result.Should ().Be(';')));
 
       GenericCase<decimal> ("simple decimal case", _ => _
-        .Given(BaseDomainContext())
+        .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid decimal", x => x.Result.Should ().BeInRange (decimal.MinValue, decimal.MaxValue)));
+          .It ("should be a random decimal", x => x.Result.Should ().Be (-12805660511301768796771975167m)));
 
       GenericCase<double> ("simple double case", _ => _
-        .Given(BaseDomainContext())
+        .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid double", x => x.Result.Should ().BeInRange (double.MinValue, double.MaxValue)));
+          .It ("should be a random double", x => x.Result.Should ().Be (-2.9056142737628133E+307)));
 
       GenericCase<SomeEnum> ("simple Enum case", _ => _
-        .Given(BaseDomainContext())
+        .Given(BaseDomainContext(seed:5))
           //
           .It ("should be a valid Enum", x => x.Result.Should ().BeOfType<SomeEnum>()));
 
       GenericCase<float> ("simple float case", _ => _
-        .Given(BaseDomainContext())
+        .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid float", x => x.Result.Should ().BeInRange(float.MinValue, float.MaxValue)));
+          .It ("should be a random float", x => x.Result.Should ().Be(-5.499989E+37f)));
 
        GenericCase<int> ("simple int case", _ => _
-         .Given(BaseDomainContext())
+         .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid int", x => x.Result.Should ().BeInRange(int.MinValue, int.MaxValue)));
+          .It ("should be a random int", x => x.Result.Should ().Be(726643699)));
 
       GenericCase<long> ("simple long case", _ => _
-        .Given(BaseDomainContext())
+        .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid long", x => x.Result.Should ().BeInRange (long.MinValue, long.MaxValue)));
+          .It ("should be a random long", x => x.Result.Should ().Be(-1490775089629665279L)));
 
        GenericCase<sbyte> ("simple sbyte case", _ => _
-         .Given(BaseDomainContext())
+         .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid sbyte", x => x.Result.Should ().BeInRange (sbyte.MinValue, sbyte.MaxValue)));
+          .It ("should be a random sbyte", x => x.Result.Should ().Be(-42)));
 
       GenericCase<short> ("simple short case", _ => _
-        .Given(BaseDomainContext())
+        .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid short", x => x.Result.Should ().BeInRange (short.MinValue, short.MaxValue)));
+          .It ("should be a random short", x => x.Result.Should ().Be (-5297)));
 
       GenericCase<uint> ("simple uint case", _ => _
-        .Given(BaseDomainContext())
+        .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid uint", x => x.Result.Should ().BeInRange (uint.MinValue, uint.MaxValue)));
+          .It ("should be a random uint", x => x.Result.Should ().Be(726643700)));
 
       GenericCase<ulong> ("simple ulong case", _ => _
-        .Given(BaseDomainContext())
+        .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid ulong", x => x.Result.Should ().BeInRange (ulong.MinValue, ulong.MaxValue)));
+          .It ("should be a random ulong", x => x.Result.Should ().Be(3120910928797722625)));
 
       GenericCase<ushort> ("simple ushort case", _ => _
-        .Given(BaseDomainContext())
+        .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid ushort", x => x.Result.Should ().BeInRange (ushort.MinValue, ushort.MaxValue)));
+          .It ("should be a random ushort", x => x.Result.Should ().Be(11087)));
 
       GenericCase<string> ("simple string case", _ => _
-        .Given(BaseDomainContext())
+        .Given(BaseDomainContext(seed:5))
           //
-          .It ("should equal test", x => x.Result.Should ().NotBeNull ()));
+          .It ("should equal test", x => x.Result.Should ().Be ("Homfu")));
 
       GenericCase<DateTime> ("simple DateTime case", _ => _
-        .Given(BaseDomainContext())
+        .Given(BaseDomainContext(seed:5))
           //
-          .It ("should equal some past DateTime", x => x.Result.Should ().BeBefore (DateTime.Today)));
+          .It ("should equal some random past DateTime", x => x.Result.Should ().Be (new DateTime(611489333737538675L))));
     }
 
     [Group]
@@ -248,7 +248,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
     {
       Specify (x =>
           ValueProvider.Create<ClassWithInvalidStringLengthConstraint> (MaxRecursionDepth, null))
-          .Elaborate ("should raise argument exception", _ => _
+          .Elaborate ("should raise argument out of range exception", _ => _
               .Given (BaseDomainContext ())
               .ItThrows (typeof (ArgumentOutOfRangeException)
               )
@@ -528,7 +528,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                      BuildValueProvider = builder => builder.AddProvider ((Vehicle v) => v, new VehicleSubTypeProvider())
                  };
       })
-      .Given(BasePropertyContext(false,1)); //TODO: is 1 correct?
+      .Given(BasePropertyContext(false, (int) RecursionDepth.DoNotFillSecondLevelProperties));
     }
 
     [Group]
@@ -562,7 +562,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.TestData.IntegrationTest
                              : new Vehicle.LandVehicle { Tires = new Vehicle.Tire () })
                  };
       })
-          .Given (BasePropertyContext (false, 1)); //TODO: is 1 correct?
+          .Given (BasePropertyContext (false, (int) RecursionDepth.DoNotFillSecondLevelProperties));
     }
 
     [Group]

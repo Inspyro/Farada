@@ -30,7 +30,7 @@ namespace Rubicon.RegisterNova.PerformanceTests
       public float SizeInLightYears { get; set; }
       public int PeopleCount { get; set; }
 
-      public StarSystem StarSystem { get; set; } //TODO declare as List as soon as available
+      public StarSystem StarSystem { get; set; }
     }
 
     internal class StarSystem
@@ -39,7 +39,7 @@ namespace Rubicon.RegisterNova.PerformanceTests
       public float SizeInLightYears { get; set; }
       public int PeopleCount { get; set; }
 
-      public Planet Planet { get; set; } //TODO declare as List as soon as available
+      public Planet Planet { get; set; }
     }
 
     internal class Planet
