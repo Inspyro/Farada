@@ -28,7 +28,6 @@ namespace Rubicon.RegisterNova.Infrastructure.Utilities
              != null;
     }
 
-    //TODO: Unit test
     public static PropertyInfo GetPropertyInfo<TSource, TResult> (
         Expression<Func<TSource, TResult>> propertyLambda)
     {

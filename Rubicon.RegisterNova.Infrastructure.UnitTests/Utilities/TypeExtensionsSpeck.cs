@@ -1,13 +1,13 @@
 ﻿using System;
+using FluentAssertions;
 using Rubicon.RegisterNova.Infrastructure.Utilities;
 using SpecK;
-using FluentAssertions;
 using SpecK.Specifications;
 
 namespace Rubicon.RegisterNova.Infrastructure.UnitTests.Utilities
 {
   [Subject (typeof (Infrastructure.Utilities.TypeExtensions))]
-  public class TypeExtensionsSpeck:Specs<Type>
+  public class TypeExtensionsSpeck : Specs<Type>
   {
     bool IncludeNonPublicConstructor;
 
@@ -45,7 +45,7 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.Utilities
     }
 
     [Group]
-    void CanBeInstantiated()
+    void CanBeInstantiated ()
     {
       Specify (x => x.CanBeInstantiated (IncludeNonPublicConstructor)).
           Elaborate ("value type", _ => _
@@ -64,6 +64,42 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.Utilities
               .GivenSubject ("ComplexTypeWithPrivateDefaultConstructor", x => typeof (ComplexTypeWithPrivateDefaultConstructor))
               .Given ("Include non-public constructors", x => IncludeNonPublicConstructor = true)
               .It ("should be instatiantiable", x => x.Result.Should ().BeTrue ()));
+    }
+
+    [Group]
+    void GetPropertyInfo()
+    {
+      Specify (x => Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<SimpleDTO, string> (y => y.Name))
+          .Elaborate ("Get Property Info works on properties", _ => _
+              .GivenSubject("SimpleDTO", x=>typeof(SimpleDTO))
+              .It ("PropertyInfo matches", x => x.Result.Should ().BeSameAs (typeof (SimpleDTO).GetProperty ("Name"))));
+
+      Specify (x => Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<SimpleDTO, string> (y => y.SomeField))
+          .Elaborate ("Get Property Info throws on methods", _ => _
+              .GivenSubject ("SimpleDTO", x => typeof (SimpleDTO))
+              .ItThrows (typeof (ArgumentException), "Expression 'y => y.SomeField' refers to a field, not a property."));
+
+      Specify (x => Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<SimpleDTO, string> (y => y.GetSomething ()))
+          .Elaborate ("Get Property Info throws on fields", _ => _
+              .GivenSubject ("SimpleDTO", x => typeof (SimpleDTO))
+              .ItThrows (typeof (ArgumentException), "Expression 'y => y.GetSomething()' refers to a method, not a property."));
+
+      Specify (x => Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<SimpleDTO, SimpleDTO> (y => y))
+          .Elaborate ("Get Property Info throws on classes", _ => _
+              .GivenSubject ("SimpleDTO", x => typeof (SimpleDTO))
+              .ItThrows (typeof (ArgumentException), "Expression 'y => y' refers to a method, not a property."));
+    }
+
+    class SimpleDTO
+    {
+      public string Name { get; set; }
+
+      public string SomeField;
+
+      public string GetSomething()
+      {
+        return "";
+      }
     }
 
     class Base
@@ -85,29 +121,29 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.Utilities
     {
 
     }
-  }
 
-  class ComplexTypeWithoutDefaultConstructor
-  {
-    public ComplexTypeWithoutDefaultConstructor(int something)
+    class ComplexTypeWithoutDefaultConstructor
     {
+      public ComplexTypeWithoutDefaultConstructor (int something)
+      {
 
+      }
     }
-  }
 
-  class ComplexTypeWithPrivateDefaultConstructor
-  {
-    private ComplexTypeWithPrivateDefaultConstructor()
+    class ComplexTypeWithPrivateDefaultConstructor
     {
+      ComplexTypeWithPrivateDefaultConstructor ()
+      {
 
+      }
     }
-  }
 
-  class ComplexTypeWithDefaultConstructor
-  {
-    public ComplexTypeWithDefaultConstructor()
+    class ComplexTypeWithDefaultConstructor
     {
+      public ComplexTypeWithDefaultConstructor ()
+      {
 
+      }
     }
   }
 }
