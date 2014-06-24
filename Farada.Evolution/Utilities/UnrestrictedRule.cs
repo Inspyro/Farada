@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Farada.Evolution.RuleBasedDataGenerator;
+using Farada.Evolution.RuleBasedDataGeneration;
 
 namespace Farada.Evolution.Utilities
 {

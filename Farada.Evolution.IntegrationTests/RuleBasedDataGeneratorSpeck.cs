@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Farada.Core.Extensions;
-using Farada.Evolution.RuleBasedDataGenerator;
+using Farada.Evolution.RuleBasedDataGeneration;
+using Farada.TestDataGeneration.Extensions;
 using Farada.Evolution.Utilities;
 using FluentAssertions;
 using SpecK;
@@ -10,12 +10,12 @@ using SpecK.Specifications;
 
 namespace Farada.Evolution.IntegrationTests
 {
-  [Subject (typeof (RuleBasedDataGenerator.RuleBasedDataGenerator))]
+  [Subject (typeof (RuleBasedDataGenerator))]
   public class RuleBasedDataGeneratorSpeck : Specs
   {
     EvolutionaryDomainConfiguration EvolutionaryDomain;
     bool UseDefaults;
-    RuleBasedDataGenerator.RuleBasedDataGenerator DataGenerator;
+    RuleBasedDataGenerator DataGenerator;
     GeneratorResult InitialData;
     int Generations;
 
@@ -30,7 +30,7 @@ namespace Farada.Evolution.IntegrationTests
       return
           c =>
               c.Given ("create rule based data generator",
-                  x => DataGenerator = Farada.CreateRuleBasedDataGenerator (EvolutionaryDomain, UseDefaults));
+                  x => DataGenerator = EvolutionaryDataGenerator.CreateRuleBasedDataGenerator (EvolutionaryDomain, UseDefaults));
     }
 
     Context BasePropertyContext (bool useDefaults = true)

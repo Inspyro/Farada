@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Farada.Core.Parallelization;
-using Farada.Evolution;
+using Farada.TestDataGeneration;
+using Farada.TestDataGeneration.Parallelization;
 
 namespace Rubicon.RegisterNova.PerformanceTests
 {
@@ -9,8 +9,8 @@ namespace Rubicon.RegisterNova.PerformanceTests
   {
     private static void Main ()
     {
-      var basicDomain = new EvolutionaryDomainConfiguration();
-      var valueProvider = Farada.Evolution.Farada.CreateCompoundValueProvider(basicDomain);
+      var basicDomain = new DomainConfiguration();
+      var valueProvider = TestDataGenerator.CreateCompoundValueProvider(basicDomain);
 
       const int count = 1000000; //8 million
 

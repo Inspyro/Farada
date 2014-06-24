@@ -1,6 +1,6 @@
 ﻿using System;
-using Farada.Core;
 using Farada.Evolution.RuleBasedDataGenerator;
+using Farada.TestDataGeneration;
 
 namespace Farada.Evolution
 {
