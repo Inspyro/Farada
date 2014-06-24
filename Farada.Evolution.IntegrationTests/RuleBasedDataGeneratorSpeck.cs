@@ -30,7 +30,7 @@ namespace Farada.Evolution.IntegrationTests
       return
           c =>
               c.Given ("create rule based data generator",
-                  x => DataGenerator = TestDataGeneratorFactory.CreateRuleBasedDataGenerator (Domain, UseDefaults));
+                  x => DataGenerator = Farada.CreateRuleBasedDataGenerator (Domain, UseDefaults));
     }
 
     Context BasePropertyContext (bool useDefaults = true)

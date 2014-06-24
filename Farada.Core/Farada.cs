@@ -6,7 +6,7 @@ namespace Farada.Core
   /// <summary>
   /// TODO
   /// </summary>
-  public class TestDataGeneratorFactory
+  public class Farada
   {
     /// <summary>
     /// Creates a test data generator for the given domain

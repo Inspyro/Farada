@@ -5,7 +5,7 @@ namespace Farada.Evolution
   /// <summary>
   /// TODO
   /// </summary>
-  public class TestDataGeneratorFactory: Core.TestDataGeneratorFactory
+  public class Farada: Core.Farada
   {
     /// <summary>
     /// Creates a test data generator for the given domain

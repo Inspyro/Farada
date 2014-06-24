@@ -36,7 +36,7 @@ namespace Farada.Core.IntegrationTests
       return
           c =>
               c.Given ("create compound value provider",
-                  x => ValueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider (Domain, UseDefaults));
+                  x => ValueProvider = Farada.CreateCompoundValueProvider (Domain, UseDefaults));
     }
 
     Context BasePropertyContext (bool useDefaults = true, int recursionDepth = 2)

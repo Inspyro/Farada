@@ -10,7 +10,7 @@ namespace Rubicon.RegisterNova.PerformanceTests
     private static void Main ()
     {
       var basicDomain = new DomainConfiguration();
-      var valueProvider = TestDataGeneratorFactory.CreateCompoundValueProvider(basicDomain);
+      var valueProvider = Farada.Evolution.Farada.CreateCompoundValueProvider(basicDomain);
 
       const int count = 1000000; //8 million
 

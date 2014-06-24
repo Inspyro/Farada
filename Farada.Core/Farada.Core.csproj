@@ -102,7 +102,7 @@
     <Compile Include="CompoundValueProvider\RecursionDepth.cs" />
     <Compile Include="CompoundValueProvider\ValueProviderDictionary.cs" />
     <Compile Include="CompoundValueProvider\ValueProviderLink.cs" />
-    <Compile Include="TestDataGeneratorFactory.cs" />
+    <Compile Include="Farada.cs" />
     <Compile Include="ValueProvider\AttributeBasedValueProvider.cs" />
     <Compile Include="ValueProvider\AttributeValueProviderContext.cs" />
     <Compile Include="ValueProvider\IValueProvider.cs" />
