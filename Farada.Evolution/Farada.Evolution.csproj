@@ -39,7 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DomainConfiguration.cs" />
+    <Compile Include="EvolutionaryDomainConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Farada.cs" />
     <Compile Include="Utilities\LerpUtility.cs" />

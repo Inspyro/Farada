@@ -6,12 +6,12 @@ namespace Farada.Core
   /// <summary>
   /// TODO
   /// </summary>
-  public class BaseDomainConfiguration
+  public class DomainConfiguration
   {
     public Random Random { get; set; }
     public Action<ICompoundValueProviderBuilder> BuildValueProvider { get; set; }
 
-    public BaseDomainConfiguration ()
+    public DomainConfiguration ()
     {
       Random = new Random();
     }

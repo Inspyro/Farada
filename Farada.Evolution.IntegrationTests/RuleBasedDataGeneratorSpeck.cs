@@ -13,7 +13,7 @@ namespace Farada.Evolution.IntegrationTests
   [Subject (typeof (RuleBasedDataGenerator.RuleBasedDataGenerator))]
   public class RuleBasedDataGeneratorSpeck : Specs
   {
-    DomainConfiguration Domain;
+    EvolutionaryDomainConfiguration EvolutionaryDomain;
     bool UseDefaults;
     RuleBasedDataGenerator.RuleBasedDataGenerator DataGenerator;
     GeneratorResult InitialData;
@@ -30,7 +30,7 @@ namespace Farada.Evolution.IntegrationTests
       return
           c =>
               c.Given ("create rule based data generator",
-                  x => DataGenerator = Farada.CreateRuleBasedDataGenerator (Domain, UseDefaults));
+                  x => DataGenerator = Farada.CreateRuleBasedDataGenerator (EvolutionaryDomain, UseDefaults));
     }
 
     Context BasePropertyContext (bool useDefaults = true)
@@ -56,7 +56,7 @@ namespace Farada.Evolution.IntegrationTests
     Context StringDomainContext (bool useDefaults = true)
     {
       return c => c
-          .Given ("string domain", x => Domain = new DomainConfiguration
+          .Given ("string domain", x => EvolutionaryDomain = new EvolutionaryDomainConfiguration
                                                  {
                                                      Rules = new RuleSet (new StringMarryRule ())
                                                  })
@@ -93,7 +93,7 @@ namespace Farada.Evolution.IntegrationTests
           {
             var lifeRuleSet = new RuleSet (new ProcreationRule (), new AgingRule ());
             lifeRuleSet.AddGlobalRule (new WorldRule ());
-            Domain = new DomainConfiguration
+            EvolutionaryDomain = new EvolutionaryDomainConfiguration
                      {
                          Random = new Random (seed),
                          Rules = lifeRuleSet,

@@ -7,7 +7,7 @@ namespace Farada.Evolution
   /// <summary>
   /// TODO
   /// </summary>
-  public class DomainConfiguration : BaseDomainConfiguration
+  public class EvolutionaryDomainConfiguration : DomainConfiguration
   {
     public RuleSet Rules { get; set; }
   }

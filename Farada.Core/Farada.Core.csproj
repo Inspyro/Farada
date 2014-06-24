@@ -51,7 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseDomainConfiguration.cs" />
+    <Compile Include="DomainConfiguration.cs" />
     <Compile Include="BaseDomain\Modifiers\NullModifier.cs" />
     <Compile Include="CompoundValueProvider\CompoundValueProvider.cs" />
     <Compile Include="CompoundValueProvider\CompoundValueProviderBuilder.cs" />
