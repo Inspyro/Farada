@@ -5,7 +5,7 @@ namespace Farada.Core.CompoundValueProvider
   /// <summary>
   /// Helps to fill the recursion depth properties - more descriptive
   /// </summary>
-  public enum RecursionDepth
+  public enum RecursionDepth //TODO: int constants
   {
     /// <summary>
     /// Only instantiate the specified types, never fill any properties
