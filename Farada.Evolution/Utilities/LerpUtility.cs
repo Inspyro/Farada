@@ -1,5 +1,5 @@
 ﻿using System;
-using Rubicon.RegisterNova.Infrastructure.Utilities;
+using Farada.Evolution.Utilities;
 
 namespace Farada.Evolution.Utilities
 {

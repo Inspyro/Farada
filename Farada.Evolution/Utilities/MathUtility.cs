@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubicon.RegisterNova.Infrastructure.Utilities
+namespace Farada.Evolution.Utilities
 {
   public static class MathUtility
   {

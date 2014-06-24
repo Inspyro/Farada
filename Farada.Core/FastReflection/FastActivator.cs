@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
-using Rubicon.RegisterNova.Infrastructure.Utilities;
+using Farada.Core.Extensions;
 
 namespace Farada.Core.FastReflection
 {

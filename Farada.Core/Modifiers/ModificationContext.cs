@@ -1,7 +1,7 @@
 ﻿using System;
 using Farada.Core.FastReflection;
 
-namespace Farada.Core.CompoundValueProvider
+namespace Farada.Core.Modifiers
 {
   public class ModificationContext
   {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rubicon.RegisterNova.Infrastructure.Utilities
+namespace Farada.Core.Extensions
 {
   public static class ListExtensions
   {

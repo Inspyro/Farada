@@ -78,7 +78,12 @@
     <Compile Include="BaseDomain\ValueProviders\RandomUShortGenerator.cs" />
     <Compile Include="BaseDomain\ValueProviders\RandomWordGenerator.cs" />
     <Compile Include="Extensions\CompoundValueProviderBuilderExtensions.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\EqualityUtility.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
+    <Compile Include="Extensions\ListExtensions.cs" />
+    <Compile Include="Extensions\RandomExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="FastReflection\FastActivator.cs" />
     <Compile Include="FastReflection\FastPropertyInfo.cs" />
     <Compile Include="FastReflection\FastReflection.cs" />
@@ -104,12 +109,6 @@
     <Compile Include="ValueProvider\SubTypeValueProvider.cs" />
     <Compile Include="ValueProvider\ValueProvider.cs" />
     <Compile Include="ValueProvider\ValueProviderContext.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rubicon.RegisterNova.Infrastructure\Infrastructure.csproj">
-      <Project>{EE7EFDEB-F9B0-4882-9520-C71B33149C9D}</Project>
-      <Name>Infrastructure</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Rubicon.RegisterNova.Infrastructure.Utilities
+namespace Farada.Core.Extensions
 {
   public static class EqualityUtility
   {

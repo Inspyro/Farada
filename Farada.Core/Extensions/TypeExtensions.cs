@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Rubicon.RegisterNova.Infrastructure.Utilities
+namespace Farada.Core.Extensions
 {
   /// <summary>
   /// Extensions methods for <see cref="Type"/>.

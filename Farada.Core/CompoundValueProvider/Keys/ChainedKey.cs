@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Farada.Core.Extensions;
 using Farada.Core.FastReflection;
-using Rubicon.RegisterNova.Infrastructure.Utilities;
+using Remotion.Utilities;
 
 namespace Farada.Core.CompoundValueProvider.Keys
 {
@@ -88,7 +89,7 @@ namespace Farada.Core.CompoundValueProvider.Keys
 
     public bool Equals (ChainedKey other)
     {
-      if (!EqualityUtility.ClassEquals(this, other))
+      if (!Extensions.EqualityUtility.ClassEquals(this, other))
         return false;
 
       if (_declaringType != other._declaringType)

@@ -1,12 +1,12 @@
 ﻿using System;
+using Farada.Core.Extensions;
 using FluentAssertions;
-using Rubicon.RegisterNova.Infrastructure.Utilities;
 using SpecK;
 using SpecK.Specifications;
 
-namespace Rubicon.RegisterNova.Infrastructure.UnitTests.Utilities
+namespace Farada.Core.UnitTests.Extensions
 {
-  [Subject (typeof (Infrastructure.Utilities.TypeExtensions))]
+  [Subject (typeof (Core.Extensions.TypeExtensions))]
   public class TypeExtensionsSpeck : Specs<Type>
   {
     bool IncludeNonPublicConstructor;
@@ -69,22 +69,22 @@ namespace Rubicon.RegisterNova.Infrastructure.UnitTests.Utilities
     [Group]
     void GetPropertyInfo()
     {
-      Specify (x => Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<SimpleDTO, string> (y => y.Name))
+      Specify (x => Core.Extensions.TypeExtensions.GetPropertyInfo<SimpleDTO, string> (y => y.Name))
           .Elaborate ("Get Property Info works on properties", _ => _
               .GivenSubject("SimpleDTO", x=>typeof(SimpleDTO))
               .It ("PropertyInfo matches", x => x.Result.Should ().BeSameAs (typeof (SimpleDTO).GetProperty ("Name"))));
 
-      Specify (x => Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<SimpleDTO, string> (y => y.SomeField))
+      Specify (x => Core.Extensions.TypeExtensions.GetPropertyInfo<SimpleDTO, string> (y => y.SomeField))
           .Elaborate ("Get Property Info throws on methods", _ => _
               .GivenSubject ("SimpleDTO", x => typeof (SimpleDTO))
               .ItThrows (typeof (ArgumentException), "Expression 'y => y.SomeField' refers to a field, not a property."));
 
-      Specify (x => Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<SimpleDTO, string> (y => y.GetSomething ()))
+      Specify (x => Core.Extensions.TypeExtensions.GetPropertyInfo<SimpleDTO, string> (y => y.GetSomething ()))
           .Elaborate ("Get Property Info throws on fields", _ => _
               .GivenSubject ("SimpleDTO", x => typeof (SimpleDTO))
               .ItThrows (typeof (ArgumentException), "Expression 'y => y.GetSomething()' refers to a method, not a property."));
 
-      Specify (x => Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<SimpleDTO, SimpleDTO> (y => y))
+      Specify (x => Core.Extensions.TypeExtensions.GetPropertyInfo<SimpleDTO, SimpleDTO> (y => y))
           .Elaborate ("Get Property Info throws on classes", _ => _
               .GivenSubject ("SimpleDTO", x => typeof (SimpleDTO))
               .ItThrows (typeof (ArgumentException), "Expression 'y => y' refers to a method, not a property."));

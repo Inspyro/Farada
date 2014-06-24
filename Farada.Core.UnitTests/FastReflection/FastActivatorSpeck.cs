@@ -4,7 +4,7 @@ using FluentAssertions;
 using SpecK;
 using SpecK.Specifications;
 
-namespace Farada.Core.UnitTests
+namespace Farada.Core.UnitTests.FastReflection
 {
   [Subject (typeof (FastActivator))]
   public class FastActivatorSpeck:Specs

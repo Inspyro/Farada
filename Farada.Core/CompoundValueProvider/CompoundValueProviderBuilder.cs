@@ -4,8 +4,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using Farada.Core.CompoundValueProvider.Keys;
 using Farada.Core.Extensions;
+using Farada.Core.Modifiers;
 using Farada.Core.ValueProvider;
-using Rubicon.RegisterNova.Infrastructure.Utilities;
 
 namespace Farada.Core.CompoundValueProvider
 {

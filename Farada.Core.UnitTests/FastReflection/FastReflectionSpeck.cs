@@ -7,13 +7,10 @@ using FluentAssertions;
 using SpecK;
 using SpecK.Specifications;
 using SpecK.Specifications.Extensions;
-using Rubicon.RegisterNova.Infrastructure.Utilities;
 
-using FastReflectionUtil=Farada.Core.FastReflection.FastReflection;
-
-namespace Farada.Core.UnitTests
+namespace Farada.Core.UnitTests.FastReflection
 {
-  [Subject (typeof (FastReflectionUtil))]
+  [Subject (typeof (Core.FastReflection.FastReflection))]
   public class FastReflectionSpeck:Specs
   {
     Type TypeToReflect;
@@ -23,7 +20,7 @@ namespace Farada.Core.UnitTests
     [Group]
     void GetTypeInfo ()
     {
-      Specify (x => FastReflectionUtil.GetTypeInfo (TypeToReflect))
+      Specify (x => Core.FastReflection.FastReflection.GetTypeInfo (TypeToReflect))
           //
           .Elaborate ("returns valid property info", _ => _
               //
@@ -49,11 +46,11 @@ namespace Farada.Core.UnitTests
     [Group]
     void GetPropertyInfo ()
     {
-      Specify (x => FastReflectionUtil.GetPropertyInfo (PropertyInfoToConvert))
+      Specify (x => Core.FastReflection.FastReflection.GetPropertyInfo (PropertyInfoToConvert))
           //
           .Elaborate ("returns valid property info", _ => _
               //
-              .Given ("SimpleDTO.SomeProperty", x => PropertyInfoToConvert = Rubicon.RegisterNova.Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<SimpleDTO, bool> (y => y.SomeProperty))
+              .Given ("SimpleDTO.SomeProperty", x => PropertyInfoToConvert = Core.Extensions.TypeExtensions.GetPropertyInfo<SimpleDTO, bool> (y => y.SomeProperty))
               //
               .It ("creates an valid type info", x => x.Result.Should ().NotBeNull ())
               .It ("finds correct property",
@@ -61,7 +58,7 @@ namespace Farada.Core.UnitTests
           //
           .Elaborate ("returns property info with valid getter and setter actions", _ => _
               //
-              .Given ("SimpleDTO.SomeProperty", x => PropertyInfoToConvert =  Rubicon.RegisterNova.Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<DerivedDTO, int> (y => y.CustomProperty))
+              .Given ("SimpleDTO.SomeProperty", x => PropertyInfoToConvert =  Core.Extensions.TypeExtensions.GetPropertyInfo<DerivedDTO, int> (y => y.CustomProperty))
               .Given ("SimpleDTO instance", x => Instance = new DerivedDTO { CustomProperty = 5 })
               //
               .It ("gets inital value", x => x.Result.GetValue (Instance).Should ().Be (5))
@@ -71,7 +68,7 @@ namespace Farada.Core.UnitTests
           .Elaborate ("returns property info with valid attributes", _ => _
               //
               .Given ("AttributedDTO.AttributedProperty",
-                  x => PropertyInfoToConvert =  Rubicon.RegisterNova.Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<AttributedDTO, int> (y => y.AttributedProperty))
+                  x => PropertyInfoToConvert =  Core.Extensions.TypeExtensions.GetPropertyInfo<AttributedDTO, int> (y => y.AttributedProperty))
               //
               .It ("gets 2 attributes", x => x.Result.Attributes.Count ().Should ().Be (2))
               .It ("gets correct attributes types",
@@ -80,7 +77,7 @@ namespace Farada.Core.UnitTests
           .Elaborate ("returns property info with is defined valid", _ => _
               //
               .Given ("AttributedDTO.AttributedProperty",
-                  x => PropertyInfoToConvert =  Rubicon.RegisterNova.Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<AttributedDTO, int> (y => y.AttributedProperty))
+                  x => PropertyInfoToConvert =  Core.Extensions.TypeExtensions.GetPropertyInfo<AttributedDTO, int> (y => y.AttributedProperty))
               //
               .It ("gets cool int attribute", x => x.Result.IsDefined (typeof (CoolIntAttribute)).Should ().BeTrue ())
               .It ("gets fancy number attribute", x => x.Result.IsDefined (typeof (FancyNumberAttribute)).Should ().BeTrue ())
@@ -89,7 +86,7 @@ namespace Farada.Core.UnitTests
           .Elaborate ("returns concrete attributes", _ => _
               //
               .Given ("AttributedDTO.AttributedProperty",
-                  x => PropertyInfoToConvert =  Rubicon.RegisterNova.Infrastructure.Utilities.TypeExtensions.GetPropertyInfo<AttributedDTO, int> (y => y.AttributedProperty))
+                  x => PropertyInfoToConvert =  Core.Extensions.TypeExtensions.GetPropertyInfo<AttributedDTO, int> (y => y.AttributedProperty))
               //
               .It ("returns value of cool int attribute", x => x.Result.GetCustomAttribute<CoolIntAttribute> ().Value.Should ().Be (5))
               .It ("returns fanciness of fancy number attribute",

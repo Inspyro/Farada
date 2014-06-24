@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Rubicon.RegisterNova.Infrastructure.Utilities;
+using Farada.Core.Extensions;
 
 namespace Farada.Evolution.RuleBasedDataGenerator
 {

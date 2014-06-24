@@ -57,10 +57,6 @@
       <Project>{2CAD51DB-A1A9-49C3-B998-22B2839EAC5D}</Project>
       <Name>Farada.Evolution</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubicon.RegisterNova.Infrastructure\Infrastructure.csproj">
-      <Project>{EE7EFDEB-F9B0-4882-9520-C71B33149C9D}</Project>
-      <Name>Infrastructure</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

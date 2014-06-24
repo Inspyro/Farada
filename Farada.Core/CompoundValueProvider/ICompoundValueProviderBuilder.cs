@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Farada.Core.Modifiers;
 using Farada.Core.ValueProvider;
 
 namespace Farada.Core.CompoundValueProvider

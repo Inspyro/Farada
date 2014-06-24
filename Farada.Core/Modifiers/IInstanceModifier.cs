@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Farada.Core.CompoundValueProvider
+namespace Farada.Core.Modifiers
 {
   /// <summary>
   /// TODO: document

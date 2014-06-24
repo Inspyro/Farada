@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rubicon.RegisterNova.Infrastructure.Utilities;
+using Farada.Core.Extensions;
 
 namespace Farada.Core.Parallelization
 {

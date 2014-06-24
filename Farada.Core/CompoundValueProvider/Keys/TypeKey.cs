@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using AutoMapper.Internal;
+using Farada.Core.Extensions;
 using Farada.Core.FastReflection;
-using Rubicon.RegisterNova.Infrastructure.Utilities;
 
 namespace Farada.Core.CompoundValueProvider.Keys
 {

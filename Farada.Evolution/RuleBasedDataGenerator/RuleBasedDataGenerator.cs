@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Farada.Core.CompoundValueProvider;
-using Rubicon.RegisterNova.Infrastructure.Utilities;
+using Farada.Core.Extensions;
 
 namespace Farada.Evolution.RuleBasedDataGenerator
 {

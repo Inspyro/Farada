@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Farada.Core.CompoundValueProvider;
-using Rubicon.RegisterNova.Infrastructure.Utilities;
+using Farada.Core.Extensions;
+using Farada.Core.Modifiers;
 
 namespace Farada.Core.BaseDomain.Modifiers
 {

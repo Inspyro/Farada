@@ -43,6 +43,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestDataGenerator.cs" />
     <Compile Include="Utilities\LerpUtility.cs" />
+    <Compile Include="Utilities\MathUtility.cs" />
     <Compile Include="Utilities\UnrestrictedRule.cs" />
     <Compile Include="RuleBasedDataGenerator\CompoundRuleInput.cs" />
     <Compile Include="RuleBasedDataGenerator\GeneratorDataProvider.cs" />
@@ -62,10 +63,6 @@
     <ProjectReference Include="..\Farada.Core\Farada.Core.csproj">
       <Project>{1df4d7d1-1068-456e-b6f6-389f04b1ad10}</Project>
       <Name>Farada.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubicon.RegisterNova.Infrastructure\Infrastructure.csproj">
-      <Project>{EE7EFDEB-F9B0-4882-9520-C71B33149C9D}</Project>
-      <Name>Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Farada.Core.Extensions;
 using FluentAssertions;
-using Rubicon.RegisterNova.Infrastructure.Utilities;
 using SpecK;
 using SpecK.Specifications;
 
-namespace Rubicon.RegisterNova.Infrastructure.UnitTests.Utilities
+namespace Farada.Core.UnitTests.Extensions
 {
   [Subject (typeof (ListExtensions))]
   public class ListExtensionsSpeck:Specs<List<int>>
