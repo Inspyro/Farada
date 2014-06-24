@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using Farada.Core.BaseDomain.Modifiers;
 using Farada.Core.CompoundValueProvider;
 using Farada.Core.Extensions;
@@ -14,9 +15,9 @@ using SpecK.Specifications.InferredApi;
 namespace Farada.Core.IntegrationTests
 {
   [Subject (typeof (ICompoundValueProvider))]
-  public class CompoundValueProviderSpeck : Specs
+  public class CompoundValueProviderSpeck : Specs //TODO: split in multiple files
   {
-    BaseDomainConfiguration Domain;
+    DomainConfiguration Domain;
     bool UseDefaults;
     ICompoundValueProvider ValueProvider;
     int MaxRecursionDepth;
@@ -46,10 +47,11 @@ namespace Farada.Core.IntegrationTests
           .Given (ValueProviderContext ());
     }
 
-    Context BaseDomainContext (bool useDefaults=true, int? seed=null)
+    Context BaseDomainContext (bool useDefaults = true, int? seed = null)
     {
       return c => c
-          .Given ("empty base domain", x => Domain = new BaseDomainConfiguration {Random = seed.HasValue?new Random(seed.Value):new Random()})
+          .Given ("empty base domain with seed " + (!seed.HasValue ? "any" : seed.ToString ()),
+              x => Domain = new DomainConfiguration { Random = seed.HasValue ? new Random (seed.Value) : new Random () })
           .Given (BasePropertyContext (useDefaults));
     }
 
@@ -79,7 +81,7 @@ namespace Farada.Core.IntegrationTests
       GenericCase<SomeEnum> ("simple Enum case", _ => _
         .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid Enum", x => x.Result.Should ().BeOfType<SomeEnum>()));
+          .It ("should be a valid Enum", x => x.Result.Should ().BeOfType<SomeEnum>())); //TODO: Enum members
 
       GenericCase<float> ("simple float case", _ => _
         .Given(BaseDomainContext(seed:5))
@@ -216,7 +218,7 @@ namespace Farada.Core.IntegrationTests
       return c => c
       .Given ("domain with null modifier", x =>
       {
-        Domain = new BaseDomainConfiguration
+        Domain = new DomainConfiguration
                  {
                      BuildValueProvider = builder => builder.AddInstanceModifier (new NullModifier (1))
                  };
@@ -271,7 +273,7 @@ namespace Farada.Core.IntegrationTests
     {
       return c => c.Given ("simple string domain", x =>
       {
-        Domain = new BaseDomainConfiguration ()
+        Domain = new DomainConfiguration ()
                  {
                      BuildValueProvider = builder => builder.AddProvider ((string s) => s, context => "SomeString")
                  };
@@ -286,8 +288,8 @@ namespace Farada.Core.IntegrationTests
           ValueProvider.Create<Universe> (MaxRecursionDepth, null))
           .Elaborate ("should fill normal property deep in hierarchy", _ => _
               .Given (SimpleStringContext (3))
-              .It ("sets mayor name in 1st level deep hierarchy", x => x.Result.Galaxy1.StarSystem1.Planet1.President.Name.Should ().Be ("SomeString"))
-              .It ("sets mayor name in 2nd level deep hierarchy",
+              .It ("fills properties in 1st level deep hierarchy", x => x.Result.Galaxy1.StarSystem1.Planet1.President.Name.Should ().Be ("SomeString"))
+              .It ("fill properties in 2nd level deep hierarchy",
                   x =>
                       x.Result.Galaxy1.StarSystem1.Planet1.President.Atom1.Particle1.QuantumUniverse.Galaxy1.StarSystem1.Planet1.President.Name.Should ()
                           .Be ("SomeString"))
@@ -302,7 +304,7 @@ namespace Farada.Core.IntegrationTests
     {
       return c => c.Given ("simple property domain", x =>
       {
-        Domain = new BaseDomainConfiguration
+        Domain = new DomainConfiguration
                  {
                      BuildValueProvider = builder =>
                      {
@@ -313,7 +315,7 @@ namespace Farada.Core.IntegrationTests
                        builder.AddProvider ((Vehicle.LandVehicle lv) => lv.Weight, context => 100);
                        builder.AddProvider ((Vehicle.LandVehicle lv) => lv.MainColor, context => Vehicle.Color.Red);
 
-                       builder.AddProvider ((Vehicle.AirVehicle av) => av.Engines, context => new Vehicle.JetEngine ());
+                       builder.AddProvider ((Vehicle.AirVehicle av) => av.Engine, context => new Vehicle.JetEngine ());
                        builder.AddProvider ((Vehicle.JetEngine je) => je.PowerInNewtons, context => 5000);
                      }
                  };
@@ -330,8 +332,8 @@ namespace Farada.Core.IntegrationTests
               .Given (PropertyProviderContext ())
               .It ("should fill weight", x => x.Result.Weight.Should ().Be (100))
               .It ("should fill main color", x => x.Result.MainColor.Should ().Be (Vehicle.Color.Red))
-              .It ("should fill tire diameter", x => x.Result.Tires.Diameter.Should ().Be (3.6))
-              .It ("should fill grip", x => x.Result.Tires.Grip.Should ().Be (3.6)));
+              .It ("should fill tire diameter", x => x.Result.Tire.Diameter.Should ().Be (3.6))
+              .It ("should fill grip", x => x.Result.Tire.Grip.Should ().Be (3.6)));
 
       Specify (x =>
           ValueProvider.Create<Vehicle.AirVehicle> (MaxRecursionDepth, null))
@@ -339,17 +341,17 @@ namespace Farada.Core.IntegrationTests
               .Given (PropertyProviderContext ())
               .It ("should fill weight with default int", x => x.Result.Weight.Should ().Be (5))
               .It ("should fill main color with first enum value", x => x.Result.MainColor.Should ().Be (Vehicle.Color.White))
-              .It ("should fill engine with jetengine", x => x.Result.Engines.Should ().BeOfType (typeof (Vehicle.JetEngine)))
+              .It ("should fill engine with jetengine", x => x.Result.Engine.Should ().BeOfType (typeof (Vehicle.JetEngine)))
               .It ("should fill fuel use per second with default float",
-                  x => ((Vehicle.JetEngine) x.Result.Engines).FuelUsePerSecond.Should ().Be (0f))
-              .It ("should fill powerinnewtons as specified", x => x.Result.Engines.PowerInNewtons.Should ().Be (5000f)));
+                  x => ((Vehicle.JetEngine) x.Result.Engine).FuelUsePerSecond.Should ().Be (0f))
+              .It ("should fill powerinnewtons as specified", x => x.Result.Engine.PowerInNewtons.Should ().Be (5000f)));
     }
 
     Context HierarchyPropertyProviderContext ()
     {
       return c => c.Given ("hierachical property domain", x =>
       {
-        Domain = new BaseDomainConfiguration
+        Domain = new DomainConfiguration
                  {
                      BuildValueProvider = builder =>
                      {
@@ -358,9 +360,9 @@ namespace Farada.Core.IntegrationTests
 
                        builder.AddProvider ((Vehicle v) => v.Weight, context => 50);
 
-                       //randomly return an engine
+                       //alternate between engine types
                        int i = 0;
-                       builder.AddProvider ((Vehicle.AirVehicle av) => av.Engines, context =>
+                       builder.AddProvider ((Vehicle.AirVehicle av) => av.Engine, context =>
                        {
                          i++;
                          return i % 2 == 0 ? (Vehicle.Engine) new Vehicle.JetEngine () : new Vehicle.PropellorEngine ();
@@ -382,34 +384,41 @@ namespace Farada.Core.IntegrationTests
           .Elaborate ("should fill properties according to provider chain", _ => _
               .Given (HierarchyPropertyProviderContext ())
               //
+              //test simple cases again because of more complex domain
               .It ("should fill weight", x => x.Result.Weight.Should ().Be (50))
               .It ("should fill default color", x => x.Result.MainColor.Should ().Be (Vehicle.Color.White))
-              .It ("should fill tire diameter with default value", x => x.Result.Tires.Diameter.Should ().Be (0))
-              .It ("should fill grip with default value", x => x.Result.Tires.Grip.Should ().Be (0)));
+              .It ("should fill tire diameter with default value", x => x.Result.Tire.Diameter.Should ().Be (0))
+              .It ("should fill grip with default value", x => x.Result.Tire.Grip.Should ().Be (0)));
 
       Specify (x =>
           ValueProvider.CreateMany<Vehicle.AirVehicle> (2,MaxRecursionDepth, null).First())
           .Elaborate ("should fill properties according to provider chain", _ => _
               .Given (HierarchyPropertyProviderContext ())
               //
+              //test simple cases again because of more complex domain
               .It ("should fill weight with specified int", x => x.Result.Weight.Should ().Be (50))
               .It ("should fill main color with first enum value", x => x.Result.MainColor.Should ().Be (Vehicle.Color.White))
-              .It ("should fill engine with propellorengine", x => x.Result.Engines.Should ().BeOfType (typeof (Vehicle.PropellorEngine)))
+
+              //start testing concrete domain logic
+              .It ("should fill engine with propellorengine", x => x.Result.Engine.Should ().BeOfType (typeof (Vehicle.PropellorEngine)))
               .It ("should fill fuel use per second with float",
                   x => 
-                    ((Vehicle.PropellorEngine) x.Result.Engines).AverageRotationSpeed.Should ().Be (2.1f))
-              .It ("should fill powerinnewtons as specified", x => x.Result.Engines.PowerInNewtons.Should ().Be (250f)));
+                    ((Vehicle.PropellorEngine) x.Result.Engine).AverageRotationSpeed.Should ().Be (2.1f))
+              .It ("should fill powerinnewtons as specified", x => x.Result.Engine.PowerInNewtons.Should ().Be (250f)));
 
       Specify (x =>
           ValueProvider.CreateMany<Vehicle.AirVehicle> (2, MaxRecursionDepth, null).Last())
           .Elaborate ("should fill properties according to provider chain", _ => _
               .Given (HierarchyPropertyProviderContext ())
               //
+              //test simple cases again because of more complex domain
               .It ("should fill weight with specified int", x => x.Result.Weight.Should ().Be (50))
               .It ("should fill main color with first enum value", x => x.Result.MainColor.Should ().Be (Vehicle.Color.White))
-              .It ("should fill engine with jetengine", x => x.Result.Engines.Should ().BeOfType (typeof (Vehicle.JetEngine)))
-              .It ("should fill fuel use per second with float", x => ((Vehicle.JetEngine) x.Result.Engines).FuelUsePerSecond.Should ().Be (2.1f))
-              .It ("should fill powerinnewtons as with float", x => x.Result.Engines.PowerInNewtons.Should ().Be (1200)));
+
+              //start testing concrete domain logic
+              .It ("should fill engine with jetengine", x => x.Result.Engine.Should ().BeOfType (typeof (Vehicle.JetEngine)))
+              .It ("should fill fuel use per second with float", x => ((Vehicle.JetEngine) x.Result.Engine).FuelUsePerSecond.Should ().Be (2.1f))
+              .It ("should fill powerinnewtons as with float", x => x.Result.Engine.PowerInNewtons.Should ().Be (1200)));
     }
 
 
@@ -417,13 +426,13 @@ namespace Farada.Core.IntegrationTests
     {
       return c => c.Given ("simple attribute domain", x =>
       {
-        Domain = new BaseDomainConfiguration
+        Domain = new DomainConfiguration
                  {
                      BuildValueProvider =
                          builder =>
                          {
-                           builder.AddProvider ((double d, Vehicle.BaseValueAttribute bva) => d, context => context.Attribute.BaseValue + 0.1d);
-                           builder.AddProvider ((int i, Vehicle.BaseValueAttribute bva) => i, context => context.Attribute.BaseValue + 2);
+                           builder.AddProvider ((double d, Vehicle.InitialValueForChainAttribute bva) => d, context => context.Attribute.BaseValue + 0.1d);
+                           builder.AddProvider ((int i, Vehicle.InitialValueForChainAttribute bva) => i, context => context.Attribute.BaseValue + 2); //TODO: replace expression with typeof?
                          }
                  };
       })
@@ -437,7 +446,7 @@ namespace Farada.Core.IntegrationTests
           ValueProvider.Create<Vehicle.LandVehicle> (MaxRecursionDepth, null))
           .Elaborate ("should fill properties according to provider chain", _ => _
               .Given(AttributeProviderContext())
-              .It ("should fill tire usage", x => x.Result.Tires.TireUsage.Should ().Be (100.1d))
+              .It ("should fill tire usage", x => x.Result.Tire.TireUsage.Should ().Be (100.1d))
               .It ("should fill weight", x => x.Result.Weight.Should ().Be (52)));
     }
 
@@ -445,18 +454,21 @@ namespace Farada.Core.IntegrationTests
     {
       return c => c.Given ("simple hierachical type chained domain", x =>
       {
-        Domain = new BaseDomainConfiguration
+        Domain = new DomainConfiguration
                  {
                      BuildValueProvider = builder =>
                      {
-                       builder.AddProvider ((int i) => i, context => 10);
-                       builder.AddProvider ((int i) => i, context => context.GetPreviousValue ()+20);
-                       builder.AddProvider ((Vehicle v) => v.Weight, context => context.GetPreviousValue () + 100);
-                       builder.AddProvider ((Vehicle v) => v.Weight, context => context.GetPreviousValue () + 200);
-                       builder.AddProvider ((Vehicle.LandVehicle av) => av.Weight, context => context.GetPreviousValue () + 1000);
-                       builder.AddProvider ((Vehicle.LandVehicle av) => av.Weight, context => context.GetPreviousValue () + 2000);
-                       builder.AddProvider ((int i, Vehicle.BaseValueAttribute bva) => i, context => context.GetPreviousValue()+10000);
-                       builder.AddProvider ((int i, Vehicle.BaseValueAttribute bva) => i, context => context.GetPreviousValue()+20000);
+                       //TODO: use typeof here? and use AddProviderForType/AddProviderForExression - should we support both with types?
+                       //TODO: what about resharper simplification - is the type lost
+
+                       builder.AddProvider ((string s) => s, context => "8");
+                       builder.AddProvider ((string s) => s, context => "7" + context.GetPreviousValue ());
+                       builder.AddProvider ((Vehicle v) => v.Name, context => "4" + context.GetPreviousValue ());
+                       builder.AddProvider ((Vehicle v) => v.Name, context => "3" + context.GetPreviousValue ());
+                       builder.AddProvider ((Vehicle.LandVehicle av) => av.Name, context => "2" + context.GetPreviousValue ());
+                       builder.AddProvider ((Vehicle.LandVehicle av) => av.Name, context => "1" + context.GetPreviousValue ());
+                       builder.AddProvider ((string s, Vehicle.InitialStringValueForChainAttribute bva) => s, context => "6" + context.Attribute.BaseValue + context.GetPreviousValue());
+                       builder.AddProvider ((string s, Vehicle.InitialStringValueForChainAttribute bva) => s, context => "5" + context.Attribute.BaseValue + context.GetPreviousValue());
                      }
                  };
       })
@@ -470,14 +482,14 @@ namespace Farada.Core.IntegrationTests
           ValueProvider.Create<Vehicle.LandVehicle> (MaxRecursionDepth, null))
           .Elaborate ("should fill properties according to provider chain", _ => _
               .Given (TypeHierarchyChainProviderContext ())
-              .It ("should fill weight", x => x.Result.Weight.Should ().Be (10 + 20 + 100 + 200 + 1000 + 2000 + 10000 + 20000)));
+              .It ("should fill name", x => x.Result.Name.Should ().Be ("12345!6!78")));
     }
 
     Context CustomContext (int contextValue)
     {
       return c => c.Given ("simple domain provider using custom context", x =>
       {
-        Domain = new BaseDomainConfiguration
+        Domain = new DomainConfiguration
                  {
                      BuildValueProvider = builder => builder.AddProvider ((int i) => i, new IntProviderWithCustomContext(contextValue))
                  };
@@ -499,7 +511,7 @@ namespace Farada.Core.IntegrationTests
     {
       return c => c.Given ("simple domain provider using custom context", x =>
       {
-        Domain = new BaseDomainConfiguration
+        Domain = new DomainConfiguration
                  {
                      BuildValueProvider = builder => builder.AddProvider ((int i, ClassWithAttribute.CoolIntAttribute cia) => i, new CoolIntCustomContextValueProvider(contextValue))
                  };
@@ -521,12 +533,12 @@ namespace Farada.Core.IntegrationTests
     {
       return c => c.Given ("domain provider with sub type provider", x =>
       {
-        Domain = new BaseDomainConfiguration
+        Domain = new DomainConfiguration
                  {
                      BuildValueProvider = builder => builder.AddProvider ((Vehicle v) => v, new VehicleSubTypeProvider())
                  };
       })
-      .Given(BasePropertyContext(false, (int) RecursionDepth.DoNotFillSecondLevelProperties));
+      .Given(BasePropertyContext(false, (int) RecursionDepth.DoNotFillSecondLevelProperties)); //TODO: int constants
     }
 
     [Group]
@@ -536,28 +548,30 @@ namespace Farada.Core.IntegrationTests
           ValueProvider.Create<Vehicle.LandVehicle> (MaxRecursionDepth, null))
           .Elaborate ("should fill all according to context", _ => _
               .Given (ValueProviderSubTypeContext ())
-              .It ("should fill tire diameter", x => x.Result.Tires.Diameter.Should ().Be (10)));
+              .It ("should fill tire diameter", x => x.Result.Tire.Diameter.Should ().Be (10)));
 
        Specify (x =>
           ValueProvider.Create<Vehicle.AirVehicle> (MaxRecursionDepth, null))
           .Elaborate ("should fill all according to context", _ => _
               .Given (ValueProviderSubTypeContext ())
-              .It ("should fill jet engine fuel per second", x => ((Vehicle.JetEngine)x.Result.Engines).FuelUsePerSecond.Should ().Be (20)));
+              .It ("should fill jet engine fuel per second", x => ((Vehicle.JetEngine)x.Result.Engine).FuelUsePerSecond.Should ().Be (20)));
     }
+
+    //TODO: Test what happens when no concrete type is injected for an abstract type - check exception...
 
     Context ValueProviderNoSubTypeContext ()
     {
       return c => c.Given ("domain provider with sub type provider", x =>
       {
-        Domain = new BaseDomainConfiguration
+        Domain = new DomainConfiguration
                  {
                      BuildValueProvider =
                          builder =>
                          builder.AddProvider ((Vehicle v) => v,
                              context =>
                          context.PropertyType == typeof (Vehicle.AirVehicle)
-                             ? (Vehicle) new Vehicle.AirVehicle { Engines = new Vehicle.PropellorEngine () }
-                             : new Vehicle.LandVehicle { Tires = new Vehicle.Tire () })
+                             ? (Vehicle) new Vehicle.AirVehicle { Engine = new Vehicle.PropellorEngine () }
+                             : new Vehicle.LandVehicle { Tire = new Vehicle.Tire () }) //TODO: make more clear - concrete class instead of func?
                  };
       })
           .Given (BasePropertyContext (false, (int) RecursionDepth.DoNotFillSecondLevelProperties));
@@ -566,17 +580,18 @@ namespace Farada.Core.IntegrationTests
     [Group]
     void ValueProviderNotForSubTypes()
     {
+      //TODO: Make more clear
       Specify (x =>
           ValueProvider.Create<Vehicle.LandVehicle> (MaxRecursionDepth, null))
           .Elaborate ("should not fill (no exception)", _ => _
               .Given (ValueProviderNoSubTypeContext ())
-              .It ("should not create land vehicle", x => x.Result.Tires.Should().BeNull()));
+              .It ("should not create land vehicle", x => x.Result.Tire.Should().BeNull()));
 
        Specify (x =>
           ValueProvider.Create<Vehicle.AirVehicle> (MaxRecursionDepth, null))
           .Elaborate ("should not fill (no exception)", _ => _
               .Given (ValueProviderNoSubTypeContext ())
-              .It ("should not create air vehicle", x =>x.Result.Engines.Should().BeNull()));
+              .It ("should not create air vehicle", x =>x.Result.Engine.Should().BeNull()));
     }
 
     void GenericCase<T> (string caseDescription, Func<IAgainstOrArrangeOrAssert<DontCare, T>, IAssert<DontCare, T>> succession)
@@ -619,18 +634,19 @@ namespace Farada.Core.IntegrationTests
 
   #region HelperCode
 
+  // TODO: Move out of spec file into TestDomain package, maybe even into multiple files?!
   class VehicleSubTypeProvider:SubTypeValueProvider<Vehicle>
   {
     protected override Vehicle CreateValue (ValueProviderContext<Vehicle> context)
     {
       if(context.PropertyType==typeof(Vehicle.AirVehicle))
       {
-        return new Vehicle.AirVehicle { Engines = new Vehicle.JetEngine { FuelUsePerSecond = 20 } };
+        return new Vehicle.AirVehicle { Engine = new Vehicle.JetEngine { FuelUsePerSecond = 20 } };
       }
       
       if(context.PropertyType==typeof(Vehicle.LandVehicle))
       {
-        return new Vehicle.LandVehicle { Tires = new Vehicle.Tire { Diameter = 10 } };
+        return new Vehicle.LandVehicle { Tire = new Vehicle.Tire { Diameter = 10 } };
       }
 
       throw new InvalidOperationException ("property of type " + context.PropertyType + " is not supported by " + this.GetType ().FullName);
@@ -668,16 +684,19 @@ namespace Farada.Core.IntegrationTests
     }
   }
 
-  class Vehicle
+  abstract class Vehicle
   {
-     [BaseValue(50)]
+     [InitialValueForChain(50)]
     public int Weight { get; set; }
+
+    [InitialStringValueForChain("!")]
+    public string Name { get; set; }
 
     public Color MainColor { get; set; }
 
     internal class LandVehicle : Vehicle
     {
-      public Tire Tires { get; set; }
+      public Tire Tire { get; set; }
     }
 
     internal class Tire
@@ -685,13 +704,13 @@ namespace Farada.Core.IntegrationTests
       public double Diameter { get; set; }
       public double Grip { get; set; }
 
-      [BaseValue(100)]
+      [InitialValueForChain(100)]
       public double TireUsage { get; set; }
     }
 
     internal class AirVehicle : Vehicle
     {
-      public Engine Engines { get; set; }
+      public Engine Engine { get; set; }
     }
 
     internal class JetEngine : Engine
@@ -717,11 +736,21 @@ namespace Farada.Core.IntegrationTests
       Black
     }
 
-    internal class BaseValueAttribute : Attribute
+    internal class InitialValueForChainAttribute : Attribute
     {
       public int BaseValue { get; private set; }
 
-      public BaseValueAttribute (int baseValue)
+      public InitialValueForChainAttribute (int baseValue)
+      {
+        BaseValue = baseValue;
+      }
+    }
+
+    internal class InitialStringValueForChainAttribute : Attribute
+    {
+      public string BaseValue { get; private set; }
+
+      public InitialStringValueForChainAttribute (string baseValue)
       {
         BaseValue = baseValue;
       }
