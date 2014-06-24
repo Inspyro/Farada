@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Rubicon.RegisterNova.Infrastructure.TestData;
-using Rubicon.RegisterNova.Infrastructure.TestData.Parallelization;
+using Farada.Core.Parallelization;
+using Farada.Evolution;
 
 namespace Rubicon.RegisterNova.PerformanceTests
 {

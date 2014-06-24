@@ -4,27 +4,24 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4DC39F03-845D-48D6-B5F4-93C9F31AA660}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{2CAD51DB-A1A9-49C3-B998-22B2839EAC5D}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rubicon.RegisterNova.PerformanceTests</RootNamespace>
-    <AssemblyName>Rubicon.RegisterNova.PerformanceTests</AssemblyName>
+    <RootNamespace>Farada.Evolution</RootNamespace>
+    <AssemblyName>Farada.Evolution</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -42,20 +39,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="DomainConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
+    <Compile Include="TestDataGenerator.cs" />
+    <Compile Include="Utilities\LerpUtility.cs" />
+    <Compile Include="Utilities\UnrestrictedRule.cs" />
+    <Compile Include="RuleBasedDataGenerator\CompoundRuleInput.cs" />
+    <Compile Include="RuleBasedDataGenerator\GeneratorDataProvider.cs" />
+    <Compile Include="RuleBasedDataGenerator\GeneratorResult.cs" />
+    <Compile Include="RuleBasedDataGenerator\GlobalRule.cs" />
+    <Compile Include="RuleBasedDataGenerator\InitialDataProvider.cs" />
+    <Compile Include="RuleBasedDataGenerator\ReadableUserData.cs" />
+    <Compile Include="RuleBasedDataGenerator\Rule.cs" />
+    <Compile Include="RuleBasedDataGenerator\RuleBasedDataGenerator.cs" />
+    <Compile Include="RuleBasedDataGenerator\RuleParameter.cs" />
+    <Compile Include="RuleBasedDataGenerator\RuleSet.cs" />
+    <Compile Include="RuleBasedDataGenerator\RuleValue.cs" />
+    <Compile Include="RuleBasedDataGenerator\World.cs" />
+    <Compile Include="RuleBasedDataGenerator\WriteableUserData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Farada.Core\Farada.Core.csproj">
-      <Project>{1DF4D7D1-1068-456E-B6F6-389F04B1AD10}</Project>
+      <Project>{1df4d7d1-1068-456e-b6f6-389f04b1ad10}</Project>
       <Name>Farada.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Farada.Evolution\Farada.Evolution.csproj">
-      <Project>{2CAD51DB-A1A9-49C3-B998-22B2839EAC5D}</Project>
-      <Name>Farada.Evolution</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubicon.RegisterNova.Infrastructure\Infrastructure.csproj">
       <Project>{EE7EFDEB-F9B0-4882-9520-C71B33149C9D}</Project>
