@@ -5,6 +5,9 @@ using Farada.TestDataGeneration.Extensions;
 
 namespace Farada.TestDataGeneration.FastReflection
 {
+  /// <summary>
+  /// Provides a faster way to create a class then the standard <see cref="Activator"/>
+  /// </summary>
   public static class FastActivator
   {
     private static readonly ConcurrentDictionary<Type, Func<object>> s_creatorCache = new ConcurrentDictionary<Type, Func<object>>();
@@ -12,7 +15,7 @@ namespace Farada.TestDataGeneration.FastReflection
     ///<summary>
     /// Create an object that will used as a 'factory' to the specified type T  
     /// </summary>
-    /// <returns></returns>
+    /// <returns>the factory the creates a new object of type T</returns>
     public static Func<object> GetFactory (Type t)
     {
       return s_creatorCache.GetOrAdd(t, CreateFactoryMethod);

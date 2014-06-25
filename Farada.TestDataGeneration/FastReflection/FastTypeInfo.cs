@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Farada.TestDataGeneration.FastReflection
 {
-  public class FastTypeInfo:IFastTypeInfo
+  internal class FastTypeInfo:IFastTypeInfo
   {
     public IList<IFastPropertyInfo> Properties { get; private set; }
 
@@ -13,8 +13,14 @@ namespace Farada.TestDataGeneration.FastReflection
     }
   }
 
+  /// <summary>
+  /// Provides a faster way to access a types properties than <see cref="Type.GetProperties()"/>
+  /// </summary>
   public interface IFastTypeInfo
   {
+    /// <summary>
+    /// The properties of the type
+    /// </summary>
     IList<IFastPropertyInfo> Properties { get; }
   }
 }
