@@ -10,7 +10,7 @@ using Farada.TestDataGeneration.ValueProviders;
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
   /// <summary>
-  /// TODO
+  /// Builds a <see cref="CompoundValueProvider"/> based on the specified chains
   /// </summary>
   internal class CompoundValueProviderBuilder : ICompoundValueProviderBuilder
   {

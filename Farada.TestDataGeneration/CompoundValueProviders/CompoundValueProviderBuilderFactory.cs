@@ -5,7 +5,7 @@ using Farada.TestDataGeneration.BaseDomain.ValueProviders;
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
   /// <summary>
-  /// TODO
+  /// Builds a <see cref="CompoundValueProviderBuilder"/> based on the given <see cref="Random"/>
   /// </summary>
   internal class CompoundValueProviderBuilderFactory
   {
@@ -16,6 +16,10 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _random = random;
     }
 
+    /// <summary>
+    /// Creates an empty value provider and injects all value providers of the base domain <see cref="Farada.TestDataGeneration.BaseDomain.ValueProviders"/>
+    /// </summary>
+    /// <returns>the compound value provider builder containing the base domain value providers</returns>
     internal CompoundValueProviderBuilder GetDefault ()
     {
       var defaultProvider = GetEmpty();
@@ -45,6 +49,10 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       return defaultProvider;
     }
 
+    /// <summary>
+    /// creates an empty compound value provider, that does not declare any way to fill a value
+    /// </summary>
+    /// <returns>an empty compound value provider</returns>
     internal CompoundValueProviderBuilder GetEmpty ()
     {
       return new CompoundValueProviderBuilder(_random);

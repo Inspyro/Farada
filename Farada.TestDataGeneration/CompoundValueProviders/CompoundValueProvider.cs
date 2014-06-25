@@ -10,7 +10,8 @@ using Farada.TestDataGeneration.ValueProviders;
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
   /// <summary>
-  /// TODO
+  /// The compound value provider is a <see cref="ITestDataGenerator"/> that can fill compound types such as classes
+  /// based on a domain decleration, where various PropertyChains, TypeChains and AttributeChains are declared
   /// </summary>
   internal class CompoundValueProvider : ITestDataGenerator
   {

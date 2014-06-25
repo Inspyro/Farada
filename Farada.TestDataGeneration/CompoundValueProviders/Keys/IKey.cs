@@ -4,7 +4,8 @@ using Farada.TestDataGeneration.FastReflection;
 namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
   /// <summary>
-  /// TODO
+  /// A Key can describe a property chain, a type or and attribute
+  /// So basically a key describes the filling chain for the <see cref="CompoundValueProvider"/>
   /// </summary>
   internal interface IKey:IEquatable<IKey>
   {

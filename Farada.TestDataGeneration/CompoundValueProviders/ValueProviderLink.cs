@@ -4,6 +4,9 @@ using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
+  /// <summary>
+  /// Declares a link in a compound chain that has a reference to the previous link, for faster access
+  /// </summary>
   internal class ValueProviderLink
   {
     internal IValueProvider Value { get; private set; }

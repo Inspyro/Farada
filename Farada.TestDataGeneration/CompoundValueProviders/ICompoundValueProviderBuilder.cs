@@ -6,26 +6,38 @@ using Farada.TestDataGeneration.ValueProviders;
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
   /// <summary>
-  /// TODO
+  /// Builds a <see cref="CompoundValueProvider"/> based on the specified chains
   /// </summary>
   public interface ICompoundValueProviderBuilder
   {
     /// <summary>
-    /// TODO
+    /// Adds a provider for an attribute and a given return type
+    /// You need to inject a provider for each attribute/type pair that you want to be filled
     /// </summary>
+    /// <typeparam name="TProperty">The type of the properties which should filled</typeparam>
+    /// <typeparam name="TAttribute">The type of the attribute that should be on the properties</typeparam>
+    /// <typeparam name="TContainer">The type of the containing class</typeparam>
+    /// <typeparam name="TContext">The type of the context for the value provider</typeparam>
+    /// <param name="chainExpression">The expression to define the property and attribute type</param>
+    /// <param name="attributeBasedValueProvider">the value provider to inject into the chain</param>
     void AddProvider<TProperty, TAttribute, TContainer, TContext> (
         Expression<Func<TContainer, TAttribute, TProperty>> chainExpression,
         AttributeBasedValueProvider<TProperty, TAttribute, TContext> attributeBasedValueProvider) where TAttribute : Attribute where TContext : IValueProviderContext;
 
     /// <summary>
-    /// TODO
+    /// Adds a provider for a property in the chain
     /// </summary>
+    /// <typeparam name="TProperty">The type of the property</typeparam>
+    /// <typeparam name="TContainer">The type containing the property or the type itself</typeparam>
+    /// <typeparam name="TContext">The type of the context for the value provider</typeparam>
+    /// <param name="chainExpression">The expression that leads to the property (e.g. (Person p)=>p.Name) or to the type (e.g. (string s)=>s)</param>
+    /// <param name="valueProvider">The value provider to inject in the chain</param>
     void AddProvider<TProperty, TContainer, TContext> (Expression<Func<TContainer, TProperty>> chainExpression, ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>;
 
     /// <summary>
-    /// TODO
+    /// Adds an <see cref="IInstanceModifier"/> that gets all instances after they are filled and can modifiy them
     /// </summary>
-    /// <param name="instanceModifier"></param>
+    /// <param name="instanceModifier">the instance modifier to inject</param>
     void AddInstanceModifier (IInstanceModifier instanceModifier);
   }
 }

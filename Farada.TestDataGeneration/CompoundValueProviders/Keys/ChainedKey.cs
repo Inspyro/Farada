@@ -13,7 +13,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     private readonly IList<PropertyKeyPart> _propertyChain;
 
     private readonly PropertyKeyPart _top;
-    private Type _concreteDeclaringType;
+    private readonly Type _concreteDeclaringType;
 
     public IFastPropertyInfo Property
     {

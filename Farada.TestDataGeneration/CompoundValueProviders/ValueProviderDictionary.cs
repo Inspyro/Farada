@@ -6,7 +6,7 @@ using Farada.TestDataGeneration.ValueProviders;
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
   /// <summary>
-  /// TODO
+  /// Stores all value providers in a dictionary where they can be accessed in a fast manner
   /// </summary>
   internal class ValueProviderDictionary
   {

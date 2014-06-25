@@ -12,7 +12,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     private readonly Type _attributeType;
 
     private readonly Type _mostConcretePropertyType;
-    private IList<Type> _remainingAttributes;
+    private readonly IList<Type> _remainingAttributes;
 
     internal AttributeKey(Type propertyType, Type attributeType)
       : this(propertyType, new List<Type> { attributeType})
