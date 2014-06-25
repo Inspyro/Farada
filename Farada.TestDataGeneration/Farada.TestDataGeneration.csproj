@@ -53,9 +53,9 @@
   <ItemGroup>
     <Compile Include="DomainConfiguration.cs" />
     <Compile Include="BaseDomain\Modifiers\NullModifier.cs" />
-    <Compile Include="CompoundValueProvider\CompoundValueProvider.cs" />
-    <Compile Include="CompoundValueProvider\CompoundValueProviderBuilder.cs" />
-    <Compile Include="CompoundValueProvider\CompoundValueProviderBuilderFactory.cs" />
+    <Compile Include="CompoundValueProviders\CompoundValueProvider.cs" />
+    <Compile Include="CompoundValueProviders\CompoundValueProviderBuilder.cs" />
+    <Compile Include="CompoundValueProviders\CompoundValueProviderBuilderFactory.cs" />
     <Compile Include="BaseDomain\Constraints\RangeConstrainedValueProviderContext.cs" />
     <Compile Include="BaseDomain\Constraints\StringConstrainedValueProviderContext.cs" />
     <Compile Include="BaseDomain\ValueProviders\EmailGenerator.cs" />
@@ -88,27 +88,27 @@
     <Compile Include="FastReflection\FastPropertyInfo.cs" />
     <Compile Include="FastReflection\FastReflection.cs" />
     <Compile Include="FastReflection\FastTypeInfo.cs" />
-    <Compile Include="CompoundValueProvider\ITestDataGenerator.cs" />
-    <Compile Include="CompoundValueProvider\ICompoundValueProviderBuilder.cs" />
+    <Compile Include="CompoundValueProviders\ITestDataGenerator.cs" />
+    <Compile Include="CompoundValueProviders\ICompoundValueProviderBuilder.cs" />
     <Compile Include="Modifiers\IInstanceModifier.cs" />
-    <Compile Include="CompoundValueProvider\Keys\AttributeKey.cs" />
-    <Compile Include="CompoundValueProvider\Keys\ChainedKey.cs" />
-    <Compile Include="CompoundValueProvider\Keys\IKey.cs" />
-    <Compile Include="CompoundValueProvider\Keys\PropertyKeyPart.cs" />
-    <Compile Include="CompoundValueProvider\Keys\TypeKey.cs" />
+    <Compile Include="CompoundValueProviders\Keys\AttributeKey.cs" />
+    <Compile Include="CompoundValueProviders\Keys\ChainedKey.cs" />
+    <Compile Include="CompoundValueProviders\Keys\IKey.cs" />
+    <Compile Include="CompoundValueProviders\Keys\PropertyKeyPart.cs" />
+    <Compile Include="CompoundValueProviders\Keys\TypeKey.cs" />
     <Compile Include="Modifiers\ModificationContext.cs" />
     <Compile Include="Parallelization\Parallelization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CompoundValueProvider\RecursionDepth.cs" />
-    <Compile Include="CompoundValueProvider\ValueProviderDictionary.cs" />
-    <Compile Include="CompoundValueProvider\ValueProviderLink.cs" />
+    <Compile Include="CompoundValueProviders\RecursionDepth.cs" />
+    <Compile Include="CompoundValueProviders\ValueProviderDictionary.cs" />
+    <Compile Include="CompoundValueProviders\ValueProviderLink.cs" />
     <Compile Include="TestDataGenerator.cs" />
-    <Compile Include="ValueProvider\AttributeBasedValueProvider.cs" />
-    <Compile Include="ValueProvider\AttributeValueProviderContext.cs" />
-    <Compile Include="ValueProvider\IValueProvider.cs" />
-    <Compile Include="ValueProvider\SubTypeValueProvider.cs" />
-    <Compile Include="ValueProvider\ValueProvider.cs" />
-    <Compile Include="ValueProvider\ValueProviderContext.cs" />
+    <Compile Include="ValueProviders\AttributeBasedValueProvider.cs" />
+    <Compile Include="ValueProviders\AttributeValueProviderContext.cs" />
+    <Compile Include="ValueProviders\IValueProvider.cs" />
+    <Compile Include="ValueProviders\SubTypeValueProvider.cs" />
+    <Compile Include="ValueProviders\ValueProvider.cs" />
+    <Compile Include="ValueProviders\ValueProviderContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

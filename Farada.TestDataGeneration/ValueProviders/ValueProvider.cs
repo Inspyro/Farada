@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoMapper.Internal;
 
-namespace Farada.TestDataGeneration.ValueProvider
+namespace Farada.TestDataGeneration.ValueProviders
 {
   /// <summary>
   /// TODO

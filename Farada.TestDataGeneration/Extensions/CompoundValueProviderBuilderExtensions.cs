@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
-using Farada.TestDataGeneration.CompoundValueProvider;
-using Farada.TestDataGeneration.ValueProvider;
+using Farada.TestDataGeneration.CompoundValueProviders;
+using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.Extensions
 {

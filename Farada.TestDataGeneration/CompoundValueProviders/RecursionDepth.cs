@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Farada.TestDataGeneration.CompoundValueProvider
+namespace Farada.TestDataGeneration.CompoundValueProviders
 {
   /// <summary>
   /// Helps to fill the recursion depth properties - more descriptive

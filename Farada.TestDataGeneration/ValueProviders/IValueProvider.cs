@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Farada.TestDataGeneration.ValueProvider
+namespace Farada.TestDataGeneration.ValueProviders
 {
   /// <summary>
   /// TODO

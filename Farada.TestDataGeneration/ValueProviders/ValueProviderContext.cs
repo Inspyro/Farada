@@ -1,8 +1,8 @@
 ﻿using System;
-using Farada.TestDataGeneration.CompoundValueProvider;
+using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.FastReflection;
 
-namespace Farada.TestDataGeneration.ValueProvider
+namespace Farada.TestDataGeneration.ValueProviders
 {
   /// <summary>
   /// TODO

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Farada.TestDataGeneration.ValueProvider
+namespace Farada.TestDataGeneration.ValueProviders
 {
   public abstract class AttributeBasedValueProvider<TProperty, TAttribute, TContext>:IValueProvider where TContext:IValueProviderContext
       where TAttribute : Attribute

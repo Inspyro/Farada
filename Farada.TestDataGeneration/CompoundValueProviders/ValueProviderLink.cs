@@ -1,8 +1,8 @@
 ﻿using System;
-using Farada.TestDataGeneration.CompoundValueProvider.Keys;
-using Farada.TestDataGeneration.ValueProvider;
+using Farada.TestDataGeneration.CompoundValueProviders.Keys;
+using Farada.TestDataGeneration.ValueProviders;
 
-namespace Farada.TestDataGeneration.CompoundValueProvider
+namespace Farada.TestDataGeneration.CompoundValueProviders
 {
   internal class ValueProviderLink
   {

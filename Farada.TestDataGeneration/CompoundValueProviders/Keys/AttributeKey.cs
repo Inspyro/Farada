@@ -4,7 +4,7 @@ using System.Linq;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
 
-namespace Farada.TestDataGeneration.CompoundValueProvider.Keys
+namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
   internal class AttributeKey : IKey, IEquatable<AttributeKey>
   {

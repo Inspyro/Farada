@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Farada.TestDataGeneration.CompoundValueProvider.Keys;
-using Farada.TestDataGeneration.ValueProvider;
+using Farada.TestDataGeneration.CompoundValueProviders.Keys;
+using Farada.TestDataGeneration.ValueProviders;
 
-namespace Farada.TestDataGeneration.CompoundValueProvider
+namespace Farada.TestDataGeneration.CompoundValueProviders
 {
   /// <summary>
   /// TODO

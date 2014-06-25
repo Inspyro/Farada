@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Farada.TestDataGeneration.CompoundValueProvider;
+using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.Extensions;
 using Remotion.Utilities;
 

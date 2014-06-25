@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
 
-namespace Farada.TestDataGeneration.CompoundValueProvider
+namespace Farada.TestDataGeneration.CompoundValueProviders
 {
   /// <summary>
   /// TODO

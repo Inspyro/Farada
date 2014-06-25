@@ -1,7 +1,7 @@
 ﻿//TODO: Remove unnecesary dependencies
 
 using System;
-using Farada.TestDataGeneration.CompoundValueProvider;
+using Farada.TestDataGeneration.CompoundValueProviders;
 
 namespace Farada.TestDataGeneration
 {

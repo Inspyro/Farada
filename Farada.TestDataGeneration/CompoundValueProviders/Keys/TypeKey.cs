@@ -4,7 +4,7 @@ using AutoMapper.Internal;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
 
-namespace Farada.TestDataGeneration.CompoundValueProvider.Keys
+namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
   internal class TypeKey : IKey, IEquatable<TypeKey>
   {

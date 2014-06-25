@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Farada.TestDataGeneration.CompoundValueProvider.Keys;
+using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.Modifiers;
-using Farada.TestDataGeneration.ValueProvider;
+using Farada.TestDataGeneration.ValueProviders;
 
-namespace Farada.TestDataGeneration.CompoundValueProvider
+namespace Farada.TestDataGeneration.CompoundValueProviders
 {
   /// <summary>
   /// TODO

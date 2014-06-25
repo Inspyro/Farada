@@ -1,7 +1,7 @@
 ﻿using System;
 using Farada.TestDataGeneration.FastReflection;
 
-namespace Farada.TestDataGeneration.CompoundValueProvider.Keys
+namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
   /// <summary>
   /// TODO

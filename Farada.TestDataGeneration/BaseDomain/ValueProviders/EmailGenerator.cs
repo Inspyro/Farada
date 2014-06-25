@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Farada.TestDataGeneration.ValueProvider;
+using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {

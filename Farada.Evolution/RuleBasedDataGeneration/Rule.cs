@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Farada.TestDataGeneration.CompoundValueProvider;
+using Farada.TestDataGeneration.CompoundValueProviders;
 
 namespace Farada.Evolution.RuleBasedDataGeneration
 {

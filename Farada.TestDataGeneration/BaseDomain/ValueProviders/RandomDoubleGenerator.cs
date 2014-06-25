@@ -1,7 +1,7 @@
 ﻿using System;
 using Farada.TestDataGeneration.BaseDomain.Constraints;
 using Farada.TestDataGeneration.Extensions;
-using Farada.TestDataGeneration.ValueProvider;
+using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {

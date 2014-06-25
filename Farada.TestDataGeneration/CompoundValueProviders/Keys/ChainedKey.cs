@@ -5,7 +5,7 @@ using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
 using Remotion.Utilities;
 
-namespace Farada.TestDataGeneration.CompoundValueProvider.Keys
+namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
   internal class ChainedKey : IKey, IEquatable<ChainedKey>
   {

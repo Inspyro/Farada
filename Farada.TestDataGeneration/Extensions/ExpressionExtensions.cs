@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Farada.TestDataGeneration.CompoundValueProvider.Keys;
+using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 
 namespace Farada.TestDataGeneration.Extensions
 {

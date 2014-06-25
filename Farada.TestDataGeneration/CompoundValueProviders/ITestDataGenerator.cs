@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Farada.TestDataGeneration.FastReflection;
 
-namespace Farada.TestDataGeneration.CompoundValueProvider
+namespace Farada.TestDataGeneration.CompoundValueProviders
 {
   public interface ITestDataGenerator
   {
