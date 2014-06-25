@@ -6,12 +6,12 @@ namespace Farada.Evolution.RuleBasedDataGeneration
   public class RuleParameter<T>:IRuleParameter
   {
     private readonly Func<RuleValue<T>, bool> _predicate;
-    private readonly T[] _excludes;
+    private readonly Func<RuleValue<T>, CompoundRuleInput, int[]> _getUnwantedParameterIndices;
 
-    public RuleParameter (Func<RuleValue<T>, bool> predicate=null, params T[] excludes)
+    public RuleParameter (Func<RuleValue<T>, bool> predicate=null, Func<RuleValue<T>, CompoundRuleInput, int[]> getUnwantedParameterIndices=null)
     {
       _predicate = predicate;
-      _excludes = excludes;
+      _getUnwantedParameterIndices = getUnwantedParameterIndices;
     }
 
     public Type DataType
@@ -19,21 +19,21 @@ namespace Farada.Evolution.RuleBasedDataGeneration
       get { return typeof(T); }
     }
 
-    public IRuleValue[] Excludes
-    {
-      get { return _excludes.Select(v => (IRuleValue) v).ToArray(); }
-    }
-
     bool IRuleParameter.Predicate (IRuleValue arg)
     {
-      return _predicate==null||_predicate((RuleValue<T>) arg);
+      return (_predicate == null || _predicate((RuleValue<T>) arg));
+    }
+
+    int[] IRuleParameter.ParameterPredicate(IRuleValue arg, CompoundRuleInput targetInput)
+    {
+      return _getUnwantedParameterIndices == null ? null : _getUnwantedParameterIndices((RuleValue<T>) arg, targetInput);
     }
   }
 
   public interface IRuleParameter
   {
     Type DataType { get; }
-    IRuleValue[] Excludes { get; }
     bool Predicate (IRuleValue arg);
+    int[] ParameterPredicate (IRuleValue arg, CompoundRuleInput targetInput);
   }
 }

@@ -24,7 +24,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
         throw new ArgumentException("Could not find a result of type " + dataType);
       }
 
-      return _dataLists[dataType].WhereValues(ruleParameter.Predicate, ruleParameter.Excludes);
+      return _dataLists[dataType].WhereValues(ruleParameter.Predicate);
     }
 
     public void Add(IRuleValue value)

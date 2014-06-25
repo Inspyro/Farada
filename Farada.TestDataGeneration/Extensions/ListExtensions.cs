@@ -57,9 +57,9 @@ namespace Farada.TestDataGeneration.Extensions
     /// <returns>all values that match the predicate</returns>
 
     // ReSharper disable once ParameterTypeCanBeEnumerable.Global
-    public static IEnumerable<T> WhereValues<T> (this IList<T> list, Func<T, bool> predicate, T[] excludes)
+    public static IEnumerable<T> WhereValues<T> (this IList<T> list, Func<T, bool> predicate)
     {
-      return list.WhereIndices(predicate).Select(index => list[index]).Where(value =>!excludes.Contains(value));
+      return list.WhereIndices(predicate).Select(index => list[index]);
     }
 
     /// <summary>

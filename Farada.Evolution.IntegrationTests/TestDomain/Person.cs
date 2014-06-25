@@ -21,5 +21,10 @@ namespace Farada.Evolution.IntegrationTests.TestDomain
       Gender = gender;
       Age = age;
     }
+
+    public bool Likes (Person otherPerson)
+    {
+      return true;
+    }
   }
 }

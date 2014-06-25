@@ -18,11 +18,13 @@ namespace Farada.Evolution.IntegrationTests.TestDomain
 
     public override IEnumerable<IRuleParameter> GetRuleInputs (IReadableWorld world)
     {
-      //TODO: can we have relations between persons? a likes b,c,..  d hates f,g..?
-      yield return new RuleParameter<Person> ( p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male);
-      yield return new RuleParameter<Person> (p => p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant));
+      yield return new RuleParameter<Person> (p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male,
+          (p, ruleInput) => p.Value.Likes (ruleInput.GetValue<Person> (1).Value) ? null : new[] { 1 });
 
-      //TODO: do we need optional rule paramters?
+      yield return
+          new RuleParameter<Person> (
+              p => p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant),
+              (p, ruleInput) => p.Value.Likes (ruleInput.GetValue<Person> (0).Value) ? null : new[] { 0 });
     }
 
     public override IEnumerable<IRuleValue> Execute (CompoundRuleExecutionContext context)
@@ -30,7 +32,7 @@ namespace Farada.Evolution.IntegrationTests.TestDomain
       var male = context.InputData.GetValue<Person> (0);
       var female = context.InputData.GetValue<Person> (1);
 
-      var childCount = 1; // TODO: Get Random object from somewhere ValueProvider.Random.Next(1, 1);
+      var childCount = context.TestDataGenerator.Random.Next(1,1); 
       for (var i = 0; i < childCount; i++)
       {
         var child = context.TestDataGenerator.Create<Person> ();
