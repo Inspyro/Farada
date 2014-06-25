@@ -64,7 +64,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       GenericCase<SomeEnum> ("simple Enum case", _ => _
         .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a valid Enum", x => x.Result.Should ().BeOfType<SomeEnum>())); //TODO: Enum members
+          .It ("should be a valid Enum", x => x.Result.Should ().Be(SomeEnum.SomeMember3)));
 
       GenericCase<float> ("simple float case", _ => _
         .Given(BaseDomainContext(seed:5))
@@ -114,7 +114,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       GenericCase<DateTime> ("simple DateTime case", _ => _
         .Given(BaseDomainContext(seed:5))
           //
-          .It ("should equal some random past DateTime", x => x.Result.Should ().Be (new DateTime(611489333737538675L))));
+          .It ("should equal some random past DateTime", x => x.Result.Should ().Be (new DateTime(611490197737538675))));
     }
 
     [Group]
@@ -143,7 +143,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       GenericCase<SomeEnum> ("simple Enum case", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should be a valid Enum", x => x.Result.Should ().BeOfType<SomeEnum>()));
+          .It ("should be a valid Enum", x => x.Result.Should ().Be(SomeEnum.SomeMember1)));
 
       GenericCase<float> ("simple float case", _ => _
         .Given(BaseDomainContext(false))
@@ -861,6 +861,12 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
   enum SomeEnum
   {
+    SomeMember1,
+    SomeMember2, 
+    SomeMember3,
+    SomeMember4,
+    SomeMember5,
+    SomeMember6
   }
 #endregion
 }
