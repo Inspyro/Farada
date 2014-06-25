@@ -4,10 +4,10 @@ using AutoMapper.Internal;
 namespace Farada.TestDataGeneration.ValueProviders
 {
   /// <summary>
-  /// TODO
+  /// Provides a value for a specific type
   /// </summary>
-  /// <typeparam name="TProperty">TODO</typeparam>
-  /// <typeparam name="TContext"></typeparam>
+  /// <typeparam name="TProperty">The property type for which the value is created</typeparam>
+  /// <typeparam name="TContext">The context under which the value is created</typeparam>
   public abstract class ValueProvider<TProperty, TContext> : IValueProvider
       where TContext : ValueProviderContext<TProperty>
   {
@@ -29,12 +29,16 @@ namespace Farada.TestDataGeneration.ValueProviders
     }
 
     /// <summary>
-    /// TODO
+    /// Creates a value of the given property type
     /// </summary>
-    /// <param name="context"></param>
+    /// <param name="context">the concrete context to considre</param>
     protected abstract TProperty CreateValue (TContext context);
   }
 
+  /// <summary>
+  /// Like <see cref="ValueProvider{TProperty,TContext}"/> but with the default context which is <see cref="ValueProviderContext{TProperty}"/>
+  /// </summary>
+  /// <typeparam name="TProperty"></typeparam>
   public abstract class ValueProvider<TProperty> : ValueProvider<TProperty, ValueProviderContext<TProperty>>
   {
     protected override ValueProviderContext<TProperty> CreateContext (ValueProviderObjectContext objectContext)
