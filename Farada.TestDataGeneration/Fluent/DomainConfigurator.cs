@@ -8,7 +8,7 @@ namespace Farada.TestDataGeneration.Fluent
 
   {
     protected internal DomainConfigurator ()
-        : base(new CompoundValueProviderBuilderFactory(new Random()).GetEmpty())
+        : base(new CompoundValueProviderBuilderFactory(new Random()).GetDefault())
     {
     }
 

@@ -13,6 +13,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       return c => c.Given ("simple domain provider using custom context", x =>
       {
         TestDataDomainConfiguration = configurator => configurator
+          .UseDefaults(false)
             .For<int> ().AddProvider (new IntProviderWithCustomContext (contextValue));
       })
       .Given(TestDataGeneratorContext());
@@ -33,6 +34,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       return c => c.Given ("simple domain provider using custom context", x =>
       {
         TestDataDomainConfiguration = configurator => configurator
+          .UseDefaults(false)
             .For<int, ClassWithAttribute.CoolIntAttribute> ().AddProvider (new CoolIntCustomContextValueProvider (contextValue));
       })
           .Given (TestDataGeneratorContext ());

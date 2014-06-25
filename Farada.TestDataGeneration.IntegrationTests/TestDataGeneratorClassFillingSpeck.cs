@@ -16,7 +16,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
     {
       return c => c.Given ("simple string domain", x =>
       {
-        TestDataDomainConfiguration = configurator => configurator.For<string> ().AddProvider (context => "SomeString");
+        TestDataDomainConfiguration = configurator => configurator.UseDefaults(false)
+          .For<string> ().AddProvider (context => "SomeString");
       })
       .Given(TestDataGeneratorContext(recursionDepth));
     }
@@ -45,6 +46,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       return c => c.Given ("simple property domain", x =>
       {
         TestDataDomainConfiguration = configurator => configurator
+          .UseDefaults(false)
             .For<int> ().AddProvider (context => 5)
             .For<double> ().AddProvider (context => 3.6)
             //no default float provider!
@@ -96,8 +98,9 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         var i = 0;
 
-        TestDataDomainConfiguration = configurator => configurator.
-            For<float> ().AddProvider (context => 2.1f)
+        TestDataDomainConfiguration = configurator => configurator
+            .UseDefaults (false)
+            .For<float> ().AddProvider (context => 2.1f)
             .For ((AbstractVehicle v) => v.Weight).AddProvider (context => 50)
             .For ((AbstractVehicle.AirVehicle av) => av.Engine).AddProvider (context =>
             {
@@ -162,6 +165,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       return c => c.Given ("simple attribute domain", x =>
       {
         TestDataDomainConfiguration = configurator => configurator
+          .UseDefaults(false)
             .For<double, AbstractVehicle.InitialValueForChainAttribute> ().AddProvider (context => context.Attribute.BaseValue + 0.1d)
             .For<int, AbstractVehicle.InitialValueForChainAttribute> ().AddProvider (context => context.Attribute.BaseValue + 2);
       })
@@ -184,6 +188,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       return c => c.Given ("simple hierachical type chained domain", x =>
       {
         TestDataDomainConfiguration = configuration => configuration
+          .UseDefaults(false)
             .For<string> ()
             .AddProvider (context => "8")
             .AddProvider (context => "7" + context.GetPreviousValue ())
