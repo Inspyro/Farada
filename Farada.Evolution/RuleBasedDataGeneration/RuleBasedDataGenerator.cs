@@ -13,12 +13,12 @@ namespace Farada.Evolution.RuleBasedDataGeneration
     private readonly RuleSet _ruleSet;
     public ITestDataGenerator TestDataGenerator { get; private set; }
 
-    internal RuleBasedDataGenerator (ITestDataGenerator testDataGenerator, Random random, RuleSet ruleSet)
+    internal RuleBasedDataGenerator (ITestDataGenerator testDataGenerator, RuleSet ruleSet)
     {
       ArgumentUtility.CheckNotNull("testDataGenerator", testDataGenerator);
 
       TestDataGenerator = testDataGenerator;
-      _random = random;
+      _random = testDataGenerator.Random;
       _ruleSet = ruleSet;
       InitialDataProvider = new InitialDataProvider(new GeneratorDataProvider(_random));
     }

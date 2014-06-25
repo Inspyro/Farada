@@ -9,8 +9,7 @@ namespace Rubicon.RegisterNova.PerformanceTests
   {
     private static void Main ()
     {
-      var basicDomain = new DomainConfiguration();
-      var testDataGenerator = TestDataGenerator.Create(basicDomain);
+      var testDataGenerator = TestDataGeneratorFactory.Create();
 
       const int count = 1000000; //1 million
 

@@ -25,17 +25,15 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _modifierList = new List<IInstanceModifier>();
     }
 
-    public void AddProvider<TProperty, TAttribute, TContainer, TContext> (
-        Expression<Func<TContainer, TAttribute, TProperty>> chainExpression,
-        AttributeBasedValueProvider<TProperty, TAttribute, TContext> attributeBasedValueProvider) where TAttribute : Attribute where TContext : IValueProviderContext
+    public void AddProvider<TProperty, TAttribute, TContext> (AttributeBasedValueProvider<TProperty, TAttribute, TContext> attributeBasedValueProvider) where TAttribute : Attribute where TContext : AttributeValueProviderContext<TProperty, TAttribute>
     {
-      if(chainExpression.ToChain().Any())
-      {
-        throw new ArgumentException("Expression chain is not supported for attributes at the moment");
-      }
-
       var key = new AttributeKey(typeof (TProperty), typeof (TAttribute));
       _valueProviderDictionary.AddValueProvider(key, attributeBasedValueProvider);
+    }
+
+    public void AddProvider<TProperty, TContext> (ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>
+    {
+      _valueProviderDictionary.AddValueProvider(new TypeKey(typeof (TProperty)), valueProvider);
     }
 
     public void AddProvider<TProperty, TContainer, TContext> (Expression<Func<TContainer, TProperty>> chainExpression, ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>

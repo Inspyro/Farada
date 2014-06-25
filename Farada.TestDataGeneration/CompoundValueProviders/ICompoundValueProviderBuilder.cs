@@ -8,7 +8,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
   /// <summary>
   /// Builds a <see cref="CompoundValueProvider"/> based on the specified chains
   /// </summary>
-  public interface ICompoundValueProviderBuilder
+  internal interface ICompoundValueProviderBuilder
   {
     /// <summary>
     /// Adds a provider for an attribute and a given return type
@@ -16,13 +16,18 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     /// </summary>
     /// <typeparam name="TProperty">The type of the properties which should filled</typeparam>
     /// <typeparam name="TAttribute">The type of the attribute that should be on the properties</typeparam>
-    /// <typeparam name="TContainer">The type of the containing class</typeparam>
     /// <typeparam name="TContext">The type of the context for the value provider</typeparam>
-    /// <param name="chainExpression">The expression to define the property and attribute type</param>
     /// <param name="attributeBasedValueProvider">the value provider to inject into the chain</param>
-    void AddProvider<TProperty, TAttribute, TContainer, TContext> (
-        Expression<Func<TContainer, TAttribute, TProperty>> chainExpression,
-        AttributeBasedValueProvider<TProperty, TAttribute, TContext> attributeBasedValueProvider) where TAttribute : Attribute where TContext : IValueProviderContext;
+    void AddProvider<TProperty, TAttribute, TContext> (
+        AttributeBasedValueProvider<TProperty, TAttribute, TContext> attributeBasedValueProvider) where TAttribute : Attribute where TContext : AttributeValueProviderContext<TProperty, TAttribute>;
+
+    /// <summary>
+    /// Adds a provider for a property in the chain
+    /// </summary>
+    /// <typeparam name="TProperty">The type of the property</typeparam>
+    /// <typeparam name="TContext">The type of the context for the value provider</typeparam>
+    /// <param name="valueProvider">The value provider to inject in the chain</param>
+    void AddProvider<TProperty, TContext> (ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>;
 
     /// <summary>
     /// Adds a provider for a property in the chain

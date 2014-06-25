@@ -42,9 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EvolutionaryDataGenerator.cs" />
-    <Compile Include="EvolutionaryDomainConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="EvolutionaryDataGeneratorFactory.cs" />
     <Compile Include="Utilities\LerpUtility.cs" />
     <Compile Include="Utilities\MathUtility.cs" />
     <Compile Include="Utilities\UnrestrictedRule.cs" />

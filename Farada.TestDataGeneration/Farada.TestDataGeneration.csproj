@@ -51,10 +51,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fluent\AttributeProviderConfigurator.cs" />
     <Compile Include="BaseDomain\Constraints\RangeContstraints.cs" />
     <Compile Include="BaseDomain\Constraints\StringConstraints.cs" />
     <Compile Include="BaseDomain\ValueProviders\RandomSyllabileGenerator.cs" />
-    <Compile Include="DomainConfiguration.cs" />
+    <Compile Include="Fluent\ChainConfigurator.cs" />
+    <Compile Include="Fluent\DefaultDomainRandomAndValueConfigurator.cs" />
+    <Compile Include="Fluent\DomainAndValueConfigurator.cs" />
     <Compile Include="BaseDomain\Modifiers\NullModifier.cs" />
     <Compile Include="CompoundValueProviders\CompoundValueProvider.cs" />
     <Compile Include="CompoundValueProviders\CompoundValueProviderBuilder.cs" />
@@ -80,7 +83,10 @@
     <Compile Include="BaseDomain\ValueProviders\RandomULongGenerator.cs" />
     <Compile Include="BaseDomain\ValueProviders\RandomUShortGenerator.cs" />
     <Compile Include="BaseDomain\ValueProviders\RandomWordGenerator.cs" />
-    <Compile Include="Extensions\CompoundValueProviderBuilderExtensions.cs" />
+    <Compile Include="Fluent\EmptyDomainRandomAndValueConfigurator.cs" />
+    <Compile Include="IProviderConfiguratorExtensions.cs" />
+    <Compile Include="Fluent\DomainConfigurator.cs" />
+    <Compile Include="Fluent\ExpressionValueProviderConfigurator.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\EqualityUtility.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
@@ -93,6 +99,18 @@
     <Compile Include="FastReflection\FastTypeInfo.cs" />
     <Compile Include="CompoundValueProviders\ITestDataGenerator.cs" />
     <Compile Include="CompoundValueProviders\ICompoundValueProviderBuilder.cs" />
+    <Compile Include="Fluent\IAttributeProviderAndChainConfigurator.cs" />
+    <Compile Include="Fluent\IAttributeProviderConfigurator.cs" />
+    <Compile Include="Fluent\IChainConfigurator.cs" />
+    <Compile Include="Fluent\IDomainAndValueConfigurator.cs" />
+    <Compile Include="Fluent\IDomainConfiguratorReturningRandomAndValueConfigurator.cs" />
+    <Compile Include="Fluent\IDomainConfiguratorReturningValueConfigurator.cs" />
+    <Compile Include="Fluent\IValueProviderConfigurator.cs" />
+    <Compile Include="Fluent\IRandomAndValueConfigurator.cs" />
+    <Compile Include="Fluent\IRandomConfiguratorReturningDomainAndValueConfigurator.cs" />
+    <Compile Include="Fluent\IRandomConfiguratorReturningValueConfigurator.cs" />
+    <Compile Include="Fluent\ITestDataConfigurator.cs" />
+    <Compile Include="Fluent\IValueProviderAndChainConfigurator.cs" />
     <Compile Include="Modifiers\IInstanceModifier.cs" />
     <Compile Include="CompoundValueProviders\Keys\AttributeKey.cs" />
     <Compile Include="CompoundValueProviders\Keys\ChainedKey.cs" />
@@ -105,7 +123,8 @@
     <Compile Include="CompoundValueProviders\RecursionDepth.cs" />
     <Compile Include="CompoundValueProviders\ValueProviderDictionary.cs" />
     <Compile Include="CompoundValueProviders\ValueProviderLink.cs" />
-    <Compile Include="TestDataGenerator.cs" />
+    <Compile Include="TestDataGeneratorFactory.cs" />
+    <Compile Include="TypeValueProviderConfigurator.cs" />
     <Compile Include="ValueProviders\AttributeBasedValueProvider.cs" />
     <Compile Include="ValueProviders\AttributeValueProviderContext.cs" />
     <Compile Include="ValueProviders\IValueProvider.cs" />

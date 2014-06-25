@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Farada.Evolution.RuleBasedDataGeneration;
-using Farada.TestDataGeneration.Extensions;
+using Farada.TestDataGeneration;
 using Farada.Evolution.Utilities;
 using FluentAssertions;
 using SpecK;
@@ -13,6 +13,7 @@ namespace Farada.Evolution.IntegrationTests
   [Subject (typeof (RuleBasedDataGenerator))]
   public class RuleBasedDataGeneratorSpeck : Specs
   {
+    TestDataDomainConfiguration TestDataDomain=null;
     EvolutionaryDomainConfiguration EvolutionaryDomain;
     RuleBasedDataGenerator DataGenerator;
     GeneratorResult InitialData;
@@ -23,7 +24,7 @@ namespace Farada.Evolution.IntegrationTests
       return
           c =>
               c.Given ("create rule based data generator",
-                  x => DataGenerator = EvolutionaryDataGenerator.CreateRuleBasedDataGenerator (EvolutionaryDomain));
+                  x => DataGenerator = EvolutionaryDataGeneratorFactory.Create (TestDataDomain, EvolutionaryDomain));
     }
 
     Context StringInitialDataContext ()
@@ -43,11 +44,8 @@ namespace Farada.Evolution.IntegrationTests
     Context StringDomainContext (bool useDefaults = true)
     {
       return c => c
-          .Given ("string domain", x => EvolutionaryDomain = new EvolutionaryDomainConfiguration
-                                                             {
-                                                                 UseDefaults = useDefaults,
-                                                                 Rules = new RuleSet (new StringMarryRule ())
-                                                             })
+          .Given ("string base domain", x => TestDataDomain = configurator => configurator.UseDefaults (true))
+          .Given ("string evolutionary domain", x => EvolutionaryDomain = configurator => configurator.AddRule (new StringMarryRule ()))
           .Given (DataGeneratorContext ())
           .Given (StringInitialDataContext ());
     }
@@ -77,19 +75,14 @@ namespace Farada.Evolution.IntegrationTests
     Context PersonDomainContext (int seed = 0, bool useDefaults = true)
     {
       return c => c
-          .Given ("person domain", x =>
-          {
-            var lifeRuleSet = new RuleSet (new ProcreationRule (), new AgingRule ());
-            lifeRuleSet.AddGlobalRule (new WorldRule ());
-            EvolutionaryDomain = new EvolutionaryDomainConfiguration
-                                 {
-                                     UseDefaults = useDefaults,
-                                     Random = new Random (seed),
-                                     Rules = lifeRuleSet,
-                                     BuildValueProvider =
-                                         builder => builder.AddProvider ((Gender g) => g, context => (Gender) (context.Random.Next (0, 2)))
-                                 };
-          })
+          .Given ("person test domain", x => TestDataDomain = configurator => configurator
+              //
+              .UseDefaults (useDefaults).UseRandom (new Random (seed))
+              .For<Gender> ().AddProvider (context => (Gender) (context.Random.Next (0, 2))))
+          .Given ("person evolution domain", x => EvolutionaryDomain = configurator => configurator
+              //
+              .AddGlobalRule (new WorldRule ())
+              .AddRule (new ProcreationRule ()).AddRule (new AgingRule ()))
           .Given (DataGeneratorContext ())
           .Given (PersonInitialDataContext ());
     }

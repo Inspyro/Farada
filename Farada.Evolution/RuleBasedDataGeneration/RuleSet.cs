@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Farada.Evolution.RuleBasedDataGeneration
 {
-  public class RuleSet
+  internal class RuleSet
   {
     private readonly List<IRule> _rules;
     private readonly List<IGlobalRule> _globalRules;
 
-    public RuleSet(params IRule[] ruleInfos)
+    internal RuleSet()
     {
-      _rules = ruleInfos == null ? new List<IRule>() : ruleInfos.ToList();
+      _rules = new List<IRule>();
       _globalRules = new List<IGlobalRule>();
     }
 
@@ -28,6 +27,11 @@ namespace Farada.Evolution.RuleBasedDataGeneration
     public void AddGlobalRule (IGlobalRule rule)
     {
       _globalRules.Add(rule);
+    }
+
+    public void AddRule(IRule rule)
+    {
+      _rules.Add(rule);
     }
   }
 }

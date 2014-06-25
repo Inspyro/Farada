@@ -18,13 +18,16 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     private readonly ValueProviderDictionary _valueProviderDictionary;
     private readonly IList<IInstanceModifier> _instanceModifiers;
 
-    private readonly Random _random;
+    public Random Random
+    {
+      get; private set;
+    }
 
     internal CompoundValueProvider (ValueProviderDictionary valueProviderDictionary, Random random, IList<IInstanceModifier> instanceModifiers)
     {
       _valueProviderDictionary = valueProviderDictionary;
       _instanceModifiers = instanceModifiers;
-      _random = random;
+      Random = random;
     }
 
     public TValue Create<TValue> (int maxRecursionDepth = 2, FastReflection.IFastPropertyInfo propertyInfo=null)
@@ -144,7 +147,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       return _instanceModifiers.Aggregate(
           instances,
           (current, instanceModifier) =>
-              instanceModifier.Modify(new ModificationContext(currentKey.PropertyType, currentKey.Property, _random), current));
+              instanceModifier.Modify(new ModificationContext(currentKey.PropertyType, currentKey.Property, Random), current));
     }
 
     private IList<object> CreateInstances (IKey key, int numberOfObjects)
@@ -178,7 +181,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       return providerLink.Value.CreateContext(
           new ValueProviderObjectContext(
               this,
-              _random,
+              Random,
               () => previousLink == null ? null : CreateInstances(previousLink.Key, previousLink.Value, previousContext, 1).Single(),
               key.PropertyType,
               key.Property));

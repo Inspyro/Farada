@@ -14,10 +14,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       return c => c
       .Given ("domain with null modifier", x =>
       {
-        Domain = new DomainConfiguration
-                 {
-                     BuildValueProvider = builder => builder.AddInstanceModifier (new NullModifier (1))
-                 };
+        TestDataDomainConfiguration = configuration => configuration.AddInstanceModifier (new NullModifier (1));
       })
       .Given (TestDataGeneratorContext ());
     }

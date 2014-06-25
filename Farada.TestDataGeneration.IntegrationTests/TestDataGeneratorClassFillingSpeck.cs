@@ -16,11 +16,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
     {
       return c => c.Given ("simple string domain", x =>
       {
-        Domain = new DomainConfiguration
-                 {
-                     UseDefaults = false,
-                     BuildValueProvider = builder => builder.AddProvider ((string s) => s, context => "SomeString")
-                 };
+        TestDataDomainConfiguration = configurator => configurator.For<string> ().AddProvider (context => "SomeString");
       })
       .Given(TestDataGeneratorContext(recursionDepth));
     }
@@ -48,22 +44,14 @@ namespace Farada.TestDataGeneration.IntegrationTests
     {
       return c => c.Given ("simple property domain", x =>
       {
-        Domain = new DomainConfiguration
-                 {
-                    UseDefaults = false,
-                     BuildValueProvider = builder =>
-                     {
-                       builder.AddProvider ((int i) => i, context => 5);
-                       builder.AddProvider ((double d) => d, context => 3.6);
-                       //no default float provider!
-
-                       builder.AddProvider ((AbstractVehicle.LandVehicle lv) => lv.Weight, context => 100);
-                       builder.AddProvider ((AbstractVehicle.LandVehicle lv) => lv.MainColor, context => AbstractVehicle.Color.Red);
-
-                       builder.AddProvider ((AbstractVehicle.AirVehicle av) => av.Engine, context => new AbstractVehicle.JetEngine ());
-                       builder.AddProvider ((AbstractVehicle.JetEngine je) => je.PowerInNewtons, context => 5000);
-                     }
-                 };
+        TestDataDomainConfiguration = configurator => configurator
+            .For<int> ().AddProvider (context => 5)
+            .For<double> ().AddProvider (context => 3.6)
+            //no default float provider!
+            .For ((AbstractVehicle.LandVehicle lv) => lv.Weight).AddProvider (context => 100)
+            .For ((AbstractVehicle.LandVehicle lv) => lv.MainColor).AddProvider (context => AbstractVehicle.Color.Red)
+            .For ((AbstractVehicle.AirVehicle av) => av.Engine).AddProvider (context => new AbstractVehicle.JetEngine ())
+            .For ((AbstractVehicle.JetEngine je) => je.PowerInNewtons).AddProvider (context => 5000);
       })
           .Given (TestDataGeneratorContext ());
     }
@@ -106,31 +94,21 @@ namespace Farada.TestDataGeneration.IntegrationTests
     {
       return c => c.Given ("hierachical property domain", x =>
       {
-        Domain = new DomainConfiguration
-                 {
-                    UseDefaults = false,
+        var i = 0;
 
-                     BuildValueProvider = builder =>
-                     {
-                       //no default double/int provider!
-                       builder.AddProvider ((float f) => f, context => 2.1f);
-
-                       builder.AddProvider ((AbstractVehicle v) => v.Weight, context => 50);
-
-                       //alternate between engine types
-                       int i = 0;
-                       builder.AddProvider ((AbstractVehicle.AirVehicle av) => av.Engine, context =>
-                       {
-                         i++;
-                         return i % 2 == 0 ? (AbstractVehicle.Engine) new AbstractVehicle.JetEngine () : new AbstractVehicle.PropellorEngine ();
-                       });
-
-                       builder.AddProvider ((AbstractVehicle.Engine e) => e.PowerInNewtons, context => 1200);
-                       builder.AddProvider ((AbstractVehicle.PropellorEngine pe) => pe.PowerInNewtons, context => 250);
-                     }
-                 };
+        TestDataDomainConfiguration = configurator => configurator.
+            For<float> ().AddProvider (context => 2.1f)
+            .For ((AbstractVehicle v) => v.Weight).AddProvider (context => 50)
+            .For ((AbstractVehicle.AirVehicle av) => av.Engine).AddProvider (context =>
+            {
+              //alternate between engine types
+              i++;
+              return i % 2 == 0 ? (AbstractVehicle.Engine) new AbstractVehicle.JetEngine () : new AbstractVehicle.PropellorEngine ();
+            })
+            .For ((AbstractVehicle.Engine e) => e.PowerInNewtons).AddProvider (context => 1200)
+            .For ((AbstractVehicle.PropellorEngine pe) => pe.PowerInNewtons).AddProvider (context => 250);
       })
-      .Given(TestDataGeneratorContext());
+          .Given (TestDataGeneratorContext ());
     }
 
     [Group]
@@ -183,17 +161,9 @@ namespace Farada.TestDataGeneration.IntegrationTests
     {
       return c => c.Given ("simple attribute domain", x =>
       {
-        Domain = new DomainConfiguration
-                 {
-                    UseDefaults = false,
-
-                     BuildValueProvider =
-                         builder =>
-                         {
-                           builder.AddProvider ((double d, AbstractVehicle.InitialValueForChainAttribute bva) => d, context => context.Attribute.BaseValue + 0.1d);
-                           builder.AddProvider ((int i, AbstractVehicle.InitialValueForChainAttribute bva) => i, context => context.Attribute.BaseValue + 2); //TODO: replace expression with typeof?
-                         }
-                 };
+        TestDataDomainConfiguration = configurator => configurator
+            .For<double, AbstractVehicle.InitialValueForChainAttribute> ().AddProvider (context => context.Attribute.BaseValue + 0.1d)
+            .For<int, AbstractVehicle.InitialValueForChainAttribute> ().AddProvider (context => context.Attribute.BaseValue + 2);
       })
       .Given(TestDataGeneratorContext());
     }
@@ -213,26 +183,23 @@ namespace Farada.TestDataGeneration.IntegrationTests
     {
       return c => c.Given ("simple hierachical type chained domain", x =>
       {
-        Domain = new DomainConfiguration
-                 {
+        TestDataDomainConfiguration = configuration => configuration
+            .For<string> ()
+            .AddProvider (context => "8")
+            .AddProvider (context => "7" + context.GetPreviousValue ())
+            //
+            .For<string, AbstractVehicle.InitialStringValueForChainAttribute> ()
+            .AddProvider (context => "6" + context.Attribute.BaseValue + context.GetPreviousValue ())
+            .AddProvider (context => "5" + context.Attribute.BaseValue + context.GetPreviousValue ())
+            //
+            .For ((AbstractVehicle v) => v.Name)
+            .AddProvider (context => "4" + context.GetPreviousValue ())
+            .AddProvider (context => "3" + context.GetPreviousValue ())
+            //
+            .For ((AbstractVehicle.LandVehicle av) => av.Name)
+            .AddProvider (context => "2" + context.GetPreviousValue ())
+            .AddProvider (context => "1" + context.GetPreviousValue ());
 
-                    UseDefaults = false,
-
-                     BuildValueProvider = builder =>
-                     {
-                       //TODO: use typeof here? and use AddProviderForType/AddProviderForExression - should we support both with types?
-                       //TODO: what about resharper simplification - is the type lost
-
-                       builder.AddProvider ((string s) => s, context => "8");
-                       builder.AddProvider ((string s) => s, context => "7" + context.GetPreviousValue ());
-                       builder.AddProvider ((AbstractVehicle v) => v.Name, context => "4" + context.GetPreviousValue ());
-                       builder.AddProvider ((AbstractVehicle v) => v.Name, context => "3" + context.GetPreviousValue ());
-                       builder.AddProvider ((AbstractVehicle.LandVehicle av) => av.Name, context => "2" + context.GetPreviousValue ());
-                       builder.AddProvider ((AbstractVehicle.LandVehicle av) => av.Name, context => "1" + context.GetPreviousValue ());
-                       builder.AddProvider ((string s, AbstractVehicle.InitialStringValueForChainAttribute bva) => s, context => "6" + context.Attribute.BaseValue + context.GetPreviousValue());
-                       builder.AddProvider ((string s, AbstractVehicle.InitialStringValueForChainAttribute bva) => s, context => "5" + context.Attribute.BaseValue + context.GetPreviousValue());
-                     }
-                 };
       })
       .Given(TestDataGeneratorContext());
     }

@@ -14,11 +14,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
      {
        return c => c.Given ("domain provider with sub type provider", x =>
        {
-         Domain = new DomainConfiguration
-                  {
-                      UseDefaults = false,
-                      BuildValueProvider = builder => builder.AddProvider ((AbstractVehicle v) => v, new VehicleSubTypeProvider ())
-                  };
+         TestDataDomainConfiguration = configurator => configurator
+             .For<AbstractVehicle> ().AddProvider (new VehicleSubTypeProvider ());
        })
            .Given (TestDataGeneratorContext (RecursionDepth.DoNotFillSecondLevelProperties));
      }
@@ -43,13 +40,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
     {
       return c => c.Given ("domain provider with sub type provider", x =>
       {
-        Domain = new DomainConfiguration
-                 {
-                     UseDefaults = false,
-                     BuildValueProvider =
-                         builder =>
-                         builder.AddProvider ((AbstractVehicle v) => v, new VehicleOnlyValueProvider ())
-                 };
+        TestDataDomainConfiguration = configurator => configurator
+            .For<AbstractVehicle> ().AddProvider (new VehicleOnlyValueProvider ());
       })
           .Given (TestDataGeneratorContext ((int) RecursionDepth.DoNotFillSecondLevelProperties));
     }

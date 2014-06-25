@@ -28,5 +28,10 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     /// <param name="propertyInfo">The <see cref="IFastPropertyInfo"/> where the creation starts -> default=null means that we start on the global level</param>
     /// <returns>the randomly created values</returns>
     IReadOnlyList<TCompoundValue> CreateMany<TCompoundValue> (int numberOfObjects, int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo=null);
+
+    /// <summary>
+    /// The random that is used by the test data generator
+    /// </summary>
+    Random Random { get; }
   }
 }

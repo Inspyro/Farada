@@ -8,7 +8,7 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// <typeparam name="TProperty">The type of the property with the attribute</typeparam>
   /// <typeparam name="TAttribute">The type of the attribute</typeparam>
   /// <typeparam name="TContext">The type of the <see cref="IValueProviderContext"/></typeparam>
-  public abstract class AttributeBasedValueProvider<TProperty, TAttribute, TContext>:IValueProvider where TContext:IValueProviderContext
+  public abstract class AttributeBasedValueProvider<TProperty, TAttribute, TContext>:IValueProvider where TContext:AttributeValueProviderContext<TProperty, TAttribute>
       where TAttribute : Attribute
   {
     protected abstract TProperty CreateValue (TContext context);

@@ -6,7 +6,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
   /// <summary>
   /// Allows to define a func instead of deriving from <see cref="AttributeBasedValueProvider{TProperty, TAttribute}"/>
-  /// In order to simplify this process even more one can use the <see cref="CompoundValueProviderBuilderExtensions"/>
+  /// In order to simplify this process even more one can use the <see cref="IProviderConfiguratorExtensions"/>
   /// </summary>
   public class FuncProviderForAttributeBased<TProperty, TAttribute>:AttributeBasedValueProvider<TProperty, TAttribute>
     where TAttribute : Attribute

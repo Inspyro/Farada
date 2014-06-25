@@ -1,4 +1,5 @@
 ﻿using System;
+using Farada.TestDataGeneration.CompoundValueProviders;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
