@@ -115,8 +115,6 @@ namespace Farada.Evolution.RuleBasedDataGeneration
           compoundRuleInput.ShrinkTo(executionCount);
         }
 
-        //TODO: The input list is already filtered by the execution count...
-
         //TODO: Use plinq here... but never give them the same value - should be already like this
         foreach (var inputValues in inputList.Where(ruleInput=>ruleInput.Count==inputDataList.Count))
         {
