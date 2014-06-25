@@ -51,27 +51,4 @@ namespace Farada.TestDataGeneration.ValueProviders
       PropertyInfo = objectContext.PropertyInfo;
     }
   }
-
-  public class ValueProviderObjectContext
-  {
-    public Random Random { get; private set; }
-    public Func<object> GetPreviousValue { get; private set; }
-    public Type TargetValueType { get; private set; }
-    public IFastPropertyInfo PropertyInfo { get; private set; }
-    public ITestDataGenerator TestDataGenerator { get; private set; }
-
-    internal ValueProviderObjectContext (
-        ITestDataGenerator testDataGenerator,
-        Random random,
-        Func<object> getPreviousValue,
-        Type targetValueType,
-        IFastPropertyInfo fastPropertyInfo)
-    {
-      TestDataGenerator = testDataGenerator;
-      Random = random;
-      GetPreviousValue = getPreviousValue;
-      TargetValueType = targetValueType;
-      PropertyInfo = fastPropertyInfo;
-    }
-  }
 }
