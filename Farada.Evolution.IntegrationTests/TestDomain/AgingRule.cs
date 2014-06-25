@@ -5,15 +5,12 @@ using Farada.Evolution.Utilities;
 
 namespace Farada.Evolution.IntegrationTests.TestDomain
 {
-  //TODO: Rule for every generation - not per type
-    //TODO: World class that contains global generation data - like World.IsFertile..
-
   internal class AgingRule : UnrestrictedRule<Person>
   {
-    protected override IEnumerable<Person> Execute (RuleValue<Person> person)
+    protected override IEnumerable<Person> Execute (SimpleRuleExecutionContext<Person> context)
     {
-      person.UserData.IsPregnant = false;
-      person.Value.Age++;
+      context.Input.UserData.IsPregnant = false;
+      context.Input.Value.Age++;
 
       yield break;
     }

@@ -47,6 +47,11 @@ namespace Farada.Evolution.RuleBasedDataGeneration
       var dataProvider = lastGenerationResult==null?new GeneratorDataProvider(_random):new GeneratorDataProvider(_random, lastGenerationResult.DataLists);
       var generatedData = new List<IRuleValue>();
 
+      foreach (var globalRule in _ruleSet.GetGlobalRules())
+      {
+        globalRule.Execute(world);
+      }
+
       foreach (var rule in _ruleSet.GetRules())
       {
         var inputParameters = rule.GetRuleInputs(world);
@@ -55,7 +60,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
         if(inputDataList.Count<=0)
           continue;
 
-        var executionCount = (int) (rule.GetExecutionProbability() * inputDataList[0].Count);
+        var executionCount = (int) (rule.GetExecutionProbability(world) * inputDataList[0].Count);
 
         var inputList = new List<CompoundRuleInput>();
         foreach (var t in inputDataList)
@@ -84,18 +89,13 @@ namespace Farada.Evolution.RuleBasedDataGeneration
         //TODO: Use plinq here... but never give them the same value - should be already like this
         foreach (var inputValues in inputList.Where(ruleInput=>ruleInput.Count==inputDataList.Count))
         {
-          generatedData.AddRange(rule.Execute(inputValues, TestDataGenerator, world));
+          generatedData.AddRange(rule.Execute(new CompoundRuleExecutionContext(inputValues, TestDataGenerator, world)));
         }
       }
 
       foreach (var result in generatedData)
       {
         dataProvider.Add(result);
-      }
-
-      foreach (var globalRule in _ruleSet.GetGlobalRules())
-      {
-        globalRule.Execute(world);
       }
 
       return new GeneratorResult(dataProvider.DataLists);

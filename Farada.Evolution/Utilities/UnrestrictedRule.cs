@@ -7,21 +7,21 @@ namespace Farada.Evolution.Utilities
 {
   public abstract class UnrestrictedRule<T>:Rule
   {
-    public sealed override float GetExecutionProbability ()
+    public sealed override float GetExecutionProbability (IReadableWorld world)
     {
       return 1f;
     }
 
-    protected sealed override IEnumerable<IRuleParameter> GetRuleInputs ()
+    public sealed override IEnumerable<IRuleParameter> GetRuleInputs (IReadableWorld world)
     {
       yield return new RuleParameter<T>();
     }
 
-    protected sealed override IEnumerable<IRuleValue> Execute (CompoundRuleInput inputData)
+    public sealed override IEnumerable<IRuleValue> Execute (CompoundRuleExecutionContext context)
     {
-      return Execute(inputData.GetValue<T>(0)).Select(result => new RuleValue<T>(result));
+      return Execute(new SimpleRuleExecutionContext<T>(context.TestDataGenerator, context.World, context.InputData.GetValue<T>(0))).Select(result => new RuleValue<T>(result));
     }
 
-    protected abstract IEnumerable<T> Execute (RuleValue<T> inputData);
+    protected abstract IEnumerable<T> Execute (SimpleRuleExecutionContext<T> context);
   }
 }

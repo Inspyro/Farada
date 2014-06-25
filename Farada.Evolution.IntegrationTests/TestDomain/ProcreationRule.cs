@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using Farada.Evolution.RuleBasedDataGeneration;
-using Farada.Evolution.Utilities;
 
 namespace Farada.Evolution.IntegrationTests.TestDomain
 {
   internal class ProcreationRule : Rule
   {
-    public override float GetExecutionProbability ()
+    public override float GetExecutionProbability (IReadableWorld world)
     {
-      //TODO: Rule Appliance Probability based on World.Fertility...
-      var fertility = World.Read<int?> (x => x.Fertility);
-       
-      return LerpUtility.LerpFromLowToHigh (100000, World.Count<Person> (), 1f, 0.1f);
+      var fertility = world.Read<float?> (x => x.Fertility);
+
+      if (!fertility.HasValue)
+        throw new ArgumentException ("You need a global rule that declares the world fertility");
+
+      return fertility.Value;
     }
 
-    protected override IEnumerable<IRuleParameter> GetRuleInputs ()
+    public override IEnumerable<IRuleParameter> GetRuleInputs (IReadableWorld world)
     {
       //TODO: can we have relations between persons? a likes b,c,..  d hates f,g..?
       yield return new RuleParameter<Person> ( p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male);
@@ -24,15 +25,15 @@ namespace Farada.Evolution.IntegrationTests.TestDomain
       //TODO: do we need optional rule paramters?
     }
 
-    protected override IEnumerable<IRuleValue> Execute (CompoundRuleInput inputData)
+    public override IEnumerable<IRuleValue> Execute (CompoundRuleExecutionContext context)
     {
-      var male = inputData.GetValue<Person> (0);
-      var female = inputData.GetValue<Person> (1);
+      var male = context.InputData.GetValue<Person> (0);
+      var female = context.InputData.GetValue<Person> (1);
 
       var childCount = 1; // TODO: Get Random object from somewhere ValueProvider.Random.Next(1, 1);
       for (var i = 0; i < childCount; i++)
       {
-        var child = TestDataGenerator.Create<Person> ();
+        var child = context.TestDataGenerator.Create<Person> ();
         child.Father = male.Value;
         child.Mother = female.Value;
 
