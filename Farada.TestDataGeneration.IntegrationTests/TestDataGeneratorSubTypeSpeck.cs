@@ -39,8 +39,6 @@ namespace Farada.TestDataGeneration.IntegrationTests
               .It ("should fill jet engine fuel per second", x => ((AbstractVehicle.JetEngine)x.Result.Engine).FuelUsePerSecond.Should ().Be (20)));
     }
 
-    //TODO: Test what happens when no concrete type is injected for an abstract type - check exception...
-
     Context VehicleOnlyValueProviderContext ()
     {
       return c => c.Given ("domain provider with sub type provider", x =>

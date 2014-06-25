@@ -92,6 +92,16 @@ namespace Farada.TestDataGeneration.IntegrationTests
               .It ("should fill powerinnewtons as specified", x => x.Result.Engine.PowerInNewtons.Should ().Be (5000f)));
     }
 
+    [Group]
+    void ClassWithAbstractPropertiesFilling()
+    {
+      Specify (x =>
+          TestDataGenerator.Create<AbstractVehicle.AirVehicle> (MaxRecursionDepth, null))
+          .Elaborate ("should not fill abstact properties because of default provider chain", _ => _
+              .Given (BaseDomainContext ())
+              .It ("should not fill abstract engine", x => x.Result.Engine.Should ().BeNull()));
+    }
+
     Context HierarchyPropertyProviderContext ()
     {
       return c => c.Given ("hierachical property domain", x =>
