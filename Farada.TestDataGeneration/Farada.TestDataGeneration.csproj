@@ -88,7 +88,7 @@
     <Compile Include="FastReflection\FastPropertyInfo.cs" />
     <Compile Include="FastReflection\FastReflection.cs" />
     <Compile Include="FastReflection\FastTypeInfo.cs" />
-    <Compile Include="CompoundValueProvider\ICompoundValueProvider.cs" />
+    <Compile Include="CompoundValueProvider\ITestDataGenerator.cs" />
     <Compile Include="CompoundValueProvider\ICompoundValueProviderBuilder.cs" />
     <Compile Include="Modifiers\IInstanceModifier.cs" />
     <Compile Include="CompoundValueProvider\Keys\AttributeKey.cs" />

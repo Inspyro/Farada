@@ -18,41 +18,24 @@ namespace Farada.TestDataGeneration.IntegrationTests
   public class CompoundValueProviderSpeck : Specs //TODO: split in multiple files
   {
     DomainConfiguration Domain;
-    bool UseDefaults;
     ITestDataGenerator ValueProvider;
     int MaxRecursionDepth;
 
-    Context DefaultsContext(bool useDefaults)
-    {
-      return c => c.Given ("use defaults " + useDefaults, x => UseDefaults = useDefaults);
-    }
-
-    Context RecursionContext(int recursionDepth=2)
-    {
-      return c => c.Given ("using MaxRecursionDepth of " + recursionDepth, x => MaxRecursionDepth = recursionDepth);
-    }
-
-    Context ValueProviderContext()
+    Context ValueProviderContext (int recursionDepth = 2)
     {
       return
           c =>
-              c.Given ("create compound value provider",
-                  x => ValueProvider = TestDataGenerator.Create (Domain, UseDefaults));
-    }
-
-    Context BasePropertyContext (bool useDefaults = true, int recursionDepth = 2)
-    {
-      return c => c.Given (DefaultsContext (useDefaults))
-          .Given (RecursionContext (recursionDepth))
-          .Given (ValueProviderContext ());
+              c.Given ("using MaxRecursionDepth of " + recursionDepth, x => MaxRecursionDepth = recursionDepth)
+                  .Given ("create compound value provider",
+                      x => ValueProvider = TestDataGenerator.Create (Domain));
     }
 
     Context BaseDomainContext (bool useDefaults = true, int? seed = null)
     {
       return c => c
           .Given ("empty base domain with seed " + (!seed.HasValue ? "any" : seed.ToString ()),
-              x => Domain = new DomainConfiguration { Random = seed.HasValue ? new Random (seed.Value) : new Random () })
-          .Given (BasePropertyContext (useDefaults));
+              x => Domain = new DomainConfiguration { UseDefaults = useDefaults, Random = seed.HasValue ? new Random (seed.Value) : new Random () })
+          .Given (ValueProviderContext ());
     }
 
     [Group]
@@ -223,7 +206,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
                      BuildValueProvider = builder => builder.AddInstanceModifier (new NullModifier (1))
                  };
       })
-      .Given (BasePropertyContext ());
+      .Given (ValueProviderContext ());
     }
 
     [Group]
@@ -275,10 +258,11 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         Domain = new DomainConfiguration ()
                  {
+                     UseDefaults = false,
                      BuildValueProvider = builder => builder.AddProvider ((string s) => s, context => "SomeString")
                  };
       })
-      .Given(BasePropertyContext(false, recursionDepth));
+      .Given(ValueProviderContext(recursionDepth));
     }
 
     [Group]
@@ -306,6 +290,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         Domain = new DomainConfiguration
                  {
+                    UseDefaults = false,
                      BuildValueProvider = builder =>
                      {
                        builder.AddProvider ((int i) => i, context => 5);
@@ -320,7 +305,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
                      }
                  };
       })
-          .Given (BasePropertyContext (false));
+          .Given (ValueProviderContext ());
     }
 
     [Group]
@@ -353,6 +338,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         Domain = new DomainConfiguration
                  {
+                    UseDefaults = false,
+
                      BuildValueProvider = builder =>
                      {
                        //no default double/int provider!
@@ -373,7 +360,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
                      }
                  };
       })
-      .Given(BasePropertyContext(false));
+      .Given(ValueProviderContext());
     }
 
     [Group]
@@ -428,6 +415,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         Domain = new DomainConfiguration
                  {
+                    UseDefaults = false,
+
                      BuildValueProvider =
                          builder =>
                          {
@@ -436,7 +425,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
                          }
                  };
       })
-      .Given(BasePropertyContext(false));
+      .Given(ValueProviderContext());
     }
 
     [Group]
@@ -456,6 +445,9 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         Domain = new DomainConfiguration
                  {
+
+                    UseDefaults = false,
+
                      BuildValueProvider = builder =>
                      {
                        //TODO: use typeof here? and use AddProviderForType/AddProviderForExression - should we support both with types?
@@ -472,7 +464,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
                      }
                  };
       })
-      .Given(BasePropertyContext(false));
+      .Given(ValueProviderContext());
     }
 
     [Group]
@@ -491,10 +483,11 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         Domain = new DomainConfiguration
                  {
+                    UseDefaults = false,
                      BuildValueProvider = builder => builder.AddProvider ((int i) => i, new IntProviderWithCustomContext(contextValue))
                  };
       })
-      .Given(BasePropertyContext(false));
+      .Given(ValueProviderContext());
     }
 
     [Group]
@@ -513,10 +506,11 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         Domain = new DomainConfiguration
                  {
+                    UseDefaults = false,
                      BuildValueProvider = builder => builder.AddProvider ((int i, ClassWithAttribute.CoolIntAttribute cia) => i, new CoolIntCustomContextValueProvider(contextValue))
                  };
       })
-      .Given(BasePropertyContext(false));
+      .Given(ValueProviderContext());
     }
 
     [Group]
@@ -530,16 +524,17 @@ namespace Farada.TestDataGeneration.IntegrationTests
     }
 
      Context ValueProviderSubTypeContext ()
-    {
-      return c => c.Given ("domain provider with sub type provider", x =>
-      {
-        Domain = new DomainConfiguration
-                 {
-                     BuildValueProvider = builder => builder.AddProvider ((Vehicle v) => v, new VehicleSubTypeProvider())
-                 };
-      })
-      .Given(BasePropertyContext(false, (int) RecursionDepth.DoNotFillSecondLevelProperties)); //TODO: int constants
-    }
+     {
+       return c => c.Given ("domain provider with sub type provider", x =>
+       {
+         Domain = new DomainConfiguration
+                  {
+                      UseDefaults = false,
+                      BuildValueProvider = builder => builder.AddProvider ((Vehicle v) => v, new VehicleSubTypeProvider ())
+                  };
+       })
+           .Given (ValueProviderContext (RecursionDepth.DoNotFillSecondLevelProperties));
+     }
 
     [Group]
     void ValueProviderForSubTypes()
@@ -565,6 +560,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         Domain = new DomainConfiguration
                  {
+                    UseDefaults = false,
                      BuildValueProvider =
                          builder =>
                          builder.AddProvider ((Vehicle v) => v,
@@ -574,7 +570,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
                              : new Vehicle.LandVehicle { Tire = new Vehicle.Tire () }) //TODO: make more clear - concrete class instead of func?
                  };
       })
-          .Given (BasePropertyContext (false, (int) RecursionDepth.DoNotFillSecondLevelProperties));
+          .Given (ValueProviderContext ((int) RecursionDepth.DoNotFillSecondLevelProperties));
     }
 
     [Group]

@@ -14,29 +14,16 @@ namespace Farada.Evolution.IntegrationTests
   public class RuleBasedDataGeneratorSpeck : Specs
   {
     EvolutionaryDomainConfiguration EvolutionaryDomain;
-    bool UseDefaults;
     RuleBasedDataGenerator DataGenerator;
     GeneratorResult InitialData;
     int Generations;
-
-    Context DefaultsContext (bool useDefaults)
-    {
-      return c => c.Given ("use defaults " + useDefaults, x => UseDefaults = useDefaults);
-    }
-
 
     Context DataGeneratorContext ()
     {
       return
           c =>
               c.Given ("create rule based data generator",
-                  x => DataGenerator = EvolutionaryDataGenerator.CreateRuleBasedDataGenerator (EvolutionaryDomain, UseDefaults));
-    }
-
-    Context BasePropertyContext (bool useDefaults = true)
-    {
-      return c => c.Given (DefaultsContext (useDefaults))
-          .Given (DataGeneratorContext ());
+                  x => DataGenerator = EvolutionaryDataGenerator.CreateRuleBasedDataGenerator (EvolutionaryDomain));
     }
 
     Context StringInitialDataContext ()
@@ -57,10 +44,11 @@ namespace Farada.Evolution.IntegrationTests
     {
       return c => c
           .Given ("string domain", x => EvolutionaryDomain = new EvolutionaryDomainConfiguration
-                                                 {
-                                                     Rules = new RuleSet (new StringMarryRule ())
-                                                 })
-          .Given (BasePropertyContext (useDefaults))
+                                                             {
+                                                                 UseDefaults = useDefaults,
+                                                                 Rules = new RuleSet (new StringMarryRule ())
+                                                             })
+          .Given (DataGeneratorContext ())
           .Given (StringInitialDataContext ());
     }
 
@@ -86,7 +74,7 @@ namespace Farada.Evolution.IntegrationTests
       });
     }
 
-    Context PersonDomainContext (int seed=0, bool useDefaults = true)
+    Context PersonDomainContext (int seed = 0, bool useDefaults = true)
     {
       return c => c
           .Given ("person domain", x =>
@@ -94,13 +82,15 @@ namespace Farada.Evolution.IntegrationTests
             var lifeRuleSet = new RuleSet (new ProcreationRule (), new AgingRule ());
             lifeRuleSet.AddGlobalRule (new WorldRule ());
             EvolutionaryDomain = new EvolutionaryDomainConfiguration
-                     {
-                         Random = new Random (seed),
-                         Rules = lifeRuleSet,
-                         BuildValueProvider = builder => builder.AddProvider ((Gender g) => g, context => (Gender) (context.Random.Next (0, 2)))
-                     };
+                                 {
+                                     UseDefaults = useDefaults,
+                                     Random = new Random (seed),
+                                     Rules = lifeRuleSet,
+                                     BuildValueProvider =
+                                         builder => builder.AddProvider ((Gender g) => g, context => (Gender) (context.Random.Next (0, 2)))
+                                 };
           })
-          .Given (BasePropertyContext (useDefaults))
+          .Given (DataGeneratorContext ())
           .Given (PersonInitialDataContext ());
     }
 
