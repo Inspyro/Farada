@@ -65,8 +65,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestDomain\AgingRule.cs" />
+    <Compile Include="TestDomain\Gender.cs" />
+    <Compile Include="TestDomain\Person.cs" />
+    <Compile Include="TestDomain\ProcreationRule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RuleBasedDataGeneratorSpeck.cs" />
+    <Compile Include="TestDomain\StringMarryRule.cs" />
+    <Compile Include="TestDomain\WorldRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

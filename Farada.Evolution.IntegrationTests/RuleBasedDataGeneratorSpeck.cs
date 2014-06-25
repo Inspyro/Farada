@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using Farada.Evolution.IntegrationTests.TestDomain;
 using Farada.Evolution.RuleBasedDataGeneration;
 using Farada.TestDataGeneration;
-using Farada.Evolution.Utilities;
 using FluentAssertions;
 using SpecK;
 using SpecK.Specifications;
@@ -44,7 +43,7 @@ namespace Farada.Evolution.IntegrationTests
     Context StringDomainContext (bool useDefaults = true)
     {
       return c => c
-          .Given ("string base domain", x => TestDataDomain = configurator => configurator.UseDefaults (true))
+          .Given ("string base domain", x => TestDataDomain = configurator => configurator.UseDefaults (useDefaults))
           .Given ("string evolutionary domain", x => EvolutionaryDomain = configurator => configurator.AddRule (new StringMarryRule ()))
           .Given (DataGeneratorContext ())
           .Given (StringInitialDataContext ());
@@ -78,6 +77,7 @@ namespace Farada.Evolution.IntegrationTests
           .Given ("person test domain", x => TestDataDomain = configurator => configurator
               //
               .UseDefaults (useDefaults).UseRandom (new Random (seed))
+              //
               .For<Gender> ().AddProvider (context => (Gender) (context.Random.Next (0, 2))))
           .Given ("person evolution domain", x => EvolutionaryDomain = configurator => configurator
               //
@@ -97,125 +97,5 @@ namespace Farada.Evolution.IntegrationTests
               .It ("successfully creates 3991 persons",
                   x => x.Result.GetResult<Person> ().Count.Should ().Be (3991)));
     }
-
-    #region Helper Code
-
-    class StringMarryRule : Rule
-    {
-      public override float GetExecutionProbability ()
-      {
-        return 0.5f;
-      }
-
-      protected override IEnumerable<IRuleParameter> GetRuleInputs ()
-      {
-        Func<RuleValue<string>, bool> predicate = p => p.Value.Length > 3 && (p.UserData.IsMarried == null || !p.UserData.IsMarried);
-        yield return new RuleParameter<string> (predicate);
-        yield return new RuleParameter<string> (predicate); //TODO: how to define excludes on rule filter basis?
-      }
-
-      protected override IEnumerable<IRuleValue> Execute (CompoundRuleInput inputData) //e.g. one instance - stores all generation data..
-      {
-        var sexyString1 = inputData.GetValue<string> (0);
-        var sexyString2 = inputData.GetValue<string> (1);
-
-        sexyString1.Value += "[Married to:" + sexyString2.Value + "]";
-        sexyString2.Value += "[Married to:" + sexyString1.Value + "]";
-
-        sexyString1.UserData.IsMarried = true;
-        sexyString2.UserData.IsMarried = true;
-
-        yield break;
-      }
-    }
-
-
-    internal class WorldRule : GlobalRule
-    {
-      protected override void Execute ()
-      {
-        World.Write (x => x.Fertility = 100);
-      }
-    }
-
-    //TODO: Rule for every generation - not per type
-    //TODO: World class that contains global generation data - like World.IsFertile..
-    internal class AgingRule : UnrestrictedRule<Person>
-    {
-      protected override IEnumerable<Person> Execute (RuleValue<Person> person)
-      {
-        person.UserData.IsPregnant = false;
-        person.Value.Age++;
-
-        yield break;
-      }
-    }
-
-    internal class ProcreationRule : Rule
-    {
-      public override float GetExecutionProbability ()
-      {
-        //TODO: Rule Appliance Probability based on World.Fertility...
-        var fertility = World.Read<int?> (x => x.Fertility);
-       
-        return LerpUtility.LerpFromLowToHigh (100000, World.Count<Person> (), 1f, 0.1f);
-      }
-
-      protected override IEnumerable<IRuleParameter> GetRuleInputs ()
-      {
-        //TODO: can we have relations between persons? a likes b,c,..  d hates f,g..?
-        yield return new RuleParameter<Person> ( p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male);
-        yield return new RuleParameter<Person> (p => p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant));
-
-        //TODO: do we need optional rule paramters?
-      }
-
-      protected override IEnumerable<IRuleValue> Execute (CompoundRuleInput inputData)
-      {
-        var male = inputData.GetValue<Person> (0);
-        var female = inputData.GetValue<Person> (1);
-
-        var childCount = 1; // TODO: Get Random object from somewhere ValueProvider.Random.Next(1, 1);
-        for (var i = 0; i < childCount; i++)
-        {
-          var child = TestDataGenerator.Create<Person> ();
-          child.Father = male.Value;
-          child.Mother = female.Value;
-
-          yield return new RuleValue<Person> (child);
-        }
-
-        female.UserData.IsPregnant = true;
-      }
-    }
-
-    internal class Person
-    {
-      public string Name { get; set; }
-      public int Age { get; set; }
-      public Gender Gender { get; set; }
-
-      public Person Father { get; set; }
-      public Person Mother { get; set; }
-
-      public Person ()
-      {
-      }
-
-      public Person (string name, Gender gender, int age = 0)
-      {
-        Name = name;
-        Gender = gender;
-        Age = age;
-      }
-    }
-
-    internal enum Gender
-    {
-      Male,
-      Female
-    }
-
-    #endregion
   }
 }
