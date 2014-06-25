@@ -6,9 +6,12 @@ using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 
 namespace Farada.TestDataGeneration.Extensions
 {
+  /// <summary>
+  /// Provides extensions for expressions which are only used internally for chain building etc...
+  /// </summary>
   internal static class ExpressionExtensions
   {
-    public static IEnumerable<PropertyKeyPart> ToChain(this Expression expression)
+    internal static IEnumerable<PropertyKeyPart> ToChain(this Expression expression)
     {
       var memberExpression = expression as MemberExpression;
       if (memberExpression != null)
@@ -22,12 +25,12 @@ namespace Farada.TestDataGeneration.Extensions
       }
     }
 
-    public static IEnumerable<PropertyKeyPart> ToChain (this LambdaExpression expression)
+    internal static IEnumerable<PropertyKeyPart> ToChain (this LambdaExpression expression)
     {
       return expression.Body.ToChain();
     }
 
-    public static Type GetParameterType(this Expression expression)
+    internal static Type GetParameterType(this Expression expression)
     {
       var parameterExpression = expression as ParameterExpression;
 
@@ -43,7 +46,7 @@ namespace Farada.TestDataGeneration.Extensions
       return null;
     }
 
-    public static Type GetParameterType(this LambdaExpression expression)
+    internal static Type GetParameterType(this LambdaExpression expression)
     {
       return expression.Body.GetParameterType();
     }

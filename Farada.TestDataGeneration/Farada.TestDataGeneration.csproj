@@ -51,6 +51,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseDomain\Constraints\RangeContstraints.cs" />
+    <Compile Include="BaseDomain\Constraints\StringConstraints.cs" />
+    <Compile Include="BaseDomain\ValueProviders\RandomSyllabileGenerator.cs" />
     <Compile Include="DomainConfiguration.cs" />
     <Compile Include="BaseDomain\Modifiers\NullModifier.cs" />
     <Compile Include="CompoundValueProviders\CompoundValueProvider.cs" />

@@ -2,6 +2,9 @@
 
 namespace Farada.TestDataGeneration.Extensions
 {
+  /// <summary>
+  /// This class contains extensions for the <see cref="Random"/> in order to provide random values for other types than int, short or byte
+  /// </summary>
   public static class RandomExtensions
   {
     public static float Next (this Random random, float minValue = float.MinValue, float maxValue = float.MaxValue)
