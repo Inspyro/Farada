@@ -5,6 +5,10 @@ using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
+  /// <summary>
+  /// Creates random words (strings) based on <see cref="RandomSyllabileGenerator"/>
+  /// Reads the <see cref="StringConstraints"/> from each property and uses them with higher priority than the given constraints
+  /// </summary>
   public class RandomWordGenerator:ValueProvider<string, StringConstrainedValueProviderContext>
   {
     private readonly RandomSyllabileGenerator _randomSyllabileGenerator;
@@ -12,9 +16,17 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
     private readonly int _minWordLength;
     private readonly int _maxWordLength;
 
+    /// <summary>
+    /// Constructs a random word generator
+    /// </summary>
+    /// <param name="randomSyllabileGenerator"></param>
+    /// <param name="minWordLength"></param>
+    /// <param name="maxWordLength"></param>
     public RandomWordGenerator (RandomSyllabileGenerator randomSyllabileGenerator, int minWordLength = 3, int maxWordLength = 10)
     {
-      //TODO chech
+      if (maxWordLength < minWordLength)
+        throw new ArgumentOutOfRangeException("maxWordLength", "The param max word lenght cannot be smaller than min word length"); //TODO: unit test?
+
       _minWordLength = minWordLength;
       _maxWordLength = maxWordLength;
 
@@ -43,32 +55,6 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
       }
 
       return wordBuilder.ToString().Substring(0, targetWordLength);
-    }
-  }
-
-  public class RandomSyllabileGenerator
-  {
-    private readonly int _min;
-    private readonly int _max;
-
-    private static readonly char[] s_vowels = { 'a', 'e', 'i', 'o', 'u' };
-    private static readonly char[] s_consonants = { 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z' };
-
-    public RandomSyllabileGenerator(int min=3, int max=5)
-    {
-      _min = min;
-      _max = max;
-    }
-
-    internal void Fill (ValueProviderContext<string> context, StringBuilder stringBuilder)
-    {
-     var len = context.Random.Next(_min, _max);
-
-      for (var i = 0; i < len; i++)
-      {
-        var c = i == 1 ? s_vowels[context.Random.Next(s_vowels.Length)] : s_consonants[context.Random.Next(s_consonants.Length)];
-        stringBuilder.Append(c);
-      }
     }
   }
 }

@@ -4,6 +4,9 @@ using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
+  /// <summary>
+  /// Creates a random DateTime
+  /// </summary>
   internal class RandomPastDateTimeGenerator:ValueProvider<DateTime>
   {
     protected override DateTime CreateValue (ValueProviderContext<DateTime> context)

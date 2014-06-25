@@ -4,7 +4,10 @@ using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
-  internal class RandomLongGenerator:ValueProvider<long>
+  /// <summary>
+  /// Creates a random long
+  /// </summary>
+  internal class RandomLongGenerator:ValueProvider<long> //TODO: use range constraints?
   {
     protected override long CreateValue (ValueProviderContext<long> context)
     {

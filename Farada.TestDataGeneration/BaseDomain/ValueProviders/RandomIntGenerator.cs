@@ -4,6 +4,9 @@ using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
+  /// <summary>
+  /// Creates a random integer reading the <see cref="RangeContstraints{T}"/> from the property
+  /// </summary>
   public class RandomIntGenerator:ValueProvider<int, RangeConstrainedValueProviderContext<int>>
   {
     protected override RangeConstrainedValueProviderContext<int> CreateContext (ValueProviderObjectContext objectContext)

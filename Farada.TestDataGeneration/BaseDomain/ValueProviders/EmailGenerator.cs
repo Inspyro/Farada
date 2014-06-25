@@ -4,7 +4,10 @@ using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
-  public class EmailGenerator:AttributeBasedValueProvider<string, EmailAddressAttribute>
+  /// <summary>
+  /// Creates a value that respects the email address attribute
+  /// </summary>
+  public class EmailGenerator:AttributeBasedValueProvider<string, EmailAddressAttribute> //TODO: test and implement
   {
     protected override string CreateValue (AttributeValueProviderContext<string, EmailAddressAttribute> context)
     {

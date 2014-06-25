@@ -6,6 +6,9 @@ using Farada.TestDataGeneration.Modifiers;
 
 namespace Farada.TestDataGeneration.BaseDomain.Modifiers
 {
+  /// <summary>
+  /// Modifies the instances so that some are null depending on a percentage given
+  /// </summary>
   public class NullModifier : IInstanceModifier
   {
     readonly double _nullPercentage;
