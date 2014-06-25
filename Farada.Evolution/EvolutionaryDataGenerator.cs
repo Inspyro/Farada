@@ -17,8 +17,8 @@ namespace Farada.Evolution
     /// <returns>the final test data generator that can be used for data generation</returns>
     public static RuleBasedDataGenerator CreateRuleBasedDataGenerator (EvolutionaryDomainConfiguration evolutionaryDomainConfiguration, bool useDefaults = true)
     {
-      var valueProvider = TestDataGenerator.CreateCompoundValueProvider(evolutionaryDomainConfiguration, useDefaults);
-      return new RuleBasedDataGenerator(valueProvider, evolutionaryDomainConfiguration.Random, evolutionaryDomainConfiguration.Rules);
+      var testDataGenerator = TestDataGenerator.Create(evolutionaryDomainConfiguration, useDefaults);
+      return new RuleBasedDataGenerator(testDataGenerator, evolutionaryDomainConfiguration.Random, evolutionaryDomainConfiguration.Rules);
     }
   }
 }

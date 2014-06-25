@@ -11,13 +11,13 @@ namespace Farada.Evolution.RuleBasedDataGeneration
   {
     private readonly Random _random;
     private readonly RuleSet _ruleSet;
-    public ICompoundValueProvider ValueProvider { get; private set; }
+    public ITestDataGenerator TestDataGenerator { get; private set; }
 
-    internal RuleBasedDataGenerator (ICompoundValueProvider compoundValueProvider, Random random, RuleSet ruleSet)
+    internal RuleBasedDataGenerator (ITestDataGenerator testDataGenerator, Random random, RuleSet ruleSet)
     {
-      ArgumentUtility.CheckNotNull("compoundValueProvider", compoundValueProvider);
+      ArgumentUtility.CheckNotNull("testDataGenerator", testDataGenerator);
 
-      ValueProvider = compoundValueProvider;
+      TestDataGenerator = testDataGenerator;
       _random = random;
       _ruleSet = ruleSet;
       InitialDataProvider = new InitialDataProvider(new GeneratorDataProvider(_random));
@@ -84,7 +84,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
         //TODO: Use plinq here... but never give them the same value - should be already like this
         foreach (var inputValues in inputList.Where(ruleInput=>ruleInput.Count==inputDataList.Count))
         {
-          generatedData.AddRange(rule.Execute(inputValues, ValueProvider, world));
+          generatedData.AddRange(rule.Execute(inputValues, TestDataGenerator, world));
         }
       }
 

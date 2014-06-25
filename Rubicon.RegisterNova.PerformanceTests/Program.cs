@@ -10,13 +10,12 @@ namespace Rubicon.RegisterNova.PerformanceTests
     private static void Main ()
     {
       var basicDomain = new DomainConfiguration();
-      var valueProvider = TestDataGenerator.CreateCompoundValueProvider(basicDomain);
-      //TODO: Rename CompoundValueProvider to ITestDataGenerator in public interface
+      var testDataGenerator = TestDataGenerator.Create(basicDomain);
 
       const int count = 1000000; //1 million
 
       var start = DateTime.Now;
-      var listOfUniverses = Parallelization.DistributeParallel(chunkCount => valueProvider.CreateMany<Universe>(chunkCount), count).ToList();
+      var listOfUniverses = Parallelization.DistributeParallel(chunkCount => testDataGenerator.CreateMany<Universe>(chunkCount), count).ToList();
       //var listOfUniverses = valueProvider.CreateMany<Universe>(count).ToList();
 
       Console.WriteLine(

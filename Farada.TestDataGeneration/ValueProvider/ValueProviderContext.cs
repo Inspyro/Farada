@@ -17,11 +17,11 @@ namespace Farada.TestDataGeneration.ValueProvider
     public Func<TProperty> GetPreviousValue { get; private set; }
     public Type PropertyType { get; private set; }
     public IFastPropertyInfo PropertyInfo { get; private set; }
-    public ICompoundValueProvider ValueProvider { get; private set; }
+    public ITestDataGenerator TestDataGenerator { get; private set; }
 
     protected internal ValueProviderContext (ValueProviderObjectContext objectContext)
     {
-      ValueProvider = objectContext.ValueProvider;
+      TestDataGenerator = objectContext.TestDataGenerator;
       Random = objectContext.Random;
       GetPreviousValue = () => (TProperty) objectContext.GetPreviousValue();
       PropertyType = objectContext.PropertyType;
@@ -35,16 +35,16 @@ namespace Farada.TestDataGeneration.ValueProvider
     public Func<object> GetPreviousValue { get; private set; }
     public Type PropertyType { get; private set; }
     public IFastPropertyInfo PropertyInfo { get; private set; }
-    public ICompoundValueProvider ValueProvider { get; private set; }
+    public ITestDataGenerator TestDataGenerator { get; private set; }
 
     internal ValueProviderObjectContext (
-        ICompoundValueProvider valueProvider,
+        ITestDataGenerator testDataGenerator,
         Random random,
         Func<object> getPreviousValue,
         Type propertyType,
         IFastPropertyInfo fastPropertyInfo)
     {
-      ValueProvider = valueProvider;
+      TestDataGenerator = testDataGenerator;
       Random = random;
       GetPreviousValue = getPreviousValue;
       PropertyType = propertyType;

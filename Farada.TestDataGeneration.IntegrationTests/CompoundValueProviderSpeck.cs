@@ -14,12 +14,12 @@ using SpecK.Specifications.InferredApi;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  [Subject (typeof (ICompoundValueProvider))]
+  [Subject (typeof (ITestDataGenerator))]
   public class CompoundValueProviderSpeck : Specs //TODO: split in multiple files
   {
     DomainConfiguration Domain;
     bool UseDefaults;
-    ICompoundValueProvider ValueProvider;
+    ITestDataGenerator ValueProvider;
     int MaxRecursionDepth;
 
     Context DefaultsContext(bool useDefaults)
@@ -37,7 +37,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       return
           c =>
               c.Given ("create compound value provider",
-                  x => ValueProvider = TestDataGenerator.CreateCompoundValueProvider (Domain, UseDefaults));
+                  x => ValueProvider = TestDataGenerator.Create (Domain, UseDefaults));
     }
 
     Context BasePropertyContext (bool useDefaults = true, int recursionDepth = 2)

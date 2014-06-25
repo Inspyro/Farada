@@ -4,7 +4,7 @@ using Farada.TestDataGeneration.FastReflection;
 
 namespace Farada.TestDataGeneration.CompoundValueProvider
 {
-  public interface ICompoundValueProvider
+  public interface ITestDataGenerator
   {
     /// <summary>
     /// TODO

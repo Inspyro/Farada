@@ -18,7 +18,7 @@ namespace Farada.TestDataGeneration
     /// <returns>the final compound value provider that can be used for data generation</returns>
     /// 
     /// //TODO: move useDefaults to base domain configuration
-    public static ICompoundValueProvider CreateCompoundValueProvider (DomainConfiguration domainConfiguration, bool useDefaults = true)
+    public static ITestDataGenerator Create (DomainConfiguration domainConfiguration, bool useDefaults = true)
     {
       var valueProviderBuilderFactory = new CompoundValueProviderBuilderFactory(domainConfiguration.Random);
       var valueProviderBuilder = useDefaults ? valueProviderBuilderFactory.GetDefault() : valueProviderBuilderFactory.GetEmpty();

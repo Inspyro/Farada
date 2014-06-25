@@ -12,7 +12,7 @@ namespace Farada.TestDataGeneration.CompoundValueProvider
   /// <summary>
   /// TODO
   /// </summary>
-  internal class CompoundValueProvider : ICompoundValueProvider
+  internal class CompoundValueProvider : ITestDataGenerator
   {
     private readonly ValueProviderDictionary _valueProviderDictionary;
     private readonly IList<IInstanceModifier> _instanceModifiers;

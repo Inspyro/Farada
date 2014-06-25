@@ -6,7 +6,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
 {
   public abstract class Rule:IRule
   {
-    protected ICompoundValueProvider ValueProvider { get; private set; }
+    protected ITestDataGenerator TestDataGenerator { get; private set; }
     protected IReadableWorld World { get; private set; }
 
     protected abstract IEnumerable<IRuleParameter> GetRuleInputs ();
@@ -18,9 +18,9 @@ namespace Farada.Evolution.RuleBasedDataGeneration
       return GetRuleInputs();
     }
 
-    public IEnumerable<IRuleValue> Execute (CompoundRuleInput inputData, ICompoundValueProvider valueProvider, IReadableWorld world)
+    public IEnumerable<IRuleValue> Execute (CompoundRuleInput inputData, ITestDataGenerator testDataGenerator, IReadableWorld world)
     {
-      ValueProvider = valueProvider;
+      TestDataGenerator = testDataGenerator;
       return Execute(inputData);
     }
 
@@ -33,7 +33,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
   public interface IRule
   {
     IEnumerable<IRuleParameter> GetRuleInputs (IReadableWorld world);
-    IEnumerable<IRuleValue> Execute (CompoundRuleInput inputData, ICompoundValueProvider valueProvider, IReadableWorld world);
+    IEnumerable<IRuleValue> Execute (CompoundRuleInput inputData, ITestDataGenerator testDataGenerator, IReadableWorld world);
     float GetExecutionProbability ();
   }
 }

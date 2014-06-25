@@ -195,7 +195,7 @@ namespace Farada.Evolution.IntegrationTests
         var childCount = 1; // TODO: Get Random object from somewhere ValueProvider.Random.Next(1, 1);
         for (var i = 0; i < childCount; i++)
         {
-          var child = ValueProvider.Create<Person> ();
+          var child = TestDataGenerator.Create<Person> ();
           child.Father = male.Value;
           child.Mother = female.Value;
 
