@@ -6,7 +6,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
   /// <summary>
   /// Creates a random enum for any enum type (<see cref="SubTypeValueProvider{TProperty}"/>
   /// </summary>
-  internal class RandomEnumGenerator:SubTypeValueProvider<Enum>
+  public class RandomEnumGenerator:SubTypeValueProvider<Enum>
   {
     protected override Enum CreateValue (ValueProviderContext<Enum> context)
     {

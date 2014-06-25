@@ -4,6 +4,9 @@ using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
+  /// <summary>
+  /// Creates random syllabiles 
+  /// </summary>
   public class RandomSyllabileGenerator
   {
     private readonly int _min;
@@ -14,11 +17,19 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 
     public RandomSyllabileGenerator(int min=3, int max=5)
     {
+      if (max < min)
+        throw new ArgumentOutOfRangeException("max", "max cannot be smaller than min"); //TODO: unit test
+
       _min = min;
       _max = max;
     }
 
-    internal void Fill (ValueProviderContext<string> context, StringBuilder stringBuilder)
+    /// <summary>
+    /// Fills a stringBuilder within the given context with a random syllabile
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="stringBuilder"></param>
+    public void Fill (ValueProviderContext<string> context, StringBuilder stringBuilder)
     {
       var len = context.Random.Next(_min, _max);
 

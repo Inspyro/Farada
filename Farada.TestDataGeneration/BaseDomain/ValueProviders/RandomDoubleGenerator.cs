@@ -8,7 +8,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
   /// <summary>
   /// Creates a random double within the <see cref="RangeContstraints{T}"/> that are read from the property
   /// </summary>
-  internal class RandomDoubleGenerator:ValueProvider<double, RangeConstrainedValueProviderContext<double>>
+  public class RandomDoubleGenerator:ValueProvider<double, RangeConstrainedValueProviderContext<double>>
   {
     protected override RangeConstrainedValueProviderContext<double> CreateContext (ValueProviderObjectContext objectContext)
     {

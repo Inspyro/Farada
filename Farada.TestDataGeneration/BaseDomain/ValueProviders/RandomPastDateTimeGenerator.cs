@@ -7,7 +7,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
   /// <summary>
   /// Creates a random DateTime
   /// </summary>
-  internal class RandomPastDateTimeGenerator:ValueProvider<DateTime>
+  public class RandomPastDateTimeGenerator:ValueProvider<DateTime>
   {
     protected override DateTime CreateValue (ValueProviderContext<DateTime> context)
     {

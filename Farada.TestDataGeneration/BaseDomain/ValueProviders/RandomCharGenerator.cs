@@ -6,7 +6,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
   /// <summary>
   /// Creates a random char in a printable range
   /// </summary>
-  internal class RandomCharGenerator:ValueProvider<char>
+  public class RandomCharGenerator:ValueProvider<char>
   {
     protected override char CreateValue (ValueProviderContext<char> context)
     {

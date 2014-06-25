@@ -7,7 +7,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
   /// <summary>
   /// Creates random ulongs
   /// </summary>
-  internal class RandomULongGenerator:ValueProvider<ulong>
+  public class RandomULongGenerator:ValueProvider<ulong>
   {
     protected override ulong CreateValue (ValueProviderContext<ulong> context)
     {
