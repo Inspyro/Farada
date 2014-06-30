@@ -8,7 +8,7 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
   /// Defines range constraints for a type, that is usually numeric
   /// </summary>
   /// <typeparam name="T">the type of the constraints</typeparam>
-  public class RangeContstraints<T> where T:IComparable //TODO: Unit test?
+  public class RangeContstraints<T> where T:IComparable
   {
     /// <summary>
     /// The minimum value that is allowed
@@ -41,13 +41,16 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
       if (rangeAttribute.OperandType != typeof (T))
         return null;
 
-      if (((T) rangeAttribute.Minimum).CompareTo((T) rangeAttribute.Maximum) > 0)
+      var minValue = (T) Convert.ChangeType(rangeAttribute.Minimum, typeof (T));
+      var maxValue = (T) Convert.ChangeType(rangeAttribute.Maximum, typeof (T));
+
+      if ((minValue).CompareTo(maxValue) > 0)
       {
         throw new ArgumentOutOfRangeException(
             string.Format("On the property {0} {1} the Range attribute has an invalid range", property.PropertyType, property.Name));
       }
 
-      return new RangeContstraints<T>((T) rangeAttribute.Minimum, (T) rangeAttribute.Maximum);
+      return new RangeContstraints<T>(minValue, maxValue);
     }
   }
 }
