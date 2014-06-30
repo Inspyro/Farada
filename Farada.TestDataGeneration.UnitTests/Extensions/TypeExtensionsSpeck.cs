@@ -12,6 +12,42 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
     bool IncludeNonPublicConstructor;
 
     [Group]
+    void IsNullable()
+    {
+      Specify (x => x.IsNullableType ())
+          .Elaborate ("simple nullable", _ => _
+              .GivenSubject ("int?", x => typeof (int?))
+              .It ("should be nullable", x => x.Result.Should ().BeTrue ()))
+          .Elaborate ("complex nullable", _ => _
+              .GivenSubject ("Nullable<>", x => typeof (Nullable<>))
+              .It ("should be nullable", x => x.Result.Should ().BeTrue ()))
+              .Elaborate ("non nullable", _ => _
+              .GivenSubject ("int", x => typeof (int))
+              .It ("should not be nullable", x => x.Result.Should ().BeFalse ()))
+          .Elaborate ("nullable class", _ => _
+              .GivenSubject ("string", x => typeof (string))
+              .It ("should not be nullable", x => x.Result.Should ().BeFalse ()));
+    }
+    
+    [Group]
+    void GetTypeOfNullable()
+    {
+      Specify (x => x.GetTypeOfNullable ())
+          .Elaborate ("simple nullable", _ => _
+              .GivenSubject ("int?", x => typeof (int?))
+              .It ("should be int", x => x.Result.Should ().Be (typeof (int))))
+          .Elaborate ("complex nullable", _ => _
+              .GivenSubject ("Nullable<>", x => typeof (Nullable<>))
+              .It ("should not be empty", x => x.Result.Should ().NotBeNull()))
+          .Elaborate ("non nullable", _ => _
+              .GivenSubject ("int", x => typeof (int))
+              .ItThrows (typeof (ArgumentException)))
+          .Elaborate ("nullable class", _ => _
+              .GivenSubject ("string", x => typeof (string))
+              .ItThrows (typeof (ArgumentException)));
+    }
+
+    [Group]
     void IsDerived ()
     {
       Specify (x => x.IsDerivedFrom<Base> ()).
