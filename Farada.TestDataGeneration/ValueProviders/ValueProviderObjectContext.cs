@@ -15,7 +15,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     internal IFastPropertyInfo PropertyInfo { get; private set; }
     internal ITestDataGenerator TestDataGenerator { get; private set; }
 
-    internal ValueProviderObjectContext (
+    protected internal ValueProviderObjectContext (
         ITestDataGenerator testDataGenerator,
         Random random,
         Func<object> getPreviousValue,

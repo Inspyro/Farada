@@ -18,7 +18,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
     public RandomSyllabileGenerator(int min=3, int max=5)
     {
       if (max < min)
-        throw new ArgumentOutOfRangeException("max", "max cannot be smaller than min"); //TODO: unit test
+        throw new ArgumentOutOfRangeException("max", "max cannot be smaller than min");
 
       _min = min;
       _max = max;
