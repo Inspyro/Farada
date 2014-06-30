@@ -7,7 +7,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
 {
   public class CompoundRuleInput : IEnumerable<IRuleValue>
   {
-    private List<IRuleValue> _values;
+    private readonly List<IRuleValue> _values;
     public CompoundRuleInput()
     {
       _values = new List<IRuleValue>();
@@ -18,17 +18,9 @@ namespace Farada.Evolution.RuleBasedDataGeneration
       return (RuleValue<T1>) _values[index];
     }
 
-    public void Add(IRuleValue value)
+    public void AddParameterValue(IRuleValue value)
     {
       _values.Add(value);
-    }
-
-    public void ShrinkTo(int maxValues)
-    {
-      if(_values.Count>maxValues)
-      {
-        _values = _values.Take(maxValues).ToList();
-      }
     }
 
     public int Count
@@ -51,7 +43,11 @@ namespace Farada.Evolution.RuleBasedDataGeneration
       get { return _values[index]; }
       set { _values[index] = value; }
     }
-  }
 
+    public bool IsValidFor (IEnumerable<IRuleParameter> inputParameters)
+    {
+      return _values.All(value => inputParameters.All(inputParameter => inputParameter.ParameterPredicate(value, this) == null));
+    }
+  }
   
 }

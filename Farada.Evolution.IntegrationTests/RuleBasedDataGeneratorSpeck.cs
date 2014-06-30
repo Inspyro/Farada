@@ -40,10 +40,10 @@ namespace Farada.Evolution.IntegrationTests
       });
     }
 
-    Context StringDomainContext (bool useDefaults = true)
+    Context StringDomainContext (bool useDefaults, int seed)
     {
       return c => c
-          .Given ("string base domain", x => TestDataDomain = configurator => configurator.UseDefaults (useDefaults))
+          .Given ("string base domain", x => TestDataDomain = configurator => configurator.UseDefaults (useDefaults).UseRandom(new Random(seed)))
           .Given ("string evolutionary domain", x => EvolutionaryDomain = configurator => configurator.AddRule (new StringMarryRule ()))
           .Given (DataGeneratorContext ())
           .Given (StringInitialDataContext ());
@@ -54,9 +54,9 @@ namespace Farada.Evolution.IntegrationTests
     {
       Specify (x => DataGenerator.Generate (1, InitialData))
           .Elaborate ("String Church", _ => _
-              .Given (StringDomainContext ())
-              .It ("successfully gets 50% of the strings married",
-                  x => x.Result.GetResult<string> ().Count (resultString => resultString.Contains ("Married to")).Should().Be (500)));
+              .Given (StringDomainContext (true, 4))
+              .It ("successfully gets more than 50% of the strings married",
+                  x => x.Result.GetResult<string> ().Count (resultString => resultString.Contains ("Married to")).Should().Be (748)));
     }
 
     Context PersonInitialDataContext ()
@@ -94,8 +94,8 @@ namespace Farada.Evolution.IntegrationTests
           .Elaborate ("Planet Earth", _ => _
               .Given (PersonDomainContext ())
               .Given ("50 years", x => Generations = 50)
-              .It ("successfully creates 3991 persons",
-                  x => x.Result.GetResult<Person> ().Count.Should ().Be (3991)));
+              .It ("successfully creates 2045 persons",
+                  x => x.Result.GetResult<Person> ().Count.Should ().Be (2045)));
     }
   }
 }

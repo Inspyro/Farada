@@ -60,59 +60,27 @@ namespace Farada.Evolution.RuleBasedDataGeneration
         if (inputDataList.Count <= 0)
           continue;
 
-        var executionCount = (int) (rule.GetExecutionProbability(world) * inputDataList[0].Count);
-
-        var inputList = new List<CompoundRuleInput>();
         foreach (var parameterValues in inputDataList)
         {
-          var currentParameterValues = parameterValues;
-          currentParameterValues.Randomize(_random);
-
-          for (var i = 0; i < currentParameterValues.Count; i++)
-          {
-            var value = currentParameterValues[i];
-
-            if (i >= inputList.Count)
-            {
-              inputList.Add(new CompoundRuleInput());
-            }
-
-            inputList[i].Add(value);
-          }
+          parameterValues.Randomize(_random);
         }
 
-        //TODO: unfinished code...
-        var nextIndex = 1;
-        for (int i = 0; i < inputList.Count-1; i=nextIndex)
+        var count = inputDataList.Select(inputData => inputData.Count).Concat(new[] { int.MaxValue }).Min();
+        var executionCount = (int) (rule.GetExecutionProbability(world) * count);
+
+        var inputList = new List<CompoundRuleInput>();
+        for (var i = 0; i < count; i++)
         {
-          var compoundRuleInput = inputList[i];
+          var compoundRuleInput = new CompoundRuleInput();
+          inputDataList.ForEach(values => compoundRuleInput.AddParameterValue(values[i]));
 
-          var x = 0;
-          foreach (IRuleValue input in compoundRuleInput)
+          if (compoundRuleInput.IsValidFor(inputParameters))
           {
-            var parameter = inputParameters[x];
-            var notLikableParameters=parameter.ParameterPredicate(input, compoundRuleInput);
-
-            x++;
-
-            if(notLikableParameters==null)
-              continue;
-
-            foreach (var notLikableParameter in notLikableParameters)
-            {
-              compoundRuleInput[notLikableParameter] = inputList[nextIndex][notLikableParameter];
-            }
-
-            nextIndex++;
-            i--;
+            inputList.Add(compoundRuleInput);
           }
 
-          nextIndex++;
-        }
-
-        foreach (var compoundRuleInput in inputList.Where(compoundRuleInput => compoundRuleInput.Count > executionCount))
-        {
-          compoundRuleInput.ShrinkTo(executionCount);
+          if(inputList.Count>=executionCount)
+            break;
         }
 
         //TODO: Use plinq here... but never give them the same value - should be already like this
