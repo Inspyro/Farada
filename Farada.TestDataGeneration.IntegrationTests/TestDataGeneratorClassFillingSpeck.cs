@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Farada.TestDataGeneration.CompoundValueProviders;
-using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using FluentAssertions;
 using SpecK;
