@@ -15,7 +15,7 @@ namespace Farada.Evolution.IntegrationTests.TestDomain
     {
       Func<RuleValue<string>, bool> predicate = p => p.Value.Length > 3 && (p.UserData.IsMarried == null || !p.UserData.IsMarried);
       yield return new RuleParameter<string> (predicate);
-      yield return new RuleParameter<string> (predicate); //TODO: how to define excludes on rule filter basis?
+      yield return new RuleParameter<string> (predicate);
     }
 
     public override IEnumerable<IRuleValue> Execute (CompoundRuleExecutionContext context) //e.g. one instance - stores all generation data..

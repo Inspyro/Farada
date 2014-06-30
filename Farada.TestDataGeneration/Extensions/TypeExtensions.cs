@@ -9,6 +9,18 @@ namespace Farada.TestDataGeneration.Extensions
   /// </summary>
   public static class TypeExtensions
   {
+    //TODO:test
+    public static Type GetTypeOfNullable (this Type type)
+    {
+      return type.GetGenericArguments()[0];
+    }
+
+    //TODO:test
+    public static bool IsNullableType(this Type type)
+		{
+			return type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Nullable<>));
+		}
+
     /// <summary>
     /// Checks if a type is derived from another type.
     /// </summary>

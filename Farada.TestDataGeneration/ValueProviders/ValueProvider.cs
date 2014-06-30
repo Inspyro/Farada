@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoMapper.Internal;
+using Farada.TestDataGeneration.Extensions;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {

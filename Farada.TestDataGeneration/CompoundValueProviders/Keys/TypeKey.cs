@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using AutoMapper.Internal;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
 
