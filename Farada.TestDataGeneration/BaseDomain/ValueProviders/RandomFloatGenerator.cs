@@ -1,4 +1,5 @@
 ﻿using System;
+using Farada.TestDataGeneration.BaseDomain.Constraints;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.ValueProviders;
 
@@ -7,11 +8,21 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
   /// <summary>
   /// Creates a random float
   /// </summary>
-  public class RandomFloatGenerator:ValueProvider<float> //TODO: should we consider range constraints?
+  public class RandomFloatGenerator:RangeConstrainedValueProvider<float> 
   {
-    protected override float CreateValue (ValueProviderContext<float> context)
+    protected override float DefaultMinValue
     {
-      return context.Random.Next(float.MinValue);
+      get { return float.MinValue; }
+    }
+
+    protected override float DefaultMaxValue
+    {
+      get { return float.MaxValue; }
+    }
+
+    protected override float CreateValue (RangeConstrainedValueProviderContext<float> context)
+    {
+      return context.Random.Next(context.RangeContstraints.MinValue, context.RangeContstraints.MaxValue);
     }
   }
 }

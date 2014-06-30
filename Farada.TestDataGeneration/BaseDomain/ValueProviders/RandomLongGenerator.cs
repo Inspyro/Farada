@@ -1,17 +1,27 @@
 ﻿using System;
+using Farada.TestDataGeneration.BaseDomain.Constraints;
 using Farada.TestDataGeneration.Extensions;
-using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
   /// <summary>
   /// Creates a random long
   /// </summary>
-  public class RandomLongGenerator:ValueProvider<long> //TODO: use range constraints?
+  public class RandomLongGenerator:RangeConstrainedValueProvider<long>
   {
-    protected override long CreateValue (ValueProviderContext<long> context)
+     protected override long DefaultMinValue
     {
-      return context.Random.Next(long.MinValue);
+      get { return long.MinValue; }
+    }
+
+    protected override long DefaultMaxValue
+    {
+      get { return long.MaxValue; }
+    }
+
+    protected override long CreateValue (RangeConstrainedValueProviderContext<long> context)
+    {
+      return context.Random.Next(context.RangeContstraints.MinValue, context.RangeContstraints.MaxValue);
     }
   }
 }

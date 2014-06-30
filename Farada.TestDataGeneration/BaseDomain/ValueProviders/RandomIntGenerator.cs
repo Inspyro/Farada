@@ -1,20 +1,21 @@
 ﻿using System;
 using Farada.TestDataGeneration.BaseDomain.Constraints;
-using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
   /// <summary>
   /// Creates a random integer reading the <see cref="RangeContstraints{T}"/> from the property
   /// </summary>
-  public class RandomIntGenerator:ValueProvider<int, RangeConstrainedValueProviderContext<int>>
+  public class RandomIntGenerator:RangeConstrainedValueProvider<int>
   {
-    protected override RangeConstrainedValueProviderContext<int> CreateContext (ValueProviderObjectContext objectContext)
+    protected override int DefaultMinValue
     {
-      var rangeContstraints = RangeContstraints<int>.FromProperty(objectContext.PropertyInfo)
-                              ?? new RangeContstraints<int>(int.MinValue, int.MaxValue);
+      get { return int.MinValue; }
+    }
 
-      return new RangeConstrainedValueProviderContext<int>(objectContext, rangeContstraints);
+    protected override int DefaultMaxValue
+    {
+      get { return int.MaxValue; }
     }
 
     protected override int CreateValue (RangeConstrainedValueProviderContext<int> context)
@@ -22,6 +23,4 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
       return context.Random.Next(context.RangeContstraints.MinValue, context.RangeContstraints.MaxValue);
     }
   }
-
- 
 }
