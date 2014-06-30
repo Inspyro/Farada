@@ -1,4 +1,5 @@
 ﻿using System;
+using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using FluentAssertions;
 using SpecK;
@@ -7,6 +8,7 @@ using SpecK.Specifications.InferredApi;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
+  [Subject (typeof (ITestDataGenerator))]
   class TestDataGeneratorDomainSpeck:TestDataGeneratorBaseSpeck
   {
     [Group]

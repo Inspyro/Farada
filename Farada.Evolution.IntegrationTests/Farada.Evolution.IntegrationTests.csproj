@@ -32,26 +32,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FakeItEasy">
-      <HintPath>..\packages\FakeItEasy.1.21.0\lib\net40\FakeItEasy.dll</HintPath>
-    </Reference>
     <Reference Include="FluentAssertions">
       <HintPath>..\packages\FluentAssertions.3.0.107\lib\net45\FluentAssertions.dll</HintPath>
     </Reference>
     <Reference Include="FluentAssertions.Core">
       <HintPath>..\packages\FluentAssertions.3.0.107\lib\net45\FluentAssertions.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Ploeh.AutoFixture">
-      <HintPath>..\packages\AutoFixture.3.18.5\lib\net40\Ploeh.AutoFixture.dll</HintPath>
-    </Reference>
-    <Reference Include="SpecK.Extension.AutoFixture">
-      <HintPath>..\packages\SpecK.AutoFixture.0.0.1-Pre00724\lib\net40\SpecK.Extension.AutoFixture.dll</HintPath>
-    </Reference>
-    <Reference Include="SpecK.Extension.FakeItEasy">
-      <HintPath>..\packages\SpecK.FakeItEasy.0.0.1-Pre00724\lib\net40\SpecK.Extension.FakeItEasy.dll</HintPath>
-    </Reference>
-    <Reference Include="SpecK.Extension.FluentAssertions">
-      <HintPath>..\packages\SpecK.FluentAssertions.0.0.1-Pre00724\lib\net40\SpecK.Extension.FluentAssertions.dll</HintPath>
     </Reference>
     <Reference Include="SpecK.Framework">
       <HintPath>..\packages\SpecK.0.0.1-Pre00724\lib\net20\SpecK.Framework.dll</HintPath>
@@ -59,9 +44,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>

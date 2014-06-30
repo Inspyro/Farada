@@ -8,6 +8,7 @@ using SpecK.Specifications;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
+  [Subject (typeof (ITestDataGenerator))]
   class TestDataGeneratorSubTypeSpeck:TestDataGeneratorBaseSpeck
   {
     Context ValueProviderSubTypeContext ()

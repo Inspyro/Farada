@@ -1,5 +1,6 @@
 ﻿using System;
 using Farada.TestDataGeneration.BaseDomain.Modifiers;
+using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using FluentAssertions;
 using SpecK;
@@ -7,6 +8,7 @@ using SpecK.Specifications;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
+  [Subject (typeof (ITestDataGenerator))]
   class TestDataGeneratorConstraintsSpeck:TestDataGeneratorBaseSpeck
   {
      Context NullModifierContext ()

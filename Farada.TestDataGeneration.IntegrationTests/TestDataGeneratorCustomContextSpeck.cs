@@ -1,4 +1,5 @@
 ﻿using System;
+using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using FluentAssertions;
 using SpecK;
@@ -6,6 +7,7 @@ using SpecK.Specifications;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
+  [Subject (typeof (ITestDataGenerator))]
   class TestDataGeneratorCustomContextSpeck:TestDataGeneratorBaseSpeck
   {
      Context CustomContext (int contextValue)
