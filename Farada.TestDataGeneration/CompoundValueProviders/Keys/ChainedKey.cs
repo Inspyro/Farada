@@ -7,6 +7,9 @@ using Remotion.Utilities;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
+  /// <summary>
+  /// A key that represents a type chain (Class.Property1.Property2...)
+  /// </summary>
   internal class ChainedKey : IKey, IEquatable<ChainedKey>
   {
     private readonly Type _declaringType;

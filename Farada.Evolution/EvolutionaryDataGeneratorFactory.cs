@@ -40,7 +40,7 @@ namespace Farada.Evolution
   }
 
   /// <summary>
-  /// TODO
+  /// Creates an evolutionary data generator for the given domain
   /// </summary>
   public static class EvolutionaryDataGeneratorFactory
   {

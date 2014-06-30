@@ -5,9 +5,12 @@ namespace Farada.Evolution.RuleBasedDataGeneration
   internal class World : IWriteableWorld
   {
     private readonly WriteableUserData _userData;
+    
+    internal GeneratorResult CurrentData { get; set; }
 
-    internal World ()
+    internal World (GeneratorResult initialData)
     {
+      CurrentData = initialData;
       _userData = new WriteableUserData();
     }
 
@@ -18,7 +21,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
 
     public int Count<T> ()
     {
-      return 0; //TODO:
+      return CurrentData == null ? 0 : CurrentData.GetResult<T>().Count;
     }
 
     public void Write (Action<dynamic> writeFunc)

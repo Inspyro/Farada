@@ -5,6 +5,9 @@ using Farada.TestDataGeneration.FastReflection;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
+  /// <summary>
+  /// A key that represents a type (e.g. type of a property)
+  /// </summary>
   internal class TypeKey : IKey, IEquatable<TypeKey>
   {
     private readonly Type _type;

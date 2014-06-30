@@ -6,6 +6,9 @@ using Farada.TestDataGeneration.FastReflection;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
+  /// <summary>
+  /// A key that represnets an attribute on a property
+  /// </summary>
   internal class AttributeKey : IKey, IEquatable<AttributeKey>
   {
     private readonly Type _propertyType;

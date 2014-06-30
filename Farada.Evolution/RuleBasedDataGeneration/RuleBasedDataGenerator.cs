@@ -30,21 +30,20 @@ namespace Farada.Evolution.RuleBasedDataGeneration
         throw new InvalidOperationException("You cannot generate data without a rule set - please specify a rule set on initiliation!");
       }
 
-      var world = new World();
-
-      var result = initialData;
+      var world = new World(initialData);
       for (var i = 0; i < generations; i++)
       {
-        result = Generate(result, world);
+        Generate(world);
       }
 
-      return result;
+      return world.CurrentData;
     }
 
     
-    private GeneratorResult Generate (GeneratorResult lastGenerationResult, IWriteableWorld world)
+    private void Generate (World world)
     {
-      var dataProvider = lastGenerationResult==null?new GeneratorDataProvider(_random):new GeneratorDataProvider(_random, lastGenerationResult.DataLists);
+      var dataProvider = world.CurrentData==null?new GeneratorDataProvider(_random):new GeneratorDataProvider(_random, world.CurrentData.DataLists);
+
       var generatedData = new List<IRuleValue>();
 
       foreach (var globalRule in _ruleSet.GetGlobalRules())
@@ -83,7 +82,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
             break;
         }
 
-        //TODO: Use plinq here... but never give them the same value - should be already like this
+        //TODO: Use plinq here... but never give them the same value
         foreach (var inputValues in inputList.Where(ruleInput=>ruleInput.Count==inputDataList.Count))
         {
           generatedData.AddRange(rule.Execute(new CompoundRuleExecutionContext(inputValues, TestDataGenerator, world)));
@@ -95,7 +94,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
         dataProvider.Add(result);
       }
 
-      return new GeneratorResult(dataProvider.DataLists);
+      world.CurrentData = new GeneratorResult(dataProvider.DataLists);
     }
 
     public InitialDataProvider InitialDataProvider { get; private set; }

@@ -5,7 +5,7 @@ using Farada.TestDataGeneration.FastReflection;
 namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
   /// <summary>
-  ///  TODO
+  ///  A key that represents a single property
   /// </summary>
   internal class PropertyKeyPart: IEquatable<PropertyKeyPart>
   {
