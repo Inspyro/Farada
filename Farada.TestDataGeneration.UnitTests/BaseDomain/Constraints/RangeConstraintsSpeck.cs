@@ -24,7 +24,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
     Context PropertyInfoContext (bool isDefined, Type rangeType=null, string minValue=null, string maxValue=null)
     {
       return
-          c => c.Given ("property info with incorrect range attribute", x =>
+          c => c.Given (string.Format ("range attribute isDefined:{0} of type {1} between: {2} and {3}", isDefined, rangeType, minValue, maxValue), x =>
           {
             A.CallTo (() => PropertyInfo.IsDefined (typeof (RangeAttribute))).Returns (isDefined);
 

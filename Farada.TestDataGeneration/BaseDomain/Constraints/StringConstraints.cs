@@ -62,7 +62,7 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
       if (minLengthDefined && maxLengthDefined && maxLength < minLength)
       {
         throw new ArgumentOutOfRangeException(
-            string.Format("On the property {0} {1} the MinLength attribute and MaxLength attribute result in an invalid range", property.PropertyType, property.Name)); //TODO: Test
+            string.Format("On the property {0} {1} the MinLength attribute and MaxLength attribute result in an invalid range", property.PropertyType, property.Name));
       }
 
       if (property.IsDefined(typeof (StringLengthAttribute)))
@@ -81,12 +81,12 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
       if (minLength < 0 && maxLength < 0)
         return null;
 
-      if(maxLength<minLength)
+      if(minLengthDefined&&!maxLengthDefined)
       {
         maxLength = minLength + 100;
       }
 
-      if (minLength > maxLength)
+      if (maxLengthDefined&&!minLengthDefined)
       {
         minLength = maxLength - 100;
       }

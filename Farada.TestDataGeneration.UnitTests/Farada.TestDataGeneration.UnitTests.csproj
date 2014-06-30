@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseDomain\Constraints\StringConstraintsSpeck.cs" />
     <Compile Include="BaseDomain\Constraints\RangeConstraintsSpeck.cs" />
     <Compile Include="Extensions\EnumerableExtensionsSpeck.cs" />
     <Compile Include="FastReflection\FastActivatorSpeck.cs" />
