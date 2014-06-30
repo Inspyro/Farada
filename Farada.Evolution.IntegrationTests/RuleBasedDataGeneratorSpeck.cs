@@ -93,9 +93,9 @@ namespace Farada.Evolution.IntegrationTests
       Specify (x => DataGenerator.Generate (Generations, InitialData))
           .Elaborate ("Planet Earth", _ => _
               .Given (PersonDomainContext ())
-              .Given ("50 years", x => Generations = 50)
+              .Given ("60 years", x => Generations = 60)
               .It ("successfully creates 2045 persons",
-                  x => x.Result.GetResult<Person> ().Count.Should ().Be (2045)));
+                  x => x.Result.GetResult<Person> ().Count.Should ().Be (531)));
     }
   }
 }
