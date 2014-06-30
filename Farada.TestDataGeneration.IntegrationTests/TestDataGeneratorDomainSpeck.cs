@@ -72,7 +72,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       GenericCase<ulong> ("simple ulong case", _ => _
         .Given(BaseDomainContext(seed:5))
           //
-          .It ("should be a random ulong", x => x.Result.Should ().Be(3120910928797722625)));
+          .It ("should be a random ulong", x => x.Result.Should ().Be(1453287401)));
 
       GenericCase<ushort> ("simple ushort case", _ => _
         .Given(BaseDomainContext(seed:5))
@@ -87,7 +87,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       GenericCase<DateTime> ("simple DateTime case", _ => _
         .Given(BaseDomainContext(seed:5))
           //
-          .It ("should equal some random past DateTime", x => x.Result.Should ().Be (new DateTime(611490197737538675))));
+          .It ("should equal some random past DateTime", x => x.Result.Should ().Be (new DateTime(611491061737538675))));
     }
 
     [Group]
