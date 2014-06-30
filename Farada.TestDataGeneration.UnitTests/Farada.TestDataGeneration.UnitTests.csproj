@@ -71,6 +71,7 @@
     <Compile Include="BaseDomain\ValueProviders\RandomSyllabileGeneratorSpeck.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BaseDomain\ValueProviders\RandomWordGeneratorSpeck.cs" />
     <Compile Include="Extensions\EnumerableExtensionsSpeck.cs" />
     <Compile Include="FastReflection\FastActivatorSpeck.cs" />
     <Compile Include="FastReflection\FastReflectionSpeck.cs" />

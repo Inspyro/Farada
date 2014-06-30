@@ -25,7 +25,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
     public RandomWordGenerator (RandomSyllabileGenerator randomSyllabileGenerator, int minWordLength = 3, int maxWordLength = 10)
     {
       if (maxWordLength < minWordLength)
-        throw new ArgumentOutOfRangeException("maxWordLength", "The param max word lenght cannot be smaller than min word length"); //TODO: unit test?
+        throw new ArgumentOutOfRangeException("maxWordLength", "The param max word lenght cannot be smaller than min word length");
 
       _minWordLength = minWordLength;
       _maxWordLength = maxWordLength;
