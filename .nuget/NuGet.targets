@@ -21,7 +21,7 @@
         <!-- The official NuGet package source (https://nuget.org/api/v2/) will be excluded if package sources are specified and it does not appear in the list -->
         
         <PackageSource Include="https://nuget.org/api/v2/" />
-      	<PackageSource Include="https://www.myget.org/F/neventstore-ci/" />
+      	<PackageSource Include="file://mko-pc/c$/users/matthias.koch/speck/output/" />
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(OS)' == 'Windows_NT'">
