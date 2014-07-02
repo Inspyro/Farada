@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farada.TestDataGeneration", "Farada.TestDataGeneration\Farada.TestDataGeneration.csproj", "{1DF4D7D1-1068-456E-B6F6-389F04B1AD10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farada.TestDataGeneration.IntegrationTests", "Farada.TestDataGeneration.IntegrationTests\Farada.TestDataGeneration.IntegrationTests.csproj", "{2B8E777F-0B35-4E2F-869E-D7D4B161850A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farada.Evolution", "Farada.Evolution\Farada.Evolution.csproj", "{2CAD51DB-A1A9-49C3-B998-22B2839EAC5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farada.Evolution.IntegrationTests", "Farada.Evolution.IntegrationTests\Farada.Evolution.IntegrationTests.csproj", "{E29D3CD2-4AAD-40AA-96E4-E6B337AFA6BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farada.TestDataGeneration.UnitTests", "Farada.TestDataGeneration.UnitTests\Farada.TestDataGeneration.UnitTests.csproj", "{0291D149-9565-46A6-8C3C-A8B58A4BA826}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceTests", "Rubicon.RegisterNova.PerformanceTests\PerformanceTests.csproj", "{4DC39F03-845D-48D6-B5F4-93C9F31AA660}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1DF4D7D1-1068-456E-B6F6-389F04B1AD10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DF4D7D1-1068-456E-B6F6-389F04B1AD10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DF4D7D1-1068-456E-B6F6-389F04B1AD10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DF4D7D1-1068-456E-B6F6-389F04B1AD10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B8E777F-0B35-4E2F-869E-D7D4B161850A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B8E777F-0B35-4E2F-869E-D7D4B161850A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B8E777F-0B35-4E2F-869E-D7D4B161850A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B8E777F-0B35-4E2F-869E-D7D4B161850A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CAD51DB-A1A9-49C3-B998-22B2839EAC5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CAD51DB-A1A9-49C3-B998-22B2839EAC5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CAD51DB-A1A9-49C3-B998-22B2839EAC5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CAD51DB-A1A9-49C3-B998-22B2839EAC5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E29D3CD2-4AAD-40AA-96E4-E6B337AFA6BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E29D3CD2-4AAD-40AA-96E4-E6B337AFA6BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E29D3CD2-4AAD-40AA-96E4-E6B337AFA6BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E29D3CD2-4AAD-40AA-96E4-E6B337AFA6BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0291D149-9565-46A6-8C3C-A8B58A4BA826}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0291D149-9565-46A6-8C3C-A8B58A4BA826}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0291D149-9565-46A6-8C3C-A8B58A4BA826}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0291D149-9565-46A6-8C3C-A8B58A4BA826}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DC39F03-845D-48D6-B5F4-93C9F31AA660}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DC39F03-845D-48D6-B5F4-93C9F31AA660}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DC39F03-845D-48D6-B5F4-93C9F31AA660}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DC39F03-845D-48D6-B5F4-93C9F31AA660}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
