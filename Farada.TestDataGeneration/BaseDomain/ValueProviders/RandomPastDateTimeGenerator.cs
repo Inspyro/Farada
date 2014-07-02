@@ -13,7 +13,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
     {
       var start = new DateTime(1900, 1, 1);
 
-      var range = (DateTime.Today - start).Days;
+      var range = (DateTime.Today - start).Days; //TODO: WTF?
       return start.AddDays(context.Random.Next(range)).AddTicks(context.Random.Next(0, TimeSpan.TicksPerDay));
     }
   }
