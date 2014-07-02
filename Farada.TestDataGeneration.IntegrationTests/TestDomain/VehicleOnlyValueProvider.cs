@@ -7,9 +7,9 @@ namespace Farada.TestDataGeneration.IntegrationTests.TestDomain
   {
     protected override AbstractVehicle CreateValue (ValueProviderContext<AbstractVehicle> context)
     {
-      return context.TargetValueType == typeof (AbstractVehicle.AirVehicle)
-          ? (AbstractVehicle) new AbstractVehicle.AirVehicle { Engine = new AbstractVehicle.PropellorEngine () }
-          : new AbstractVehicle.LandVehicle { Tire = new AbstractVehicle.Tire () };
+      return context.TargetValueType == typeof (AirVehicle)
+          ? (AbstractVehicle) new AirVehicle { Engine = new PropellorEngine () }
+          : new LandVehicle { Tire = new Tire () };
     }
   }
 }

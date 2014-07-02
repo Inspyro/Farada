@@ -26,16 +26,16 @@ namespace Farada.TestDataGeneration.IntegrationTests
     void ValueProviderForSubTypes()
     {
       Specify (x =>
-          TestDataGenerator.Create<AbstractVehicle.LandVehicle> (MaxRecursionDepth, null))
+          TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
           .Elaborate ("should fill all according to context", _ => _
               .Given (ValueProviderSubTypeContext ())
               .It ("should fill tire diameter", x => x.Result.Tire.Diameter.Should ().Be (10)));
 
        Specify (x =>
-          TestDataGenerator.Create<AbstractVehicle.AirVehicle> (MaxRecursionDepth, null))
+          TestDataGenerator.Create<AirVehicle> (MaxRecursionDepth, null))
           .Elaborate ("should fill all according to context", _ => _
               .Given (ValueProviderSubTypeContext ())
-              .It ("should fill jet engine fuel per second", x => ((AbstractVehicle.JetEngine)x.Result.Engine).FuelUsePerSecond.Should ().Be (20)));
+              .It ("should fill jet engine fuel per second", x => ((JetEngine)x.Result.Engine).FuelUsePerSecond.Should ().Be (20)));
     }
 
     Context VehicleOnlyValueProviderContext ()
@@ -46,20 +46,20 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .UseDefaults(false)
             .For<AbstractVehicle> ().AddProvider (new VehicleOnlyValueProvider ());
       })
-          .Given (TestDataGeneratorContext ((int) RecursionDepth.DoNotFillSecondLevelProperties));
+          .Given (TestDataGeneratorContext (RecursionDepth.DoNotFillSecondLevelProperties));
     }
 
     [Group]
     void ValueProviderNotForSubTypes()
     {
       Specify (x =>
-          TestDataGenerator.Create<AbstractVehicle.LandVehicle> (MaxRecursionDepth, null))
+          TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
           .Elaborate ("should not fill landvehicle (no exception)", _ => _
               .Given (VehicleOnlyValueProviderContext ())
               .It ("should not create land vehicle as only abstract vehicle would be filled", x => x.Result.Tire.Should().BeNull()));
 
        Specify (x =>
-          TestDataGenerator.Create<AbstractVehicle.AirVehicle> (MaxRecursionDepth, null))
+          TestDataGenerator.Create<AirVehicle> (MaxRecursionDepth, null))
           .Elaborate ("should not fill (no exception)", _ => _
               .Given (VehicleOnlyValueProviderContext ())
               .It ("should not create air vehicle as only abstract vehicle would be filled", x =>x.Result.Engine.Should().BeNull()));
