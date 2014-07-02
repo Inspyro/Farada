@@ -41,7 +41,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       defaultProvider.AddProvider((ushort us) => us, new RandomUShortGenerator());
 
       defaultProvider.AddProvider((string s)=>s, new RandomWordGenerator(new RandomSyllabileGenerator())); //string
-      defaultProvider.AddProvider((DateTime dt)=>dt, new RandomPastDateTimeGenerator());
+      defaultProvider.AddProvider((DateTime dt)=>dt, new RandomDateTimeGenerator());
 
       //constraint providers
       defaultProvider.AddProvider(new EmailGenerator());

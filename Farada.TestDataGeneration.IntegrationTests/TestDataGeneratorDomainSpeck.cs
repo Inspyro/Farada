@@ -87,7 +87,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       GenericCase<DateTime> ("simple DateTime case", _ => _
         .Given(BaseDomainContext(seed:5))
           //
-          .It ("should equal some random past DateTime", x => x.Result.Should ().Be (new DateTime(611491061737538675))));
+          .It ("should equal some random past DateTime", x => x.Result.Should ().Be (new DateTime(620621813737538675))));
     }
 
     [Group]
