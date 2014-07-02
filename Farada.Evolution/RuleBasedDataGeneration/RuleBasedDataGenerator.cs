@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Farada.TestDataGeneration.CompoundValueProvider;
 using Farada.TestDataGeneration.Extensions;
+using Remotion.Utilities;
 
-namespace Farada.Evolution.RuleBasedDataGenerator
+namespace Farada.Evolution.RuleBasedDataGeneration
 {
   public class RuleBasedDataGenerator
   {

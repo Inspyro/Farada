@@ -49,9 +49,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Farada.Evolution\Farada.Evolution.csproj">
-      <Project>{2CAD51DB-A1A9-49C3-B998-22B2839EAC5D}</Project>
-      <Name>Farada.Evolution</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Farada.TestDataGeneration\Farada.TestDataGeneration.csproj">
+      <Project>{1DF4D7D1-1068-456E-B6F6-389F04B1AD10}</Project>
+      <Name>Farada.TestDataGeneration</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

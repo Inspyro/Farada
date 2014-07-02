@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Remotion">
+      <HintPath>..\prereq\Libraries\Remotion.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -39,27 +42,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EvolutionaryDataGenerator.cs" />
     <Compile Include="EvolutionaryDomainConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestDataGenerator.cs" />
     <Compile Include="Utilities\LerpUtility.cs" />
     <Compile Include="Utilities\MathUtility.cs" />
     <Compile Include="Utilities\UnrestrictedRule.cs" />
-    <Compile Include="RuleBasedDataGenerator\CompoundRuleInput.cs" />
-    <Compile Include="RuleBasedDataGenerator\GeneratorDataProvider.cs" />
-    <Compile Include="RuleBasedDataGenerator\GeneratorResult.cs" />
-    <Compile Include="RuleBasedDataGenerator\GlobalRule.cs" />
-    <Compile Include="RuleBasedDataGenerator\InitialDataProvider.cs" />
-    <Compile Include="RuleBasedDataGenerator\ReadableUserData.cs" />
-    <Compile Include="RuleBasedDataGenerator\Rule.cs" />
-    <Compile Include="RuleBasedDataGenerator\RuleBasedDataGenerator.cs" />
-    <Compile Include="RuleBasedDataGenerator\RuleParameter.cs" />
-    <Compile Include="RuleBasedDataGenerator\RuleSet.cs" />
-    <Compile Include="RuleBasedDataGenerator\RuleValue.cs" />
-    <Compile Include="RuleBasedDataGenerator\World.cs" />
-    <Compile Include="RuleBasedDataGenerator\WriteableUserData.cs" />
+    <Compile Include="RuleBasedDataGeneration\CompoundRuleInput.cs" />
+    <Compile Include="RuleBasedDataGeneration\GeneratorDataProvider.cs" />
+    <Compile Include="RuleBasedDataGeneration\GeneratorResult.cs" />
+    <Compile Include="RuleBasedDataGeneration\GlobalRule.cs" />
+    <Compile Include="RuleBasedDataGeneration\InitialDataProvider.cs" />
+    <Compile Include="RuleBasedDataGeneration\ReadableUserData.cs" />
+    <Compile Include="RuleBasedDataGeneration\Rule.cs" />
+    <Compile Include="RuleBasedDataGeneration\RuleBasedDataGenerator.cs" />
+    <Compile Include="RuleBasedDataGeneration\RuleParameter.cs" />
+    <Compile Include="RuleBasedDataGeneration\RuleSet.cs" />
+    <Compile Include="RuleBasedDataGeneration\RuleValue.cs" />
+    <Compile Include="RuleBasedDataGeneration\World.cs" />
+    <Compile Include="RuleBasedDataGeneration\WriteableUserData.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Farada.TestDataGeneration\Farada.TestDataGeneration.csproj">
+      <Project>{1df4d7d1-1068-456e-b6f6-389f04b1ad10}</Project>
+      <Name>Farada.TestDataGeneration</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

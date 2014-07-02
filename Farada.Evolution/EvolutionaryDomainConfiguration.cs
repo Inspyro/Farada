@@ -1,5 +1,5 @@
 ﻿using System;
-using Farada.Evolution.RuleBasedDataGenerator;
+using Farada.Evolution.RuleBasedDataGeneration;
 using Farada.TestDataGeneration;
 
 namespace Farada.Evolution

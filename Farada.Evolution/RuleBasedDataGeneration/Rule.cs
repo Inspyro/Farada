@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Farada.TestDataGeneration.CompoundValueProvider;
 
-namespace Farada.Evolution.RuleBasedDataGenerator
+namespace Farada.Evolution.RuleBasedDataGeneration
 {
   public abstract class Rule:IRule
   {

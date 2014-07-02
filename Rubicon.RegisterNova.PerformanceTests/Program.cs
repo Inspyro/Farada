@@ -11,8 +11,9 @@ namespace Rubicon.RegisterNova.PerformanceTests
     {
       var basicDomain = new DomainConfiguration();
       var valueProvider = TestDataGenerator.CreateCompoundValueProvider(basicDomain);
+      //TODO: Rename CompoundValueProvider to ITestDataGenerator in public interface
 
-      const int count = 1000000; //8 million
+      const int count = 1000000; //1 million
 
       var start = DateTime.Now;
       var listOfUniverses = Parallelization.DistributeParallel(chunkCount => valueProvider.CreateMany<Universe>(chunkCount), count).ToList();
@@ -22,6 +23,8 @@ namespace Rubicon.RegisterNova.PerformanceTests
           "Took {0} s to generate {1} universes",
           (DateTime.Now - start).TotalSeconds,
           listOfUniverses.Count);
+
+      Console.Read();
     }
 
     internal class Universe

@@ -77,6 +77,10 @@
       <Project>{2CAD51DB-A1A9-49C3-B998-22B2839EAC5D}</Project>
       <Name>Farada.Evolution</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Farada.TestDataGeneration\Farada.TestDataGeneration.csproj">
+      <Project>{1df4d7d1-1068-456e-b6f6-389f04b1ad10}</Project>
+      <Name>Farada.TestDataGeneration</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
