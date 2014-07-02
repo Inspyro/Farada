@@ -49,7 +49,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    </ProjectReference>
     <ProjectReference Include="..\Farada.TestDataGeneration\Farada.TestDataGeneration.csproj">
       <Project>{1DF4D7D1-1068-456E-B6F6-389F04B1AD10}</Project>
       <Name>Farada.TestDataGeneration</Name>
