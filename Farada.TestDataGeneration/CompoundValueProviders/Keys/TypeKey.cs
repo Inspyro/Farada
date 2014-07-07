@@ -18,6 +18,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       PreviousKey = CreatePreviousKey();
     }
 
+    //TODO: Support Interfaces?
     private IKey CreatePreviousKey ()
     {
       if (_type.IsNullableType())

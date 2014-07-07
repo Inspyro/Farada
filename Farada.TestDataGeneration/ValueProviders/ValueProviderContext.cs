@@ -25,7 +25,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// <summary>
     /// The func that referes to the previous value generator in the chain
     /// </summary>
-    public Func<TProperty> GetPreviousValue { get; private set; }
+    public Func<TProperty> GetPreviousValue { get; private set; } //TODO: Use method
 
     /// <summary>
     /// The type of the value to generate

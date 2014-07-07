@@ -59,13 +59,14 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       PreviousKey = CreatePreviousKey();
     }
 
+    //TODO: What if base class defines different property type for proeprty xy? with new..
     private IKey CreatePreviousKey ()
     {
       var baseType = _declaringType.BaseType;
       if (baseType != typeof (object) && baseType != typeof (ValueType)&&baseType!=null)
         return new ChainedKey(baseType, _concreteDeclaringType, _propertyChain);
 
-      var bottomProperty = _propertyChain[0];
+      var bottomProperty = _propertyChain[0]; //TODO: bottom/top = first/last?
       var previousProperties = _propertyChain.Slice(1);
 
       if (previousProperties.Count == 0)
@@ -101,6 +102,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       if (_propertyChain.Count != other._propertyChain.Count)
         return false;
 
+      //TODO: _declaring type is checked twice? -todo convert to all
       return _declaringType == other._declaringType && !_propertyChain.Where((t, i) => !t.Equals(other._propertyChain[i])).Any();
     }
 

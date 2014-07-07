@@ -25,6 +25,8 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _modifierList = new List<IInstanceModifier>();
     }
 
+    //TODO: sort...
+
     public void AddProvider<TProperty, TAttribute, TContext> (AttributeBasedValueProvider<TProperty, TAttribute, TContext> attributeBasedValueProvider) where TAttribute : Attribute where TContext : AttributeValueProviderContext<TProperty, TAttribute>
     {
       var key = new AttributeKey(typeof (TProperty), typeof (TAttribute));
@@ -41,6 +43,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       var declaringType = chainExpression.GetParameterType();
       var expressionChain = chainExpression.ToChain().ToList();
 
+      //TODO: Exception to have some conventions?
       IKey key = expressionChain.Count == 0 ? (IKey) new TypeKey(typeof (TProperty)) : new ChainedKey(declaringType, expressionChain);
       _valueProviderDictionary.AddValueProvider(key, valueProvider);
     }
@@ -54,5 +57,9 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     {
       return new CompoundValueProvider(_valueProviderDictionary, _random, _modifierList);
     }
+
+    //For<string>().AddProvider
+    //For((string s) => s).AddProvider
+    //(string s) => s//
   }
 }

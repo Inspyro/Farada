@@ -13,6 +13,7 @@ namespace Farada.TestDataGeneration.Extensions
   {
     internal static IEnumerable<PropertyKeyPart> ToChain(this Expression expression)
     {
+      //TODO: Check for other MemberExpression types and throw custom exception... -> write a unit/integration test for this scenario.
       var memberExpression = expression as MemberExpression;
       if (memberExpression != null)
       {
@@ -21,7 +22,7 @@ namespace Farada.TestDataGeneration.Extensions
           yield return chainKey;
         }
 
-        yield return new PropertyKeyPart(FastReflection.FastReflection.GetPropertyInfo(((PropertyInfo) memberExpression.Member)));
+        yield return new PropertyKeyPart(FastReflection.FastReflectionUtility.GetPropertyInfo(((PropertyInfo) memberExpression.Member)));
       }
     }
 

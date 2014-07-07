@@ -40,6 +40,10 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       PreviousKey = CreatePreviousKey(remainingAttributes);
     }
 
+    //TODO: Sort attribute providers? alphabetic? order flag?
+    // [BeforeProvider(typeof(OtherAttribute))]
+    // class MyAttributeProvider - Order=1, Before (OtherAttributeProvideR)
+
     private IKey CreatePreviousKey (IList<Type> remainingAttributes)
     {
       if (remainingAttributes.Count == 1)
@@ -47,6 +51,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
         return new TypeKey(_mostConcretePropertyType);
       }
 
+      //TODO: buggy - because stays on base type?
       if (_propertyType.BaseType != null)
         return new AttributeKey(_propertyType.BaseType, _propertyType, remainingAttributes);
 
