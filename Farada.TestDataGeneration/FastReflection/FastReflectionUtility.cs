@@ -9,7 +9,7 @@ namespace Farada.TestDataGeneration.FastReflection
   /// Provides a faster way to read properties and types than <see cref="System.Reflection"/>
   /// This class is thread safe
   /// </summary>
-  public static class FastReflection
+  public static class FastReflectionUtility
   {
     private static readonly ConcurrentDictionary<Type, IFastTypeInfo> s_typeInfos = new ConcurrentDictionary<Type, IFastTypeInfo>();
 

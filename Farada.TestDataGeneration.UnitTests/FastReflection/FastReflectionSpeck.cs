@@ -10,7 +10,7 @@ using SpecK.Specifications.Extensions;
 
 namespace Farada.TestDataGeneration.UnitTests.FastReflection
 {
-  [Subject (typeof (TestDataGeneration.FastReflection.FastReflection))]
+  [Subject (typeof (TestDataGeneration.FastReflection.FastReflectionUtility))]
   public class FastReflectionSpeck:Specs
   {
     Type TypeToReflect;
@@ -20,7 +20,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
     [Group]
     void GetTypeInfo ()
     {
-      Specify (x => TestDataGeneration.FastReflection.FastReflection.GetTypeInfo (TypeToReflect))
+      Specify (x => TestDataGeneration.FastReflection.FastReflectionUtility.GetTypeInfo (TypeToReflect))
           //
           .Elaborate ("returns valid property info", _ => _
               //
@@ -46,7 +46,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
     [Group]
     void GetPropertyInfo ()
     {
-      Specify (x => TestDataGeneration.FastReflection.FastReflection.GetPropertyInfo (PropertyInfoToConvert))
+      Specify (x => TestDataGeneration.FastReflection.FastReflectionUtility.GetPropertyInfo (PropertyInfoToConvert))
           //
           .Elaborate ("returns valid property info", _ => _
               //
