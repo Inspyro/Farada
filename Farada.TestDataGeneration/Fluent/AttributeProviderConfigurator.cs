@@ -7,20 +7,20 @@ namespace Farada.TestDataGeneration.Fluent
   internal class AttributeProviderConfigurator<TProperty, TAttribute> :ChainConfigurator, IAttributeProviderAndChainConfigurator<TProperty, TAttribute>
       where TAttribute : Attribute
   {
-    internal AttributeProviderConfigurator (CompoundValueProviderBuilder valueProviderBuilder)
-        : base(valueProviderBuilder)
+    internal AttributeProviderConfigurator (Func<CompoundValueProviderBuilder> lazyValueProviderBuilder)
+        : base(lazyValueProviderBuilder)
     {
     }
 
     public IAttributeProviderAndChainConfigurator<TProperty, TAttribute> AddProvider (AttributeBasedValueProvider<TProperty, TAttribute> attributeValueProvider)
     {
-      _valueProviderBuilder.AddProvider(attributeValueProvider);
+      _lazyValueProviderBuilder().AddProvider(attributeValueProvider);
       return this;
     }
 
     public IAttributeProviderAndChainConfigurator<TProperty, TAttribute> AddProvider<TContext> (AttributeBasedValueProvider<TProperty, TAttribute, TContext> attributeValueProvider) where TContext : AttributeValueProviderContext<TProperty, TAttribute>
     {
-      _valueProviderBuilder.AddProvider(attributeValueProvider);
+      _lazyValueProviderBuilder().AddProvider(attributeValueProvider);
       return this;
     }
   }

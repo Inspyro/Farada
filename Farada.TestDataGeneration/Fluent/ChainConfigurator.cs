@@ -1,42 +1,36 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Farada.TestDataGeneration.CompoundValueProviders;
-using Farada.TestDataGeneration.Modifiers;
 
 namespace Farada.TestDataGeneration.Fluent
 {
   internal class ChainConfigurator : IChainConfigurator
   {
-    protected readonly CompoundValueProviderBuilder _valueProviderBuilder;
-    internal ChainConfigurator(CompoundValueProviderBuilder valueProviderBuilder)
+    protected Func<CompoundValueProviderBuilder> _lazyValueProviderBuilder;
+    internal ChainConfigurator(Func<CompoundValueProviderBuilder> lazyValueProviderBuilder)
     {
-      _valueProviderBuilder = valueProviderBuilder;
+      _lazyValueProviderBuilder = lazyValueProviderBuilder;
     }
 
+    // TODO: TProperty -> TType
     public IValueProviderAndChainConfigurator<TProperty> For<TProperty> ()
     {
-      return new TypeValueProviderConfigurator<TProperty>(_valueProviderBuilder);
+      return new TypeValueProviderConfigurator<TProperty>(_lazyValueProviderBuilder);
     }
 
     public IValueProviderAndChainConfigurator<TProperty> For<TContainer, TProperty> (Expression<Func<TContainer, TProperty>> memberExpression)
     {
-      return new ExpressionValueProviderConfigurator<TContainer, TProperty>(memberExpression, _valueProviderBuilder);
+      return new ExpressionValueProviderConfigurator<TContainer, TProperty>(memberExpression, _lazyValueProviderBuilder);
     }
 
     public IAttributeProviderAndChainConfigurator<TProperty, TAttribute> For<TProperty, TAttribute> () where TAttribute : Attribute
     {
-      return new AttributeProviderConfigurator<TProperty, TAttribute>(_valueProviderBuilder);
-    }
-
-    public IChainConfigurator AddInstanceModifier (IInstanceModifier instanceModifier)
-    {
-      _valueProviderBuilder.AddInstanceModifier(instanceModifier);
-      return this;
+      return new AttributeProviderConfigurator<TProperty, TAttribute>(_lazyValueProviderBuilder);
     }
 
     internal ITestDataGenerator Build ()
     {
-      return _valueProviderBuilder.Build();
+      return _lazyValueProviderBuilder().Build();
     }
   }
 }

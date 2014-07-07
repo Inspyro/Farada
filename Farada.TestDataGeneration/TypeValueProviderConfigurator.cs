@@ -7,20 +7,20 @@ namespace Farada.TestDataGeneration
 {
   internal class TypeValueProviderConfigurator<TProperty>:ChainConfigurator, IValueProviderAndChainConfigurator<TProperty>
   {
-    internal TypeValueProviderConfigurator (CompoundValueProviderBuilder valueProviderBuilder)
-        : base(valueProviderBuilder)
+    internal TypeValueProviderConfigurator (Func<CompoundValueProviderBuilder> lazyValueProviderBuilder)
+        : base(lazyValueProviderBuilder)
     {
     }
 
     public IValueProviderAndChainConfigurator<TProperty> AddProvider (ValueProvider<TProperty> valueProvider)
     {
-      _valueProviderBuilder.AddProvider(valueProvider);
+      _lazyValueProviderBuilder().AddProvider(valueProvider);
       return this;
     }
 
     public IValueProviderAndChainConfigurator<TProperty> AddProvider<TContext> (ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>
     {
-      _valueProviderBuilder.AddProvider(valueProvider);
+      _lazyValueProviderBuilder().AddProvider(valueProvider);
       return this;
     }
   }

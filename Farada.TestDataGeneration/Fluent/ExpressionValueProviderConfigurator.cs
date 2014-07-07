@@ -9,21 +9,21 @@ namespace Farada.TestDataGeneration.Fluent
   {
     private readonly Expression<Func<TContainer, TProperty>> _memberExpression;
 
-    public ExpressionValueProviderConfigurator (Expression<Func<TContainer, TProperty>> memberExpression, CompoundValueProviderBuilder valueProviderBuilder)
-        : base(valueProviderBuilder)
+    public ExpressionValueProviderConfigurator (Expression<Func<TContainer, TProperty>> memberExpression, Func<CompoundValueProviderBuilder> lazyValueProviderBuilder)
+        : base(lazyValueProviderBuilder)
     {
       _memberExpression = memberExpression;
     }
 
     public IValueProviderAndChainConfigurator<TProperty> AddProvider (ValueProvider<TProperty> valueProvider)
     {
-      _valueProviderBuilder.AddProvider(_memberExpression, valueProvider);
+      _lazyValueProviderBuilder().AddProvider(_memberExpression, valueProvider);
       return this;
     }
 
     public IValueProviderAndChainConfigurator<TProperty> AddProvider<TContext> (ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>
     {
-      _valueProviderBuilder.AddProvider(_memberExpression, valueProvider);
+      _lazyValueProviderBuilder().AddProvider(_memberExpression, valueProvider);
       return this;
     }
   }
