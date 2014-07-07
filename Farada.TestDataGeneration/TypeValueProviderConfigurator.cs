@@ -5,20 +5,20 @@ using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration
 {
-  internal class TypeValueProviderConfigurator<TProperty>:ChainConfigurator, IValueProviderAndChainConfigurator<TProperty>
+  internal class TypeValueProviderConfigurator<TType>:ChainConfigurator, IValueProviderAndChainConfigurator<TType>
   {
     internal TypeValueProviderConfigurator (Func<CompoundValueProviderBuilder> lazyValueProviderBuilder)
         : base(lazyValueProviderBuilder)
     {
     }
 
-    public IValueProviderAndChainConfigurator<TProperty> AddProvider (ValueProvider<TProperty> valueProvider)
+    public IValueProviderAndChainConfigurator<TType> AddProvider (ValueProvider<TType> valueProvider)
     {
       _lazyValueProviderBuilder().AddProvider(valueProvider);
       return this;
     }
 
-    public IValueProviderAndChainConfigurator<TProperty> AddProvider<TContext> (ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>
+    public IValueProviderAndChainConfigurator<TType> AddProvider<TContext> (ValueProvider<TType, TContext> valueProvider) where TContext : ValueProviderContext<TType>
     {
       _lazyValueProviderBuilder().AddProvider(valueProvider);
       return this;

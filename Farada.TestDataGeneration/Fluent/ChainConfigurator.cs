@@ -12,10 +12,9 @@ namespace Farada.TestDataGeneration.Fluent
       _lazyValueProviderBuilder = lazyValueProviderBuilder;
     }
 
-    // TODO: TProperty -> TType
-    public IValueProviderAndChainConfigurator<TProperty> For<TProperty> ()
+    public IValueProviderAndChainConfigurator<TType> For<TType> ()
     {
-      return new TypeValueProviderConfigurator<TProperty>(_lazyValueProviderBuilder);
+      return new TypeValueProviderConfigurator<TType>(_lazyValueProviderBuilder);
     }
 
     public IValueProviderAndChainConfigurator<TProperty> For<TContainer, TProperty> (Expression<Func<TContainer, TProperty>> memberExpression)

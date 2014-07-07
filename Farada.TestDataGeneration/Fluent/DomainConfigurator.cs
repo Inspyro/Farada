@@ -6,7 +6,6 @@ using Farada.TestDataGeneration.Modifiers;
 namespace Farada.TestDataGeneration.Fluent
 {
   internal class DomainConfigurator: ChainConfigurator, ITestDataConfigurator
-
   {
     private bool _useDefaults;
     private Random _random;
