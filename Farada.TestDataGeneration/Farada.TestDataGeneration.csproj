@@ -82,7 +82,7 @@
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="FastReflection\FastActivator.cs" />
     <Compile Include="FastReflection\FastPropertyInfo.cs" />
-    <Compile Include="FastReflection\FastReflection.cs" />
+    <Compile Include="FastReflection\FastReflectionUtility.cs" />
     <Compile Include="FastReflection\FastTypeInfo.cs" />
     <Compile Include="CompoundValueProviders\ITestDataGenerator.cs" />
     <Compile Include="CompoundValueProviders\ICompoundValueProviderBuilder.cs" />

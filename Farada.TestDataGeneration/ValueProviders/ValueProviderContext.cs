@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.FastReflection;
 
@@ -17,6 +18,8 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// <typeparam name="TProperty"></typeparam>
   public class ValueProviderContext<TProperty>:IValueProviderContext
   {
+    private readonly Func<TProperty> _previousValueFunction;
+
     /// <summary>
     /// The random to use for random value generation
     /// </summary>
@@ -25,7 +28,10 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// <summary>
     /// The func that referes to the previous value generator in the chain
     /// </summary>
-    public Func<TProperty> GetPreviousValue { get; private set; } //TODO: Use method
+    public TProperty GetPreviousValue ()
+    {
+      return _previousValueFunction();
+    }
 
     /// <summary>
     /// The type of the value to generate
@@ -46,7 +52,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     {
       TestDataGenerator = objectContext.TestDataGenerator;
       Random = objectContext.Random;
-      GetPreviousValue = () => (TProperty) objectContext.GetPreviousValue();
+      _previousValueFunction = () => (TProperty) objectContext.GetPreviousValue();
       TargetValueType = objectContext.TargetValueType;
       PropertyInfo = objectContext.PropertyInfo;
     }
