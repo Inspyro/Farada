@@ -66,8 +66,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestDataGeneratorExceptionsSpeck.cs" />
     <Compile Include="TestDataGeneratorCustomContextSpeck.cs" />
     <Compile Include="TestDataGeneratorSubTypeSpeck.cs" />
+    <Compile Include="TestDomain\ClassWithVariousMembers.cs" />
     <Compile Include="TestDomain\CoolIntCustomContextValueProvider.cs" />
     <Compile Include="TestDataGeneratorBaseSpeck.cs" />
     <Compile Include="TestDataGeneratorConstraintsSpeck.cs" />

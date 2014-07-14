@@ -13,7 +13,6 @@ namespace Farada.TestDataGeneration.Extensions
   {
     internal static IEnumerable<PropertyKeyPart> ToChain(this Expression expression)
     {
-      //TODO: Check for other MemberExpression types and throw custom exception... -> write a unit/integration test for this scenario.
       var memberExpression = expression as MemberExpression;
       if (memberExpression != null)
       {
@@ -21,6 +20,9 @@ namespace Farada.TestDataGeneration.Extensions
         {
           yield return chainKey;
         }
+
+        if (!(memberExpression.Member is PropertyInfo))
+          throw new NotSupportedException (memberExpression.Member.Name + " is not a property. Members that are not properties are not supported");
 
         yield return new PropertyKeyPart(FastReflection.FastReflectionUtility.GetPropertyInfo(((PropertyInfo) memberExpression.Member)));
       }
@@ -44,7 +46,7 @@ namespace Farada.TestDataGeneration.Extensions
         return memberExpression.Expression.GetParameterType();
       }
 
-      return null;
+      throw new NotSupportedException ("A non parameter expression is not supported");
     }
 
     internal static Type GetParameterType(this LambdaExpression expression)

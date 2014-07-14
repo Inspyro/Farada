@@ -46,7 +46,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
     [Group]
     void GetPropertyInfo ()
     {
-      Specify (x => TestDataGeneration.FastReflection.FastReflectionUtility.GetPropertyInfo (PropertyInfoToConvert))
+      Specify (x => FastReflectionUtility.GetPropertyInfo (PropertyInfoToConvert))
           //
           .Elaborate ("returns valid property info", _ => _
               //

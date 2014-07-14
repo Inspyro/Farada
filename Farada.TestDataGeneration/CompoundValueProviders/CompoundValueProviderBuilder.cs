@@ -25,7 +25,10 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _modifierList = new List<IInstanceModifier>();
     }
 
-    //TODO: sort...
+    public void AddProvider<TProperty, TContext> (ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>
+    {
+      _valueProviderDictionary.AddValueProvider(new TypeKey(typeof (TProperty)), valueProvider);
+    }
 
     public void AddProvider<TProperty, TAttribute, TContext> (AttributeBasedValueProvider<TProperty, TAttribute, TContext> attributeBasedValueProvider) where TAttribute : Attribute where TContext : AttributeValueProviderContext<TProperty, TAttribute>
     {
@@ -33,19 +36,15 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _valueProviderDictionary.AddValueProvider(key, attributeBasedValueProvider);
     }
 
-    public void AddProvider<TProperty, TContext> (ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>
-    {
-      _valueProviderDictionary.AddValueProvider(new TypeKey(typeof (TProperty)), valueProvider);
-    }
-
     public void AddProvider<TProperty, TContainer, TContext> (Expression<Func<TContainer, TProperty>> chainExpression, ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>
     {
       var declaringType = chainExpression.GetParameterType();
       var expressionChain = chainExpression.ToChain().ToList();
 
-      //TODO: Exception to have some conventions?
-      IKey key = expressionChain.Count == 0 ? (IKey) new TypeKey(typeof (TProperty)) : new ChainedKey(declaringType, expressionChain);
-      _valueProviderDictionary.AddValueProvider(key, valueProvider);
+      if (expressionChain.Count == 0)
+        throw new ArgumentException ("Empty chains are not supported, please use AddProvider<T>()");
+
+      _valueProviderDictionary.AddValueProvider(new ChainedKey(declaringType, expressionChain), valueProvider);
     }
 
     public void AddInstanceModifier (IInstanceModifier instanceModifier)

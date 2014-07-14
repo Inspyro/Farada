@@ -7,6 +7,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
 {
   public abstract class TestDataGeneratorBaseSpeck:Specs<DontCare>
   {
+    protected Exception CreationException;
     protected TestDataDomainConfiguration TestDataDomainConfiguration { get; set; }
     protected ITestDataGenerator TestDataGenerator { get; private set; }
     protected int MaxRecursionDepth { get; private set; }
@@ -17,7 +18,18 @@ namespace Farada.TestDataGeneration.IntegrationTests
           c =>
               c.Given ("using MaxRecursionDepth of " + recursionDepth, x => MaxRecursionDepth = recursionDepth)
                   .Given ("create test data generator",
-                      x => TestDataGenerator = TestDataGeneratorFactory.Create (TestDataDomainConfiguration));
+                          x =>
+                          {
+                              try
+                              {
+                                  TestDataGenerator = TestDataGeneratorFactory.Create (TestDataDomainConfiguration);
+                              }
+                              catch (Exception e)
+                              {
+                                  CreationException = e;
+                                  TestDataGenerator = null;
+                              }
+                          });
     }
 
     protected Context BaseDomainContext (bool useDefaults = true, int? seed = null)

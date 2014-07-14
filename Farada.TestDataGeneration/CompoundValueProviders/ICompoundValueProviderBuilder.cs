@@ -10,7 +10,16 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
   /// </summary>
   internal interface ICompoundValueProviderBuilder
   {
+
     /// <summary>
+    /// Adds a provider for a property in the chain
+    /// </summary>
+    /// <typeparam name="TProperty">The type of the property</typeparam>
+    /// <typeparam name="TContext">The type of the context for the value provider</typeparam>
+    /// <param name="valueProvider">The value provider to inject in the chain</param>
+    void AddProvider<TProperty, TContext> (ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>;
+
+     /// <summary>
     /// Adds a provider for an attribute and a given return type
     /// You need to inject a provider for each attribute/type pair that you want to be filled
     /// </summary>
@@ -20,14 +29,6 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     /// <param name="attributeBasedValueProvider">the value provider to inject into the chain</param>
     void AddProvider<TProperty, TAttribute, TContext> (
         AttributeBasedValueProvider<TProperty, TAttribute, TContext> attributeBasedValueProvider) where TAttribute : Attribute where TContext : AttributeValueProviderContext<TProperty, TAttribute>;
-
-    /// <summary>
-    /// Adds a provider for a property in the chain
-    /// </summary>
-    /// <typeparam name="TProperty">The type of the property</typeparam>
-    /// <typeparam name="TContext">The type of the context for the value provider</typeparam>
-    /// <param name="valueProvider">The value provider to inject in the chain</param>
-    void AddProvider<TProperty, TContext> (ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>;
 
     /// <summary>
     /// Adds a provider for a property in the chain
