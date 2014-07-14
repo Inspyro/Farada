@@ -15,12 +15,12 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     private readonly Type _declaringType;
     private readonly IList<PropertyKeyPart> _propertyChain;
 
-    private readonly PropertyKeyPart _top;
+    private readonly PropertyKeyPart _lastProperty;
     private readonly Type _concreteDeclaringType;
 
     public IFastPropertyInfo Property
     {
-      get { return _top.Property; }
+      get { return _lastProperty.Property; }
     }
 
     public int RecursionDepth { get; private set; }
@@ -53,9 +53,9 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       _concreteDeclaringType = concreteDeclaringType;
       _propertyChain = propertyChain;
 
-      _top = propertyChain.Last();
+      _lastProperty = propertyChain.Last();
 
-      RecursionDepth = _propertyChain.Count(keyPart => keyPart.PropertyType == _top.PropertyType);
+      RecursionDepth = _propertyChain.Count(keyPart => keyPart.PropertyType == _lastProperty.PropertyType);
       PreviousKey = CreatePreviousKey();
     }
 
@@ -66,18 +66,18 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       if (baseType != typeof (object) && baseType != typeof (ValueType)&&baseType!=null)
         return new ChainedKey(baseType, _concreteDeclaringType, _propertyChain);
 
-      var bottomProperty = _propertyChain[0]; //TODO: bottom/top = first/last?
+      var firstProperty = _propertyChain[0];
       var previousProperties = _propertyChain.Slice(1);
 
       if (previousProperties.Count == 0)
       {
-        var attributes = bottomProperty.Property.Attributes.ToList();
+        var attributes = firstProperty.Property.Attributes.ToList();
         return attributes.Count > 0
-            ? (IKey) new AttributeKey(bottomProperty.PropertyType, attributes)
-            : new TypeKey(bottomProperty.PropertyType);
+            ? (IKey) new AttributeKey(firstProperty.PropertyType, attributes)
+            : new TypeKey(firstProperty.PropertyType);
       }
 
-      var previousDeclaringType = bottomProperty.PropertyType;
+      var previousDeclaringType = firstProperty.PropertyType;
       return new ChainedKey(previousDeclaringType, previousProperties);
     }
 
@@ -88,7 +88,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
     public Type PropertyType
     {
-      get { return _top.PropertyType; }
+      get { return _lastProperty.PropertyType; }
     }
 
       public bool Equals (ChainedKey other)
