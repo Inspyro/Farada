@@ -116,5 +116,50 @@ namespace Farada.TestDataGeneration.IntegrationTests
                           .Given(NewPropertiesContextUsingPreviousValue())
                           .It("it ignores base type and uses generic int provider", x => x.Result.OverrideMe.Should().Be(4)));
       }
+
+      Context AttributeFillerContext ()
+      {
+          return c => c
+              .Given("domain with providers configured for sublclass string 1 and 2", x =>
+              {
+                  TestDataDomainConfiguration = configuration=>configuration
+                      .For<string, SubClassString1Attribute>().AddProvider(context => context.Attribute.Content)
+                      .For<string, SubClassString2Attribute>().AddProvider(context => context.Attribute.Content);
+              })
+              .Given(TestDataGeneratorContext());
+      
+      }
+
+      [Group]
+      void AttributeOrder ()
+      {
+          Specify (x =>
+                  TestDataGenerator.Create<ClassAddingAttributes>(MaxRecursionDepth, null))
+                  .Elaborate ("should fill property with alphabetically first attribute", _ => _
+                          .Given(AttributeFillerContext())
+                          .It("it assigns correct value", x => x.Result.SomeAttributedProperty.Should().Be("Subclass1")));
+      }
+
+      Context AttributeConcreteForSecondContext()
+      {
+          return c => c
+              .Given("domain with provider just for second attribute of subclass", x =>
+              {
+                  TestDataDomainConfiguration = configuration => configuration
+                          .For<string, SubClassString2Attribute> ().AddProvider (context => context.Attribute.Content);
+              })
+              .Given(TestDataGeneratorContext());
+
+      }
+
+      [Group]
+      void AttributePropertyBaseType()
+      {
+          Specify (x =>
+                  TestDataGenerator.Create<ClassAddingAttributes> (MaxRecursionDepth, null))
+                  .Elaborate ("should fill property with second subclass attribute", _ => _
+                          .Given (AttributeConcreteForSecondContext ())
+                          .It ("it assigns correct value", x => x.Result.SomeAttributedProperty.Should ().Be ("Subclass2")));
+      }
   }
 }

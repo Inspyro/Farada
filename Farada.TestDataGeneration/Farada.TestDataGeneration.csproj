@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="BaseDomain\ValueProviders\RangeConstrainedValueProvider.cs" />
     <Compile Include="CompoundValueProviders\InstanceFactory.cs" />
+    <Compile Include="CompoundValueProviders\Keys\AlphaNumericComparer.cs" />
     <Compile Include="CompoundValueProviders\ModificationFactory.cs" />
     <Compile Include="CompoundValueProviders\SubTypeInstanceHolder.cs" />
     <Compile Include="Fluent\AttributeProviderConfigurator.cs" />

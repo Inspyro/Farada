@@ -37,7 +37,7 @@ namespace Farada.TestDataGeneration.Extensions
     /// <param name="list">The list to slice</param>
     /// <param name="count">The count to slice from the list</param>
     /// <returns>a new list that is sliced by the given count</returns>
-    public static IList<T> Slice<T>(this IEnumerable<T> list, int count)
+    public static List<T> Slice<T>(this IEnumerable<T> list, int count)
     {
       var slicedList = new List<T>(list);
       slicedList.RemoveRange(0, count);

@@ -15,22 +15,25 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     private readonly Type _attributeType;
 
     private readonly Type _mostConcretePropertyType;
-    private readonly IList<Type> _remainingAttributes;
+    private readonly List<Type> _remainingAttributes;
 
     internal AttributeKey(Type propertyType, Type attributeType)
       : this(propertyType, new List<Type> { attributeType})
     {
     }
 
-    internal AttributeKey (Type propertyType, IList<Type> remainingAttributes):this(propertyType, propertyType, remainingAttributes)
+    internal AttributeKey(Type propertyType, List<Type> remainingAttributes)
+        : this(propertyType, propertyType, remainingAttributes)
     {
       
     }
 
-    private AttributeKey(Type propertyType, Type mostConcretePropertyType, IList<Type> remainingAttributes )
+    private AttributeKey(Type propertyType, Type mostConcretePropertyType, List<Type> remainingAttributes )
     {
       if (remainingAttributes.Count < 1)
         throw new ArgumentException("Cannot create attribute key with less then one remaining attribute");
+
+        remainingAttributes.Sort (new AlphaNumericComparer());
 
       _propertyType = propertyType;
       _mostConcretePropertyType = mostConcretePropertyType;
@@ -44,7 +47,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     // [BeforeProvider(typeof(OtherAttribute))]
     // class MyAttributeProvider - Order=1, Before (OtherAttributeProvideR)
 
-    private IKey CreatePreviousKey (IList<Type> remainingAttributes)
+    private IKey CreatePreviousKey(List<Type> remainingAttributes)
     {
       if (remainingAttributes.Count == 1)
       {
@@ -55,7 +58,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       if (_propertyType.BaseType != null)
         return new AttributeKey(_propertyType.BaseType, _propertyType, remainingAttributes);
 
-      return new AttributeKey(_propertyType, _mostConcretePropertyType, remainingAttributes.Slice(1));
+      return new AttributeKey(_mostConcretePropertyType, _mostConcretePropertyType, remainingAttributes.Slice(1));
     }
 
     public IKey PreviousKey { get; private set; }

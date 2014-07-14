@@ -70,6 +70,7 @@
     <Compile Include="TestDataGeneratorCustomContextSpeck.cs" />
     <Compile Include="TestDataGeneratorSubTypeSpeck.cs" />
     <Compile Include="TestDomain\ClassOveridingPropertyWithNewType.cs" />
+    <Compile Include="TestDomain\ClassWithAttributeInBaseClass.cs" />
     <Compile Include="TestDomain\ClassWithVariousMembers.cs" />
     <Compile Include="TestDomain\CoolIntCustomContextValueProvider.cs" />
     <Compile Include="TestDataGeneratorBaseSpeck.cs" />
