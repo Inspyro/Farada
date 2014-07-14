@@ -6,6 +6,9 @@ using Farada.TestDataGeneration.Modifiers;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
+    /// <summary>
+    /// The ModificationFactory modifys the previously created instances based on the registered <see cref="IInstanceModifier"/>s in the domain.
+    /// </summary>
     internal class ModificationFactory
     {
         private readonly IList<IInstanceModifier> _instanceModifiers;

@@ -8,6 +8,9 @@ using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
+    /// <summary>
+    /// The instance factory builds instances based on the given <see cref="ValueProviderDictionary"/> which is build by the chain configuration <see cref="CompoundValueProviderBuilder"/>
+    /// </summary>
     internal class InstanceFactory
     {
         private readonly ITestDataGenerator _testDataGenerator;
