@@ -59,7 +59,6 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       PreviousKey = CreatePreviousKey();
     }
 
-    //TODO: What if base class defines different property type for proeprty xy? with new..
     private IKey CreatePreviousKey ()
     {
       var baseType = _declaringType.BaseType;

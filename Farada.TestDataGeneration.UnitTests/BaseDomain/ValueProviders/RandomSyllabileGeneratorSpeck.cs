@@ -70,12 +70,12 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 
         public TCompoundValue Create<TCompoundValue> (int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo = null)
         {
-            throw new NotImplementedException ();
+            return null;
         }
 
         public IReadOnlyList<TCompoundValue> CreateMany<TCompoundValue> (int numberOfObjects, int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo = null)
         {
-            throw new NotImplementedException ();
+            return null;
         }
 
         public Random Random { get; private set; }
