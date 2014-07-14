@@ -91,22 +91,21 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       get { return _top.PropertyType; }
     }
 
-    public bool Equals (ChainedKey other)
-    {
-      if (!Extensions.EqualityUtility.ClassEquals(this, other))
-        return false;
+      public bool Equals (ChainedKey other)
+      {
+          if (!Extensions.EqualityUtility.ClassEquals (this, other))
+              return false;
 
-      if (_declaringType != other._declaringType)
-        return false;
+          if (_declaringType != other._declaringType)
+              return false;
 
-      if (_propertyChain.Count != other._propertyChain.Count)
-        return false;
+          if (_propertyChain.Count != other._propertyChain.Count)
+              return false;
 
-      //TODO: _declaring type is checked twice? -todo convert to all
-      return _declaringType == other._declaringType && !_propertyChain.Where((t, i) => !t.Equals(other._propertyChain[i])).Any();
-    }
+          return !_propertyChain.Where ((t, i) => !t.Equals (other._propertyChain[i])).Any();
+      }
 
-    public override bool Equals (object obj)
+      public override bool Equals (object obj)
     {
       return Equals(obj as ChainedKey);
     }
