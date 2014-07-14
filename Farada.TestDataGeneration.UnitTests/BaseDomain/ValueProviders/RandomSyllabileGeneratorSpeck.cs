@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders;
@@ -49,18 +50,38 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 
   class CustomValueProviderObjectContext : ValueProviderObjectContext
   {
-    internal CustomValueProviderObjectContext(Random random):this(null, random,()=>new object(),null,null)
+    internal CustomValueProviderObjectContext(Random random):this(new DummyTestDataGenerator(random), ()=>new object(),null,null)
     {
 
     }
 
-    CustomValueProviderObjectContext (ITestDataGenerator testDataGenerator, Random random, Func<object> getPreviousValue, Type targetValueType, IFastPropertyInfo fastPropertyInfo)
-        : base (testDataGenerator, random, getPreviousValue, targetValueType, fastPropertyInfo)
+    CustomValueProviderObjectContext (ITestDataGenerator testDataGenerator, Func<object> getPreviousValue, Type targetValueType, IFastPropertyInfo fastPropertyInfo)
+        : base (testDataGenerator, getPreviousValue, targetValueType, fastPropertyInfo)
     {
     }
   }
 
-  class CustomValueProviderContext : ValueProviderContext<string>
+    class DummyTestDataGenerator : ITestDataGenerator
+    {
+        public DummyTestDataGenerator (Random random)
+        {
+            Random = random;
+        }
+
+        public TCompoundValue Create<TCompoundValue> (int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo = null)
+        {
+            throw new NotImplementedException ();
+        }
+
+        public IReadOnlyList<TCompoundValue> CreateMany<TCompoundValue> (int numberOfObjects, int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo = null)
+        {
+            throw new NotImplementedException ();
+        }
+
+        public Random Random { get; private set; }
+    }
+
+    class CustomValueProviderContext : ValueProviderContext<string>
   {
     public CustomValueProviderContext (ValueProviderObjectContext objectContext):base(objectContext)
     {

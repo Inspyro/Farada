@@ -2,11 +2,8 @@
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using FluentAssertions;
-using FluentAssertions.Primitives;
 using SpecK;
-using SpecK.Extensibility;
 using SpecK.Specifications;
-using SpecK.Specifications.InferredApi;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
@@ -20,7 +17,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         TestDataDomainConfiguration = config;
       })
-      .Given (TestDataGeneratorContext ());
+      .Given (TestDataGeneratorContext (catchExceptions:true));
     }
 
      /* Assertion<DontCare, ClassWithVariousMembers> Throws(Type type, string message)

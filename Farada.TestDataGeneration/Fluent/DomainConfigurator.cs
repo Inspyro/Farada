@@ -1,7 +1,9 @@
 ﻿using System;
+using Farada.TestDataGeneration.BaseDomain.Constraints;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.Modifiers;
+using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.Fluent
 {
@@ -10,13 +12,16 @@ namespace Farada.TestDataGeneration.Fluent
     private bool _useDefaults;
     private Random _random;
 
-    protected internal DomainConfigurator ()
-        : base (null)
-    {
-      _lazyValueProviderBuilder = () => ValueProviderBuilder;
-    }
+      protected internal DomainConfigurator ()
+              : base (null)
+      {
+          _lazyValueProviderBuilder = () => ValueProviderBuilder;
 
-    public ITestDataConfigurator UseDefaults (bool useDefaults)
+          _random = new Random();
+          _useDefaults = true;
+      }
+
+      public ITestDataConfigurator UseDefaults (bool useDefaults)
     {
       _useDefaults = useDefaults;
       return this;
@@ -48,23 +53,25 @@ namespace Farada.TestDataGeneration.Fluent
         return valueProviderBuilder;
 
        //Value types:
-      valueProviderBuilder.AddProvider((bool b) => b, new RandomBoolGenerator());
-      valueProviderBuilder.AddProvider((byte b) => b, new RandomByteGenerator());
-      valueProviderBuilder.AddProvider((char c) => c, new RandomCharGenerator());
-      valueProviderBuilder.AddProvider((decimal d) => d, new RandomDecimalGenerator());
-      valueProviderBuilder.AddProvider((double d) => d, new RandomDoubleGenerator());
-      valueProviderBuilder.AddProvider((Enum e) => e, new RandomEnumGenerator());
-      valueProviderBuilder.AddProvider((float f) => f, new RandomFloatGenerator());
-      valueProviderBuilder.AddProvider((int i) => i, new RandomIntGenerator());
-      valueProviderBuilder.AddProvider((long l) => l, new RandomLongGenerator());
-      valueProviderBuilder.AddProvider((sbyte sb) => sb, new RandomSByteGenerator());
-      valueProviderBuilder.AddProvider((short s) => s, new RandomShortGenerator());
-      valueProviderBuilder.AddProvider((uint ui) => ui, new RandomUIntGenerator());
-      valueProviderBuilder.AddProvider((ulong ul) => ul, new RandomULongGenerator());
-      valueProviderBuilder.AddProvider((ushort us) => us, new RandomUShortGenerator());
+        // ReSharper disable RedundantTypeArgumentsOfMethod
+      valueProviderBuilder.AddProvider<bool,ValueProviderContext<bool>>(new RandomBoolGenerator());
+      valueProviderBuilder.AddProvider<byte, ValueProviderContext<byte>>(new RandomByteGenerator());
+      valueProviderBuilder.AddProvider<char, ValueProviderContext<char>>(new RandomCharGenerator());
+      valueProviderBuilder.AddProvider<decimal, ValueProviderContext<decimal>>(new RandomDecimalGenerator());
+      valueProviderBuilder.AddProvider<double, RangeConstrainedValueProviderContext<double>>(new RandomDoubleGenerator());
+      valueProviderBuilder.AddProvider<Enum, ValueProviderContext<Enum>>(new RandomEnumGenerator());
+      valueProviderBuilder.AddProvider<float, RangeConstrainedValueProviderContext<float>>(new RandomFloatGenerator());
+      valueProviderBuilder.AddProvider<int, RangeConstrainedValueProviderContext<int>>(new RandomIntGenerator());
+      valueProviderBuilder.AddProvider<long, RangeConstrainedValueProviderContext<long>>(new RandomLongGenerator());
+      valueProviderBuilder.AddProvider<sbyte, ValueProviderContext<sbyte>>(new RandomSByteGenerator());
+      valueProviderBuilder.AddProvider<short, ValueProviderContext<short>>(new RandomShortGenerator());
+      valueProviderBuilder.AddProvider<uint, RangeConstrainedValueProviderContext<uint>>(new RandomUIntGenerator());
+      valueProviderBuilder.AddProvider<ulong, RangeConstrainedValueProviderContext<ulong>>(new RandomULongGenerator());
+      valueProviderBuilder.AddProvider<ushort, ValueProviderContext<ushort>>(new RandomUShortGenerator());
 
-      valueProviderBuilder.AddProvider((string s)=>s, new RandomWordGenerator(new RandomSyllabileGenerator())); //string
-      valueProviderBuilder.AddProvider((DateTime dt)=>dt, new RandomDateTimeGenerator());
+      valueProviderBuilder.AddProvider<string, StringConstrainedValueProviderContext>(new RandomWordGenerator(new RandomSyllabileGenerator())); //string
+      valueProviderBuilder.AddProvider<DateTime, ValueProviderContext<DateTime>>( new RandomDateTimeGenerator());
+      // ReSharper restore RedundantTypeArgumentsOfMethod
 
       //constraint providers
       valueProviderBuilder.AddProvider(new EmailGenerator());

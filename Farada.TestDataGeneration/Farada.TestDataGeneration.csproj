@@ -41,6 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseDomain\ValueProviders\RangeConstrainedValueProvider.cs" />
+    <Compile Include="CompoundValueProviders\InstanceFactory.cs" />
+    <Compile Include="CompoundValueProviders\ModificationFactory.cs" />
+    <Compile Include="CompoundValueProviders\SubTypeInstanceHolder.cs" />
     <Compile Include="Fluent\AttributeProviderConfigurator.cs" />
     <Compile Include="BaseDomain\Constraints\RangeContstraints.cs" />
     <Compile Include="BaseDomain\Constraints\StringConstraints.cs" />

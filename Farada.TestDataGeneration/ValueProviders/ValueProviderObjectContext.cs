@@ -17,13 +17,12 @@ namespace Farada.TestDataGeneration.ValueProviders
 
     protected internal ValueProviderObjectContext (
         ITestDataGenerator testDataGenerator,
-        Random random,
         Func<object> getPreviousValue,
         Type targetValueType,
         IFastPropertyInfo fastPropertyInfo)
     {
       TestDataGenerator = testDataGenerator;
-      Random = random;
+      Random = testDataGenerator.Random;
       GetPreviousValue = getPreviousValue;
       TargetValueType = targetValueType;
       PropertyInfo = fastPropertyInfo;

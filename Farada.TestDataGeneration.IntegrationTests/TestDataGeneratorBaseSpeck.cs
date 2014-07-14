@@ -2,6 +2,7 @@
 using Farada.TestDataGeneration.CompoundValueProviders;
 using SpecK.Extensibility;
 using SpecK.Specifications;
+using SpecK.Specifications.InferredApi;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
@@ -12,24 +13,27 @@ namespace Farada.TestDataGeneration.IntegrationTests
     protected ITestDataGenerator TestDataGenerator { get; private set; }
     protected int MaxRecursionDepth { get; private set; }
 
-    protected Context TestDataGeneratorContext (int recursionDepth = 2)
+    protected Context TestDataGeneratorContext (int recursionDepth = 2, bool catchExceptions=false)
     {
-      return
-          c =>
-              c.Given ("using MaxRecursionDepth of " + recursionDepth, x => MaxRecursionDepth = recursionDepth)
-                  .Given ("create test data generator",
-                          x =>
-                          {
-                              try
-                              {
-                                  TestDataGenerator = TestDataGeneratorFactory.Create (TestDataDomainConfiguration);
-                              }
-                              catch (Exception e)
-                              {
-                                  CreationException = e;
-                                  TestDataGenerator = null;
-                              }
-                          });
+        Arrangement<DontCare, DontCare> withExceptions = x =>
+        {
+            try
+            {
+                TestDataGenerator = TestDataGeneratorFactory.Create (TestDataDomainConfiguration);
+            }
+            catch (Exception e)
+            {
+                CreationException = e;
+                TestDataGenerator = null;
+            }
+        };
+
+        Arrangement<DontCare, DontCare> withoutException = x =>TestDataGenerator= TestDataGeneratorFactory.Create (TestDataDomainConfiguration);;
+
+        return
+                c =>
+                        c.Given ("using MaxRecursionDepth of " + recursionDepth, x => MaxRecursionDepth = recursionDepth)
+                                .Given ("create test data generator", catchExceptions ? withExceptions : withoutException);
     }
 
     protected Context BaseDomainContext (bool useDefaults = true, int? seed = null)
