@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title - My ASP.NET MVC Application</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/graphdracula")
+    @Scripts.Render("~/bundles/app")
+    @Styles.Render("~/Content/themes/base/css")
+   
+    @RenderSection("scripts", required: false)
+</head>
+<body>
+    <div id="body">
+        @RenderBody()
+    </div>
+
+    <footer>
+        <nav>
+            <ul id="menu">
+                <li>@Html.ActionLink("Main", "Index", "Home", new { area = "" }, null)</li>
+            </ul>
+        </nav> 
+        <p>&copy; @DateTime.Now.Year - Farada Samples</p>
+    </footer>
+</body>
+</html>

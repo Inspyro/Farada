@@ -1,0 +1,55 @@
+﻿@model PersonDomain.Sample.Models.NodeModel
+@{
+    ViewBag.Title = "Farada PersonDomain Sample";
+}
+
+@{
+System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+serializer.MaxJsonLength = Int32.MaxValue;
+}
+
+<header>
+    <h1>@ViewBag.Title</h1>
+    <script type="text/javascript">
+        $(window).load(function () {
+            var data = @Html.Raw(serializer.Serialize(@Model.GraphData));
+            var json = $.parseJSON(data);
+
+
+            var g = new Graph();
+
+            for(var i=0;i<json.length;i++) {
+                var node = json[i];
+
+                g.addNode(node.id, { label: node.name, layoutPosX: node.orderX * 20, layoutPosY: node.orderY * 10 });
+            }
+
+            for(i=0;i<json.length;i++)
+            {
+                node = json[i];
+                for(var j=0;j<node.adjacencies.length;j++) 
+                {
+                    var adjencentNode = node.adjacencies[j];
+                    var childId = adjencentNode.nodeTo;
+                   
+                    g.addEdge(node.id, childId, {directed:true});
+                }
+            }
+
+            var layouter = new Graph.Layout.AsDefined(g);
+            layouter.layout();
+ 
+            var renderer = new Graph.Renderer.Raphael('canvas', g, 1000, 1000);
+            renderer.draw();
+        });
+    </script>
+</header>
+
+<div id="container">
+    <div id="canvas"></div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/knockout")
+    @Scripts.Render("~/bundles/jqueryval")
+}
