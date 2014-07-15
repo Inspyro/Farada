@@ -9,13 +9,15 @@ namespace PersonDomain.Sample.Models
     {
         public IEnumerable<Node> Convert (GeneratorResult result)
         {
-            var rootNode = new Node ("root");
+            var rootNode = new Node ("God");
             var nodes = new List<Node> {rootNode};
 
             var allPersons = result.GetResult<Person>();
             var personToNode = new Dictionary<Person, Node>();
+            var depthToCount = new List<int>();
 
             var maxOrderY = 0;
+            var lastOrderY = 0;
             foreach (var person in allPersons)
             {
                 var personNode = new Node(string.Format ("{0}{1}Age: {2}", person.Name, "\n", person.Age));
@@ -26,13 +28,22 @@ namespace PersonDomain.Sample.Models
                 if (person.Father == null || person.Mother == null)
                 {
                     rootNode.Adjacencies.Add(new Adjacency(personNode));
+                    personNode.OrderX = 1;
+                    personNode.OrderY = lastOrderY++;
                 }
                 else
                 {
                     var fatherNode = personToNode[person.Father];
 
                     personNode.OrderX = fatherNode.OrderX + 1;
-                    personNode.OrderY = fatherNode.OrderY+fatherNode.Adjacencies.Count;
+
+                    while (depthToCount.Count < personNode.OrderX)
+                    {
+                        depthToCount.Add (0);
+                    }
+
+                    depthToCount[personNode.OrderX-1] += 1;
+                    personNode.OrderY = depthToCount[personNode.OrderX-1];
 
                     maxOrderY = Math.Max (personNode.OrderY, maxOrderY);
 

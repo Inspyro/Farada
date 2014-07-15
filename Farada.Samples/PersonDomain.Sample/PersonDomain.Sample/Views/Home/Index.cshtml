@@ -12,16 +12,15 @@ serializer.MaxJsonLength = Int32.MaxValue;
     <h1>@ViewBag.Title</h1>
     <script type="text/javascript">
         $(window).load(function () {
-            var data = @Html.Raw(serializer.Serialize(@Model.GraphData));
+            var data = @Html.Raw(serializer.Serialize(@Model.GenerateGraph(120)));
             var json = $.parseJSON(data);
-
 
             var g = new Graph();
 
             for(var i=0;i<json.length;i++) {
                 var node = json[i];
 
-                g.addNode(node.id, { label: node.name, layoutPosX: node.orderX * 20, layoutPosY: node.orderY * 10 });
+                g.addNode(node.id, { label: node.name, layoutPosX: node.orderX * 20, layoutPosY: node.orderY * 20 });
             }
 
             for(i=0;i<json.length;i++)
@@ -39,13 +38,22 @@ serializer.MaxJsonLength = Int32.MaxValue;
             var layouter = new Graph.Layout.AsDefined(g);
             layouter.layout();
  
-            var renderer = new Graph.Renderer.Raphael('canvas', g, 1000, 1000);
+            var renderer = new Graph.Renderer.Raphael('canvas', g, 2000, 2000);
             renderer.draw();
+
+            for (i in g.nodes) {
+
+                var n = g.nodes[i];
+                n.shape.mousedown(function (n) {
+                    $("#info").text(n.label);
+                }(n));
+            }
         });
     </script>
 </header>
 
 <div id="container">
+    <div id="info">Info Div</div>
     <div id="canvas"></div>
 </div>
 

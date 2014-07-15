@@ -29,9 +29,9 @@ namespace PersonDomain.Sample.Models
             _initialData = initialDataProvider.Build();
         }
 
-        public IEnumerable<Node> CreateRandomDomain ()
+        public IEnumerable<Node> CreateRandomDomain (int generations)
         {
-            var result = _dataGenerator.Generate(50, _initialData);
+            var result = _dataGenerator.Generate(generations, _initialData);
             return new PersonDomainConverter().Convert (result);
         }
     }

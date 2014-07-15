@@ -10,18 +10,6 @@ namespace PersonDomain.Sample.Models
 {
     public class NodeModel
     {
-        public string GraphData { get; private set; }
-
-        public NodeModel ()
-        {
-            var nodes = new PersonDomainFactory().CreateRandomDomain();
-
-            var serializer = new DataContractJsonSerializer (typeof (IEnumerable<Node>));
-            var jsonString= GetString(serializer, nodes);
-
-            GraphData = jsonString;
-        }
-
         private static string GetString (XmlObjectSerializer serializer, IEnumerable nodes)
         {
             using (var ms = new MemoryStream())
@@ -29,6 +17,16 @@ namespace PersonDomain.Sample.Models
                 serializer.WriteObject (ms, nodes);
                 return Encoding.Default.GetString (ms.ToArray());
             }
+        }
+
+        public string GenerateGraph (int generations)
+        {
+            var nodes = new PersonDomainFactory().CreateRandomDomain(generations);
+
+            var serializer = new DataContractJsonSerializer(typeof(IEnumerable<Node>));
+            var jsonString = GetString(serializer, nodes);
+
+            return jsonString;
         }
     }
 }
