@@ -57,7 +57,7 @@
     <Compile Include="RuleBasedDataGeneration\CompoundRuleInput.cs" />
     <Compile Include="RuleBasedDataGeneration\GeneratorDataProvider.cs" />
     <Compile Include="RuleBasedDataGeneration\GeneratorResult.cs" />
-    <Compile Include="RuleBasedDataGeneration\GlobalRule.cs" />
+    <Compile Include="RuleBasedDataGeneration\IGlobalRule.cs" />
     <Compile Include="RuleBasedDataGeneration\InitialDataProvider.cs" />
     <Compile Include="RuleBasedDataGeneration\ReadableUserData.cs" />
     <Compile Include="RuleBasedDataGeneration\Rule.cs" />

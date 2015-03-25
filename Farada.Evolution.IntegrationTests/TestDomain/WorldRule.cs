@@ -4,11 +4,11 @@ using Farada.Evolution.Utilities;
 
 namespace Farada.Evolution.IntegrationTests.TestDomain
 {
-  internal class WorldRule : GlobalRule
+  internal class WorldRule : IGlobalRule
   {
-    protected override void Execute ()
+    public void Execute (IWriteableWorld world)
     {
-      World.Write (x => x.Fertility = LerpUtility.LerpFromLowToHigh (100000, World.Count<Person> (), 1f, 0.1f));
+      world.Write (x => x.Fertility = LerpUtility.LerpFromLowToHigh (100000, world.Count<Person> (), 1f, 0.1f));
     }
   }
 }
