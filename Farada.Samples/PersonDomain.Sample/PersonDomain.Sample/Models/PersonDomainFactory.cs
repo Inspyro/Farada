@@ -7,32 +7,33 @@ using PersonDomain.Sample.Models.PersonDomain;
 
 namespace PersonDomain.Sample.Models
 {
-    public class PersonDomainFactory
+  public class PersonDomainFactory
+  {
+    private readonly GeneratorResult _initialData;
+    private readonly RuleBasedDataGenerator _dataGenerator;
+
+    public PersonDomainFactory ()
     {
-        private readonly GeneratorResult _initialData;
-        private readonly RuleBasedDataGenerator _dataGenerator;
+      _dataGenerator = EvolutionaryDataGeneratorFactory.Create (
+          tdConfig => tdConfig
+              //
+              .For<Gender>().AddProvider (context => (Gender) (context.Random.Next (0, 2))),
+          evConfig => evConfig
+              .AddGlobalRule (new WorldRule())
+              .AddRule (new ProcreationRule())
+              .AddRule (new AgingRule()));
 
-        public PersonDomainFactory ()
-        {
-            _dataGenerator = EvolutionaryDataGeneratorFactory.Create (
-                    tdConfig => tdConfig
-                            //
-                            .For<Gender>().AddProvider (context => (Gender) (context.Random.Next (0, 2))),
+      var initialDataProvider = _dataGenerator.InitialDataProvider;
+      initialDataProvider.Add (new Person ("Adam", Gender.Male));
+      initialDataProvider.Add (new Person ("Eve", Gender.Female));
 
-                    evConfig => evConfig.AddGlobalRule (new WorldRule())
-                            .AddRule (new ProcreationRule()).AddRule (new AgingRule()));
-
-            var initialDataProvider = _dataGenerator.InitialDataProvider;
-            initialDataProvider.Add (new Person ("Adam", Gender.Male));
-            initialDataProvider.Add (new Person ("Eve", Gender.Female));
-
-            _initialData = initialDataProvider.Build();
-        }
-
-        public IEnumerable<Node> CreateRandomDomain (int generations)
-        {
-            var result = _dataGenerator.Generate(generations, _initialData);
-            return new PersonDomainConverter().Convert (result);
-        }
+      _initialData = initialDataProvider.Build();
     }
+
+    public IEnumerable<Node> CreateRandomDomain (int generations)
+    {
+      var result = _dataGenerator.Generate (generations, _initialData);
+      return new PersonDomainConverter().Convert (result);
+    }
+  }
 }
