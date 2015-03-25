@@ -10,16 +10,6 @@ namespace Farada.TestDataGeneration.IntegrationTests
   [Subject (typeof (ITestDataGenerator),"TODO")]
   public class TestDataGeneratorClassFillingSpeck : TestDataGeneratorBaseSpeck
   {
-    Context SimpleStringContext (int recursionDepth)
-    {
-      return c => c.Given ("simple string domain", x =>
-      {
-        TestDataDomainConfiguration = configurator => configurator.UseDefaults(false)
-          .For<string> ().AddProvider (context => "SomeString");
-      })
-      .Given(TestDataGeneratorContext(recursionDepth));
-    }
-
     public TestDataGeneratorClassFillingSpeck ()
     {
       Specify (x =>
@@ -117,6 +107,16 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Case ("should fill properties according to provider chain", _ => _
               .Given (TypeHierarchyChainProviderContext ())
               .It ("should fill name", x => x.Result.Name.Should ().Be ("12345!6!78")));
+    }
+
+    Context SimpleStringContext (int recursionDepth)
+    {
+      return c => c.Given ("simple string domain", x =>
+      {
+        TestDataDomainConfiguration = configurator => configurator.UseDefaults(false)
+          .For<string> ().AddProvider (context => "SomeString");
+      })
+      .Given(TestDataGeneratorContext(recursionDepth));
     }
 
     Context PropertyProviderContext ()

@@ -73,6 +73,9 @@
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+	<Compile Include="..\AssemblyInfoTestsShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="FakeItEasyTestExtensions.cs" />
     <Compile Include="TestDomain\AgingRule.cs" />
     <Compile Include="TestDomain\Gender.cs" />

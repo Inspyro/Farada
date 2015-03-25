@@ -76,6 +76,9 @@
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+	<Compile Include="..\AssemblyInfoTestsShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="BaseDomain\Constraints\StringConstraintsSpeck.cs" />
     <Compile Include="BaseDomain\Constraints\RangeConstraintsSpeck.cs" />
     <Compile Include="BaseDomain\ValueProviders\RandomSyllabileGeneratorSpeck.cs">
