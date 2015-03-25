@@ -22,7 +22,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
     public override string ToString ()
     {
-      return string.Format("PropertyType: {0}, Property: {1}", PropertyType.Name, Property.Name);
+      return string.Format("Type: {0}, Property: {1}", PropertyType.Name, Property.Name);
     }
 
     public bool Equals ([CanBeNull] PropertyKeyPart other)

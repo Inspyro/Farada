@@ -12,7 +12,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     IKey PreviousKey { get; }
     IKey CreateKey (IFastPropertyInfo property);
 
-    Type PropertyType { get; }
+    Type Type { get; }
     IFastPropertyInfo Property { get; }
     int RecursionDepth { get; }
     IKey ChangePropertyType (Type newPropertyType);

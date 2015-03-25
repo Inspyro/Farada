@@ -52,6 +52,9 @@
     <Compile Include="CompoundValueProviders\Keys\AlphaNumericComparer.cs" />
     <Compile Include="CompoundValueProviders\ModificationFactory.cs" />
     <Compile Include="CompoundValueProviders\SubTypeInstanceHolder.cs" />
+    <Compile Include="FastReflection\FastArgumentInfo.cs" />
+    <Compile Include="FastReflection\IFastParameterInfo.cs" />
+    <Compile Include="FastReflection\IParameterConversionService.cs" />
     <Compile Include="Fluent\AttributeProviderConfigurator.cs" />
     <Compile Include="BaseDomain\Constraints\RangeContstraints.cs" />
     <Compile Include="BaseDomain\Constraints\StringConstraints.cs" />

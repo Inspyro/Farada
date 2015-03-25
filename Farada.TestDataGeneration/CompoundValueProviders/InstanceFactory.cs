@@ -33,11 +33,12 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
         {
             if (valueProvider == null || valueProviderContext == null)
             {
-                if (!key.PropertyType.CanBeInstantiated())
+              //TODO RN-246: Instantiate complex ctors...
+                if (!key.Type.CanBeInstantiated())
                     return null;
 
-                var propertyFactory = FastActivator.GetFactory(key.PropertyType);
-                return EnumerableExtensions.Repeat(propertyFactory, numberOfObjects).ToList();
+                var typeFactory = FastActivator.GetFactory(key.Type);
+                return EnumerableExtensions.Repeat(typeFactory, numberOfObjects).ToList();
             }
 
             return EnumerableExtensions.Repeat(() => valueProvider.CreateValue(valueProviderContext), numberOfObjects).ToList();
@@ -55,7 +56,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
                     new ValueProviderObjectContext(
                             _testDataGenerator,
                             () => previousLink == null ? null : CreateInstances(previousLink.Key, previousLink.Value, previousContext, 1).Single(),
-                            key.PropertyType,
+                            key.Type,
                             key.Property));
         }
     }

@@ -7,6 +7,7 @@ namespace Farada.TestDataGeneration.Fluent
   {
     ITestDataConfigurator UseDefaults (bool useDefaults);
     ITestDataConfigurator UseRandom (Random random);
+    ITestDataConfigurator UseParameterToPropertyConversion (Func<string, string> paremeterToPropertyConversionFunc);
 
     ITestDataConfigurator AddInstanceModifier (IInstanceModifier instanceModifier);
   }

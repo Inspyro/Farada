@@ -41,7 +41,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     internal ValueProviderLink GetLink (IKey key)
     {
       ValueProviderLink link = null;
-      var concreteType = key.PropertyType;
+      var concreteType = key.Type;
 
       while ((link == null||link.Value==null||!link.Value.CanHandle(concreteType)) && key != null)
       {

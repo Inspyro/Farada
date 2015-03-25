@@ -10,7 +10,7 @@ using TestFx.Specifications;
 namespace Farada.TestDataGeneration.UnitTests.FastReflection
 {
   [Subject (typeof (FastReflectionUtility), "TODO")]
-  public class FastReflectionSpeck:SpecK
+  public class FastReflectionSpeck:SpecK<FastReflectionUtility>
   {
     Type TypeToReflect;
     PropertyInfo PropertyInfoToConvert;
@@ -18,7 +18,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
 
     public FastReflectionSpeck ()
     {
-      Specify (x => FastReflectionUtility.GetTypeInfo (TypeToReflect))
+      Specify (x => x.GetTypeInfo (TypeToReflect))
           //
           .Case ("returns valid property info", _ => _
               //
@@ -41,7 +41,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
                           new KeyValuePair<Type, string> (typeof (bool), "BaseProperty"))));
 
 
-      Specify (x => FastReflectionUtility.GetPropertyInfo (PropertyInfoToConvert))
+      Specify (x => x.GetPropertyInfo (PropertyInfoToConvert))
           //
           .Case ("returns valid property info", _ => _
               //

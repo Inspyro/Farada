@@ -13,31 +13,31 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
   /// </summary>
   internal class AttributeKey : IKey, IEquatable<AttributeKey>
   {
-    private readonly Type _propertyType;
+    private readonly Type _type;
     private readonly Type _attributeType;
 
     private readonly Type _mostConcretePropertyType;
     private readonly List<Type> _remainingAttributes;
 
-    internal AttributeKey(Type propertyType, Type attributeType)
-      : this(propertyType, new List<Type> { attributeType})
+    internal AttributeKey(Type type, Type attributeType)
+      : this(type, new List<Type> { attributeType})
     {
     }
 
-    internal AttributeKey(Type propertyType, List<Type> remainingAttributes)
-        : this(propertyType, propertyType, remainingAttributes)
+    internal AttributeKey(Type type, List<Type> remainingAttributes)
+        : this(type, type, remainingAttributes)
     {
       
     }
 
-    private AttributeKey(Type propertyType, Type mostConcretePropertyType, List<Type> remainingAttributes )
+    private AttributeKey(Type type, Type mostConcretePropertyType, List<Type> remainingAttributes )
     {
       if (remainingAttributes.Count < 1)
         throw new ArgumentException("Cannot create attribute key with less then one remaining attribute");
 
         remainingAttributes.Sort (new AlphaNumericComparer());
 
-      _propertyType = propertyType;
+      _type = type;
       _mostConcretePropertyType = mostConcretePropertyType;
       _attributeType = remainingAttributes.First();
       _remainingAttributes = remainingAttributes;
@@ -52,8 +52,8 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
         return new TypeKey(_mostConcretePropertyType);
       }
 
-      if (_propertyType.BaseType != null)
-        return new AttributeKey(_propertyType.BaseType, _propertyType, remainingAttributes);
+      if (_type.BaseType != null)
+        return new AttributeKey(_type.BaseType, _type, remainingAttributes);
 
       return new AttributeKey(_mostConcretePropertyType, _mostConcretePropertyType, remainingAttributes.Slice(1));
     }
@@ -62,12 +62,12 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
     public IKey CreateKey (IFastPropertyInfo property)
     {
-      return new ChainedKey(_propertyType, new List<PropertyKeyPart> { new PropertyKeyPart(property) });
+      return new ChainedKey(_type, new List<PropertyKeyPart> { new PropertyKeyPart(property) });
     }
 
-    public Type PropertyType
+    public Type Type
     {
-      get { return _propertyType; }
+      get { return _type; }
     }
 
     public IFastPropertyInfo Property
@@ -91,7 +91,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
         return false;
 
       Trace.Assert (other != null);
-      return _propertyType == other._propertyType && _attributeType == other._attributeType;
+      return _type == other._type && _attributeType == other._attributeType;
     }
 
     public bool Equals ([CanBeNull] IKey other)
@@ -107,7 +107,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     public override int GetHashCode ()
     {
       var hashCode = (_attributeType.GetHashCode());
-      hashCode = (hashCode * 397) ^ (_propertyType.GetHashCode());
+      hashCode = (hashCode * 397) ^ (_type.GetHashCode());
       return hashCode;
     }
   }

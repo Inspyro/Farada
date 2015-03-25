@@ -45,7 +45,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       return new ChainedKey(_type, new List<PropertyKeyPart> { new PropertyKeyPart(property) });
     }
 
-    public Type PropertyType
+    public Type Type
     {
       get { return _type; }
     }

@@ -13,7 +13,9 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     /// based on a domain decleration, where various PropertyChains, TypeChains and AttributeChains are declared
     /// </summary>
     internal class CompoundValueProvider : ITestDataGenerator
-    {private readonly InstanceFactory _instanceFactory;
+    {
+      private readonly FastReflectionUtility _fastReflectionUtility;
+      private readonly InstanceFactory _instanceFactory;
         private ModificationFactory _modificationFactory;
 
         public Random Random
@@ -21,11 +23,13 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
             get; private set;
         }
 
-        internal CompoundValueProvider (ValueProviderDictionary valueProviderDictionary, Random random, IList<IInstanceModifier> instanceModifiers)
+        internal CompoundValueProvider (ValueProviderDictionary valueProviderDictionary, Random random, IList<IInstanceModifier> instanceModifiers, FastReflectionUtility fastReflectionUtility)
         {
-            Random = random;
+          
+          Random = random;
             _instanceFactory = new InstanceFactory (this, valueProviderDictionary);
             _modificationFactory = new ModificationFactory (instanceModifiers, random);
+          _fastReflectionUtility = fastReflectionUtility;
         }
 
         public TValue Create<TValue> (int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo = null)
@@ -79,11 +83,11 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
             foreach (var instancesForType in typeToInstances.Values)
             {
                 //if the sub type cannot be instantiated, we just skip it, it will not be filled (maybe it is a value type)
-                if (!instancesForType.Key.PropertyType.IsCompoundType())
+                if (!instancesForType.Key.Type.IsCompoundType())
                     continue;
 
                 //now we reflect the properties of the concrete sub type (note:this is cached in a concurrent dictionary) 
-                var properties = FastReflectionUtility.GetTypeInfo (instancesForType.Key.PropertyType).Properties;
+                var properties = _fastReflectionUtility.GetTypeInfo (instancesForType.Key.Type).Properties;
 
                 //now we fill each property
                 foreach (var property in properties)

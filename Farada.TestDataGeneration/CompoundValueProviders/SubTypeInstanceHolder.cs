@@ -28,10 +28,10 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
         internal static Dictionary<Type, SubTypeInstanceHolder> SplitUpSubTypes(IKey currentKey, IList<object> instances)
         {
             //First we check if all instances are of the same concrete type as the property (e.g. only Animals)
-            if (instances.Where(instance => instance != null).All(instance => instance.GetType() == currentKey.PropertyType))
+            if (instances.Where(instance => instance != null).All(instance => instance.GetType() == currentKey.Type))
             {
                 //if this is the case we return a dictionary with just this type (for convenience)
-                return new Dictionary<Type, SubTypeInstanceHolder> { { currentKey.PropertyType, new SubTypeInstanceHolder(currentKey, instances) } };
+                return new Dictionary<Type, SubTypeInstanceHolder> { { currentKey.Type, new SubTypeInstanceHolder(currentKey, instances) } };
             }
 
             //otherwise we have to get all the concrete types

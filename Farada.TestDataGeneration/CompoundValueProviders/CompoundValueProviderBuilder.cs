@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.Extensions;
+using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.Modifiers;
 using Farada.TestDataGeneration.ValueProviders;
 
@@ -17,11 +18,13 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     private readonly Random _random;
     private readonly ValueProviderDictionary _valueProviderDictionary;
     private readonly IList<IInstanceModifier> _modifierList;
+    private FastReflectionUtility _fastReflectionUtility;
 
-    internal CompoundValueProviderBuilder(Random random)
+    internal CompoundValueProviderBuilder(Random random, FastReflectionUtility fastReflectionUtility)
     {
       _random = random;
       _valueProviderDictionary = new ValueProviderDictionary();
+      _fastReflectionUtility = fastReflectionUtility;
       _modifierList = new List<IInstanceModifier>();
     }
 
@@ -39,7 +42,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     public void AddProvider<TProperty, TContainer, TContext> (Expression<Func<TContainer, TProperty>> chainExpression, ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>
     {
       var declaringType = chainExpression.GetParameterType();
-      var expressionChain = chainExpression.ToChain().ToList();
+      var expressionChain = chainExpression.ToChain(_fastReflectionUtility).ToList();
 
       if (expressionChain.Count == 0)
         throw new ArgumentException ("Empty chains are not supported, please use AddProvider<T>()");
@@ -54,7 +57,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
     internal CompoundValueProvider Build()
     {
-      return new CompoundValueProvider(_valueProviderDictionary, _random, _modifierList);
+      return new CompoundValueProvider(_valueProviderDictionary, _random, _modifierList, _fastReflectionUtility);
     }
 
     //For<string>().AddProvider
