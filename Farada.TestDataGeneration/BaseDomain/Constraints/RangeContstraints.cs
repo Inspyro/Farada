@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Farada.TestDataGeneration.FastReflection;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.BaseDomain.Constraints
 {
@@ -31,9 +32,10 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
     /// </summary>
     /// <param name="property">The property where for which the range constraints should be extracted</param>
     /// <returns></returns>
+    [CanBeNull]
     public static RangeContstraints<T> FromProperty (IFastPropertyInfo property)
     {
-      if (property == null || !property.IsDefined(typeof (RangeAttribute)))
+      if (!property.IsDefined(typeof (RangeAttribute)))
         return null;
 
       var rangeAttribute = property.GetCustomAttribute<RangeAttribute>();

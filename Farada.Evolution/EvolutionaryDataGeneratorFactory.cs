@@ -1,6 +1,7 @@
 ﻿using System;
 using Farada.Evolution.RuleBasedDataGeneration;
 using Farada.TestDataGeneration;
+using JetBrains.Annotations;
 
 namespace Farada.Evolution
 {
@@ -50,12 +51,11 @@ namespace Farada.Evolution
     /// <param name="testDataDomainConfiguration">the domain, containing all relevant imformation for the test data generation</param>
     /// <param name="evolutionaryDomainConfiguration">the domain, containing all relevant information for the evolutionary generation</param>
     /// <returns>the final test data generator that can be used for data generation</returns>
-    public static RuleBasedDataGenerator Create (TestDataDomainConfiguration testDataDomainConfiguration, EvolutionaryDomainConfiguration evolutionaryDomainConfiguration)
+    public static RuleBasedDataGenerator Create (TestDataDomainConfiguration testDataDomainConfiguration, [CanBeNull] EvolutionaryDomainConfiguration evolutionaryDomainConfiguration)
     {
       var testDataGenerator = TestDataGeneratorFactory.Create(testDataDomainConfiguration);
 
       var evolutionaryDomainConfigurator = new RuleBasedDataGeneratorConfigurator();
-
       if (evolutionaryDomainConfiguration != null)
       {
         evolutionaryDomainConfigurator = (RuleBasedDataGeneratorConfigurator) evolutionaryDomainConfiguration(evolutionaryDomainConfigurator);

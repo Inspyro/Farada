@@ -36,9 +36,6 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
     /// <exception cref="ArgumentOutOfRangeException">throws when maxLength is smaller than minLength - so the attributes are declared in an incorrect manner</exception>
     public static StringConstraints FromProperty(IFastPropertyInfo property)
     {
-      if (property == null)
-        return null;
-
       var minLength = -1;
       var maxLength = -1;
 
