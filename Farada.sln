@@ -20,8 +20,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D268A3
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fody", "fody", "{59065976-6D9B-4AF8-A6C2-85C5CDE6F242}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Shared", ".Shared", "{59065976-6D9B-4AF8-A6C2-85C5CDE6F242}"
 	ProjectSection(SolutionItems) = preProject
+		AssemblyInfoShared.cs = AssemblyInfoShared.cs
 		FodyWeavers.xml = FodyWeavers.xml
 	EndProjectSection
 EndProject
