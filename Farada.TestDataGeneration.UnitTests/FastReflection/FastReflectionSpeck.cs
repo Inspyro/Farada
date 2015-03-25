@@ -1,28 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Farada.TestDataGeneration.FastReflection;
 using FluentAssertions;
-using SpecK;
-using SpecK.Specifications;
-using SpecK.Specifications.Extensions;
+using TestFx.Specifications;
 
 namespace Farada.TestDataGeneration.UnitTests.FastReflection
 {
-  [Subject (typeof (TestDataGeneration.FastReflection.FastReflectionUtility))]
-  public class FastReflectionSpeck:Specs
+  [Subject (typeof (FastReflectionUtility), "TODO")]
+  public class FastReflectionSpeck:SpecK
   {
     Type TypeToReflect;
     PropertyInfo PropertyInfoToConvert;
     DerivedDTO Instance;
 
-    [Group]
-    void GetTypeInfo ()
+    public FastReflectionSpeck ()
     {
-      Specify (x => TestDataGeneration.FastReflection.FastReflectionUtility.GetTypeInfo (TypeToReflect))
+      Specify (x => FastReflectionUtility.GetTypeInfo (TypeToReflect))
           //
-          .Elaborate ("returns valid property info", _ => _
+          .Case ("returns valid property info", _ => _
               //
               .Given ("SimpleDTO", x => TypeToReflect = typeof (SimpleDTO))
               //
@@ -31,7 +29,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
               .It ("finds correct property",
                   x => CompareType (x.Result, new KeyValuePair<Type, string> (typeof (bool), "SomeProperty"))))
           //
-          .Elaborate ("returns valid property info", _ => _
+          .Case ("returns valid property info", _ => _
               //
               .Given ("DerivedDTO", x => TypeToReflect = typeof (DerivedDTO))
               //
@@ -41,14 +39,11 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
                   x =>
                       CompareType (x.Result, new KeyValuePair<Type, string> (typeof (int), "CustomProperty"),
                           new KeyValuePair<Type, string> (typeof (bool), "BaseProperty"))));
-    }
 
-    [Group]
-    void GetPropertyInfo ()
-    {
+
       Specify (x => FastReflectionUtility.GetPropertyInfo (PropertyInfoToConvert))
           //
-          .Elaborate ("returns valid property info", _ => _
+          .Case ("returns valid property info", _ => _
               //
               .Given ("SimpleDTO.SomeProperty", x => PropertyInfoToConvert = TestDataGeneration.Extensions.TypeExtensions.GetPropertyInfo<SimpleDTO, bool> (y => y.SomeProperty))
               //
@@ -56,16 +51,20 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
               .It ("finds correct property",
                   x => CompareProperty (x.Result, new KeyValuePair<Type, string> (typeof (bool), "SomeProperty"))))
           //
-          .Elaborate ("returns property info with valid getter and setter actions", _ => _
+          .Case ("returns property info with valid getter and setter actions", _ => _
               //
               .Given ("SimpleDTO.SomeProperty", x => PropertyInfoToConvert =  TestDataGeneration.Extensions.TypeExtensions.GetPropertyInfo<DerivedDTO, int> (y => y.CustomProperty))
               .Given ("SimpleDTO instance", x => Instance = new DerivedDTO { CustomProperty = 5 })
               //
               .It ("gets inital value", x => x.Result.GetValue (Instance).Should ().Be (5))
-              .It ("sets value to instance", x => x.Result.SetValue (Instance, 100), x => Instance.CustomProperty.Should ().Be (100))
+              .It ("sets value to instance", x =>
+              {
+                x.Result.SetValue (Instance, 100);
+                Instance.CustomProperty.Should ().Be (100);
+              })
               .It ("throws exception", x => x.Result.Invoking (c => c.SetValue (Instance, true)).ShouldThrow<InvalidCastException> ()))
           //
-          .Elaborate ("returns property info with valid attributes", _ => _
+          .Case ("returns property info with valid attributes", _ => _
               //
               .Given ("AttributedDTO.AttributedProperty",
                   x => PropertyInfoToConvert =  TestDataGeneration.Extensions.TypeExtensions.GetPropertyInfo<AttributedDTO, int> (y => y.AttributedProperty))
@@ -74,7 +73,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
               .It ("gets correct attributes types",
                   x => CompareAttributes (x.Result.Attributes.ToList (), typeof (CoolIntAttribute), typeof (FancyNumberAttribute))))
           //
-          .Elaborate ("returns property info with is defined valid", _ => _
+          .Case ("returns property info with is defined valid", _ => _
               //
               .Given ("AttributedDTO.AttributedProperty",
                   x => PropertyInfoToConvert =  TestDataGeneration.Extensions.TypeExtensions.GetPropertyInfo<AttributedDTO, int> (y => y.AttributedProperty))
@@ -83,7 +82,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
               .It ("gets fancy number attribute", x => x.Result.IsDefined (typeof (FancyNumberAttribute)).Should ().BeTrue ())
               .It ("does not get other attribute", x => x.Result.IsDefined (typeof (OtherAttribute)).Should ().BeFalse ()))
           //
-          .Elaborate ("returns concrete attributes", _ => _
+          .Case ("returns concrete attributes", _ => _
               //
               .Given ("AttributedDTO.AttributedProperty",
                   x => PropertyInfoToConvert =  TestDataGeneration.Extensions.TypeExtensions.GetPropertyInfo<AttributedDTO, int> (y => y.AttributedProperty))
@@ -110,6 +109,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
         var property = typeInfo.Properties.SingleOrDefault (x => x.Name == propertyToCompare.Value);
 
         property.Should ().NotBeNull ("Did not find property with name "+propertyToCompare.Value);
+        Trace.Assert (property != null);
         CompareProperty (property, propertyToCompare);
       }
     }

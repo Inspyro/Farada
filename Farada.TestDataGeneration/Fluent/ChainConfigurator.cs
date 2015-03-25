@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Farada.TestDataGeneration.CompoundValueProviders;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.Fluent
 {
   internal class ChainConfigurator : IChainConfigurator
   {
     protected Func<CompoundValueProviderBuilder> _lazyValueProviderBuilder;
-    internal ChainConfigurator(Func<CompoundValueProviderBuilder> lazyValueProviderBuilder)
+    internal ChainConfigurator([CanBeNull] Func<CompoundValueProviderBuilder> lazyValueProviderBuilder)
     {
       _lazyValueProviderBuilder = lazyValueProviderBuilder;
     }

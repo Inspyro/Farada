@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.ValueProviders;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
@@ -30,11 +31,13 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       }
     }
 
-    private ValueProviderLink GetOrDefault (IKey key)
+    [CanBeNull]
+    private ValueProviderLink GetOrDefault ([CanBeNull] IKey key)
     {
       return key!=null&&_valueProviders.ContainsKey(key) ? _valueProviders[key] : null;
     }
 
+    [CanBeNull]
     internal ValueProviderLink GetLink (IKey key)
     {
       ValueProviderLink link = null;

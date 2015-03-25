@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.Extensions
 {
@@ -16,7 +17,7 @@ namespace Farada.TestDataGeneration.Extensions
     /// <param name="other">The parameter of the equals method</param>
     /// <returns>true if the classes match</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool ClassEquals<T>(T @this, T other)
+    public static bool ClassEquals<T>(T @this, [CanBeNull] T other)
     {
       if (ReferenceEquals(null, other))
         return false;

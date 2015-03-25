@@ -3,12 +3,11 @@ using System.Linq;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using FluentAssertions;
-using SpecK;
-using SpecK.Specifications;
+using TestFx.Specifications;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  [Subject (typeof (ITestDataGenerator))]
+  [Subject (typeof (ITestDataGenerator),"TODO")]
   public class TestDataGeneratorClassFillingSpeck : TestDataGeneratorBaseSpeck
   {
     Context SimpleStringContext (int recursionDepth)
@@ -21,12 +20,11 @@ namespace Farada.TestDataGeneration.IntegrationTests
       .Given(TestDataGeneratorContext(recursionDepth));
     }
 
-    [Group]
-    void ValueProviderDeepClassFilling ()
+    public TestDataGeneratorClassFillingSpeck ()
     {
       Specify (x =>
           TestDataGenerator.Create<Universe> (MaxRecursionDepth, null))
-          .Elaborate ("should fill normal property deep in hierarchy", _ => _
+          .Case ("should fill normal property deep in hierarchy", _ => _
               .Given (SimpleStringContext (3))
               .It ("fills properties in 1st level deep hierarchy", x => x.Result.Galaxy1.StarSystem1.Planet1.President.Name.Should ().Be ("SomeString"))
               .It ("fill properties in 2nd level deep hierarchy",
@@ -38,6 +36,87 @@ namespace Farada.TestDataGeneration.IntegrationTests
                       x.Result.Galaxy1.StarSystem1.Planet1.President.Atom1.Particle1.QuantumUniverse.Galaxy1.StarSystem1.Planet1.President.Atom1.Particle1
                           .QuantumUniverse.Galaxy1.Should ()
                           .BeNull ()));
+
+
+      Specify (x =>
+          TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
+          .Case ("should fill properties according to provider chain", _ => _
+              .Given (PropertyProviderContext ())
+              .It ("should fill weight", x => x.Result.Weight.Should ().Be (100))
+              .It ("should fill main color", x => x.Result.MainColor.Should ().Be (Color.Red))
+              .It ("should fill tire diameter", x => x.Result.Tire.Diameter.Should ().Be (3.6))
+              .It ("should fill grip", x => x.Result.Tire.Grip.Should ().Be (3.6)));
+
+      Specify (x =>
+          TestDataGenerator.Create<AirVehicle> (MaxRecursionDepth, null))
+          .Case ("should fill properties according to provider chain", _ => _
+              .Given (PropertyProviderContext ())
+              .It ("should fill weight with default int", x => x.Result.Weight.Should ().Be (5))
+              .It ("should fill main color with first enum value", x => x.Result.MainColor.Should ().Be (Color.White))
+              .It ("should fill engine with jetengine", x => x.Result.Engine.Should ().BeOfType (typeof (JetEngine)))
+              .It ("should fill fuel use per second with default float",
+                  x => ((JetEngine) x.Result.Engine).FuelUsePerSecond.Should ().Be (0f))
+              .It ("should fill powerinnewtons as specified", x => x.Result.Engine.PowerInNewtons.Should ().Be (5000f)));
+
+        Specify (x =>
+          TestDataGenerator.Create<AirVehicle> (MaxRecursionDepth, null))
+          .Case ("should not fill abstact properties because of default provider chain", _ => _
+              .Given (BaseDomainContext ())
+              .It ("should not fill abstract engine", x => x.Result.Engine.Should ().BeNull()));
+
+      Specify (x =>
+          TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
+          .Case ("should fill properties according to provider chain", _ => _
+              .Given (HierarchyPropertyProviderContext ())
+              //
+              //test simple cases again because of more complex domain
+              .It ("should fill weight", x => x.Result.Weight.Should ().Be (50))
+              .It ("should fill default color", x => x.Result.MainColor.Should ().Be (Color.White))
+              .It ("should fill tire diameter with default value", x => x.Result.Tire.Diameter.Should ().Be (0))
+              .It ("should fill grip with default value", x => x.Result.Tire.Grip.Should ().Be (0)));
+
+      Specify (x =>
+          TestDataGenerator.CreateMany<AirVehicle> (2,MaxRecursionDepth, null).First())
+          .Case ("should fill properties according to provider chain", _ => _
+              .Given (HierarchyPropertyProviderContext ())
+              //
+              //test simple cases again because of more complex domain
+              .It ("should fill weight with specified int", x => x.Result.Weight.Should ().Be (50))
+              .It ("should fill main color with first enum value", x => x.Result.MainColor.Should ().Be (Color.White))
+
+              //start testing concrete domain logic
+              .It ("should fill engine with propellorengine", x => x.Result.Engine.Should ().BeOfType (typeof (PropellorEngine)))
+              .It ("should fill fuel use per second with float",
+                  x => 
+                    ((PropellorEngine) x.Result.Engine).AverageRotationSpeed.Should ().Be (2.1f))
+              .It ("should fill powerinnewtons as specified", x => x.Result.Engine.PowerInNewtons.Should ().Be (250f)));
+
+      Specify (x =>
+          TestDataGenerator.CreateMany<AirVehicle> (2, MaxRecursionDepth, null).Last())
+          .Case ("should fill properties according to provider chain", _ => _
+              .Given (HierarchyPropertyProviderContext ())
+              //
+              //test simple cases again because of more complex domain
+              .It ("should fill weight with specified int", x => x.Result.Weight.Should ().Be (50))
+              .It ("should fill main color with first enum value", x => x.Result.MainColor.Should ().Be (Color.White))
+
+              //start testing concrete domain logic
+              .It ("should fill engine with jetengine", x => x.Result.Engine.Should ().BeOfType (typeof (JetEngine)))
+              .It ("should fill fuel use per second with float", x => ((JetEngine) x.Result.Engine).FuelUsePerSecond.Should ().Be (2.1f))
+              .It ("should fill powerinnewtons as with float", x => x.Result.Engine.PowerInNewtons.Should ().Be (1200)));
+
+      Specify (x =>
+          TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
+          .Case ("should fill properties according to provider chain", _ => _
+              .Given(AttributeProviderContext())
+              .It ("should fill tire usage", x => x.Result.Tire.TireUsage.Should ().Be (100.1d))
+              .It ("should fill weight", x => x.Result.Weight.Should ().Be (52)));
+
+      Specify (x =>
+          TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
+          .Case ("should fill properties according to provider chain", _ => _
+              .Given (TypeHierarchyChainProviderContext ())
+              .It ("should fill name", x => x.Result.Name.Should ().Be ("12345!6!78")));
     }
 
     Context PropertyProviderContext ()
@@ -55,40 +134,6 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .For ((JetEngine je) => je.PowerInNewtons).AddProvider (context => 5000);
       })
           .Given (TestDataGeneratorContext ());
-    }
-
-    [Group]
-    void ValueProviderPropertyProviders ()
-    {
-      Specify (x =>
-          TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
-          .Elaborate ("should fill properties according to provider chain", _ => _
-              .Given (PropertyProviderContext ())
-              .It ("should fill weight", x => x.Result.Weight.Should ().Be (100))
-              .It ("should fill main color", x => x.Result.MainColor.Should ().Be (Color.Red))
-              .It ("should fill tire diameter", x => x.Result.Tire.Diameter.Should ().Be (3.6))
-              .It ("should fill grip", x => x.Result.Tire.Grip.Should ().Be (3.6)));
-
-      Specify (x =>
-          TestDataGenerator.Create<AirVehicle> (MaxRecursionDepth, null))
-          .Elaborate ("should fill properties according to provider chain", _ => _
-              .Given (PropertyProviderContext ())
-              .It ("should fill weight with default int", x => x.Result.Weight.Should ().Be (5))
-              .It ("should fill main color with first enum value", x => x.Result.MainColor.Should ().Be (Color.White))
-              .It ("should fill engine with jetengine", x => x.Result.Engine.Should ().BeOfType (typeof (JetEngine)))
-              .It ("should fill fuel use per second with default float",
-                  x => ((JetEngine) x.Result.Engine).FuelUsePerSecond.Should ().Be (0f))
-              .It ("should fill powerinnewtons as specified", x => x.Result.Engine.PowerInNewtons.Should ().Be (5000f)));
-    }
-
-    [Group]
-    void ClassWithAbstractPropertiesFilling()
-    {
-      Specify (x =>
-          TestDataGenerator.Create<AirVehicle> (MaxRecursionDepth, null))
-          .Elaborate ("should not fill abstact properties because of default provider chain", _ => _
-              .Given (BaseDomainContext ())
-              .It ("should not fill abstract engine", x => x.Result.Engine.Should ().BeNull()));
     }
 
     Context HierarchyPropertyProviderContext ()
@@ -113,52 +158,6 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Given (TestDataGeneratorContext ());
     }
 
-    [Group]
-    void ValueProviderTypeHierarchyPropertyProviders ()
-    {
-      Specify (x =>
-          TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
-          .Elaborate ("should fill properties according to provider chain", _ => _
-              .Given (HierarchyPropertyProviderContext ())
-              //
-              //test simple cases again because of more complex domain
-              .It ("should fill weight", x => x.Result.Weight.Should ().Be (50))
-              .It ("should fill default color", x => x.Result.MainColor.Should ().Be (Color.White))
-              .It ("should fill tire diameter with default value", x => x.Result.Tire.Diameter.Should ().Be (0))
-              .It ("should fill grip with default value", x => x.Result.Tire.Grip.Should ().Be (0)));
-
-      Specify (x =>
-          TestDataGenerator.CreateMany<AirVehicle> (2,MaxRecursionDepth, null).First())
-          .Elaborate ("should fill properties according to provider chain", _ => _
-              .Given (HierarchyPropertyProviderContext ())
-              //
-              //test simple cases again because of more complex domain
-              .It ("should fill weight with specified int", x => x.Result.Weight.Should ().Be (50))
-              .It ("should fill main color with first enum value", x => x.Result.MainColor.Should ().Be (Color.White))
-
-              //start testing concrete domain logic
-              .It ("should fill engine with propellorengine", x => x.Result.Engine.Should ().BeOfType (typeof (PropellorEngine)))
-              .It ("should fill fuel use per second with float",
-                  x => 
-                    ((PropellorEngine) x.Result.Engine).AverageRotationSpeed.Should ().Be (2.1f))
-              .It ("should fill powerinnewtons as specified", x => x.Result.Engine.PowerInNewtons.Should ().Be (250f)));
-
-      Specify (x =>
-          TestDataGenerator.CreateMany<AirVehicle> (2, MaxRecursionDepth, null).Last())
-          .Elaborate ("should fill properties according to provider chain", _ => _
-              .Given (HierarchyPropertyProviderContext ())
-              //
-              //test simple cases again because of more complex domain
-              .It ("should fill weight with specified int", x => x.Result.Weight.Should ().Be (50))
-              .It ("should fill main color with first enum value", x => x.Result.MainColor.Should ().Be (Color.White))
-
-              //start testing concrete domain logic
-              .It ("should fill engine with jetengine", x => x.Result.Engine.Should ().BeOfType (typeof (JetEngine)))
-              .It ("should fill fuel use per second with float", x => ((JetEngine) x.Result.Engine).FuelUsePerSecond.Should ().Be (2.1f))
-              .It ("should fill powerinnewtons as with float", x => x.Result.Engine.PowerInNewtons.Should ().Be (1200)));
-    }
-
-
     Context AttributeProviderContext ()
     {
       return c => c.Given ("simple attribute domain", x =>
@@ -171,23 +170,12 @@ namespace Farada.TestDataGeneration.IntegrationTests
       .Given(TestDataGeneratorContext());
     }
 
-    [Group]
-    void ValueProviderAttributeProviders ()
-    {
-      Specify (x =>
-          TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
-          .Elaborate ("should fill properties according to provider chain", _ => _
-              .Given(AttributeProviderContext())
-              .It ("should fill tire usage", x => x.Result.Tire.TireUsage.Should ().Be (100.1d))
-              .It ("should fill weight", x => x.Result.Weight.Should ().Be (52)));
-    }
-
     Context TypeHierarchyChainProviderContext ()
     {
       return c => c.Given ("simple hierachical type chained domain", x =>
       {
         TestDataDomainConfiguration = configuration => configuration
-          .UseDefaults(false)
+            .UseDefaults (false)
             .For<string> ()
             .AddProvider (context => "8")
             .AddProvider (context => "7" + context.GetPreviousValue ())
@@ -205,17 +193,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .AddProvider (context => "1" + context.GetPreviousValue ());
 
       })
-      .Given(TestDataGeneratorContext());
-    }
-
-    [Group]
-    void ValueProviderTypeHierarchyChainProviders ()
-    {
-      Specify (x =>
-          TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
-          .Elaborate ("should fill properties according to provider chain", _ => _
-              .Given (TypeHierarchyChainProviderContext ())
-              .It ("should fill name", x => x.Result.Name.Should ().Be ("12345!6!78")));
+          .Given (TestDataGeneratorContext ());
     }
   }
 }

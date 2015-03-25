@@ -5,6 +5,7 @@ using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.ValueProviders;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
@@ -28,7 +29,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
             return CreateInstances(key, rootLink == null ? null : rootLink.Value, CreateValueProviderContext(rootLink, key), numberOfObjects);
         }
 
-        private static IList<object> CreateInstances (IKey key, IValueProvider valueProvider, IValueProviderContext valueProviderContext, int numberOfObjects)
+        private static IList<object> CreateInstances (IKey key,  [CanBeNull] IValueProvider valueProvider,  [CanBeNull] IValueProviderContext valueProviderContext, int numberOfObjects)
         {
             if (valueProvider == null || valueProviderContext == null)
             {
@@ -42,7 +43,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
             return EnumerableExtensions.Repeat(() => valueProvider.CreateValue(valueProviderContext), numberOfObjects).ToList();
         }
 
-        private IValueProviderContext CreateValueProviderContext (ValueProviderLink providerLink, IKey key)
+        private IValueProviderContext CreateValueProviderContext ( [CanBeNull] ValueProviderLink providerLink, IKey key)
         {
             if (providerLink == null)
                 return null;

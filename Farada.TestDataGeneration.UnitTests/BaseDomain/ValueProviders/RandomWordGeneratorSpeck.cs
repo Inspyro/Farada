@@ -1,27 +1,25 @@
 ﻿using System;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
-using SpecK;
-using SpecK.Extension.FakeItEasy;
-using SpecK.Specifications;
+using TestFx.FakeItEasy;
+using TestFx.Specifications;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 {
-  [Subject(typeof(RandomWordGenerator))]
-  public class RandomWordGeneratorSpeck:Specs<RandomWordGenerator>
+  [Subject(typeof(RandomWordGenerator),"TODO")]
+  public class RandomWordGeneratorSpeck:SpecK<RandomWordGenerator>
   {
     [Faked] RandomSyllabileGenerator RandomSyllabileGenerator;
 
-    protected override RandomWordGenerator CreateSubject ()
+    public RandomWordGeneratorSpeck ()
     {
-      return new RandomWordGenerator (RandomSyllabileGenerator);
+       Specify (x => new RandomWordGenerator (RandomSyllabileGenerator, 5, 3).ToString())
+          .Case ("Constructor throws on wrong usage", _ => _
+              .ItThrows<ArgumentOutOfRangeException> ());
     }
 
-    [Group]
-    public void ConstructorSpeck()
+    public override RandomWordGenerator CreateSubject ()
     {
-      Specify (x => new RandomWordGenerator (RandomSyllabileGenerator, 5, 3).ToString())
-          .Elaborate ("Constructor throws on wrong usage", _ => _
-              .ItThrows (typeof (ArgumentOutOfRangeException)));
+      return new RandomWordGenerator (RandomSyllabileGenerator);
     }
   }
 }

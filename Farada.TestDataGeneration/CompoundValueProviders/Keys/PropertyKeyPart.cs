@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
@@ -23,15 +25,16 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       return string.Format("PropertyType: {0}, Property: {1}", PropertyType.Name, Property.Name);
     }
 
-    public bool Equals (PropertyKeyPart other)
+    public bool Equals ([CanBeNull] PropertyKeyPart other)
     {
       if (!EqualityUtility.ClassEquals(this, other))
         return false;
 
+      Trace.Assert (other != null);
       return Property.Name == other.Property.Name && PropertyType == other.PropertyType;
     }
 
-    public override bool Equals (object obj)
+    public override bool Equals ([CanBeNull] object obj)
     {
       return Equals(obj as PropertyKeyPart);
     }

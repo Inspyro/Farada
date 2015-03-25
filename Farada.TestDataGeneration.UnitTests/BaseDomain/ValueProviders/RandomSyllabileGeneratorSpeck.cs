@@ -6,51 +6,50 @@ using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
-using SpecK;
-using SpecK.Specifications;
-using SpecK.Specifications.Extensions;
+using TestFx.Specifications;
+using TestFx.Specifications.InferredApi;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 {
-  [Subject(typeof(RandomSyllabileGenerator))]
-  public class RandomSyllabileGeneratorSpeck:Specs<RandomSyllabileGenerator>
+  [Subject(typeof(RandomSyllabileGenerator), "TODO")]
+  public class RandomSyllabileGeneratorSpeck:SpecK<RandomSyllabileGenerator>
   {
     ValueProviderContext<string> Context;
     StringBuilder StringBuilder=new StringBuilder();
 
-    protected override RandomSyllabileGenerator CreateSubject ()
+    public RandomSyllabileGeneratorSpeck ()
+    {
+       Specify (x => new RandomSyllabileGenerator (5, 3).ToString())
+          .Case ("Constructor throws on wrong usage", _ => _
+              .ItThrows<ArgumentOutOfRangeException> ());
+
+      Specify (x => x.Fill (Context, StringBuilder))
+          .Case ("fill fills stringbuilder based on context", _ => _
+            .Define (SeededContext (5))
+              .It ("fills stringbuilder with correct syllabile", x => StringBuilder.ToString ().Should ().Be ("her")));
+    }
+
+    public override RandomSyllabileGenerator CreateSubject ()
     {
       return new RandomSyllabileGenerator ();
     }
 
-    Context SeededContext (int seed)
+    Func<Dummy, Dummy> SeededContext (int seed)
     {
-      return c => c.Given (x =>
+      return x =>
       {
         var customValueProviderObjectContext = new CustomValueProviderObjectContext (new Random (seed));
         var customValueProviderContext = new CustomValueProviderContext (customValueProviderObjectContext);
 
         Context = customValueProviderContext;
-      });
-    }
-
-    [Group]
-    public void FillingSpecks()
-    {
-      Specify (x => new RandomSyllabileGenerator (5, 3).ToString())
-          .Elaborate ("Constructor throws on wrong usage", _ => _
-              .ItThrows (typeof (ArgumentOutOfRangeException)));
-
-      Specify (x => x.Fill (Context, StringBuilder))
-          .Elaborate ("fill fills stringbuilder based on context", _ => _
-              .Given (SeededContext (5))
-              .It ("fills stringbuilder with correct syllabile", x => StringBuilder.ToString ().Should ().Be ("her")));
+        return null;
+      };
     }
   }
 
   class CustomValueProviderObjectContext : ValueProviderObjectContext
   {
-    internal CustomValueProviderObjectContext(Random random):this(new DummyTestDataGenerator(random), ()=>new object(),null,null)
+    internal CustomValueProviderObjectContext(Random random):this(new DummyTestDataGenerator(random), ()=>new object(),typeof(Dummy),new DummyFastProperty())
     {
 
     }
@@ -61,7 +60,36 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
     }
   }
 
-    class DummyTestDataGenerator : ITestDataGenerator
+  class DummyFastProperty : IFastPropertyInfo
+  {
+    public T GetCustomAttribute<T> () where T : Attribute
+    {
+      throw new NotImplementedException ();
+    }
+
+    public IEnumerable<Type> Attributes { get { throw new NotImplementedException (); } }
+
+    public bool IsDefined (Type type)
+    {
+      throw new NotImplementedException ();
+    }
+
+    public object GetValue (object instance)
+    {
+      throw new NotImplementedException ();
+    }
+
+    public void SetValue (object instance, object value)
+    {
+      throw new NotImplementedException ();
+    }
+
+    public string Name { get { throw new NotImplementedException (); } }
+
+    public Type PropertyType { get { throw new NotImplementedException (); } }
+  }
+
+  class DummyTestDataGenerator : ITestDataGenerator
     {
         public DummyTestDataGenerator (Random random)
         {

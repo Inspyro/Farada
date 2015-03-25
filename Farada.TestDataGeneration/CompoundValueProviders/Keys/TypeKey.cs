@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
@@ -63,20 +65,21 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       return new TypeKey(newPropertyType);
     }
 
-    public bool Equals (TypeKey other)
+    public bool Equals ([CanBeNull] TypeKey other)
     {
       if (!EqualityUtility.ClassEquals(this, other))
         return false;
 
+      Trace.Assert (other != null);
       return _type == other._type;
     }
 
-    public bool Equals (IKey other)
+    public bool Equals ([CanBeNull] IKey other)
     {
       return Equals(other as TypeKey);
     }
 
-    public override bool Equals (object obj)
+    public override bool Equals ([CanBeNull] object obj)
     {
       return Equals(obj as TypeKey);
     }

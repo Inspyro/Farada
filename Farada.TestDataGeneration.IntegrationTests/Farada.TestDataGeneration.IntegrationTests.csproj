@@ -33,9 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FakeItEasy, Version=2.0.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+    <Reference Include="FakeItEasy, Version=1.21.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\FakeItEasy.2.0.0-beta007\lib\net40\FakeItEasy.dll</HintPath>
+      <HintPath>..\packages\FakeItEasy.1.21.0\lib\net40\FakeItEasy.dll</HintPath>
     </Reference>
     <Reference Include="FluentAssertions, Version=3.3.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -45,24 +45,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FluentAssertions.3.3.0\lib\net45\FluentAssertions.Core.dll</HintPath>
     </Reference>
+    <Reference Include="JetBrains.Annotations">
+      <HintPath>..\packages\JetBrains.Annotations.9.1.1\lib\net20\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="NullGuard">
       <HintPath>..\packages\NullGuard.Fody.RubiconFork.1.0.0.63\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\NullGuard.dll</HintPath>
-    </Reference>
-    <Reference Include="Ploeh.AutoFixture, Version=3.24.3.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoFixture.3.24.3\lib\net40\Ploeh.AutoFixture.dll</HintPath>
-    </Reference>
-    <Reference Include="SpecK.Extension.AutoFixture">
-      <HintPath>..\packages\SpecK.AutoFixture.0.0.1-Pre00724\lib\net40\SpecK.Extension.AutoFixture.dll</HintPath>
-    </Reference>
-    <Reference Include="SpecK.Extension.FakeItEasy">
-      <HintPath>..\packages\SpecK.FakeItEasy.0.0.1-Pre00724\lib\net40\SpecK.Extension.FakeItEasy.dll</HintPath>
-    </Reference>
-    <Reference Include="SpecK.Extension.FluentAssertions">
-      <HintPath>..\packages\SpecK.FluentAssertions.0.0.1-Pre00724\lib\net40\SpecK.Extension.FluentAssertions.dll</HintPath>
-    </Reference>
-    <Reference Include="SpecK.Framework">
-      <HintPath>..\packages\SpecK.0.0.1-Pre00724\lib\net20\SpecK.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -72,8 +59,21 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TestFx">
+      <HintPath>..\packages\TestFx.0.0.1-Pre00041\lib\net35\TestFx.dll</HintPath>
+    </Reference>
+    <Reference Include="TestFx.FakeItEasy">
+      <HintPath>..\packages\TestFx.FakeItEasy.0.0.1-Pre00041\lib\net35\TestFx.FakeItEasy.dll</HintPath>
+    </Reference>
+    <Reference Include="TestFx.Specifications">
+      <HintPath>..\packages\TestFx.Specifications.0.0.1-Pre00041\lib\net35\TestFx.Specifications.dll</HintPath>
+    </Reference>
+    <Reference Include="TestFx.Utilities">
+      <HintPath>..\packages\TestFx.0.0.1-Pre00041\lib\net35\TestFx.Utilities.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\FakeItEasyTestExtensions.cs" />
     <Compile Include="TestDataGeneratorEdgeCaseSpeck.cs" />
     <Compile Include="TestDataGeneratorCustomContextSpeck.cs" />
     <Compile Include="TestDataGeneratorSubTypeSpeck.cs" />

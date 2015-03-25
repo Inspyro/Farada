@@ -1,12 +1,11 @@
 ﻿using System;
 using Farada.TestDataGeneration.CompoundValueProviders;
-using SpecK.Extensibility;
-using SpecK.Specifications;
-using SpecK.Specifications.InferredApi;
+using TestFx.Specifications;
+using TestFx.Specifications.InferredApi;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  public abstract class TestDataGeneratorBaseSpeck:Specs<DontCare>
+  public abstract class TestDataGeneratorBaseSpeck:SpecK
   {
     protected Exception CreationException;
     protected TestDataDomainConfiguration TestDataDomainConfiguration { get; set; }
@@ -15,7 +14,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
     protected Context TestDataGeneratorContext (int recursionDepth = 2, bool catchExceptions=false)
     {
-        Arrangement<DontCare, DontCare> withExceptions = x =>
+        Arrangement<Dummy, Dummy, Dummy> withExceptions = x =>
         {
             try
             {
@@ -28,7 +27,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
             }
         };
 
-        Arrangement<DontCare, DontCare> withoutException = x =>TestDataGenerator= TestDataGeneratorFactory.Create (TestDataDomainConfiguration);;
+        Arrangement<Dummy, Dummy,Dummy> withoutException = x =>TestDataGenerator= TestDataGeneratorFactory.Create (TestDataDomainConfiguration);;
 
         return
                 c =>

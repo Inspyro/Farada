@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
+using JetBrains.Annotations;
 using Remotion.Utilities;
+using EqualityUtility = Farada.TestDataGeneration.Extensions.EqualityUtility;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
@@ -27,27 +30,27 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
     public IKey ChangePropertyType (Type newPropertyType)
     {
-      var newPropertyChain = new List<PropertyKeyPart>(_propertyChain);
-      newPropertyChain[newPropertyChain.Count - 1] = new PropertyKeyPart(Property, newPropertyType);
+      var newPropertyChain = new List<PropertyKeyPart> (_propertyChain);
+      newPropertyChain[newPropertyChain.Count - 1] = new PropertyKeyPart (Property, newPropertyType);
 
-      return new ChainedKey(_declaringType, newPropertyChain);
+      return new ChainedKey (_declaringType, newPropertyChain);
     }
 
     public IKey PreviousKey { get; private set; }
 
-    internal ChainedKey(Type declaringType, IFastPropertyInfo propertyInfo)
-      : this(declaringType, new List<PropertyKeyPart> { new PropertyKeyPart(propertyInfo)})
+    internal ChainedKey (Type declaringType, IFastPropertyInfo propertyInfo)
+        : this (declaringType, new List<PropertyKeyPart> { new PropertyKeyPart (propertyInfo) })
     {
     }
 
-    internal ChainedKey (Type declaringType, IList<PropertyKeyPart> propertyChain):this(declaringType, declaringType, propertyChain)
+    internal ChainedKey (Type declaringType, IList<PropertyKeyPart> propertyChain)
+        : this (declaringType, declaringType, propertyChain)
     {
-      
     }
 
-    private ChainedKey(Type declaringType, Type concreteDeclaringType, IList<PropertyKeyPart> propertyChain)
+    private ChainedKey (Type declaringType, Type concreteDeclaringType, IList<PropertyKeyPart> propertyChain)
     {
-      ArgumentUtility.CheckNotNull("declaringType", declaringType);
+      ArgumentUtility.CheckNotNull ("declaringType", declaringType);
 
       _declaringType = declaringType;
       _concreteDeclaringType = concreteDeclaringType;
@@ -55,34 +58,34 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
       _lastProperty = propertyChain.Last();
 
-      RecursionDepth = _propertyChain.Count(keyPart => keyPart.PropertyType == _lastProperty.PropertyType);
+      RecursionDepth = _propertyChain.Count (keyPart => keyPart.PropertyType == _lastProperty.PropertyType);
       PreviousKey = CreatePreviousKey();
     }
 
     private IKey CreatePreviousKey ()
     {
       var baseType = _declaringType.BaseType;
-      if (baseType != typeof (object) && baseType != typeof (ValueType)&&baseType!=null)
-        return new ChainedKey(baseType, _concreteDeclaringType, _propertyChain);
+      if (baseType != typeof (object) && baseType != typeof (ValueType) && baseType != null)
+        return new ChainedKey (baseType, _concreteDeclaringType, _propertyChain);
 
       var firstProperty = _propertyChain[0];
-      var previousProperties = _propertyChain.Slice(1);
+      var previousProperties = _propertyChain.Slice (1);
 
       if (previousProperties.Count == 0)
       {
         var attributes = firstProperty.Property.Attributes.ToList();
         return attributes.Count > 0
-            ? (IKey) new AttributeKey(firstProperty.PropertyType, attributes)
-            : new TypeKey(firstProperty.PropertyType);
+            ? (IKey) new AttributeKey (firstProperty.PropertyType, attributes)
+            : new TypeKey (firstProperty.PropertyType);
       }
 
       var previousDeclaringType = firstProperty.PropertyType;
-      return new ChainedKey(previousDeclaringType, previousProperties);
+      return new ChainedKey (previousDeclaringType, previousProperties);
     }
 
     public IKey CreateKey (IFastPropertyInfo property)
     {
-      return new ChainedKey(_declaringType, new List<PropertyKeyPart>(_propertyChain) { new PropertyKeyPart(property) });
+      return new ChainedKey (_declaringType, new List<PropertyKeyPart> (_propertyChain) { new PropertyKeyPart (property) });
     }
 
     public Type PropertyType
@@ -90,38 +93,39 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       get { return _lastProperty.PropertyType; }
     }
 
-      public bool Equals (ChainedKey other)
-      {
-          if (!Extensions.EqualityUtility.ClassEquals (this, other))
-              return false;
-
-          if (_declaringType != other._declaringType)
-              return false;
-
-          if (_propertyChain.Count != other._propertyChain.Count)
-              return false;
-
-          return !_propertyChain.Where ((t, i) => !t.Equals (other._propertyChain[i])).Any();
-      }
-
-      public override bool Equals (object obj)
+    public bool Equals ([CanBeNull] ChainedKey other)
     {
-      return Equals(obj as ChainedKey);
+      if (!EqualityUtility.ClassEquals (this, other))
+        return false;
+
+      Trace.Assert (other != null);
+      if (_declaringType != other._declaringType)
+        return false;
+
+      if (_propertyChain.Count != other._propertyChain.Count)
+        return false;
+
+      return !_propertyChain.Where ((t, i) => !t.Equals (other._propertyChain[i])).Any();
+    }
+
+    public override bool Equals ([CanBeNull] object obj)
+    {
+      return Equals (obj as ChainedKey);
     }
 
     public override int GetHashCode ()
     {
-      return _declaringType.GetHashCode() ^ Remotion.Utilities.EqualityUtility.GetRotatedHashCode(_propertyChain);
+      return _declaringType.GetHashCode() ^ Remotion.Utilities.EqualityUtility.GetRotatedHashCode (_propertyChain);
     }
 
-    public bool Equals (IKey other)
+    public bool Equals ([CanBeNull] IKey other)
     {
-      return Equals(other as ChainedKey);
+      return Equals (other as ChainedKey);
     }
 
     public override string ToString ()
     {
-      return "KEY on " + _declaringType + ": " + string.Join(" > ", _propertyChain.Select(kp => kp.ToString()));
+      return "KEY on " + _declaringType + ": " + string.Join (" > ", _propertyChain.Select (kp => kp.ToString()));
     }
   }
 }

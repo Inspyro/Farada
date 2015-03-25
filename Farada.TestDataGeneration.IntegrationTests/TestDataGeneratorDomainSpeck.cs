@@ -2,19 +2,18 @@
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using FluentAssertions;
-using SpecK;
-using SpecK.Extensibility;
-using SpecK.Specifications.InferredApi;
+using TestFx.Specifications;
+using TestFx.Specifications.InferredApi;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  [Subject (typeof (ITestDataGenerator))]
+  [Subject (typeof (ITestDataGenerator), "TODO")]
   class TestDataGeneratorDomainSpeck:TestDataGeneratorBaseSpeck
   {
-    [Group]
-    void ValueProviderWithDefaultDomain ()
+    public TestDataGeneratorDomainSpeck ()
     {
-        GenericCase<byte> ("simple byte case", _ => _
+      //default domain
+       GenericCase<byte> ("simple byte case", _ => _
           .Given(BaseDomainContext(seed:5))
           //
           .It ("should be a random byte", x => x.Result.Should ().Be(244)));
@@ -88,12 +87,10 @@ namespace Farada.TestDataGeneration.IntegrationTests
         .Given(BaseDomainContext(seed:5))
           //
           .It ("should equal some random past DateTime", x => x.Result.Should ().Be (new DateTime(620621813737538675))));
-    }
 
-    [Group]
-    void ValueProviderWithEmptyDomain ()
-    {
-      GenericCase<byte> ("simple byte case", _ => _
+      //empty domain
+
+       GenericCase<byte> ("simple byte case", _ => _
          .Given(BaseDomainContext(false))
           //
           .It ("should be a valid byte", x => x.Result.Should ().Be(default(byte))));
@@ -169,9 +166,9 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .It ("should equal some DateTime", x => x.Result.GetType ().Should ().Be (typeof (DateTime))));
     }
 
-     void GenericCase<T> (string caseDescription, Func<IAgainstOrArrangeOrAssert<DontCare, T>, IAssert<DontCare, T>> succession)
+     void GenericCase<T> (string caseDescription, Func<IDefineOrArrangeOrAssert<Dummy, T, object>, IAssert> succession)
     {
-      Specify (x => TestDataGenerator.Create<T> (MaxRecursionDepth, null)).Elaborate (caseDescription, succession);
+      Specify (x => TestDataGenerator.Create<T> (MaxRecursionDepth, null)).Case (caseDescription, succession);
     }
   }
 }

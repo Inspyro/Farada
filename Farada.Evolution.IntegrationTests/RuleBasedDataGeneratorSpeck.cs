@@ -4,19 +4,34 @@ using Farada.Evolution.IntegrationTests.TestDomain;
 using Farada.Evolution.RuleBasedDataGeneration;
 using Farada.TestDataGeneration;
 using FluentAssertions;
-using SpecK;
-using SpecK.Specifications;
+using TestFx.Specifications;
 
 namespace Farada.Evolution.IntegrationTests
 {
-  [Subject (typeof (RuleBasedDataGenerator))]
-  public class RuleBasedDataGeneratorSpeck : Specs
+  [Subject (typeof (RuleBasedDataGenerator),"TODO")]
+  public class RuleBasedDataGeneratorSpeck : SpecK
   {
     TestDataDomainConfiguration TestDataDomain=null;
     EvolutionaryDomainConfiguration EvolutionaryDomain;
     RuleBasedDataGenerator DataGenerator;
     GeneratorResult InitialData;
     int Generations;
+
+    public RuleBasedDataGeneratorSpeck ()
+    {
+        Specify (x => DataGenerator.Generate (1, InitialData))
+          .Case ("String Church", _ => _
+              .Given (StringDomainContext (true, 4))
+              .It ("successfully gets more than 50% of the strings married",
+                  x => x.Result.GetResult<string> ().Count (resultString => resultString.Contains ("Married to")).Should().Be (748)));
+
+      Specify (x => DataGenerator.Generate (Generations, InitialData))
+          .Case ("Planet Earth", _ => _
+              .Given (PersonDomainContext ())
+              .Given ("60 years", x => Generations = 60)
+              .It ("successfully creates 2045 persons",
+                  x => x.Result.GetResult<Person> ().Count.Should ().Be (531)));
+    }
 
     Context DataGeneratorContext ()
     {
@@ -49,16 +64,6 @@ namespace Farada.Evolution.IntegrationTests
           .Given (StringInitialDataContext ());
     }
 
-    [Group]
-    void SimpleStringDomain ()
-    {
-      Specify (x => DataGenerator.Generate (1, InitialData))
-          .Elaborate ("String Church", _ => _
-              .Given (StringDomainContext (true, 4))
-              .It ("successfully gets more than 50% of the strings married",
-                  x => x.Result.GetResult<string> ().Count (resultString => resultString.Contains ("Married to")).Should().Be (748)));
-    }
-
     Context PersonInitialDataContext ()
     {
       return c => c.Given ("adam and eve", x =>
@@ -85,17 +90,6 @@ namespace Farada.Evolution.IntegrationTests
               .AddRule (new ProcreationRule ()).AddRule (new AgingRule ()))
           .Given (DataGeneratorContext ())
           .Given (PersonInitialDataContext ());
-    }
-
-    [Group]
-    void PersonDomain ()
-    {
-      Specify (x => DataGenerator.Generate (Generations, InitialData))
-          .Elaborate ("Planet Earth", _ => _
-              .Given (PersonDomainContext ())
-              .Given ("60 years", x => Generations = 60)
-              .It ("successfully creates 2045 persons",
-                  x => x.Result.GetResult<Person> ().Count.Should ().Be (531)));
     }
   }
 }

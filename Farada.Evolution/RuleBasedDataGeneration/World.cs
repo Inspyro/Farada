@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace Farada.Evolution.RuleBasedDataGeneration
 {
@@ -8,7 +9,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
     
     internal GeneratorResult CurrentData { get; set; }
 
-    internal World (GeneratorResult initialData)
+    internal World ([CanBeNull] GeneratorResult initialData)
     {
       CurrentData = initialData;
       _userData = new WriteableUserData();
