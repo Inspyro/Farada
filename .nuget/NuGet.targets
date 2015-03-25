@@ -22,7 +22,7 @@
         
         <PackageSource Include="https://nuget.org/api/v2/" />		
       	<PackageSource Include="file://mko-pc/c$/Development/TestFx/output/" />
-      	<PackageSource Include="file://mko-pc/c$/Development/TestFx/output/" />
+      	<PackageSource Include="http://teamcity/guestAuth/app/nuget/v1/FeedService.svc/" />
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(OS)' == 'Windows_NT'">
