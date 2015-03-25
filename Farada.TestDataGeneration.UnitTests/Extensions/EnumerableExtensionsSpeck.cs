@@ -66,7 +66,7 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
         return _value == other._value;
       }
 
-      public override bool Equals (object obj)
+      public override bool Equals ([CanBeNull] object obj)
       {
         return Equals (obj as CustomType);
       }

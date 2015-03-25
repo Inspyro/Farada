@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using JetBrains.Annotations;
 
 namespace Farada.Evolution.RuleBasedDataGeneration
 {
@@ -29,7 +30,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
       return true;
     }
 
-    public override bool TrySetMember (SetMemberBinder binder, object value)
+    public override bool TrySetMember (SetMemberBinder binder, [NotNull] object value)
     {
       throw new InvalidOperationException("you cannot set values on this object as it is readonly..");
     }
