@@ -86,7 +86,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 
     public string Name { get { throw new NotImplementedException (); } }
 
-    public Type PropertyType { get { throw new NotImplementedException (); } }
+    public Type Type { get { throw new NotImplementedException (); } }
   }
 
   class DummyTestDataGenerator : ITestDataGenerator

@@ -37,6 +37,6 @@ namespace Farada.TestDataGeneration.FastReflection
     /// <summary>
     /// The type of the property <see cref="PropertyInfo.PropertyType"/>
     /// </summary>
-    Type PropertyType { get; }
+    Type Type { get; }
   }
 }

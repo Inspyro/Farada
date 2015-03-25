@@ -32,15 +32,18 @@ namespace Farada.TestDataGeneration.FastReflection
 
     private IFastTypeInfo CreateTypeInfo (Type type)
     {
+      //At the moment we only support the first constructor (immutability...)
+      //as soon a specific ctor is needed - implement  a strategy for choosing the constructor
+      var fastCtorArguments = type.GetConstructors().First().GetParameters().Select (GetArgumentInfo).ToList();
       var fastProperties = type.GetProperties().Select(GetPropertyInfo).ToList();
-      return new FastTypeInfo(fastProperties);
+      return new FastTypeInfo(fastCtorArguments, fastProperties);
     }
 
      /// <summary>
-    /// Creates an <see cref="IFastPropertyInfo"/> for faster property access
+    /// Creates an <see cref="IFastArgumentInfo"/> for faster argument access
     /// </summary>
-    /// <param name="propertyInfo">the property info to convert</param>
-    /// <returns>The <see cref="IFastPropertyInfo"/></returns>
+    /// <param name="parameterInfo">the parameter info to convert</param>
+    /// <returns>The <see cref="IFastArgumentInfo"/></returns>
     public IFastArgumentInfo GetArgumentInfo(ParameterInfo parameterInfo)
     {
       return CreateArgumentInfo (parameterInfo);

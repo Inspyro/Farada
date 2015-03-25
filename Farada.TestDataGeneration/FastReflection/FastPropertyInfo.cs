@@ -14,7 +14,7 @@ namespace Farada.TestDataGeneration.FastReflection
     private readonly List<Attribute> _attributes;
 
     public string Name { get; private set; }
-    public Type PropertyType { get; private set; }
+    public Type Type { get; private set; }
 
     internal FastPropertyInfo (PropertyInfo propertyInfo):this(propertyInfo.Name, propertyInfo.PropertyType, propertyInfo.GetCustomAttributes())
     {
@@ -28,10 +28,10 @@ namespace Farada.TestDataGeneration.FastReflection
       _setAction = CreateSetAction (propertyInfo, targetType);
     }
 
-    protected FastPropertyInfo (string name, Type propertyType, IEnumerable<Attribute> attributes)
+    protected FastPropertyInfo (string name, Type type, IEnumerable<Attribute> attributes)
     {
       Name = name;
-      PropertyType = propertyType;
+      Type = type;
 
       _attributes = attributes.ToList();
       _attributeTypes = _attributes.Select (a => a.GetType()).ToList();

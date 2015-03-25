@@ -49,7 +49,7 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
       if ((minValue).CompareTo(maxValue) > 0)
       {
         throw new ArgumentOutOfRangeException(
-            string.Format("On the property {0} {1} the Range attribute has an invalid range", property.PropertyType, property.Name));
+            string.Format("On the property {0} {1} the Range attribute has an invalid range", property.Type, property.Name));
       }
 
       return new RangeContstraints<T>(minValue, maxValue);

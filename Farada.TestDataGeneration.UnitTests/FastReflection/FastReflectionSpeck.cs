@@ -116,7 +116,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
 
     static void CompareProperty (IFastPropertyInfo propertyInfo,KeyValuePair<Type,string > property)
     {
-      propertyInfo.PropertyType.Should ().Be (property.Key);
+      propertyInfo.Type.Should ().Be (property.Key);
       propertyInfo.Name.Should ().Be (property.Value);
     }
   }

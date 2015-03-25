@@ -17,7 +17,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     internal PropertyKeyPart (IFastPropertyInfo property, Type concreteType=null)
     {
       Property = property;
-      PropertyType = concreteType ?? Property.PropertyType;
+      PropertyType = concreteType ?? Property.Type;
     }
 
     public override string ToString ()
