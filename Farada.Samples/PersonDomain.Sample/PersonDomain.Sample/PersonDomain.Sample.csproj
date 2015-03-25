@@ -39,11 +39,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Farada.Evolution">
-      <HintPath>..\..\..\Farada.Evolution\bin\Debug\Farada.Evolution.dll</HintPath>
+    <Reference Include="Farada.Evolution, Version=0.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Farada.Evolution.1.0.0.76\lib\net45\Farada.Evolution.dll</HintPath>
     </Reference>
     <Reference Include="Farada.TestDataGeneration">
-      <HintPath>..\..\..\Farada.Evolution\bin\Debug\Farada.TestDataGeneration.dll</HintPath>
+      <HintPath>..\packages\Farada.TestDataGeneration.1.0.0.76\lib\net45\Farada.TestDataGeneration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="JetBrains.Annotations">
+      <HintPath>..\packages\JetBrains.Annotations.9.1.1\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
