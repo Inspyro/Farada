@@ -14,8 +14,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
     public void SetUp ()
     {
       _sut = TestDataGeneratorFactory.Create (cfg =>
-          cfg.UseDefaults (false)
-              .For ((Ice ice) => ice.Origin).AddProvider (f => "FixedOrigin")
+          cfg.UseDefaults (true)
+              .For ((Ice ice) => ice.Origin).AddProvider (f => "FixedOrigin") //IDEA - ForCtorArg("origin")
               .For ((Ice ice) => ice.Temperature).AddProvider (f => -100));
     }
 
