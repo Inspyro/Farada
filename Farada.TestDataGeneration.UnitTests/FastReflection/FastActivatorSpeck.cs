@@ -12,12 +12,13 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
 
     public FastActivatorSpeck ()
     {
-      Specify (x => FastActivator.GetFactory (TypeToCreate))
+      //TODO RN-242: Update test to also use a ctor with arguments... and upgrade thrown exceptions as soon as TestFx is working again
+      Specify (x => FastActivator.GetFactory (TypeToCreate, null))
           .Case ("creates something", _ => _
               .Given ("object type", x => TypeToCreate = typeof (object))
               .It ("creates an valid object function", x => x.Result.Should ().BeOfType (typeof (Func<object>)))
-              .It ("creates a fucntion that returns not null", x => x.Result ().Should ().NotBeNull ())
-              .It ("creates a new object every time", x => x.Result ().Should ().NotBeSameAs (x.Result ())))
+              .It ("creates a fucntion that returns not null", x => x.Result.Should ().NotBeNull ())
+              .It ("creates a new object every time", x => x.Result.Should ().NotBeSameAs (x.Result)))
           .Case ("throws for value type", _ => _
               .Given ("value type", x => TypeToCreate = typeof (int))
               .ItThrows<ArgumentException> (x=>"Value types cannot be instantiated"))
