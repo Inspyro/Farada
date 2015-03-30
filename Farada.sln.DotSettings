@@ -32,4 +32,6 @@
 	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=FC21A15B83F39E40B9380A80D5259A31/Name/@EntryValue">Idea</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=FC21A15B83F39E40B9380A80D5259A31/Pattern/@EntryValue">(?&lt;=\W|^)(?&lt;TAG&gt;IDEA)(\W|$)(.*)</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=FC21A15B83F39E40B9380A80D5259A31/TodoIconStyle/@EntryValue">Normal</s:String>
+	<s:Boolean x:Key="/Default/ReSpeller/UserDictionaries/=en_005Fus/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/ReSpeller/UserDictionaries/=en_005Fus/Words/=Farada/@EntryIndexedValue">True</s:Boolean>
 </wpf:ResourceDictionary>
