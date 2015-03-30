@@ -14,7 +14,6 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
   /// </summary>
   internal class CompoundValueProvider : ITestDataGenerator
   {
-    private readonly FastReflectionUtility _fastReflectionUtility;
     private readonly InstanceFactory _instanceFactory;
     private readonly ModificationFactory _modificationFactory;
 
@@ -24,12 +23,11 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
         ValueProviderDictionary valueProviderDictionary,
         Random random,
         IList<IInstanceModifier> instanceModifiers,
-        FastReflectionUtility fastReflectionUtility)
+        IParameterConversionService parameterConversionService)
     {
       Random = random;
-      _instanceFactory = new InstanceFactory (this, valueProviderDictionary, fastReflectionUtility);
+      _instanceFactory = new InstanceFactory (this, valueProviderDictionary, parameterConversionService);
       _modificationFactory = new ModificationFactory (instanceModifiers, random);
-      _fastReflectionUtility = fastReflectionUtility;
     }
 
     public TValue Create<TValue> (int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo = null)
@@ -87,7 +85,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
           continue;
 
         //now we reflect the properties of the concrete sub type (note:this is cached in a concurrent dictionary) 
-        var properties = _fastReflectionUtility.GetTypeInfo (instancesForType.Key.Type).Properties;
+        var properties = FastReflectionUtility.GetTypeInfo (instancesForType.Key.Type).Properties;
 
         //now we fill each property
         foreach (var property in properties)

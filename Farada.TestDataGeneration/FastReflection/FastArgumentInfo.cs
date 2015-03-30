@@ -3,16 +3,31 @@ using System.Reflection;
 
 namespace Farada.TestDataGeneration.FastReflection
 {
-  internal class FastArgumentInfo:FastPropertyInfo, IFastArgumentInfo
+  internal class FastArgumentInfo:FastMemberBase, IFastArgumentInfo
   {
-    internal FastArgumentInfo (IParameterConversionService parameterConversion, ParameterInfo parameterInfo)
-        : base(parameterConversion.ToPropertyName(parameterInfo.Name), parameterInfo.ParameterType, parameterInfo.GetCustomAttributes())
+    private readonly Type _declaringType;
+    private PropertyInfo _cachedProperty;
+
+    internal FastArgumentInfo (ParameterInfo parameterInfo)
+        : base(parameterInfo)
     {
+      _declaringType = parameterInfo.Member.DeclaringType;
+    }
+
+    public IFastPropertyInfo ToProperty (IParameterConversionService parameterConversion)
+    {
+      if (_cachedProperty == null)
+      {
+        var propertyName = parameterConversion.ToPropertyName (Name);
+        _cachedProperty = _declaringType.GetProperty (propertyName);
+      }
+
+      return new FastPropertyInfo (_cachedProperty);
     }
   }
 
-  public interface IFastArgumentInfo:IFastParameterInfo
+  public interface IFastArgumentInfo:IFastMemberInfo
   {
-     
+    IFastPropertyInfo ToProperty (IParameterConversionService parameterConversion);
   }
 }

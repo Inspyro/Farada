@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Farada.TestDataGeneration.FastReflection
 {
-  internal class FastPropertyInfo:IFastPropertyInfo
+  internal class FastPropertyInfo: FastMemberBase, IFastPropertyInfo
   {
     private readonly Func<object, object> _getFunction;
     private readonly Action<object, object> _setAction;
-    private readonly List<Type> _attributeTypes;
-    private readonly List<Attribute> _attributes;
 
-    public string Name { get; private set; }
-    public Type Type { get; private set; }
-
-    internal FastPropertyInfo (PropertyInfo propertyInfo):this(propertyInfo.Name, propertyInfo.PropertyType, propertyInfo.GetCustomAttributes())
+    internal FastPropertyInfo (PropertyInfo propertyInfo):base(propertyInfo)
     {
       var targetType = propertyInfo.DeclaringType;
       if (targetType == null)
@@ -26,15 +19,6 @@ namespace Farada.TestDataGeneration.FastReflection
 
       _getFunction = CreateGetFunction (propertyInfo, targetType);
       _setAction = CreateSetAction (propertyInfo, targetType);
-    }
-
-    protected FastPropertyInfo (string name, Type type, IEnumerable<Attribute> attributes)
-    {
-      Name = name;
-      Type = type;
-
-      _attributes = attributes.ToList();
-      _attributeTypes = _attributes.Select (a => a.GetType()).ToList();
     }
 
     private static Func<object, object> CreateGetFunction (PropertyInfo propertyInfo, Type targetType)
@@ -60,8 +44,7 @@ namespace Farada.TestDataGeneration.FastReflection
 
       var exBody = Expression.Call(
           Expression.Convert(exTarget, targetType),
-          methodInfo,
-          new Expression[] { Expression.Convert(exValue, propertyInfo.PropertyType) });
+          methodInfo, Expression.Convert(exValue, propertyInfo.PropertyType));
 
       var lambda = Expression.Lambda<Action<object, object>>(exBody, exTarget, exValue);
       return lambda.Compile();
@@ -78,29 +61,12 @@ namespace Farada.TestDataGeneration.FastReflection
     {
       _setAction(instance, value);
     }
-
-    
-    public T GetCustomAttribute<T> () where T : Attribute
-    {
-      return (T) _attributes.FirstOrDefault(a => a is T); 
-    }
-
-   
-    public IEnumerable<Type> Attributes
-    {
-      get { return _attributeTypes; }
-    }
-
-    public bool IsDefined (Type type)
-    {
-      return _attributeTypes.Any(type.IsAssignableFrom);
-    }
   }
 
   /// <summary>
   /// Provides a faster way to access a property than <see cref="PropertyInfo"/>
   /// </summary>
-  public interface IFastPropertyInfo:IFastParameterInfo
+  public interface IFastPropertyInfo:IFastMemberInfo
   {
      /// <summary>
     /// A fast way to get the value of the property

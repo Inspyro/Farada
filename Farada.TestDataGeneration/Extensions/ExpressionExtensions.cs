@@ -12,12 +12,12 @@ namespace Farada.TestDataGeneration.Extensions
   /// </summary>
   internal static class ExpressionExtensions
   {
-    internal static IEnumerable<PropertyKeyPart> ToChain(this Expression expression, FastReflectionUtility fastReflectionUtility)
+    internal static IEnumerable<PropertyKeyPart> ToChain(this Expression expression)
     {
       var memberExpression = expression as MemberExpression;
       if (memberExpression != null)
       {
-        foreach (var chainKey in memberExpression.Expression.ToChain(fastReflectionUtility))
+        foreach (var chainKey in memberExpression.Expression.ToChain())
         {
           yield return chainKey;
         }
@@ -25,13 +25,13 @@ namespace Farada.TestDataGeneration.Extensions
         if (!(memberExpression.Member is PropertyInfo))
           throw new NotSupportedException (memberExpression.Member.Name + " is not a property. Members that are not properties are not supported");
 
-        yield return new PropertyKeyPart(fastReflectionUtility.GetPropertyInfo(((PropertyInfo) memberExpression.Member)));
+        yield return new PropertyKeyPart(FastReflectionUtility.GetPropertyInfo(((PropertyInfo) memberExpression.Member)));
       }
     }
 
-    internal static IEnumerable<PropertyKeyPart> ToChain (this LambdaExpression expression, FastReflectionUtility fastReflectionUtility)
+    internal static IEnumerable<PropertyKeyPart> ToChain (this LambdaExpression expression)
     {
-      return expression.Body.ToChain(fastReflectionUtility);
+      return expression.Body.ToChain();
     }
 
     internal static Type GetParameterType(this Expression expression)

@@ -58,8 +58,7 @@ namespace Farada.TestDataGeneration.Fluent
     private CompoundValueProviderBuilder CreateValueProviderBuilder ()
     {
       var valueProviderBuilder = new CompoundValueProviderBuilder (
-          _random,
-          new FastReflectionUtility (new FuncParameterConversionSerivce (_paremeterToPropertyConversionFunc)));
+          _random, new FuncParameterConversionSerivce (_paremeterToPropertyConversionFunc));
 
       if (!_useDefaults)
         return valueProviderBuilder;

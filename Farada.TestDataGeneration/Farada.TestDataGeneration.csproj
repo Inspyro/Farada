@@ -53,7 +53,8 @@
     <Compile Include="CompoundValueProviders\ModificationFactory.cs" />
     <Compile Include="CompoundValueProviders\SubTypeInstanceHolder.cs" />
     <Compile Include="FastReflection\FastArgumentInfo.cs" />
-    <Compile Include="FastReflection\IFastParameterInfo.cs" />
+    <Compile Include="FastReflection\FastMemberBase.cs" />
+    <Compile Include="FastReflection\IFastMemberInfo.cs" />
     <Compile Include="FastReflection\IParameterConversionService.cs" />
     <Compile Include="Fluent\AttributeProviderConfigurator.cs" />
     <Compile Include="BaseDomain\Constraints\RangeContstraints.cs" />

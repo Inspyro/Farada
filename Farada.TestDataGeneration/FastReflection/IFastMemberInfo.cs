@@ -7,7 +7,7 @@ namespace Farada.TestDataGeneration.FastReflection
   /// <summary>
   /// Provides a faster way to access a property than <see cref="PropertyInfo"/>
   /// </summary>
-  public interface IFastParameterInfo
+  public interface IFastMemberInfo
   {
     /// <summary>
     /// A fast way to get an attribute from the property
