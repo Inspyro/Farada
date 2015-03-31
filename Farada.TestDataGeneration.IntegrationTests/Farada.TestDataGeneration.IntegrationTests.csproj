@@ -33,9 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FakeItEasy, Version=1.21.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+    <Reference Include="FakeItEasy, Version=1.25.2.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\FakeItEasy.1.21.0\lib\net40\FakeItEasy.dll</HintPath>
+      <HintPath>..\packages\FakeItEasy.1.25.2\lib\net40\FakeItEasy.dll</HintPath>
     </Reference>
     <Reference Include="FluentAssertions, Version=3.3.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -63,16 +63,16 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="TestFx">
-      <HintPath>..\packages\TestFx.0.0.1-Pre00041\lib\net35\TestFx.dll</HintPath>
+      <HintPath>..\packages\TestFx.0.0.1-Pre00048\lib\net35\TestFx.dll</HintPath>
     </Reference>
     <Reference Include="TestFx.FakeItEasy">
-      <HintPath>..\packages\TestFx.FakeItEasy.0.0.1-Pre00041\lib\net35\TestFx.FakeItEasy.dll</HintPath>
+      <HintPath>..\packages\TestFx.FakeItEasy.0.0.1-Pre00048\lib\net35\TestFx.FakeItEasy.dll</HintPath>
     </Reference>
     <Reference Include="TestFx.Specifications">
-      <HintPath>..\packages\TestFx.Specifications.0.0.1-Pre00041\lib\net35\TestFx.Specifications.dll</HintPath>
+      <HintPath>..\packages\TestFx.Specifications.0.0.1-Pre00048\lib\net35\TestFx.Specifications.dll</HintPath>
     </Reference>
     <Reference Include="TestFx.Utilities">
-      <HintPath>..\packages\TestFx.0.0.1-Pre00041\lib\net35\TestFx.Utilities.dll</HintPath>
+      <HintPath>..\packages\TestFx.0.0.1-Pre00048\lib\net35\TestFx.Utilities.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

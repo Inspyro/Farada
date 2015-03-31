@@ -13,13 +13,13 @@ namespace Farada.TestDataGeneration.IntegrationTests
     {
       Specify (x =>
           TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
-          .Case ("should fill all according to context", _ => _
+          .Case ("should fill all according to context1", _ => _
               .Given (ValueProviderSubTypeContext ())
               .It ("should fill tire diameter", x => x.Result.Tire.Diameter.Should ().Be (10)));
 
        Specify (x =>
           TestDataGenerator.Create<AirVehicle> (MaxRecursionDepth, null))
-          .Case ("should fill all according to context", _ => _
+          .Case ("should fill all according to context2", _ => _
               .Given (ValueProviderSubTypeContext ())
               .It ("should fill jet engine fuel per second", x => ((JetEngine)x.Result.Engine).FuelUsePerSecond.Should ().Be (20)));
 

@@ -30,7 +30,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
       Specify (x =>
           TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
-          .Case ("should fill properties according to provider chain", _ => _
+          .Case ("should fill properties according to provider chain1", _ => _
               .Given (PropertyProviderContext ())
               .It ("should fill weight", x => x.Result.Weight.Should ().Be (100))
               .It ("should fill main color", x => x.Result.MainColor.Should ().Be (Color.Red))
@@ -39,7 +39,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
       Specify (x =>
           TestDataGenerator.Create<AirVehicle> (MaxRecursionDepth, null))
-          .Case ("should fill properties according to provider chain", _ => _
+          .Case ("should fill properties according to provider chain2", _ => _
               .Given (PropertyProviderContext ())
               .It ("should fill weight with default int", x => x.Result.Weight.Should ().Be (5))
               .It ("should fill main color with first enum value", x => x.Result.MainColor.Should ().Be (Color.White))
@@ -56,7 +56,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
       Specify (x =>
           TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
-          .Case ("should fill properties according to provider chain", _ => _
+          .Case ("should fill properties according to provider chain3", _ => _
               .Given (HierarchyPropertyProviderContext ())
               //
               //test simple cases again because of more complex domain
@@ -67,7 +67,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
       Specify (x =>
           TestDataGenerator.CreateMany<AirVehicle> (2,MaxRecursionDepth, null).First())
-          .Case ("should fill properties according to provider chain", _ => _
+          .Case ("should fill properties according to provider chain4", _ => _
               .Given (HierarchyPropertyProviderContext ())
               //
               //test simple cases again because of more complex domain
@@ -83,7 +83,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
       Specify (x =>
           TestDataGenerator.CreateMany<AirVehicle> (2, MaxRecursionDepth, null).Last())
-          .Case ("should fill properties according to provider chain", _ => _
+          .Case ("should fill properties according to provider chain5", _ => _
               .Given (HierarchyPropertyProviderContext ())
               //
               //test simple cases again because of more complex domain
@@ -97,14 +97,14 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
       Specify (x =>
           TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
-          .Case ("should fill properties according to provider chain", _ => _
+          .Case ("should fill properties according to provider chain6", _ => _
               .Given(AttributeProviderContext())
               .It ("should fill tire usage", x => x.Result.Tire.TireUsage.Should ().Be (100.1d))
               .It ("should fill weight", x => x.Result.Weight.Should ().Be (52)));
 
       Specify (x =>
           TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
-          .Case ("should fill properties according to provider chain", _ => _
+          .Case ("should fill properties according to provider chain7", _ => _
               .Given (TypeHierarchyChainProviderContext ())
               .It ("should fill name", x => x.Result.Name.Should ().Be ("12345!6!78")));
     }

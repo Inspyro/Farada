@@ -5,7 +5,7 @@ using TestFx.Specifications.InferredApi;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  public abstract class TestDataGeneratorBaseSpeck:SpecK
+  public abstract class TestDataGeneratorBaseSpeck : SpecK
   {
     protected Exception CreationException;
     protected TestDataDomainConfiguration TestDataDomainConfiguration { get; set; }

@@ -90,77 +90,77 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
       //empty domain
 
-       GenericCase<byte> ("simple byte case", _ => _
+       GenericCase<byte> ("simple byte case with empty domain", _ => _
          .Given(BaseDomainContext(false))
           //
           .It ("should be a valid byte", x => x.Result.Should ().Be(default(byte))));
 
-      GenericCase<char> ("simple char case", _ => _
+      GenericCase<char> ("simple char case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
           .It ("should be a valid char", x => x.Result.Should ().Be(default(char))));
 
-      GenericCase<decimal> ("simple decimal case", _ => _
+      GenericCase<decimal> ("simple decimal case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
           .It ("should be a valid decimal", x => x.Result.Should ().Be(default(decimal))));
 
-      GenericCase<double> ("simple double case", _ => _
+      GenericCase<double> ("simple double case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
           .It ("should be a valid double", x => x.Result.Should ().Be(default(double))));
 
-      GenericCase<SomeEnum> ("simple Enum case", _ => _
+      GenericCase<SomeEnum> ("simple Enum case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
           .It ("should be a valid Enum", x => x.Result.Should ().Be(SomeEnum.SomeMember1)));
 
-      GenericCase<float> ("simple float case", _ => _
+      GenericCase<float> ("simple float case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
           .It ("should be a valid float", x => x.Result.Should ().Be(default(float))));
 
-       GenericCase<int> ("simple int case", _ => _
+       GenericCase<int> ("simple int case with empty domain", _ => _
          .Given(BaseDomainContext(false))
           //
           .It ("should be a valid int", x => x.Result.Should ().Be(default(int))));
 
-      GenericCase<long> ("simple long case", _ => _
+      GenericCase<long> ("simple long case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
           .It ("should be a valid long", x => x.Result.Should ().Be(default(long))));
 
-       GenericCase<sbyte> ("simple sbyte case", _ => _
+       GenericCase<sbyte> ("simple sbyte case with empty domain", _ => _
          .Given(BaseDomainContext(false))
           //
           .It ("should be a valid sbyte", x => x.Result.Should ().Be(default(sbyte))));
 
-      GenericCase<short> ("simple short case", _ => _
+      GenericCase<short> ("simple short case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
           .It ("should be a valid short", x => x.Result.Should ().Be(default(short))));
 
-      GenericCase<uint> ("simple uint case", _ => _
+      GenericCase<uint> ("simple uint case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
           .It ("should be a valid uint", x => x.Result.Should ().Be(default(uint))));
 
-      GenericCase<ulong> ("simple ulong case", _ => _
+      GenericCase<ulong> ("simple ulong case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
           .It ("should be a valid ulong", x => x.Result.Should ().Be(default(ulong))));
 
-      GenericCase<ushort> ("simple ushort case", _ => _
+      GenericCase<ushort> ("simple ushort case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
           .It ("should be a valid ushort", x => x.Result.Should ().Be(default(ushort))));
 
-      GenericCase<string> ("simple string case", _ => _
+      GenericCase<string> ("simple string case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
           .It ("should equal test", x => x.Result.Should ().BeNull ()));
 
-      GenericCase<DateTime> ("simple DateTime case", _ => _
+      GenericCase<DateTime> ("simple DateTime case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
           .It ("should equal some DateTime", x => x.Result.GetType ().Should ().Be (typeof (DateTime))));
