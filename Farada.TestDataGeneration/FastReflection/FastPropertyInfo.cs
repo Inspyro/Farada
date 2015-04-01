@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.FastReflection
 {
@@ -57,7 +58,7 @@ namespace Farada.TestDataGeneration.FastReflection
     }
 
     
-    public void SetValue (object instance, object value)
+    public void SetValue (object instance, [CanBeNull] object value)
     {
       _setAction(instance, value);
     }
@@ -80,6 +81,6 @@ namespace Farada.TestDataGeneration.FastReflection
     /// </summary>
     /// <param name="instance">the class instance</param>
     /// <param name="value">the value to set, needs to match the <see cref="PropertyType"/></param>
-    void SetValue (object instance, object value);
+    void SetValue (object instance, [CanBeNull] object value);
   }
 }

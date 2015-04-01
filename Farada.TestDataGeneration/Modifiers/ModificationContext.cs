@@ -1,5 +1,6 @@
 ﻿using System;
 using Farada.TestDataGeneration.FastReflection;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.Modifiers
 {
@@ -14,8 +15,9 @@ namespace Farada.TestDataGeneration.Modifiers
     public Type PropertyType { get; private set; }
 
     /// <summary>
-    /// The concrete property to modify - can be null
+    /// The concrete property to modify
     /// </summary>
+    [CanBeNull]
     public IFastPropertyInfo Property { get; private set; }
 
     /// <summary>
@@ -23,7 +25,7 @@ namespace Farada.TestDataGeneration.Modifiers
     /// </summary>
     public Random Random { get; private set; }
 
-    internal ModificationContext (Type propertyType, IFastPropertyInfo property, Random random)
+    internal ModificationContext (Type propertyType, [CanBeNull] IFastPropertyInfo property, Random random)
     {
       PropertyType = propertyType;
       Property = property;

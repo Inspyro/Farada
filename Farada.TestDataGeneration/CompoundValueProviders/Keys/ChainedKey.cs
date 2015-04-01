@@ -30,6 +30,9 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
     public IKey ChangePropertyType (Type newPropertyType)
     {
+      if (Property == null)
+        throw new InvalidOperationException ("You cannot change the property type of a non-existing (null) property");
+
       var newPropertyChain = new List<PropertyKeyPart> (_propertyChain);
       newPropertyChain[newPropertyChain.Count - 1] = new PropertyKeyPart (Property, newPropertyType);
 

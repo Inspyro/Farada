@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.Extensions;
@@ -42,6 +43,9 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     {
       if (valueProvider == null || valueProviderContext == null)
       {
+        if (!key.Type.CanBeInstantiated())
+          return null;
+
         return CreateNewInstances (key, numberOfObjects);
       }
 
@@ -85,6 +89,9 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
       var previousLink = providerLink.Previous == null ? null : providerLink.Previous();
       var previousContext = previousLink == null ? null : CreateValueProviderContext (previousLink, key);
+
+      //TODO RN-246...
+      Trace.Assert (key.Property != null);
 
       return providerLink.Value.CreateContext (
           new ValueProviderObjectContext (

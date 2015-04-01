@@ -33,8 +33,11 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
     /// <param name="property">The property where for which the range constraints should be extracted</param>
     /// <returns></returns>
     [CanBeNull]
-    public static RangeContstraints<T> FromProperty (IFastPropertyInfo property)
+    public static RangeContstraints<T> FromProperty ([CanBeNull] IFastPropertyInfo property)
     {
+      if (property == null)
+        return null;
+
       if (!property.IsDefined(typeof (RangeAttribute)))
         return null;
 

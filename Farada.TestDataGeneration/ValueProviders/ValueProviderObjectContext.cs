@@ -1,6 +1,7 @@
 ﻿using System;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.FastReflection;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
@@ -13,6 +14,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     internal Func<object> GetPreviousValue { get; private set; }
     internal Type TargetValueType { get; private set; }
     internal IFastPropertyInfo PropertyInfo { get; private set; }
+
     internal ITestDataGenerator TestDataGenerator { get; private set; }
 
     protected internal ValueProviderObjectContext (

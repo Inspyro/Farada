@@ -1,5 +1,6 @@
 ﻿using System;
 using Farada.TestDataGeneration.FastReflection;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
@@ -13,6 +14,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     IKey CreateKey (IFastPropertyInfo property);
 
     Type Type { get; }
+    [CanBeNull]
     IFastPropertyInfo Property { get; }
     int RecursionDepth { get; }
     IKey ChangePropertyType (Type newPropertyType);

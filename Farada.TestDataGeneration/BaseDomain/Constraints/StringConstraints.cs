@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Farada.TestDataGeneration.FastReflection;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.BaseDomain.Constraints
 {
@@ -34,8 +35,11 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
     /// <param name="property">The property for which the string constraints should be extracted</param>
     /// <returns>the resulting string constraints or null if no attribute was found</returns>
     /// <exception cref="ArgumentOutOfRangeException">throws when maxLength is smaller than minLength - so the attributes are declared in an incorrect manner</exception>
-    public static StringConstraints FromProperty(IFastPropertyInfo property)
+    public static StringConstraints FromProperty([CanBeNull] IFastPropertyInfo property)
     {
+      if (property == null)
+        return null;
+
       var minLength = -1;
       var maxLength = -1;
 
