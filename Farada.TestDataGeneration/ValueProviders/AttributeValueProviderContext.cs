@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
@@ -12,6 +13,8 @@ namespace Farada.TestDataGeneration.ValueProviders
     protected internal AttributeValueProviderContext (ValueProviderObjectContext objectContext)
         : base(objectContext)
     {
+      //REVIEW RN-242
+      Trace.Assert (objectContext.PropertyInfo != null);
       Attribute = objectContext.PropertyInfo.GetCustomAttribute<TAttribute>();
     }
 

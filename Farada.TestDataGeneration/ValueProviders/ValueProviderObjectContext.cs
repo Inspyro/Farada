@@ -13,6 +13,8 @@ namespace Farada.TestDataGeneration.ValueProviders
     internal Random Random { get; private set; }
     internal Func<object> GetPreviousValue { get; private set; }
     internal Type TargetValueType { get; private set; }
+
+    [CanBeNull]
     internal IFastPropertyInfo PropertyInfo { get; private set; }
 
     internal ITestDataGenerator TestDataGenerator { get; private set; }
@@ -21,7 +23,7 @@ namespace Farada.TestDataGeneration.ValueProviders
         ITestDataGenerator testDataGenerator,
         Func<object> getPreviousValue,
         Type targetValueType,
-        IFastPropertyInfo fastPropertyInfo)
+        [CanBeNull] IFastPropertyInfo fastPropertyInfo)
     {
       TestDataGenerator = testDataGenerator;
       Random = testDataGenerator.Random;

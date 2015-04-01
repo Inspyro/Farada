@@ -43,10 +43,18 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     {
       if (valueProvider == null || valueProviderContext == null)
       {
-        if (!key.Type.CanBeInstantiated())
+        //TODO RN-246: Adapt check to be sure before creating new instances...
+        if (key.Type.IsValueType||key.Type==typeof(string))
           return null;
 
-        return CreateNewInstances (key, numberOfObjects);
+        try
+        {
+          return CreateNewInstances (key, numberOfObjects);
+        }
+        catch (NotSupportedException)
+        {
+          return null;
+        }
       }
 
       return EnumerableExtensions.Repeat (() => valueProvider.CreateValue (valueProviderContext), numberOfObjects).ToList();
@@ -89,9 +97,6 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
       var previousLink = providerLink.Previous == null ? null : providerLink.Previous();
       var previousContext = previousLink == null ? null : CreateValueProviderContext (previousLink, key);
-
-      //TODO RN-246...
-      Trace.Assert (key.Property != null);
 
       return providerLink.Value.CreateContext (
           new ValueProviderObjectContext (

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -28,7 +29,8 @@ namespace Farada.TestDataGeneration.FastReflection
     {
       //At the moment we only support the first constructor (immutability...)
       //as soon a specific ctor is needed - implement  a strategy for choosing the constructor
-      var fastCtorArguments = type.GetConstructors().First().GetParameters().Select (GetArgumentInfo).ToList();
+      var ctor = type.GetConstructors().FirstOrDefault();
+      var fastCtorArguments = ctor != null ? ctor.GetParameters().Select (GetArgumentInfo).ToList() : new List<IFastArgumentInfo>();
       var fastProperties = type.GetProperties().Select(GetPropertyInfo).ToList();
       return new FastTypeInfo(fastCtorArguments, fastProperties);
     }

@@ -12,6 +12,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
   {
     public TestDataGeneratorDomainSpeck ()
     {
+      //REVIEW RN-242: Not detected?!
+
       //default domain
        GenericCase<byte> ("simple byte case", _ => _
           .Given(BaseDomainContext(seed:5))

@@ -27,7 +27,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
             }
         };
 
-        Arrangement<Dummy, Dummy,Dummy> withoutException = x =>TestDataGenerator= TestDataGeneratorFactory.Create (TestDataDomainConfiguration);;
+        Arrangement<Dummy, Dummy,Dummy> withoutException = x =>
+          TestDataGenerator= TestDataGeneratorFactory.Create (TestDataDomainConfiguration);;
 
         return
                 c =>

@@ -2,34 +2,37 @@
 using Farada.TestDataGeneration.CompoundValueProviders;
 using FluentAssertions;
 using NUnit.Framework;
+using TestFx.Specifications;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  [TestFixture]
-  public class TestDataGeneratorImmutabilityTest
+   [Subject (typeof (ITestDataGenerator), "TODO")]
+  public class TestDataGeneratorImmutabilityTest:TestDataGeneratorBaseSpeck
   {
     ITestDataGenerator _sut;
 
-    [SetUp]
-    public void SetUp ()
+    public TestDataGeneratorImmutabilityTest ()
     {
-      _sut = TestDataGeneratorFactory.Create (cfg =>
-          cfg.UseDefaults (true)
-              .For ((Ice ice) => ice.Origin).AddProvider (f => "FixedOrigin") //IDEA - ForCtorArg("origin")
-              .For ((Ice ice) => ice.Temperature).AddProvider (f => -100));
+      Specify (x => TestDataGenerator.Create<Ice> (MaxRecursionDepth, null))
+          .Case ("Properties Are Initialized", _ => _
+              .Given (ConfigurationContext (cfg =>
+                  cfg.UseDefaults (false)
+                      .For ((Ice ice) => ice.Origin).AddProvider (f => "FixedOrigin") //IDEA - ForCtorArg("origin")
+                      .For ((Ice ice) => ice.Temperature).AddProvider (f => -100)))
+              .It ("initialized first property correctly", x => x.Result.Origin.Should ().Be ("FixedOrigin"))
+              .It ("initialized second property correctly", x => x.Result.Temperature.Should ().Be (-100)));
     }
 
-    [Test]
-    public void PropertiesAreInitialized()
-    {
-      var result=_sut.Create<Ice> ();
-
-      result.Origin.Should ().Be ("FixedOrigin");
-      result.Temperature.Should ().Be (-100);
-    }
+     Context ConfigurationContext (TestDataDomainConfiguration config)
+     {
+       return c => c
+           .Given ("domain with valid configuration", x => { 
+             TestDataDomainConfiguration = config; })
+           .Given (TestDataGeneratorContext ());
+     }
   }
 
-  internal class Ice
+  public class Ice
   {
     private readonly string _origin;
     private readonly int _temperature;
