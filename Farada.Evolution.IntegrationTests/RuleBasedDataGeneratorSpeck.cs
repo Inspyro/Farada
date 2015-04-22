@@ -8,7 +8,7 @@ using TestFx.Specifications;
 
 namespace Farada.Evolution.IntegrationTests
 {
-  [Subject (typeof (RuleBasedDataGenerator),"TODO")]
+  [Subject (typeof (RuleBasedDataGenerator),"Generate")]
   public class RuleBasedDataGeneratorSpeck : SpecK
   {
     TestDataDomainConfiguration TestDataDomain=null;
@@ -29,7 +29,7 @@ namespace Farada.Evolution.IntegrationTests
           .Case ("Planet Earth", _ => _
               .Given (PersonDomainContext ())
               .Given ("60 years", x => Generations = 60)
-              .It ("successfully creates 2045 persons",
+              .It ("successfully creates 531 persons",
                   x => x.Result.GetResult<Person> ().Count.Should ().Be (531)));
     }
 
