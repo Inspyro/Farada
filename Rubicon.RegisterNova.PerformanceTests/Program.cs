@@ -18,7 +18,7 @@ namespace Rubicon.RegisterNova.PerformanceTests
       //var listOfUniverses = valueProvider.CreateMany<Universe>(count).ToList();
 
       Console.WriteLine(
-          "Took {0} s to generate {1} universes",
+          "Took {0}s to generate {1} universes",
           (DateTime.Now - start).TotalSeconds,
           listOfUniverses.Count);
 
