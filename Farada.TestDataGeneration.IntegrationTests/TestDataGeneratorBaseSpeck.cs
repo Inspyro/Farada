@@ -39,7 +39,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
     protected Context BaseDomainContext (bool useDefaults = true, int? seed = null)
     {
       return c => c
-          .Given ("empty base domain with seed " + (!seed.HasValue ? "any" : seed.ToString ()),
+          .Given ((useDefaults ? "default domain" : "empty domain")+" with seed " + (!seed.HasValue ? "random" : seed.ToString ()),
               x => TestDataDomainConfiguration=(configurator => configurator.UseDefaults(useDefaults).UseRandom(seed.HasValue ? new Random (seed.Value) : new Random ())))
           .Given (TestDataGeneratorContext ());
     }
