@@ -5,10 +5,10 @@ using TestFx.Specifications;
 
 namespace Farada.TestDataGeneration.UnitTests.Extensions
 {
-  [Subject (typeof (RandomExtensions), "TODO")]
-  public class RandomExtensionsSpeck:SpecK<Random>
+  [Subject (typeof (RandomExtensions), "Next")]
+  public class RandomExtensionsSpecK :SpecK<Random>
   {
-    public RandomExtensionsSpeck ()
+    public RandomExtensionsSpecK ()
     {
       Specify (x => x.Next (byte.MinValue, byte.MaxValue))
           .Case ("returns number in byte range", _ => _
@@ -30,9 +30,9 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
             .Given(DefaultRandomContext())
               .It ("result is in float range", x => x.Result.Should ().BeInRange (float.MinValue, float.MaxValue)));
 
-      Specify (x => x.Next(long.MinValue, long.MaxValue))
+      Specify (x => x.Next (long.MinValue, long.MaxValue))
           .Case ("returns number in long range", _ => _
-            .Given(DefaultRandomContext())
+              .Given (DefaultRandomContext ())
               .It ("result is in long range", x => x.Result.Should ().BeInRange (long.MinValue, long.MaxValue)));
 
       Specify (x => x.Next(uint.MinValue, uint.MaxValue))
@@ -60,9 +60,9 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
             .Given(DefaultRandomContext())
               .It ("result is in sbyte range", x => x.Result.Should ().BeInRange (sbyte.MinValue, sbyte.MaxValue)));
 
-      //NextSeed..
+      ////NextSeed..
       Specify (x => x.Next (long.MinValue, long.MaxValue))
-          .Case ("returns number in byte range", _ => _
+          .Case ("returns number in long range according to seed", _ => _
               .Given (SeededRandomContext (0))
               .It ("result is always 10", x => x.Result.Should ().Be(2086725849749066753)));
     }

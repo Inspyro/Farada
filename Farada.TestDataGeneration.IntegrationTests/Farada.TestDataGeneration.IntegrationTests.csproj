@@ -62,28 +62,24 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TestFx">
-      <HintPath>..\packages\TestFx.0.0.1-Pre00048\lib\net35\TestFx.dll</HintPath>
+    <Reference Include="TestFx.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\TestFx.Core.0.0.1-Pre00091\lib\net45\TestFx.Core.dll</HintPath>
     </Reference>
-    <Reference Include="TestFx.FakeItEasy">
-      <HintPath>..\packages\TestFx.FakeItEasy.0.0.1-Pre00048\lib\net35\TestFx.FakeItEasy.dll</HintPath>
+    <Reference Include="TestFx.FakeItEasy, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\TestFx.FakeItEasy.0.0.1-Pre00091\lib\net45\TestFx.FakeItEasy.dll</HintPath>
     </Reference>
-    <Reference Include="TestFx.Specifications">
-      <HintPath>..\packages\TestFx.Specifications.0.0.1-Pre00048\lib\net35\TestFx.Specifications.dll</HintPath>
-    </Reference>
-    <Reference Include="TestFx.Utilities">
-      <HintPath>..\packages\TestFx.0.0.1-Pre00048\lib\net35\TestFx.Utilities.dll</HintPath>
+    <Reference Include="TestFx.Specifications, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\TestFx.Specifications.0.0.1-Pre00091\lib\net45\TestFx.Specifications.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="..\AssemblyInfoTestsShared.cs">
-      <Link>Properties\AssemblyInfoShared.cs</Link>
-    </Compile>
     <Compile Include="AssertionExtensions.cs" />
-    <Compile Include="Properties\FakeItEasyTestExtensions.cs" />
     <Compile Include="TestDataGeneratorImmutabilityTest.cs" />
     <Compile Include="TestDataGeneratorEdgeCaseSpeck.cs" />
     <Compile Include="TestDataGeneratorCustomContextSpeck.cs" />
@@ -107,6 +103,8 @@
     <Compile Include="TestDomain\AbstractVehicle.cs" />
     <Compile Include="TestDomain\Universe.cs" />
     <Compile Include="TestDomain\VehicleOnlyValueProvider.cs" />
+    <Compile Include="_TestExtensions\DefaultInitializationTestExtension.cs" />
+    <Compile Include="_TestExtensions\FakeItEasyTestExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

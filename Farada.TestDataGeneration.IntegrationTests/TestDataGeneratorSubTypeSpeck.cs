@@ -6,7 +6,7 @@ using TestFx.Specifications;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  [Subject (typeof (ITestDataGenerator), "TODO")]
+  [Subject (typeof (ITestDataGenerator), "Create_SubTypes")]
   class TestDataGeneratorSubTypeSpeck:TestDataGeneratorBaseSpeck
   {
     public TestDataGeneratorSubTypeSpeck ()

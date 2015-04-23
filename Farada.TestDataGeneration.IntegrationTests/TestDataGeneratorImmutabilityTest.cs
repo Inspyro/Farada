@@ -6,7 +6,7 @@ using TestFx.Specifications;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-   [Subject (typeof (ITestDataGenerator), "TODO")]
+   [Subject (typeof (ITestDataGenerator), "Create_Immutable")]
   public class TestDataGeneratorImmutabilityTest:TestDataGeneratorBaseSpeck
   {
     ITestDataGenerator _sut;

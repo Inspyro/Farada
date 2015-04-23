@@ -7,7 +7,7 @@ using TestFx.Specifications;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  [Subject (typeof (ITestDataGenerator), "TODO")]
+  [Subject (typeof (ITestDataGenerator), "Create_WithConstraints")]
   class TestDataGeneratorConstraintsSpeck : TestDataGeneratorBaseSpeck
   {
     public TestDataGeneratorConstraintsSpeck ()
@@ -29,13 +29,13 @@ namespace Farada.TestDataGeneration.IntegrationTests
           TestDataGenerator.Create<ClassWithInvalidStringLengthConstraint> (MaxRecursionDepth, null))
           .Case ("should raise argument out of range exception", _ => _
               .Given (BaseDomainContext ())
-              .ItThrows<ArgumentOutOfRangeException> ());//x=>"On the property System.String InvalidRangedName the StringLength attribute has an invalid range")); //TODO RN-246: contains??
+              .ItThrows (typeof(ArgumentOutOfRangeException)));//x=>"On the property System.String InvalidRangedName the StringLength attribute has an invalid range")); //TODO RN-246: contains??
 
       Specify (x =>
           TestDataGenerator.Create<ClassWithInvalidRangeConstraint> (MaxRecursionDepth, null))
           .Case ("should raise argument exception", _ => _
               .Given (BaseDomainContext ())
-              .ItThrows<ArgumentOutOfRangeException> ());
+              .ItThrows (typeof(ArgumentOutOfRangeException)));
           //x => "On the property System.Int32 InvalidRangedNumber the Range attribute has an invalid range")); //TODO RN-246
     }
 

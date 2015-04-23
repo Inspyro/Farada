@@ -6,7 +6,7 @@ using TestFx.Specifications;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  [Subject (typeof (ITestDataGenerator), "TODO")]
+  [Subject (typeof (ITestDataGenerator), "Create_WithEdgeCase")]
   class TestDataGeneratorEdgeCaseSpeck : TestDataGeneratorBaseSpeck
   {
     public TestDataGeneratorEdgeCaseSpeck ()
@@ -15,17 +15,17 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Case ("should throw exception for fields", _ => _
               .Given (ConfigurationContext (c => c.For ((ClassWithVariousMembers y) => y.PublicField).AddProvider (dummy => "")))
               .It ("throws correct exception", x => CreationException.GetType ().Should ().Be (typeof (NotSupportedException)))
-              .ItThrows<Exception> ()) //"throws exception with correct message", //TODO RN-246
+              .ItThrows (typeof(Exception))) //"throws exception with correct message", //TODO RN-246
           //x => CreationException.Message.Should ().Be ("PublicField is not a property. Members that are not properties are not supported")))
           .Case ("should throw exception for methods", _ => _
               .Given (ConfigurationContext (c => c.For ((ClassWithVariousMembers y) => y.PublicMethod ()).AddProvider (dummy => "")))
               .It ("throws correct exception", x => CreationException.GetType ().Should ().Be (typeof (NotSupportedException)))
-              .ItThrows<Exception> ()) //"throws exception with correct message", //TODO RN-246
+              .ItThrows (typeof(Exception))) //"throws exception with correct message", //TODO RN-246
           //x => CreationException.Message.Should ().Be ("A non parameter expression is not supported")))
           .Case ("should throw exception for types", _ => _
               .Given (ConfigurationContext (c => c.For ((ClassWithVariousMembers y) => y).AddProvider (dummy => null)))
               .It ("throws correct exception", x => CreationException.GetType ().Should ().Be (typeof (ArgumentException)))
-              .ItThrows<Exception> ()); //"throws exception with correct message", //TODO RN-246
+              .ItThrows (typeof(Exception))); //"throws exception with correct message", //TODO RN-246
                   //x => CreationException.Message.Should ().Be ("Empty chains are not supported, please use AddProvider<T>()")));
 
 

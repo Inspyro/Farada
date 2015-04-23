@@ -10,65 +10,52 @@ using TestFx.Specifications;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
 {
-  [Subject(typeof(StringConstraints), "TODO"), Guid("499547D2-CA5C-4A48-86E6-ED489D704CEA")]
-  public class StringConstraintsSpeck:SpecK
+  [Subject (typeof (StringConstraints), "FromProperty")]
+  [Guid ("499547D2-CA5C-4A48-86E6-ED489D704CEA")]
+  public class StringConstraintsSpeck : SpecK
   {
-    StringConstraints StringConstraints;
-
-    [Faked]
-    IFastPropertyInfo PropertyInfo;
+    [Faked] IFastPropertyInfo PropertyInfo;
 
     public StringConstraintsSpeck ()
     {
-      Specify (x => x.ToString())
+      Specify (x => StringConstraints.FromProperty (PropertyInfo))
           //
           .Case ("FromProperty without stringlength attribute", _ => _
-              .Define (x => StringConstraints = StringConstraints.FromProperty (PropertyInfo))
               .Given (StringLengthAttributeContext (false))
-              .It ("should return null", x => StringConstraints.Should ().BeNull ()))
+              .It ("should return null", x => x.Result.Should ().BeNull ()))
           //
           .Case ("FromProperty without correct string length attribute", _ => _
-              .Define (x => StringConstraints = StringConstraints.FromProperty (PropertyInfo))
               .Given (StringLengthAttributeContext (true, 3, 5))
-              .It ("should return correct min value", x => StringConstraints.MinLength.Should ().Be (3))
-              .It ("should return correct max value", x => StringConstraints.MaxLength.Should ().Be (5)));
-
-      Specify (x => x.ToString ())
-          //
+              .It ("should return correct min value", x => x.Result.MinLength.Should ().Be (3))
+              .It ("should return correct max value", x => x.Result.MaxLength.Should ().Be (5)))
           .Case ("FromProperty with correct min and max property", _ => _
-              .Define (x => StringConstraints = StringConstraints.FromProperty (PropertyInfo))
               .Given (MinAttributeContext (true, 3))
               .Given (MaxAttributeContext (true, 5))
-              .It ("should return correct min value", x => StringConstraints.MinLength.Should ().Be (3))
-              .It ("should return correct max value", x => StringConstraints.MaxLength.Should ().Be (5)))
+              .It ("should return correct min value", x => x.Result.MinLength.Should ().Be (3))
+              .It ("should return correct max value", x => x.Result.MaxLength.Should ().Be (5)))
           .Case ("FromProperty with correct min value", _ => _
-              .Define (x => StringConstraints = StringConstraints.FromProperty (PropertyInfo))
               .Given (MinAttributeContext (true, 3))
-              .It ("should return correct min value", x => StringConstraints.MinLength.Should ().Be (3))
-              .It ("should return correct assumed max value", x => StringConstraints.MaxLength.Should ().Be (103)))
+              .It ("should return correct min value", x => x.Result.MinLength.Should ().Be (3))
+              .It ("should return correct assumed max value", x => x.Result.MaxLength.Should ().Be (103)))
           .Case ("FromProperty with correct max attribute", _ => _
-              .Define (x => StringConstraints = StringConstraints.FromProperty (PropertyInfo))
               .Given (MaxAttributeContext (true, 103))
-              .It ("should return correct assumed min value", x => StringConstraints.MinLength.Should ().Be (3))
-              .It ("should return correct max value", x => StringConstraints.MaxLength.Should ().Be (103)))
+              .It ("should return correct assumed min value", x => x.Result.MinLength.Should ().Be (3))
+              .It ("should return correct max value", x => x.Result.MaxLength.Should ().Be (103)))
           .Case ("FromProperty with correct but low attribute", _ => _
-              .Define (x => StringConstraints = StringConstraints.FromProperty (PropertyInfo))
               .Given (MaxAttributeContext (true, 3))
-              .It ("should return correct assumed min value", x => StringConstraints.MinLength.Should ().Be (0))
-              .It ("should return correct max value", x => StringConstraints.MaxLength.Should ().Be (3)));
-
-      Specify (x => StringConstraints.FromProperty (PropertyInfo))
+              .It ("should return correct assumed min value", x => x.Result.MinLength.Should ().Be (0))
+              .It ("should return correct max value", x => x.Result.MaxLength.Should ().Be (3)))
           .Case ("FromProperty with invalid stringlength property", _ => _
-              .Given (StringLengthAttributeContext (true, 5, 3)).ItThrows<ArgumentOutOfRangeException> ())
+              .Given (StringLengthAttributeContext (true, 5, 3)).ItThrows (typeof (ArgumentOutOfRangeException)))
           .Case ("FromProperty with invalid min and max attribute", _ => _
               .Given (MinAttributeContext (true, 5))
-              .Given (MaxAttributeContext (true, 3)).ItThrows<ArgumentOutOfRangeException> ());
+              .Given (MaxAttributeContext (true, 3)).ItThrows (typeof (ArgumentOutOfRangeException)));
     }
 
-    Context MaxAttributeContext (bool isDefined, int length=0)
+    Context MaxAttributeContext (bool isDefined, int length = 0)
     {
       return
-          c => c.Given (string.Format ("max attribute isDefined:{0} of lenght: {1}", isDefined, length), x =>
+          c => c.Given (string.Format ("max attribute isDefined:{0} of length: {1}", isDefined, length), x =>
           {
             A.CallTo (() => PropertyInfo.IsDefined (typeof (MaxLengthAttribute))).Returns (isDefined);
 
@@ -78,10 +65,10 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
           });
     }
 
-    Context MinAttributeContext (bool isDefined, int length=0)
+    Context MinAttributeContext (bool isDefined, int length = 0)
     {
       return
-          c => c.Given (string.Format ("max attribute isDefined:{0} of lenght: {1}", isDefined, length), x =>
+          c => c.Given (string.Format ("max attribute isDefined:{0} of length: {1}", isDefined, length), x =>
           {
             A.CallTo (() => PropertyInfo.IsDefined (typeof (MinLengthAttribute))).Returns (isDefined);
 
@@ -91,7 +78,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
           });
     }
 
-    Context StringLengthAttributeContext (bool isDefined, int minLength=0, int maxLength=0)
+    Context StringLengthAttributeContext (bool isDefined, int minLength = 0, int maxLength = 0)
     {
       return
           c => c.Given (string.Format ("string length attribute isDefined:{0} between: {1} and {2}", isDefined, minLength, maxLength), x =>

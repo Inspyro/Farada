@@ -33,7 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FakeItEasy">
+    <Reference Include="FakeItEasy, Version=1.25.2.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FakeItEasy.1.25.2\lib\net40\FakeItEasy.dll</HintPath>
     </Reference>
     <Reference Include="FluentAssertions, Version=3.3.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
@@ -58,24 +59,21 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TestFx">
-      <HintPath>..\packages\TestFx.0.0.1-Pre00048\lib\net35\TestFx.dll</HintPath>
+    <Reference Include="TestFx.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\TestFx.Core.0.0.1-Pre00091\lib\net45\TestFx.Core.dll</HintPath>
     </Reference>
-    <Reference Include="TestFx.FakeItEasy">
-      <HintPath>..\packages\TestFx.FakeItEasy.0.0.1-Pre00048\lib\net35\TestFx.FakeItEasy.dll</HintPath>
+    <Reference Include="TestFx.FakeItEasy, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\TestFx.FakeItEasy.0.0.1-Pre00091\lib\net45\TestFx.FakeItEasy.dll</HintPath>
     </Reference>
-    <Reference Include="TestFx.Specifications">
-      <HintPath>..\packages\TestFx.Specifications.0.0.1-Pre00048\lib\net35\TestFx.Specifications.dll</HintPath>
-    </Reference>
-    <Reference Include="TestFx.Utilities">
-      <HintPath>..\packages\TestFx.0.0.1-Pre00048\lib\net35\TestFx.Utilities.dll</HintPath>
+    <Reference Include="TestFx.Specifications, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\TestFx.Specifications.0.0.1-Pre00091\lib\net45\TestFx.Specifications.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblyInfoShared.cs">
-      <Link>Properties\AssemblyInfoShared.cs</Link>
-    </Compile>
-    <Compile Include="..\AssemblyInfoTestsShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="BaseDomain\Constraints\StringConstraintsSpeck.cs" />
@@ -84,14 +82,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BaseDomain\ValueProviders\RandomWordGeneratorSpeck.cs" />
-    <Compile Include="Extensions\EnumerableExtensionsSpeck.cs" />
+    <Compile Include="Extensions\EnumerableExtensionsSpecK.cs" />
     <Compile Include="FastReflection\FastActivatorSpeck.cs" />
     <Compile Include="FastReflection\FastReflectionSpeck.cs" />
-    <Compile Include="Extensions\ListExtensionsSpeck.cs" />
+    <Compile Include="Extensions\ListExtensionsSpecK.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Extensions\RandomExtensionsSpeck.cs" />
-    <Compile Include="Extensions\TypeExtensionsSpeck.cs" />
-    <Compile Include="Properties\FakeItEasyTestExtensions.cs" />
+    <Compile Include="Extensions\RandomExtensionsSpecK.cs" />
+    <Compile Include="Extensions\TypeExtensionsSpecK.cs" />
+    <Compile Include="_TestExtensions\DefaultInitializationTestExtension.cs" />
+    <Compile Include="_TestExtensions\FakeItEasyTestExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
