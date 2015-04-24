@@ -53,7 +53,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       }
 
       if (_type.BaseType != null)
-        return new AttributeKey(_type.BaseType, _type, remainingAttributes);
+        return new AttributeKey(_type.BaseType, _mostConcretePropertyType, remainingAttributes);
 
       return new AttributeKey(_mostConcretePropertyType, _mostConcretePropertyType, remainingAttributes.Slice(1));
     }
