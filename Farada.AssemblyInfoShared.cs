@@ -8,9 +8,9 @@ using System.Reflection;
 //
 
 [assembly: AssemblyConfiguration ("Debug")]
-[assembly: AssemblyCompany ("rubicon IT GmbH")]
-[assembly: AssemblyProduct ("Register Nova")]
-[assembly: AssemblyCopyright ("Copyright (c) rubicon IT GmbH, www.rubicon.eu")]
+[assembly: AssemblyCompany ("")]
+[assembly: AssemblyProduct ("Farada")]
+[assembly: AssemblyCopyright ("Copyright (c) Patrick Schwarz, www.creatino.at")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyInformationalVersion ("0.0.0.1")]
 

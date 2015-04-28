@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <version>0.0.0.0</version>
+    <version>0.0.0.1</version>
     <authors>Patrick Schwarz</authors>
     <owners>Patrick Schwarz</owners>
     <id>Farada.TestDataGeneration</id>
     <title>Farada.TestDataGeneration</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Description</description>
-    <copyright>Copyright Rubicon 2012</copyright>
+    <description>Farada means Fast Random Data Generator. 
+	It can fill complex data structures with random data in a fast and configurable manner.</description>
+    <copyright>Copyright Patrick Schwarz 2015</copyright>
   </metadata>
 </package>
