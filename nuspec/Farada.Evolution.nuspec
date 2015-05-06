@@ -15,4 +15,8 @@
         <dependency id="Farada.TestDataGeneration"/>
     </dependencies>
   </metadata>
+  <files>
+    <file src="Farada.Evolution\bin\$configuration$\Farada.Evolution.*" target="lib\net45" />
+    <file src="Farada.Evolution\**\*.cs" exclude="obj\**\*" target="src\Farada.Evolution" />
+  </files>
 </package>

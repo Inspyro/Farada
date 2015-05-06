@@ -11,4 +11,8 @@
 	It can fill complex data structures with random data in a fast and configurable manner.</description>
     <copyright>Copyright Patrick Schwarz 2015</copyright>
   </metadata>
+  <files>
+    <file src="Farada.TestDataGeneration\bin\$configuration$\Farada.TestDataGeneration.*" target="lib\net45" />
+    <file src="Farada.TestDataGeneration\**\*.cs" exclude="obj\**\*" target="src\Farada.TestDataGeneration" />
+  </files>
 </package>
