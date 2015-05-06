@@ -1,13 +1,9 @@
-@echo off
-set msbuild="C:\Program Files (x86)\MSBuild\12.0\Bin\msbuild.exe"
+rem RMDIR /S /Q "output"
 
-%msbuild% Build.msbuild /t:Full /maxcpucount /verbosity:normal /flp:verbosity=normal;logfile=Build.log /p:Version=0.0.0.1;Configurations=Debug;Platforms=x86;SkipTests=False
-if not %ERRORLEVEL%==0 goto build_failed
-goto build_succeeded
+FOR /D %%P IN (.\packages\*) DO RMDIR /S /Q "%%P"
 
-:build_failed
+FOR /F "tokens=*" %%G IN ('DIR /B /AD /S bin') DO RMDIR /S /Q "%%G"
+FOR /F "tokens=*" %%G IN ('DIR /B /AD /S obj') DO RMDIR /S /Q "%%G"
+
+powershell .\Build.ps1
 pause
-exit /b 1
-
-:build_succeeded
-exit /b 0
