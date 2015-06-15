@@ -36,21 +36,40 @@
     <Reference Include="NullGuard">
       <HintPath>..\packages\NullGuard.Fody.RubiconFork.1.0.0.63\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\NullGuard.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion">
-      <HintPath>..\prereq\Libraries\Remotion.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Annotations.cs">
-      <Link>Properties\Annotations.cs</Link>
-    </Compile>
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionType.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionMethodAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\BaseTypeRequiredAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\CanBeNullAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\CannotApplyEqualityOperatorAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ContractAnnotationAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ImplicitUseKindFlags.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ImplicitUseTargetFlags.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\InstantHandleAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\InvokerParameterNameAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\LinqTunnelAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\LocalizationRequiredAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\MeansImplicitUseAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\NoEnumerationAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\NotifyPropertyChangedInvocatorAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\NotNullAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\PathReferenceAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\PublicAPIAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\PureAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\StringFormatMethodAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\TerminatesProgramAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\UsedImplicitlyAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.Utilities.ArgumentUtility.Sources.1.15.23.0\ArgumentUtility.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.EqualityUtility.Sources.1.15.23.0\EqualityUtility.cs" />
+    <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
     <Compile Include="BaseDomain\ValueProviders\RangeConstrainedValueProvider.cs" />
     <Compile Include="CompoundValueProviders\InstanceFactory.cs" />
     <Compile Include="CompoundValueProviders\Keys\AlphaNumericComparer.cs" />
@@ -134,7 +153,10 @@
     <Compile Include="ValueProviders\ValueProviderObjectContext.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ReSharperAnnotations Apache-2.0.licenseheader" />
+    <None Include="App_Packages\Remotion.Utilities.ArgumentUtility.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
     <None Include="App_Packages\Remotion.Utilities.EqualityUtility.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
+    <None Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

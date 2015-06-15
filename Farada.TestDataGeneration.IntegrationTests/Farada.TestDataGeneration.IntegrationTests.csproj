@@ -73,12 +73,32 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Annotations.cs">
-      <Link>Properties\Annotations.cs</Link>
-    </Compile>
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionType.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionMethodAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\BaseTypeRequiredAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\CanBeNullAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\CannotApplyEqualityOperatorAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ContractAnnotationAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ImplicitUseKindFlags.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ImplicitUseTargetFlags.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\InstantHandleAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\InvokerParameterNameAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\LinqTunnelAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\LocalizationRequiredAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\MeansImplicitUseAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\NoEnumerationAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\NotifyPropertyChangedInvocatorAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\NotNullAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\PathReferenceAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\PublicAPIAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\PureAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\StringFormatMethodAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\TerminatesProgramAttribute.cs" />
+    <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\UsedImplicitlyAttribute.cs" />
     <Compile Include="AssertionExtensions.cs" />
     <Compile Include="TestDataGeneratorImmutabilityTest.cs" />
     <Compile Include="TestDataGeneratorEdgeCaseSpeck.cs" />
@@ -108,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ReSharperAnnotations Apache-2.0.licenseheader" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
