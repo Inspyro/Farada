@@ -44,9 +44,13 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Annotations.cs">
+      <Link>Properties\Annotations.cs</Link>
+    </Compile>
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="App_Packages\Remotion.Utilities.EqualityUtility.Sources.1.15.23.0\EqualityUtility.cs" />
     <Compile Include="BaseDomain\ValueProviders\RangeConstrainedValueProvider.cs" />
     <Compile Include="CompoundValueProviders\InstanceFactory.cs" />
     <Compile Include="CompoundValueProviders\Keys\AlphaNumericComparer.cs" />
@@ -130,6 +134,7 @@
     <Compile Include="ValueProviders\ValueProviderObjectContext.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App_Packages\Remotion.Utilities.EqualityUtility.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
