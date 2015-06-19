@@ -11,15 +11,7 @@ namespace Farada.TestDataGeneration.FastReflection
     private readonly List<Type> _attributeTypes;
     private readonly List<Attribute> _attributes;
 
-    protected FastMemberBase (ParameterInfo parameterInfo):this(parameterInfo.Name, parameterInfo.ParameterType, parameterInfo.GetCustomAttributes())
-    {
-    }
-
-    protected FastMemberBase (PropertyInfo propertyInfo):this(propertyInfo.Name, propertyInfo.PropertyType, propertyInfo.GetCustomAttributes())
-    {
-    }
-
-    private FastMemberBase (string name, [CanBeNull] Type type, IEnumerable<Attribute> attributes)
+    protected FastMemberBase (string name, [CanBeNull] Type type, IEnumerable<Attribute> attributes)
     {
       Name = name;
       Type = type;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Net;
 using System.Reflection;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.FastReflection;
@@ -22,10 +23,16 @@ namespace Farada.TestDataGeneration.Extensions
           yield return chainKey;
         }
 
-        if (!(memberExpression.Member is PropertyInfo))
-          throw new NotSupportedException (memberExpression.Member.Name + " is not a property. Members that are not properties are not supported");
+        var propertyInfo = memberExpression.Member as PropertyInfo;
+        if (propertyInfo != null)
+          yield return new PropertyKeyPart(FastReflectionUtility.GetPropertyInfo(propertyInfo));
 
-        yield return new PropertyKeyPart(FastReflectionUtility.GetPropertyInfo(((PropertyInfo) memberExpression.Member)));
+        var fieldInfo = memberExpression.Member as FieldInfo;
+        if (fieldInfo != null)
+          yield return new PropertyKeyPart(FastReflectionUtility.GetPropertyInfo(fieldInfo));
+
+        if (propertyInfo == null && fieldInfo == null)
+          throw new NotSupportedException(memberExpression.Member.Name + " is not a property or field, and thus not supported.");
       }
     }
 

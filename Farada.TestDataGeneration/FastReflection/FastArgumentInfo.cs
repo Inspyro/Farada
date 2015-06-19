@@ -9,7 +9,7 @@ namespace Farada.TestDataGeneration.FastReflection
     private PropertyInfo _cachedProperty;
 
     internal FastArgumentInfo (ParameterInfo parameterInfo)
-        : base(parameterInfo)
+      :base(parameterInfo.Name, parameterInfo.ParameterType, parameterInfo.GetCustomAttributes())
     {
       _declaringType = parameterInfo.Member.DeclaringType;
     }
