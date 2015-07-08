@@ -9,14 +9,14 @@ using JetBrains.Annotations;
 namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 {
   /// <summary>
-  /// A key that represnets an attribute on a property
+  /// A key that represents an attribute on a member
   /// </summary>
   internal class AttributeKey : IKey, IEquatable<AttributeKey>
   {
     private readonly Type _type;
     private readonly Type _attributeType;
 
-    private readonly Type _mostConcretePropertyType;
+    private readonly Type _mostConcreteMemberType;
     private readonly List<Type> _remainingAttributes;
 
     internal AttributeKey(Type type, Type attributeType)
@@ -30,7 +30,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       
     }
 
-    private AttributeKey(Type type, Type mostConcretePropertyType, List<Type> remainingAttributes )
+    private AttributeKey(Type type, Type mostConcreteMemberType, List<Type> remainingAttributes )
     {
       if (remainingAttributes.Count < 1)
         throw new ArgumentException("Cannot create attribute key with less then one remaining attribute");
@@ -38,7 +38,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
         remainingAttributes.Sort (new AlphaNumericComparer());
 
       _type = type;
-      _mostConcretePropertyType = mostConcretePropertyType;
+      _mostConcreteMemberType = mostConcreteMemberType;
       _attributeType = remainingAttributes.First();
       _remainingAttributes = remainingAttributes;
 
@@ -49,20 +49,20 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     {
       if (remainingAttributes.Count == 1)
       {
-        return new TypeKey(_mostConcretePropertyType);
+        return new TypeKey(_mostConcreteMemberType);
       }
 
       if (_type.BaseType != null)
-        return new AttributeKey(_type.BaseType, _mostConcretePropertyType, remainingAttributes);
+        return new AttributeKey(_type.BaseType, _mostConcreteMemberType, remainingAttributes);
 
-      return new AttributeKey(_mostConcretePropertyType, _mostConcretePropertyType, remainingAttributes.Slice(1));
+      return new AttributeKey(_mostConcreteMemberType, _mostConcreteMemberType, remainingAttributes.Slice(1));
     }
 
     public IKey PreviousKey { get; private set; }
 
-    public IKey CreateKey (IFastPropertyInfo property)
+    public IKey CreateKey (IFastMemberWithValues member)
     {
-      return new ChainedKey(_type, new List<PropertyKeyPart> { new PropertyKeyPart(property) });
+      return new ChainedKey(_type, new List<MemberKeyPart> { new MemberKeyPart(member) });
     }
 
     public Type Type
@@ -70,7 +70,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       get { return _type; }
     }
 
-    public IFastPropertyInfo Property
+    public IFastMemberWithValues Member
     {
       get { return null; }
     }
@@ -80,9 +80,9 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       get { return 0; }
     }
 
-    public IKey ChangePropertyType (Type newPropertyType)
+    public IKey ChangeMemberType (Type newMemberType)
     {
-      return new AttributeKey(newPropertyType, _remainingAttributes);
+      return new AttributeKey(newMemberType, _remainingAttributes);
     }
 
     public bool Equals ( [CanBeNull] AttributeKey other)

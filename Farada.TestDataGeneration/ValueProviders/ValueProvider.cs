@@ -6,19 +6,19 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// <summary>
   /// Provides a value for a specific type
   /// </summary>
-  /// <typeparam name="TProperty">The property type for which the value is created</typeparam>
+  /// <typeparam name="TMember">The member type for which the value is created</typeparam>
   /// <typeparam name="TContext">The context under which the value is created</typeparam>
-  public abstract class ValueProvider<TProperty, TContext> : IValueProvider
-      where TContext : ValueProviderContext<TProperty>
+  public abstract class ValueProvider<TMember, TContext> : IValueProvider
+      where TContext : ValueProviderContext<TMember>
   {
     object IValueProvider.CreateValue (IValueProviderContext context)
     {
       return CreateValue((TContext) context);
     }
 
-    public virtual bool CanHandle (Type propertyType)
+    public virtual bool CanHandle (Type memberType)
     {
-      return propertyType == typeof (TProperty) || (propertyType.IsNullableType() && propertyType.GetTypeOfNullable() == typeof (TProperty));
+      return memberType == typeof (TMember) || (memberType.IsNullableType() && memberType.GetTypeOfNullable() == typeof (TMember));
     }
 
     protected abstract TContext CreateContext (ValueProviderObjectContext objectContext);
@@ -32,18 +32,18 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// Creates a value of the given property type
     /// </summary>
     /// <param name="context">the concrete context to considre</param>
-    protected abstract TProperty CreateValue (TContext context);
+    protected abstract TMember CreateValue (TContext context);
   }
 
   /// <summary>
-  /// Like <see cref="ValueProvider{TProperty,TContext}"/> but with the default context which is <see cref="ValueProviderContext{TProperty}"/>
+  /// Like <see cref="ValueProvider{TMember,TContext}"/> but with the default context which is <see cref="ValueProviderContext{TProperty}"/>
   /// </summary>
-  /// <typeparam name="TProperty"></typeparam>
-  public abstract class ValueProvider<TProperty> : ValueProvider<TProperty, ValueProviderContext<TProperty>>
+  /// <typeparam name="TMember"></typeparam>
+  public abstract class ValueProvider<TMember> : ValueProvider<TMember, ValueProviderContext<TMember>>
   {
-    protected override ValueProviderContext<TProperty> CreateContext (ValueProviderObjectContext objectContext)
+    protected override ValueProviderContext<TMember> CreateContext (ValueProviderObjectContext objectContext)
     {
-      return new ValueProviderContext<TProperty>(objectContext);
+      return new ValueProviderContext<TMember>(objectContext);
     }
   }
 

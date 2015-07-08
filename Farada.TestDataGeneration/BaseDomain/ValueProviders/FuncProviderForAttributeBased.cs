@@ -1,28 +1,27 @@
 ﻿using System;
-using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
   /// <summary>
-  /// Allows to define a func instead of deriving from <see cref="AttributeBasedValueProvider{TProperty, TAttribute}"/>
+  /// Allows to define a func instead of deriving from <see cref="AttributeBasedValueProvider{TMember,TAttribute}"/>
   /// In order to simplify this process even more one can use the <see cref="IProviderConfiguratorExtensions"/>
   /// </summary>
-  public class FuncProviderForAttributeBased<TProperty, TAttribute>:AttributeBasedValueProvider<TProperty, TAttribute>
+  public class FuncProviderForAttributeBased<TMember, TAttribute>:AttributeBasedValueProvider<TMember, TAttribute>
     where TAttribute : Attribute
   {
-    private readonly Func<AttributeValueProviderContext<TProperty, TAttribute>, TProperty> _valueFunc;
+    private readonly Func<AttributeValueProviderContext<TMember, TAttribute>, TMember> _valueFunc;
 
      /// <summary>
     /// Create a func value provider
     /// </summary>
-    /// <param name="valueFunc">the func that creates the value based on a <see cref="AttributeValueProviderContext{TProperty, TAttribute}"/></param>
-    public FuncProviderForAttributeBased (Func<AttributeValueProviderContext<TProperty, TAttribute>, TProperty> valueFunc)
+    /// <param name="valueFunc">the func that creates the value based on a <see cref="AttributeValueProviderContext{TMember, TAttribute}"/></param>
+    public FuncProviderForAttributeBased (Func<AttributeValueProviderContext<TMember, TAttribute>, TMember> valueFunc)
     {
       _valueFunc = valueFunc;
     }
 
-    protected override TProperty CreateValue (AttributeValueProviderContext<TProperty, TAttribute> context)
+    protected override TMember CreateValue (AttributeValueProviderContext<TMember, TAttribute> context)
     {
       return _valueFunc(context);
     }

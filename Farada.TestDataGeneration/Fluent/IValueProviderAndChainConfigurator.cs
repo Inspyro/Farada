@@ -2,7 +2,7 @@
 
 namespace Farada.TestDataGeneration.Fluent
 {
-  public interface IValueProviderAndChainConfigurator<TProperty> : IChainConfigurator, IValueProviderConfigurator<TProperty>
+  public interface IValueProviderAndChainConfigurator<TMember> : IChainConfigurator, IValueProviderConfigurator<TMember>
   {
   }
 }

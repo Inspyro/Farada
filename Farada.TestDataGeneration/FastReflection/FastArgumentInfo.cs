@@ -9,12 +9,12 @@ namespace Farada.TestDataGeneration.FastReflection
     private PropertyInfo _cachedProperty;
 
     internal FastArgumentInfo (ParameterInfo parameterInfo)
-        : base(parameterInfo)
+      :base(parameterInfo.Name, parameterInfo.ParameterType, parameterInfo.GetCustomAttributes())
     {
       _declaringType = parameterInfo.Member.DeclaringType;
     }
 
-    public IFastPropertyInfo ToProperty (IParameterConversionService parameterConversion)
+    public IFastMemberWithValues ToMember (IParameterConversionService parameterConversion)
     {
       if (_cachedProperty == null)
       {
@@ -28,6 +28,6 @@ namespace Farada.TestDataGeneration.FastReflection
 
   public interface IFastArgumentInfo:IFastMemberInfo
   {
-    IFastPropertyInfo ToProperty (IParameterConversionService parameterConversion);
+    IFastMemberWithValues ToMember (IParameterConversionService parameterConversion);
   }
 }

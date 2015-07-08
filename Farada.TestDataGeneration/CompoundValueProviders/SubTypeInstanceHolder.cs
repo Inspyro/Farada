@@ -47,7 +47,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
                     //if it is the first property we add it, but we need to change the type of the key (as this might use other value providers)
                     typeToInstances.Add(
                         concreteType,
-                        new SubTypeInstanceHolder(currentKey.ChangePropertyType(concreteType)));
+                        new SubTypeInstanceHolder(currentKey.ChangeMemberType(concreteType)));
                 }
 
                 //if it was not the first instance, we just add it to the old mapping (this is basically for performance reasons, see CompoundValueProvider for more info

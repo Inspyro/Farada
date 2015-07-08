@@ -5,23 +5,23 @@ using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.Fluent
 {
-  internal class ExpressionValueProviderConfigurator<TContainer,TProperty>:ChainConfigurator, IValueProviderAndChainConfigurator<TProperty>
+  internal class ExpressionValueProviderConfigurator<TContainer,TMember>:ChainConfigurator, IValueProviderAndChainConfigurator<TMember>
   {
-    private readonly Expression<Func<TContainer, TProperty>> _memberExpression;
+    private readonly Expression<Func<TContainer, TMember>> _memberExpression;
 
-    public ExpressionValueProviderConfigurator (Expression<Func<TContainer, TProperty>> memberExpression, Func<CompoundValueProviderBuilder> lazyValueProviderBuilder)
+    public ExpressionValueProviderConfigurator (Expression<Func<TContainer, TMember>> memberExpression, Func<CompoundValueProviderBuilder> lazyValueProviderBuilder)
         : base(lazyValueProviderBuilder)
     {
       _memberExpression = memberExpression;
     }
 
-    public IValueProviderAndChainConfigurator<TProperty> AddProvider (ValueProvider<TProperty> valueProvider)
+    public IValueProviderAndChainConfigurator<TMember> AddProvider (ValueProvider<TMember> valueProvider)
     {
       _lazyValueProviderBuilder().AddProvider(_memberExpression, valueProvider);
       return this;
     }
 
-    public IValueProviderAndChainConfigurator<TProperty> AddProvider<TContext> (ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>
+    public IValueProviderAndChainConfigurator<TMember> AddProvider<TContext> (ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>
     {
       _lazyValueProviderBuilder().AddProvider(_memberExpression, valueProvider);
       return this;

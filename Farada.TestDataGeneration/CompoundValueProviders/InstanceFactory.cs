@@ -76,7 +76,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
         //Note: Here we have a recursion to the compound value provider. e.g. other immutable types could be a ctor argument
         var ctorArgumentValues = _compoundValueProvider.CreateMany (
-            key.CreateKey (ctorArgument.ToProperty (_parameterConversionService)),
+            key.CreateKey (ctorArgument.ToMember (_parameterConversionService)),
             numberOfObjects,
             2);
 
@@ -103,7 +103,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
               _compoundValueProvider,
               () => previousLink == null ? null : CreateInstances (previousLink.Key, previousLink.Value, previousContext, 1).Single(),
               key.Type,
-              key.Property));
+              key.Member));
     }
   }
 }

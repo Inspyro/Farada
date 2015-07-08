@@ -5,19 +5,19 @@ using System.Reflection;
 namespace Farada.TestDataGeneration.FastReflection
 {
   /// <summary>
-  /// Provides a faster way to access a property than <see cref="PropertyInfo"/>
+  /// Provides a faster way to access a member than <see cref="MemberInfo"/>
   /// </summary>
   public interface IFastMemberInfo
   {
     /// <summary>
-    /// A fast way to get an attribute from the property
+    /// A fast way to get an attribute from the member
     /// </summary>
     /// <typeparam name="T">the type of the attribute</typeparam>
-    /// <returns>the attribute instance from the property</returns>
+    /// <returns>the attribute instance from the member</returns>
     T GetCustomAttribute<T> () where T : Attribute;
 
     /// <summary>
-    /// The attribute types that are on the property
+    /// The attribute types that are on the member
     /// To check if an attribute is on the type you can also use <see cref="IsDefined"/>
     /// </summary>
     IEnumerable<Type> Attributes { get; }
@@ -30,12 +30,12 @@ namespace Farada.TestDataGeneration.FastReflection
     bool IsDefined (Type type);
 
     /// <summary>
-    /// The name of the property <see cref="MemberInfo.Name"/>
+    /// The name of the member <see cref="MemberInfo.Name"/>
     /// </summary>
     string Name { get; }
 
     /// <summary>
-    /// The type of the property <see cref="PropertyInfo.PropertyType"/>
+    /// The type of the member <see cref="MemberInfo.MemberType"/>
     /// </summary>
     Type Type { get; }
   }

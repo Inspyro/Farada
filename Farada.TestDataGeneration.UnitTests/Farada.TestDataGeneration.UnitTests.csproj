@@ -109,7 +109,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\RandomExtensionsSpecK.cs" />
     <Compile Include="Extensions\TypeExtensionsSpecK.cs" />
-    <Compile Include="_TestExtensions\DefaultInitializationTestExtension.cs" />
     <Compile Include="_TestExtensions\FakeItEasyTestExtensions.cs" />
     <Compile Include="_TestExtensions\ResetInstanceFieldsTestExtension.cs" />
   </ItemGroup>

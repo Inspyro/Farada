@@ -134,7 +134,7 @@
     <Compile Include="CompoundValueProviders\Keys\AttributeKey.cs" />
     <Compile Include="CompoundValueProviders\Keys\ChainedKey.cs" />
     <Compile Include="CompoundValueProviders\Keys\IKey.cs" />
-    <Compile Include="CompoundValueProviders\Keys\PropertyKeyPart.cs" />
+    <Compile Include="CompoundValueProviders\Keys\MemberKeyPart.cs" />
     <Compile Include="CompoundValueProviders\Keys\TypeKey.cs" />
     <Compile Include="Modifiers\ModificationContext.cs" />
     <Compile Include="Parallelization\Parallelization.cs" />

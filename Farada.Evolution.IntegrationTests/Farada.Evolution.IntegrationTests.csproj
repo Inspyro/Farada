@@ -101,7 +101,6 @@
     <Compile Include="RuleBasedDataGeneratorSpeck.cs" />
     <Compile Include="TestDomain\StringMarryRule.cs" />
     <Compile Include="TestDomain\WorldRule.cs" />
-    <Compile Include="_TestExtensions\DefaultInitializationTestExtension.cs" />
     <Compile Include="_TestExtensions\FakeItEasyTestExtensions.cs" />
     <Compile Include="_TestExtensions\ResetInstanceFieldsTestExtension.cs" />
   </ItemGroup>

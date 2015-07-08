@@ -29,12 +29,12 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
     [Subject (typeof (RangeContstraints<>), "FromProperty")]
     public class FromPropertySpecK : SpecK
     {
-      [Faked] IFastPropertyInfo PropertyInfo;
+      [Faked] IFastMemberWithValues Member;
       RangeAttribute RangeAttribute;
 
       public FromPropertySpecK ()
       {
-        Specify (_ => RangeContstraints<int>.FromProperty (PropertyInfo))
+        Specify (_ => RangeContstraints<int>.FromMember (Member))
             //
             .Case ("FromProperty without range attribute", _ => _
                 .Given (PropertyInfoContext (false))
@@ -61,10 +61,10 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
                 c.Given (string.Format ("range attribute isDefined:{0} of type {1} between: {2} and {3}", isDefined, rangeType, minValue, maxValue),
                     x =>
                     {
-                      A.CallTo (() => PropertyInfo.IsDefined (typeof (RangeAttribute))).Returns (isDefined);
+                      A.CallTo (() => Member.IsDefined (typeof (RangeAttribute))).Returns (isDefined);
 
                       RangeAttribute = isDefined ? new RangeAttribute (rangeType, minValue, maxValue) : null;
-                      A.CallTo (() => PropertyInfo.GetCustomAttribute<RangeAttribute> ()).Returns (RangeAttribute);
+                      A.CallTo (() => Member.GetCustomAttribute<RangeAttribute> ()).Returns (RangeAttribute);
                     });
       }
     }

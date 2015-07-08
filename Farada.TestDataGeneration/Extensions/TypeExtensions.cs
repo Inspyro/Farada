@@ -14,15 +14,16 @@ namespace Farada.TestDataGeneration.Extensions
     public static Type GetTypeOfNullable (this Type type)
     {
       if (!type.IsNullableType())
-        throw new ArgumentException("You cannot retrieve the nullable type of a type that is not nullable");
+        throw new ArgumentException ("You cannot retrieve the nullable type of a type that is not nullable");
 
       return type.GetGenericArguments()[0];
     }
 
-    public static bool IsNullableType(this Type type)
-		{
-			return type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Nullable<>));
-		}
+    public static bool IsNullableType (this Type type)
+    {
+      return type.IsGenericType && (type.GetGenericTypeDefinition() == typeof (Nullable<>));
+    }
+
     public static bool IsCollection (this Type type)
     {
       return type.GetInterface (typeof (IEnumerable).FullName) != null
@@ -34,7 +35,7 @@ namespace Farada.TestDataGeneration.Extensions
     /// </summary>
     public static bool IsDerivedFrom<T> (this Type type)
     {
-      return typeof(T).IsAssignableFrom(type);
+      return typeof (T).IsAssignableFrom (type);
     }
 
     /// <summary>
@@ -53,9 +54,13 @@ namespace Farada.TestDataGeneration.Extensions
     /// <param name="type">The type to check</param>
     /// <param name="nonPublic">Wether to check for a non public (protected/private) way to create the type</param>
     /// <returns>true if the type can be instantiated</returns>
-    public static bool CanBeInstantiated(this Type type, bool nonPublic=false)
+    public static bool CanBeInstantiated (this Type type, bool nonPublic = false)
     {
-      return type.GetConstructor(nonPublic ? (BindingFlags.NonPublic|BindingFlags.Instance) : (BindingFlags.Public | BindingFlags.Instance), null, Type.EmptyTypes, null)
+      return type.GetConstructor (
+          nonPublic ? (BindingFlags.NonPublic | BindingFlags.Instance) : (BindingFlags.Public | BindingFlags.Instance),
+          null,
+          Type.EmptyTypes,
+          null)
              != null;
     }
 

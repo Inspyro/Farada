@@ -16,52 +16,52 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
   internal class ChainedKey : IKey, IEquatable<ChainedKey>
   {
     private readonly Type _declaringType;
-    private readonly IList<PropertyKeyPart> _propertyChain;
+    private readonly IList<MemberKeyPart> _memberChain;
 
-    private readonly PropertyKeyPart _lastProperty;
+    private readonly MemberKeyPart _lastMember;
     private readonly Type _concreteDeclaringType;
 
-    public IFastPropertyInfo Property
+    public IFastMemberWithValues Member
     {
-      get { return _lastProperty.Property; }
+      get { return _lastMember.Member; }
     }
 
     public int RecursionDepth { get; private set; }
 
-    public IKey ChangePropertyType (Type newPropertyType)
+    public IKey ChangeMemberType (Type newMemberType)
     {
-      if (Property == null)
-        throw new InvalidOperationException ("You cannot change the property type of a non-existing (null) property");
+      if (Member == null)
+        throw new InvalidOperationException ("You cannot change the member type of a non-existing (null) member");
 
-      var newPropertyChain = new List<PropertyKeyPart> (_propertyChain);
-      newPropertyChain[newPropertyChain.Count - 1] = new PropertyKeyPart (Property, newPropertyType);
+      var newMemberChain = new List<MemberKeyPart> (_memberChain);
+      newMemberChain[newMemberChain.Count - 1] = new MemberKeyPart (Member, newMemberType);
 
-      return new ChainedKey (_declaringType, newPropertyChain);
+      return new ChainedKey (_declaringType, newMemberChain);
     }
 
     public IKey PreviousKey { get; private set; }
 
-    internal ChainedKey (Type declaringType, IFastPropertyInfo propertyInfo)
-        : this (declaringType, new List<PropertyKeyPart> { new PropertyKeyPart (propertyInfo) })
+    internal ChainedKey (Type declaringType, IFastMemberWithValues member)
+        : this (declaringType, new List<MemberKeyPart> { new MemberKeyPart (member) })
     {
     }
 
-    internal ChainedKey (Type declaringType, IList<PropertyKeyPart> propertyChain)
-        : this (declaringType, declaringType, propertyChain)
+    internal ChainedKey (Type declaringType, IList<MemberKeyPart> memberChain)
+        : this (declaringType, declaringType, memberChain)
     {
     }
 
-    private ChainedKey (Type declaringType, Type concreteDeclaringType, IList<PropertyKeyPart> propertyChain)
+    private ChainedKey (Type declaringType, Type concreteDeclaringType, IList<MemberKeyPart> memberChain)
     {
       ArgumentUtility.CheckNotNull ("declaringType", declaringType);
 
       _declaringType = declaringType;
       _concreteDeclaringType = concreteDeclaringType;
-      _propertyChain = propertyChain;
+      _memberChain = memberChain;
 
-      _lastProperty = propertyChain.Last();
+      _lastMember = memberChain.Last();
 
-      RecursionDepth = _propertyChain.Count (keyPart => keyPart.PropertyType == _lastProperty.PropertyType);
+      RecursionDepth = _memberChain.Count (keyPart => keyPart.MemberType == _lastMember.MemberType);
       PreviousKey = CreatePreviousKey();
     }
 
@@ -69,31 +69,31 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     {
       var baseType = _declaringType.BaseType;
       if (baseType != typeof (object) && baseType != typeof (ValueType) && baseType != null)
-        return new ChainedKey (baseType, _concreteDeclaringType, _propertyChain);
+        return new ChainedKey (baseType, _concreteDeclaringType, _memberChain);
 
-      var firstProperty = _propertyChain[0];
-      var previousProperties = _propertyChain.Slice (1);
+      var firstMemberKey = _memberChain[0];
+      var previousProperties = _memberChain.Slice (1);
 
       if (previousProperties.Count == 0)
       {
-        var attributes = firstProperty.Property.Attributes.ToList();
+        var attributes = firstMemberKey.Member.Attributes.ToList();
         return attributes.Count > 0
-            ? (IKey) new AttributeKey (firstProperty.PropertyType, attributes)
-            : new TypeKey (firstProperty.PropertyType);
+            ? (IKey) new AttributeKey (firstMemberKey.MemberType, attributes)
+            : new TypeKey (firstMemberKey.MemberType);
       }
 
-      var previousDeclaringType = firstProperty.PropertyType;
+      var previousDeclaringType = firstMemberKey.MemberType;
       return new ChainedKey (previousDeclaringType, previousProperties);
     }
 
-    public IKey CreateKey (IFastPropertyInfo property)
+    public IKey CreateKey (IFastMemberWithValues member)
     {
-      return new ChainedKey (_declaringType, new List<PropertyKeyPart> (_propertyChain) { new PropertyKeyPart (property) });
+      return new ChainedKey (_declaringType, new List<MemberKeyPart> (_memberChain) { new MemberKeyPart (member) });
     }
 
     public Type Type
     {
-      get { return _lastProperty.PropertyType; }
+      get { return _lastMember.MemberType; }
     }
 
     public bool Equals ([CanBeNull] ChainedKey other)
@@ -105,10 +105,10 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       if (_declaringType != other._declaringType)
         return false;
 
-      if (_propertyChain.Count != other._propertyChain.Count)
+      if (_memberChain.Count != other._memberChain.Count)
         return false;
 
-      return !_propertyChain.Where ((t, i) => !t.Equals (other._propertyChain[i])).Any();
+      return !_memberChain.Where ((t, i) => !t.Equals (other._memberChain[i])).Any();
     }
 
     public override bool Equals ([CanBeNull] object obj)
@@ -118,7 +118,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
     public override int GetHashCode ()
     {
-      return _declaringType.GetHashCode() ^ Remotion.Utilities.EqualityUtility.GetRotatedHashCode (_propertyChain);
+      return _declaringType.GetHashCode() ^ Remotion.Utilities.EqualityUtility.GetRotatedHashCode (_memberChain);
     }
 
     public bool Equals ([CanBeNull] IKey other)
@@ -128,7 +128,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
     public override string ToString ()
     {
-      return "KEY on " + _declaringType + ": " + string.Join (" > ", _propertyChain.Select (kp => kp.ToString()));
+      return "KEY on " + _declaringType + ": " + string.Join (" > ", _memberChain.Select (kp => kp.ToString()));
     }
   }
 }

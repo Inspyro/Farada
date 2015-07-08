@@ -7,7 +7,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
   /// <summary>
   /// Creates random words (strings) based on <see cref="RandomSyllabileGenerator"/>
-  /// Reads the <see cref="StringConstraints"/> from each property and uses them with higher priority than the given constraints
+  /// Reads the <see cref="StringConstraints"/> from each member and uses them with higher priority than the given constraints
   /// </summary>
   public class RandomWordGenerator:ValueProvider<string, StringConstrainedValueProviderContext>
   {
@@ -35,7 +35,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 
     protected override StringConstrainedValueProviderContext CreateContext (ValueProviderObjectContext objectContext)
     {
-      var stringConstraints = StringConstraints.FromProperty(objectContext.PropertyInfo) ?? new StringConstraints(_minWordLength, _maxWordLength);
+      var stringConstraints = StringConstraints.FromMember(objectContext.MemberInfo) ?? new StringConstraints(_minWordLength, _maxWordLength);
       return new StringConstrainedValueProviderContext(objectContext, stringConstraints);
     }
 

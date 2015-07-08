@@ -18,14 +18,14 @@ namespace Farada.TestDataGeneration.Fluent
       return new TypeValueProviderConfigurator<TType>(_lazyValueProviderBuilder);
     }
 
-    public IValueProviderAndChainConfigurator<TProperty> For<TContainer, TProperty> (Expression<Func<TContainer, TProperty>> memberExpression)
+    public IValueProviderAndChainConfigurator<TMember> For<TContainer, TMember> (Expression<Func<TContainer, TMember>> memberExpression)
     {
-      return new ExpressionValueProviderConfigurator<TContainer, TProperty>(memberExpression, _lazyValueProviderBuilder);
+      return new ExpressionValueProviderConfigurator<TContainer, TMember>(memberExpression, _lazyValueProviderBuilder);
     }
 
-    public IAttributeProviderAndChainConfigurator<TProperty, TAttribute> For<TProperty, TAttribute> () where TAttribute : Attribute
+    public IAttributeProviderAndChainConfigurator<TMember, TAttribute> For<TMember, TAttribute> () where TAttribute : Attribute
     {
-      return new AttributeProviderConfigurator<TProperty, TAttribute>(_lazyValueProviderBuilder);
+      return new AttributeProviderConfigurator<TMember, TAttribute>(_lazyValueProviderBuilder);
     }
 
     internal ITestDataGenerator Build ()

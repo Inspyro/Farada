@@ -14,11 +14,11 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
   [Guid ("499547D2-CA5C-4A48-86E6-ED489D704CEA")]
   public class StringConstraintsSpeck : SpecK
   {
-    [Faked] IFastPropertyInfo PropertyInfo;
+    [Faked] IFastMemberWithValues Member;
 
     public StringConstraintsSpeck ()
     {
-      Specify (x => StringConstraints.FromProperty (PropertyInfo))
+      Specify (x => StringConstraints.FromMember (Member))
           //
           .Case ("FromProperty without stringlength attribute", _ => _
               .Given (StringLengthAttributeContext (false))
@@ -57,11 +57,11 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
       return
           c => c.Given (string.Format ("max attribute isDefined:{0} of length: {1}", isDefined, length), x =>
           {
-            A.CallTo (() => PropertyInfo.IsDefined (typeof (MaxLengthAttribute))).Returns (isDefined);
+            A.CallTo (() => Member.IsDefined (typeof (MaxLengthAttribute))).Returns (isDefined);
 
             var maxLengthAttribute = isDefined ? new MaxLengthAttribute (length) : null;
 
-            A.CallTo (() => PropertyInfo.GetCustomAttribute<MaxLengthAttribute> ()).Returns (maxLengthAttribute);
+            A.CallTo (() => Member.GetCustomAttribute<MaxLengthAttribute> ()).Returns (maxLengthAttribute);
           });
     }
 
@@ -70,11 +70,11 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
       return
           c => c.Given (string.Format ("max attribute isDefined:{0} of length: {1}", isDefined, length), x =>
           {
-            A.CallTo (() => PropertyInfo.IsDefined (typeof (MinLengthAttribute))).Returns (isDefined);
+            A.CallTo (() => Member.IsDefined (typeof (MinLengthAttribute))).Returns (isDefined);
 
             var minLengthAttribute = isDefined ? new MinLengthAttribute (length) : null;
 
-            A.CallTo (() => PropertyInfo.GetCustomAttribute<MinLengthAttribute> ()).Returns (minLengthAttribute);
+            A.CallTo (() => Member.GetCustomAttribute<MinLengthAttribute> ()).Returns (minLengthAttribute);
           });
     }
 
@@ -83,11 +83,11 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
       return
           c => c.Given (string.Format ("string length attribute isDefined:{0} between: {1} and {2}", isDefined, minLength, maxLength), x =>
           {
-            A.CallTo (() => PropertyInfo.IsDefined (typeof (StringLengthAttribute))).Returns (isDefined);
+            A.CallTo (() => Member.IsDefined (typeof (StringLengthAttribute))).Returns (isDefined);
 
             var stringLengthAttribute = isDefined ? new StringLengthAttribute (maxLength) { MinimumLength = minLength } : null;
 
-            A.CallTo (() => PropertyInfo.GetCustomAttribute<StringLengthAttribute> ()).Returns (stringLengthAttribute);
+            A.CallTo (() => Member.GetCustomAttribute<StringLengthAttribute> ()).Returns (stringLengthAttribute);
           });
     }
   }
