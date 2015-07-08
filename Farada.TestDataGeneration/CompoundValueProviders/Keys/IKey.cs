@@ -10,6 +10,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
   /// </summary>
   internal interface IKey:IEquatable<IKey>
   {
+    [CanBeNull]
     IKey PreviousKey { get; }
     IKey CreateKey (IFastPropertyInfo property);
 

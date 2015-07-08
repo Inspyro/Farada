@@ -20,14 +20,14 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
     internal void AddValueProvider (IKey key, IValueProvider valueProvider)
     {
-      if (!_valueProviders.ContainsKey(key))
+      if (!_valueProviders.ContainsKey (key))
       {
-        _valueProviders[key] = new ValueProviderLink(valueProvider, key, () => GetLink(key.PreviousKey));
+        _valueProviders[key] = new ValueProviderLink (valueProvider, key, () => key.PreviousKey == null ? null : GetLink (key.PreviousKey));
       }
       else
       {
         var previousKey = _valueProviders[key];
-        _valueProviders[key] = new ValueProviderLink(valueProvider, key, () => previousKey);
+        _valueProviders[key] = new ValueProviderLink (valueProvider, key, () => previousKey);
       }
     }
 
