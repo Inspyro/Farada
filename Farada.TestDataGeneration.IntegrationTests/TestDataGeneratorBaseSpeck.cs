@@ -14,7 +14,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
     protected Context TestDataGeneratorContext (int recursionDepth = 2, bool catchExceptions=false)
     {
-        Arrangement<Dummy, Dummy, Dummy> withExceptions = x =>
+        Arrangement<Dummy, Dummy, Dummy, Dummy> withExceptions = x =>
         {
             try
             {
@@ -27,7 +27,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
             }
         };
 
-        Arrangement<Dummy, Dummy,Dummy> withoutException = x =>
+        Arrangement<Dummy, Dummy,Dummy, Dummy> withoutException = x =>
           TestDataGenerator= TestDataGeneratorFactory.Create (TestDataDomainConfiguration);;
 
         return

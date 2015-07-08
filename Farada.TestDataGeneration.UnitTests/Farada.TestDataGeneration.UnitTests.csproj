@@ -58,15 +58,15 @@
     <Reference Include="System.Xml" />
     <Reference Include="TestFx.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\TestFx.Core.0.0.1-Pre00091\lib\net45\TestFx.Core.dll</HintPath>
+      <HintPath>..\packages\TestFx.Core.0.0.1-Pre00159\lib\net45\TestFx.Core.dll</HintPath>
     </Reference>
     <Reference Include="TestFx.FakeItEasy, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\TestFx.FakeItEasy.0.0.1-Pre00091\lib\net45\TestFx.FakeItEasy.dll</HintPath>
+      <HintPath>..\packages\TestFx.FakeItEasy.0.0.1-Pre00159\lib\net45\TestFx.FakeItEasy.dll</HintPath>
     </Reference>
     <Reference Include="TestFx.Specifications, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\TestFx.Specifications.0.0.1-Pre00091\lib\net45\TestFx.Specifications.dll</HintPath>
+      <HintPath>..\packages\TestFx.Specifications.0.0.1-Pre00159\lib\net45\TestFx.Specifications.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +111,7 @@
     <Compile Include="Extensions\TypeExtensionsSpecK.cs" />
     <Compile Include="_TestExtensions\DefaultInitializationTestExtension.cs" />
     <Compile Include="_TestExtensions\FakeItEasyTestExtensions.cs" />
+    <Compile Include="_TestExtensions\ResetInstanceFieldsTestExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

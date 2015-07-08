@@ -10,7 +10,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
         this IAssert assertion,
         string message)
     {
-      assertion.Get<ITestController<Dummy,Dummy,Dummy>> ().AddAssertion ("Contains Message", x =>
+      assertion.Get<ITestController<Dummy,Dummy,Dummy, Dummy>> ().AddAssertion ("Contains Message", x =>
       {
         if (!x.Exception.Message.Contains (message))
           throw new Exception (string.Format ("Exception message '{0}' did not fullfill condition.", x.Exception.Message));

@@ -45,7 +45,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
         return new RandomSyllabileGenerator ();
       }
 
-      Arrangement<RandomSyllabileGenerator, Dummy, object> SeededContext (int seed)
+      Arrangement<RandomSyllabileGenerator, Dummy, object, object> SeededContext (int seed)
       {
         return x =>
         {

@@ -1,17 +1,14 @@
 ﻿using System;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using FluentAssertions;
-using NUnit.Framework;
 using TestFx.Specifications;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
    [Subject (typeof (ITestDataGenerator), "Create_Immutable")]
-  public class TestDataGeneratorImmutabilityTest:TestDataGeneratorBaseSpeck
+  public class TestDataGeneratorImmutabilitySpeck:TestDataGeneratorBaseSpeck
   {
-    ITestDataGenerator _sut;
-
-    public TestDataGeneratorImmutabilityTest ()
+     public TestDataGeneratorImmutabilitySpeck ()
     {
       Specify (x => TestDataGenerator.Create<Ice> (MaxRecursionDepth, null))
           .Case ("Properties Are Initialized", _ => _
