@@ -36,7 +36,7 @@ namespace Farada.TestDataGeneration.FastReflection
       //as soon a specific ctor is needed - implement  a strategy for choosing the constructor
       var ctor = type.GetConstructors().FirstOrDefault();
       var fastCtorArguments = ctor != null ? ctor.GetParameters().Select (GetArgumentInfo).ToList() : new List<IFastArgumentInfo>();
-      var fastProperties = type.GetProperties().Select(GetPropertyInfo).ToList();
+      var fastProperties = type.GetProperties().Select(GetPropertyInfo).Concat(type.GetFields().Select(GetPropertyInfo)).ToList();
       return new FastTypeInfo(fastCtorArguments, fastProperties);
     }
 
@@ -68,6 +68,21 @@ namespace Farada.TestDataGeneration.FastReflection
     private static IFastPropertyInfo CreatePropertyInfo (PropertyInfo propertyInfo)
     {
       return new FastPropertyInfo(propertyInfo);
+    }
+
+    /// <summary>
+    /// Creates an <see cref="IFastPropertyInfo"/> for faster property access
+    /// </summary>
+    /// <param name="propertyInfo">the property info to convert</param>
+    /// <returns>The <see cref="IFastPropertyInfo"/></returns>
+    public static IFastPropertyInfo GetPropertyInfo (FieldInfo fieldInfo)
+    {
+      return CreatePropertyInfo(fieldInfo);
+    }
+
+    private static IFastPropertyInfo CreatePropertyInfo (FieldInfo fieldInfo)
+    {
+      return new FastFieldInfo(fieldInfo);
     }
   }
 }
