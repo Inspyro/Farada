@@ -10,25 +10,25 @@ namespace Farada.TestDataGeneration.Modifiers
   public class ModificationContext
   {
     /// <summary>
-    /// The type of the property to modify
+    /// The type of the member to modify
     /// </summary>
-    public Type PropertyType { get; private set; }
+    public Type MemberType { get; private set; }
 
     /// <summary>
-    /// The concrete property to modify
+    /// The concrete member to modify
     /// </summary>
     [CanBeNull]
-    public IFastPropertyInfo Property { get; private set; }
+    public IFastMemberWithValues Member { get; private set; }
 
     /// <summary>
     /// The random to use for the modification
     /// </summary>
     public Random Random { get; private set; }
 
-    internal ModificationContext (Type propertyType, [CanBeNull] IFastPropertyInfo property, Random random)
+    internal ModificationContext (Type memberType, [CanBeNull] IFastMemberWithValues member, Random random)
     {
-      PropertyType = propertyType;
-      Property = property;
+      MemberType = memberType;
+      Member = member;
       Random = random;
     }
   }

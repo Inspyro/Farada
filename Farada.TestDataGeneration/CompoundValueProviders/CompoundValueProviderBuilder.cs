@@ -28,18 +28,18 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _modifierList = new List<IInstanceModifier>();
     }
 
-    public void AddProvider<TProperty, TContext> (ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>
+    public void AddProvider<TMember, TContext> (ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>
     {
-      _valueProviderDictionary.AddValueProvider(new TypeKey(typeof (TProperty)), valueProvider);
+      _valueProviderDictionary.AddValueProvider(new TypeKey(typeof (TMember)), valueProvider);
     }
 
-    public void AddProvider<TProperty, TAttribute, TContext> (AttributeBasedValueProvider<TProperty, TAttribute, TContext> attributeBasedValueProvider) where TAttribute : Attribute where TContext : AttributeValueProviderContext<TProperty, TAttribute>
+    public void AddProvider<TMember, TAttribute, TContext> (AttributeBasedValueProvider<TMember, TAttribute, TContext> attributeBasedValueProvider) where TAttribute : Attribute where TContext : AttributeValueProviderContext<TMember, TAttribute>
     {
-      var key = new AttributeKey(typeof (TProperty), typeof (TAttribute));
+      var key = new AttributeKey(typeof (TMember), typeof (TAttribute));
       _valueProviderDictionary.AddValueProvider(key, attributeBasedValueProvider);
     }
 
-    public void AddProvider<TProperty, TContainer, TContext> (Expression<Func<TContainer, TProperty>> chainExpression, ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>
+    public void AddProvider<TMember, TContainer, TContext> (Expression<Func<TContainer, TMember>> chainExpression, ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>
     {
       var declaringType = chainExpression.GetParameterType();
       var expressionChain = chainExpression.ToChain().ToList();

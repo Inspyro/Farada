@@ -5,8 +5,8 @@ namespace Farada.TestDataGeneration.Fluent
 {
   public interface IChainConfigurator
   {
-    IValueProviderAndChainConfigurator<TProperty> For<TProperty>();
-    IValueProviderAndChainConfigurator<TProperty> For<TContainer, TProperty> (Expression<Func<TContainer, TProperty>> memberExpression);
-    IAttributeProviderAndChainConfigurator<TProperty, TAttribute> For<TProperty, TAttribute>() where TAttribute : Attribute;
+    IValueProviderAndChainConfigurator<TMember> For<TMember>();
+    IValueProviderAndChainConfigurator<TMember> For<TContainer, TMember> (Expression<Func<TContainer, TMember>> memberExpression);
+    IAttributeProviderAndChainConfigurator<TMember, TAttribute> For<TMember, TAttribute>() where TAttribute : Attribute;
   }
 }

@@ -13,7 +13,7 @@ namespace Farada.TestDataGeneration.Extensions
   /// </summary>
   internal static class ExpressionExtensions
   {
-    internal static IEnumerable<PropertyKeyPart> ToChain(this Expression expression)
+    internal static IEnumerable<MemberKeyPart> ToChain(this Expression expression)
     {
       var memberExpression = expression as MemberExpression;
       if (memberExpression != null)
@@ -25,18 +25,18 @@ namespace Farada.TestDataGeneration.Extensions
 
         var propertyInfo = memberExpression.Member as PropertyInfo;
         if (propertyInfo != null)
-          yield return new PropertyKeyPart(FastReflectionUtility.GetPropertyInfo(propertyInfo));
+          yield return new MemberKeyPart(FastReflectionUtility.GetPropertyInfo(propertyInfo));
 
         var fieldInfo = memberExpression.Member as FieldInfo;
         if (fieldInfo != null)
-          yield return new PropertyKeyPart(FastReflectionUtility.GetPropertyInfo(fieldInfo));
+          yield return new MemberKeyPart(FastReflectionUtility.GetFieldInfo(fieldInfo));
 
         if (propertyInfo == null && fieldInfo == null)
           throw new NotSupportedException(memberExpression.Member.Name + " is not a property or field, and thus not supported.");
       }
     }
 
-    internal static IEnumerable<PropertyKeyPart> ToChain (this LambdaExpression expression)
+    internal static IEnumerable<MemberKeyPart> ToChain (this LambdaExpression expression)
     {
       return expression.Body.ToChain();
     }

@@ -4,7 +4,7 @@ using Farada.TestDataGeneration.ValueProviders;
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
   /// <summary>
-  /// Creates a random enum for any enum type (<see cref="SubTypeValueProvider{TProperty}"/>
+  /// Creates a random enum for any enum type (<see cref="SubTypeValueProvider{TMember}"/>
   /// </summary>
   public class RandomEnumGenerator:SubTypeValueProvider<Enum>
   {

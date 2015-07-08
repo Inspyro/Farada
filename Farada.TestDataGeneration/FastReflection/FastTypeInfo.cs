@@ -6,12 +6,12 @@ namespace Farada.TestDataGeneration.FastReflection
   internal class FastTypeInfo:IFastTypeInfo
   {
     public IList<IFastArgumentInfo> CtorArguments { get; private set; } 
-    public IList<IFastPropertyInfo> Properties { get; private set; }
+    public IList<IFastMemberWithValues> Members { get; private set; }
 
-    internal FastTypeInfo(IList<IFastArgumentInfo> ctorArguments, IList<IFastPropertyInfo> properties )
+    internal FastTypeInfo(IList<IFastArgumentInfo> ctorArguments, IList<IFastMemberWithValues> members )
     {
       CtorArguments = ctorArguments;
-      Properties = properties;
+      Members = members;
     }
   }
 
@@ -28,6 +28,6 @@ namespace Farada.TestDataGeneration.FastReflection
         /// <summary>
     /// The properties of the type
     /// </summary>
-    IList<IFastPropertyInfo> Properties { get; }
+    IList<IFastMemberWithValues> Members { get; }
   }
 }

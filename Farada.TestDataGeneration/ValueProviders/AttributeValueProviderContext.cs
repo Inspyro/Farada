@@ -14,8 +14,8 @@ namespace Farada.TestDataGeneration.ValueProviders
         : base(objectContext)
     {
       //REVIEW RN-242
-      Trace.Assert (objectContext.PropertyInfo != null);
-      Attribute = objectContext.PropertyInfo.GetCustomAttribute<TAttribute>();
+      Trace.Assert (objectContext.MemberInfo != null);
+      Attribute = objectContext.MemberInfo.GetCustomAttribute<TAttribute>();
     }
 
     /// <summary>

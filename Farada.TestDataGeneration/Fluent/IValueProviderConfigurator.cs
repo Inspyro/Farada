@@ -3,9 +3,9 @@ using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.Fluent
 {
-  public interface IValueProviderConfigurator<TProperty>
+  public interface IValueProviderConfigurator<TMember>
   {
-    IValueProviderAndChainConfigurator<TProperty> AddProvider (ValueProvider<TProperty> valueProvider);
-    IValueProviderAndChainConfigurator<TProperty> AddProvider<TContext> (ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>;
+    IValueProviderAndChainConfigurator<TMember> AddProvider (ValueProvider<TMember> valueProvider);
+    IValueProviderAndChainConfigurator<TMember> AddProvider<TContext> (ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>;
   }
 }

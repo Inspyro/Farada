@@ -27,77 +27,80 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
     }
 
     /// <summary>
-    /// Reads the <see cref="MinLengthAttribute"/> and <see cref="MaxLengthAttribute"/> as well as the <see cref="StringLengthAttribute"/> from an <see cref="IFastPropertyInfo"/> and creates a new RangeConstraints object with type from the <see cref="IFastPropertyInfo"/>
+    /// Reads the <see cref="MinLengthAttribute"/> and <see cref="MaxLengthAttribute"/> as well as the <see cref="StringLengthAttribute"/> from an <see cref="IFastMemberWithValues"/> and creates a new RangeConstraints object with type from the <see cref="IFastMemberWithValues"/>
     /// 
     /// If a min length but no max length attribute is specified than max length is min length + 100
     /// If a max length but no min length attribute is specified then min length is max length - 100, but always > 0 
     /// </summary>
-    /// <param name="property">The property for which the string constraints should be extracted</param>
+    /// <param name="member">The member for which the string constraints should be extracted</param>
     /// <returns>the resulting string constraints or null if no attribute was found</returns>
     /// <exception cref="ArgumentOutOfRangeException">throws when maxLength is smaller than minLength - so the attributes are declared in an incorrect manner</exception>
-    public static StringConstraints FromProperty([CanBeNull] IFastPropertyInfo property)
+    public static StringConstraints FromMember ([CanBeNull] IFastMemberWithValues member)
     {
-      if (property == null)
+      if (member == null)
         return null;
 
       var minLength = -1;
       var maxLength = -1;
 
-      bool minLengthDefined = false;
-      bool maxLengthDefined = false;
+      var minLengthDefined = false;
+      var maxLengthDefined = false;
 
-      if(property.IsDefined(typeof(MinLengthAttribute)))
+      if (member.IsDefined (typeof (MinLengthAttribute)))
       {
-        var minLengthAttribute=property.GetCustomAttribute<MinLengthAttribute>();
+        var minLengthAttribute = member.GetCustomAttribute<MinLengthAttribute>();
         minLength = minLengthAttribute.Length;
         minLengthDefined = true;
       }
 
-      if(property.IsDefined(typeof(MaxLengthAttribute)))
+      if (member.IsDefined (typeof (MaxLengthAttribute)))
       {
-        var maxLengthAttribute=property.GetCustomAttribute<MaxLengthAttribute>();
+        var maxLengthAttribute = member.GetCustomAttribute<MaxLengthAttribute>();
         maxLength = maxLengthAttribute.Length;
         maxLengthDefined = true;
       }
 
       if (minLengthDefined && maxLengthDefined && maxLength < minLength)
       {
-        throw new ArgumentOutOfRangeException(
-            string.Format("On the property {0} {1} the MinLength attribute and MaxLength attribute result in an invalid range", property.Type, property.Name));
+        throw new ArgumentOutOfRangeException (
+            string.Format (
+                "On the member {0} {1} the MinLength attribute and MaxLength attribute result in an invalid range",
+                member.Type,
+                member.Name));
       }
 
-      if (property.IsDefined(typeof (StringLengthAttribute)))
+      if (member.IsDefined (typeof (StringLengthAttribute)))
       {
-        var stringLengthAttribute = property.GetCustomAttribute<StringLengthAttribute>();
+        var stringLengthAttribute = member.GetCustomAttribute<StringLengthAttribute>();
         minLength = stringLengthAttribute.MinimumLength;
         maxLength = stringLengthAttribute.MaximumLength;
 
         if (maxLength < minLength)
         {
-          throw new ArgumentOutOfRangeException(
-              string.Format("On the property {0} {1} the StringLength attribute has an invalid range", property.Type, property.Name));
+          throw new ArgumentOutOfRangeException (
+              string.Format ("On the member {0} {1} the StringLength attribute has an invalid range", member.Type, member.Name));
         }
       }
 
       if (minLength < 0 && maxLength < 0)
         return null;
 
-      if(minLengthDefined&&!maxLengthDefined)
+      if (minLengthDefined && !maxLengthDefined)
       {
         maxLength = minLength + 100;
       }
 
-      if (maxLengthDefined&&!minLengthDefined)
+      if (maxLengthDefined && !minLengthDefined)
       {
         minLength = maxLength - 100;
       }
 
-      if(minLength<0)
+      if (minLength < 0)
       {
         minLength = 0;
       }
 
-      return new StringConstraints(minLength, maxLength);
+      return new StringConstraints (minLength, maxLength);
     }
   }
 }

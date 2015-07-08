@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace Farada.TestDataGeneration.ValueProviders
 {
   /// <summary>
-  /// The non type safe context which contains all values used in the type safe context <see cref="ValueProviderContext{TProperty}"/>
+  /// The non type safe context which contains all values used in the type safe context <see cref="ValueProviderContext{TMember}"/>
   /// </summary>
   public class ValueProviderObjectContext
   {
@@ -15,7 +15,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     internal Type TargetValueType { get; private set; }
 
     [CanBeNull]
-    internal IFastPropertyInfo PropertyInfo { get; private set; }
+    internal IFastMemberWithValues MemberInfo { get; private set; }
 
     internal ITestDataGenerator TestDataGenerator { get; private set; }
 
@@ -23,13 +23,13 @@ namespace Farada.TestDataGeneration.ValueProviders
         ITestDataGenerator testDataGenerator,
         Func<object> getPreviousValue,
         Type targetValueType,
-        [CanBeNull] IFastPropertyInfo fastPropertyInfo)
+        [CanBeNull] IFastMemberWithValues member)
     {
       TestDataGenerator = testDataGenerator;
       Random = testDataGenerator.Random;
       GetPreviousValue = getPreviousValue;
       TargetValueType = targetValueType;
-      PropertyInfo = fastPropertyInfo;
+      MemberInfo = member;
     }
   }
 }

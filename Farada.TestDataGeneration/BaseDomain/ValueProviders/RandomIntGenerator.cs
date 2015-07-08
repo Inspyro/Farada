@@ -4,7 +4,7 @@ using Farada.TestDataGeneration.BaseDomain.Constraints;
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
   /// <summary>
-  /// Creates a random integer reading the <see cref="RangeContstraints{T}"/> from the property
+  /// Creates a random integer reading the <see cref="RangeContstraints{T}"/> from the member
   /// </summary>
   public class RandomIntGenerator:RangeConstrainedValueProvider<int>
   {

@@ -40,9 +40,9 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
     public IKey PreviousKey { get; private set; }
 
-    public IKey CreateKey (IFastPropertyInfo property)
+    public IKey CreateKey (IFastMemberWithValues member)
     {
-      return new ChainedKey(_type, new List<PropertyKeyPart> { new PropertyKeyPart(property) });
+      return new ChainedKey(_type, new List<MemberKeyPart> { new MemberKeyPart(member) });
     }
 
     public Type Type
@@ -50,7 +50,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       get { return _type; }
     }
 
-    public IFastPropertyInfo Property
+    public IFastMemberWithValues Member
     {
       get { return null; }
     }
@@ -60,9 +60,9 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       get { return 0; }
     }
 
-    public IKey ChangePropertyType (Type newPropertyType)
+    public IKey ChangeMemberType (Type newMemberType)
     {
-      return new TypeKey(newPropertyType);
+      return new TypeKey(newMemberType);
     }
 
     public bool Equals ([CanBeNull] TypeKey other)

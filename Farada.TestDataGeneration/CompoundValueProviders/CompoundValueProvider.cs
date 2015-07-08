@@ -10,7 +10,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 {
   /// <summary>
   /// The compound value provider is a <see cref="ITestDataGenerator"/> that can fill compound types such as classes
-  /// based on a domain decleration, where various PropertyChains, TypeChains and AttributeChains are declared
+  /// based on a domain decleration, where various MemberChains, TypeChains and AttributeChains are declared
   /// </summary>
   internal class CompoundValueProvider : ITestDataGenerator
   {
@@ -30,19 +30,19 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _modificationFactory = new ModificationFactory (instanceModifiers, random);
     }
 
-    public TValue Create<TValue> (int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo = null)
+    public TValue Create<TValue> (int maxRecursionDepth = 2, IFastMemberWithValues member = null)
     {
-      return CreateMany<TValue> (1, maxRecursionDepth, propertyInfo).Single();
+      return CreateMany<TValue> (1, maxRecursionDepth, member).Single();
     }
 
     public IReadOnlyList<TValue> CreateMany<TValue> (
         int numberOfObjects,
         int maxRecursionDepth = 2,
-        IFastPropertyInfo propertyInfo = null)
+        IFastMemberWithValues member = null)
     {
-      var rootKey = propertyInfo == null
+      var rootKey = member == null
           ? (IKey) new TypeKey (typeof (TValue))
-          : new ChainedKey (typeof (TValue), propertyInfo);
+          : new ChainedKey (typeof (TValue), member);
 
       var instances = CreateMany (rootKey, numberOfObjects, maxRecursionDepth);
 
@@ -56,7 +56,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
     ///Note: The create many method is optimized in many ways
     ///1: If you create 100 Dog objects it will first created 100 instances of Dog (with a fast version of the Activator)
-    ///   Then it searches the value provider for each property and generates 100 values per property for each instance of Dog
+    ///   Then it searches the value provider for each member and generates 100 values per member for each instance of Dog
     /// 2: It uses a cached but thread safe version of reflection <see cref="FastReflectionUtility"/>
     internal IList<object> CreateMany (IKey currentKey, int numberOfObjects, int maxRecursionDepth)
     {
@@ -85,20 +85,20 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
           continue;
 
         //now we reflect the properties of the concrete sub type (note:this is cached in a concurrent dictionary) 
-        var properties = FastReflectionUtility.GetTypeInfo (instancesForType.Key.Type).Properties;
+        var members = FastReflectionUtility.GetTypeInfo (instancesForType.Key.Type).Members;
 
-        //now we fill each property
-        foreach (var property in properties)
+        //now we fill each member
+        foreach (var member in members)
         {
-          //first we need to create the key that the property has in our creator chain
-          var nextKey = instancesForType.Key.CreateKey (property);
+          //first we need to create the key that the member has in our creator chain
+          var nextKey = instancesForType.Key.CreateKey (member);
 
-          //next we will recursively call this function (in case the property is compound/complex)
+          //next we will recursively call this function (in case the member is compound/complex)
           //Note: we create many values, in order to execute the logic of the method less often
-          var propertyValues = CreateMany (nextKey, instancesForType.Instances.Count, maxRecursionDepth);
+          var memberValues = CreateMany (nextKey, instancesForType.Instances.Count, maxRecursionDepth);
 
-          //in case we could not fill the property we just skip filling it, leave it to it's current (probably default) value (e.g. because it was not supported) 
-          if (propertyValues == null)
+          //in case we could not fill the member we just skip filling it, leave it to it's current (probably default) value (e.g. because it was not supported) 
+          if (memberValues == null)
             continue;
 
           //now we iterate over all created values and set them for the corresponding previously created instance
@@ -110,8 +110,8 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
             if (instancesForType.Instances[i] == null)
               continue;
 
-            //in case we got a value we set the property
-            property.SetValue (instancesForType.Instances[i], propertyValues[i]);
+            //in case we got a value we set the member
+            member.SetValue (instancesForType.Instances[i], memberValues[i]);
           }
         }
       }

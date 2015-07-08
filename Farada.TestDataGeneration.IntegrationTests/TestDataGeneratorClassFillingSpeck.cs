@@ -3,6 +3,7 @@ using System.Linq;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using FluentAssertions;
+using FluentAssertions.Common;
 using TestFx.Specifications;
 
 namespace Farada.TestDataGeneration.IntegrationTests
@@ -26,7 +27,6 @@ namespace Farada.TestDataGeneration.IntegrationTests
                       x.Result.Galaxy1.StarSystem1.Planet1.President.Atom1.Particle1.QuantumUniverse.Galaxy1.StarSystem1.Planet1.President.Atom1.Particle1
                           .QuantumUniverse.Galaxy1.Should ()
                           .BeNull ()));
-
 
       Specify (x =>
           TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
@@ -107,6 +107,15 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Case ("should fill properties according to provider chain7", _ => _
               .Given (TypeHierarchyChainProviderContext ())
               .It ("should fill name", x => x.Result.Name.Should ().Be ("12345!6!78")));
+
+      Specify (x =>
+          TestDataGenerator.Create<ClassWithMixedMembers> (MaxRecursionDepth, null))
+          .Case ("should fill mixed properties correctly", _ => _
+              .Given (BaseDomainContext (seed: 0))
+              .It ("should fill public property", x => x.Result.PublicProperty.Should ().Be ("Vigpmuhj"))
+              .It ("should fill public field", x => x.Result.PublicField.Should ().Be ("Zaxseww"))
+              .It ("Should not fill private property", x => x.Result.GetPrivateProperty ().Should ().Be ("default"))
+              .It ("Should not fill private field", x => x.Result.GetPrivateField ().Should ().Be ("default")));
     }
 
     Context SimpleStringContext (int recursionDepth)

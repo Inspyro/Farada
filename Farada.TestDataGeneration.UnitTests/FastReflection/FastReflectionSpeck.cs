@@ -28,7 +28,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
                 .Given ("SimpleDTO", x => TypeToReflect = typeof (SimpleDTO))
                 //
                 .It ("creates an valid type info", x => x.Result.Should ().NotBeNull ())
-                .It ("finds 1 property", x => x.Result.Properties.Count.Should ().Be (1))
+                .It ("finds 1 property", x => x.Result.Members.Count.Should ().Be (1))
                 .It ("finds correct property",
                     x => CompareType (x.Result, new KeyValuePair<Type, string> (typeof (bool), "SomeProperty"))))
             //
@@ -37,7 +37,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
                 .Given ("DerivedDTO", x => TypeToReflect = typeof (DerivedDTO))
                 //
                 .It ("creates an valid type info", x => x.Result.Should ().NotBeNull ())
-                .It ("finds 2 properties", x => x.Result.Properties.Count.Should ().Be (2))
+                .It ("finds 2 properties", x => x.Result.Members.Count.Should ().Be (2))
                 .It ("finds correct properties",
                     x =>
                         CompareType (x.Result, new KeyValuePair<Type, string> (typeof (int), "CustomProperty"),
@@ -58,7 +58,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
                 //
                 .It ("creates an valid type info", x => x.Result.Should ().NotBeNull ())
                 .It ("finds correct property",
-                    x => CompareProperty (x.Result, new KeyValuePair<Type, string> (typeof (bool), "SomeProperty"))))
+                    x => CompareMember (x.Result, new KeyValuePair<Type, string> (typeof (bool), "SomeProperty"))))
             //
             .Case ("returns property info with valid getter and setter actions", _ => _
                 //
@@ -113,21 +113,21 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
 
     static void CompareType (IFastTypeInfo typeInfo, params KeyValuePair<Type, string>[] properties)
     {
-      for (int i = 0; i < typeInfo.Properties.Count; i++)
+      for (int i = 0; i < typeInfo.Members.Count; i++)
       {
         var propertyToCompare = properties[i];
-        var property = typeInfo.Properties.SingleOrDefault (x => x.Name == propertyToCompare.Value);
+        var member = typeInfo.Members.SingleOrDefault (x => x.Name == propertyToCompare.Value);
 
-        property.Should ().NotBeNull ("Did not find property with name " + propertyToCompare.Value);
-        Trace.Assert (property != null);
-        CompareProperty (property, propertyToCompare);
+        member.Should ().NotBeNull ("Did not find property with name " + propertyToCompare.Value);
+        Trace.Assert (member != null);
+        CompareMember (member, propertyToCompare);
       }
     }
 
-    static void CompareProperty (IFastPropertyInfo propertyInfo, KeyValuePair<Type, string> property)
+    static void CompareMember (IFastMemberWithValues member, KeyValuePair<Type, string> property)
     {
-      propertyInfo.Type.Should ().Be (property.Key);
-      propertyInfo.Name.Should ().Be (property.Value);
+      member.Type.Should ().Be (property.Key);
+      member.Name.Should ().Be (property.Value);
     }
   }
 

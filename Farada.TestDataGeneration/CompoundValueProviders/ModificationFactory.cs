@@ -25,7 +25,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
             return _instanceModifiers.Aggregate(
                     instances,
                     (current, instanceModifier) =>
-                            instanceModifier.Modify(new ModificationContext(currentKey.Type, currentKey.Property, _random), current));
+                            instanceModifier.Modify(new ModificationContext(currentKey.Type, currentKey.Member, _random), current));
         }
     }
 }

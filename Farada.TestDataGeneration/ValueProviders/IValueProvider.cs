@@ -18,9 +18,9 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// <summary>
     /// Checks wether the given type can be handled by this ValueProvider
     /// </summary>
-    /// <param name="propertyType">the type that should be checked</param>
+    /// <param name="memberType">the type that should be checked</param>
     /// <returns>true if the type can be handled/created</returns>
-    bool CanHandle (Type propertyType);
+    bool CanHandle (Type memberType);
 
     /// <summary>
     /// Creates the type safe context out of the non type safe context and might extend the context

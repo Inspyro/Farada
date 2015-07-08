@@ -69,13 +69,13 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
           ITestDataGenerator testDataGenerator,
           Func<object> getPreviousValue,
           Type targetValueType,
-          IFastPropertyInfo fastPropertyInfo)
-          : base (testDataGenerator, getPreviousValue, targetValueType, fastPropertyInfo)
+          IFastMemberWithValues member)
+          : base (testDataGenerator, getPreviousValue, targetValueType, member)
       {
       }
     }
 
-    class DummyFastProperty : IFastPropertyInfo
+    class DummyFastProperty : IFastMemberWithValues
     {
       public T GetCustomAttribute<T> () where T : Attribute
       {
@@ -111,7 +111,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
         Random = random;
       }
 
-      public TCompoundValue Create<TCompoundValue> (int maxRecursionDepth = 2, IFastPropertyInfo propertyInfo = null)
+      public TCompoundValue Create<TCompoundValue> (int maxRecursionDepth = 2, IFastMemberWithValues member = null)
       {
         throw new NotSupportedException ();
       }
@@ -119,7 +119,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
       public IReadOnlyList<TCompoundValue> CreateMany<TCompoundValue> (
           int numberOfObjects,
           int maxRecursionDepth = 2,
-          IFastPropertyInfo propertyInfo = null)
+          IFastMemberWithValues member = null)
       {
         throw new NotSupportedException ();
       }

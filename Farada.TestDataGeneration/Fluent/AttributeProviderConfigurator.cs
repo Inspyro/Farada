@@ -4,7 +4,7 @@ using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.Fluent
 {
-  internal class AttributeProviderConfigurator<TProperty, TAttribute> :ChainConfigurator, IAttributeProviderAndChainConfigurator<TProperty, TAttribute>
+  internal class AttributeProviderConfigurator<TMember, TAttribute> :ChainConfigurator, IAttributeProviderAndChainConfigurator<TMember, TAttribute>
       where TAttribute : Attribute
   {
     internal AttributeProviderConfigurator (Func<CompoundValueProviderBuilder> lazyValueProviderBuilder)
@@ -12,13 +12,13 @@ namespace Farada.TestDataGeneration.Fluent
     {
     }
 
-    public IAttributeProviderAndChainConfigurator<TProperty, TAttribute> AddProvider (AttributeBasedValueProvider<TProperty, TAttribute> attributeValueProvider)
+    public IAttributeProviderAndChainConfigurator<TMember, TAttribute> AddProvider (AttributeBasedValueProvider<TMember, TAttribute> attributeValueProvider)
     {
       _lazyValueProviderBuilder().AddProvider(attributeValueProvider);
       return this;
     }
 
-    public IAttributeProviderAndChainConfigurator<TProperty, TAttribute> AddProvider<TContext> (AttributeBasedValueProvider<TProperty, TAttribute, TContext> attributeValueProvider) where TContext : AttributeValueProviderContext<TProperty, TAttribute>
+    public IAttributeProviderAndChainConfigurator<TMember, TAttribute> AddProvider<TContext> (AttributeBasedValueProvider<TMember, TAttribute, TContext> attributeValueProvider) where TContext : AttributeValueProviderContext<TMember, TAttribute>
     {
       _lazyValueProviderBuilder().AddProvider(attributeValueProvider);
       return this;

@@ -12,33 +12,33 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
   {
 
     /// <summary>
-    /// Adds a provider for a property in the chain
+    /// Adds a provider for a member in the chain
     /// </summary>
-    /// <typeparam name="TProperty">The type of the property</typeparam>
+    /// <typeparam name="TMember">The type of the member</typeparam>
     /// <typeparam name="TContext">The type of the context for the value provider</typeparam>
     /// <param name="valueProvider">The value provider to inject in the chain</param>
-    void AddProvider<TProperty, TContext> (ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>;
+    void AddProvider<TMember, TContext> (ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>;
 
      /// <summary>
     /// Adds a provider for an attribute and a given return type
     /// You need to inject a provider for each attribute/type pair that you want to be filled
     /// </summary>
-    /// <typeparam name="TProperty">The type of the properties which should filled</typeparam>
+    /// <typeparam name="TMember">The type of the members which should filled</typeparam>
     /// <typeparam name="TAttribute">The type of the attribute that should be on the properties</typeparam>
     /// <typeparam name="TContext">The type of the context for the value provider</typeparam>
     /// <param name="attributeBasedValueProvider">the value provider to inject into the chain</param>
-    void AddProvider<TProperty, TAttribute, TContext> (
-        AttributeBasedValueProvider<TProperty, TAttribute, TContext> attributeBasedValueProvider) where TAttribute : Attribute where TContext : AttributeValueProviderContext<TProperty, TAttribute>;
+    void AddProvider<TMember, TAttribute, TContext> (
+        AttributeBasedValueProvider<TMember, TAttribute, TContext> attributeBasedValueProvider) where TAttribute : Attribute where TContext : AttributeValueProviderContext<TMember, TAttribute>;
 
     /// <summary>
-    /// Adds a provider for a property in the chain
+    /// Adds a provider for a member in the chain
     /// </summary>
-    /// <typeparam name="TProperty">The type of the property</typeparam>
-    /// <typeparam name="TContainer">The type containing the property or the type itself</typeparam>
+    /// <typeparam name="TMember">The type of the member</typeparam>
+    /// <typeparam name="TContainer">The type containing the member or the type itself</typeparam>
     /// <typeparam name="TContext">The type of the context for the value provider</typeparam>
-    /// <param name="chainExpression">The expression that leads to the property (e.g. (Person p)=>p.Name) or to the type (e.g. (string s)=>s)</param>
+    /// <param name="chainExpression">The expression that leads to the member (e.g. (Person p)=>p.Name) or to the type (e.g. (string s)=>s)</param>
     /// <param name="valueProvider">The value provider to inject in the chain</param>
-    void AddProvider<TProperty, TContainer, TContext> (Expression<Func<TContainer, TProperty>> chainExpression, ValueProvider<TProperty, TContext> valueProvider) where TContext : ValueProviderContext<TProperty>;
+    void AddProvider<TMember, TContainer, TContext> (Expression<Func<TContainer, TMember>> chainExpression, ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>;
 
     /// <summary>
     /// Adds an <see cref="IInstanceModifier"/> that gets all instances after they are filled and can modifiy them

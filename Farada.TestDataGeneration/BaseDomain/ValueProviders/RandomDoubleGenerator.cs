@@ -6,13 +6,13 @@ using Farada.TestDataGeneration.ValueProviders;
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
   /// <summary>
-  /// Creates a random double within the <see cref="RangeContstraints{T}"/> that are read from the property
+  /// Creates a random double within the <see cref="RangeContstraints{T}"/> that are read from the member
   /// </summary>
   public class RandomDoubleGenerator:ValueProvider<double, RangeConstrainedValueProviderContext<double>>
   {
     protected override RangeConstrainedValueProviderContext<double> CreateContext (ValueProviderObjectContext objectContext)
     {
-      var rangeContstraints = RangeContstraints<double>.FromProperty(objectContext.PropertyInfo)
+      var rangeContstraints = RangeContstraints<double>.FromMember(objectContext.MemberInfo)
                               ?? new RangeContstraints<double>(double.MinValue, double.MaxValue);
 
       return new RangeConstrainedValueProviderContext<double>(objectContext, rangeContstraints);

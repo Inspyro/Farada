@@ -15,10 +15,10 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// <summary>
   /// The type safe value provider context used to create values in a <see cref="IValueProvider"/>
   /// </summary>
-  /// <typeparam name="TProperty"></typeparam>
-  public class ValueProviderContext<TProperty>:IValueProviderContext
+  /// <typeparam name="TMember"></typeparam>
+  public class ValueProviderContext<TMember>:IValueProviderContext
   {
-    private readonly Func<TProperty> _previousValueFunction;
+    private readonly Func<TMember> _previousValueFunction;
 
     /// <summary>
     /// The random to use for random value generation
@@ -28,7 +28,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// <summary>
     /// The func that referes to the previous value generator in the chain
     /// </summary>
-    public TProperty GetPreviousValue ()
+    public TMember GetPreviousValue ()
     {
       return _previousValueFunction();
     }
@@ -39,9 +39,9 @@ namespace Farada.TestDataGeneration.ValueProviders
     public Type TargetValueType { get; private set; }
 
     /// <summary>
-    /// The property for which the value will be generated - can be null
+    /// The member for which the value will be generated - can be null
     /// </summary>
-    public IFastPropertyInfo PropertyInfo { get; private set; }
+    public IFastMemberWithValues Member { get; private set; }
 
     /// <summary>
     /// The TestDataGenerator that can be used to generate values of other types (Note: avoid circular dependencies)
@@ -52,9 +52,9 @@ namespace Farada.TestDataGeneration.ValueProviders
     {
       TestDataGenerator = objectContext.TestDataGenerator;
       Random = objectContext.Random;
-      _previousValueFunction = () => (TProperty) objectContext.GetPreviousValue();
+      _previousValueFunction = () => (TMember) objectContext.GetPreviousValue();
       TargetValueType = objectContext.TargetValueType;
-      PropertyInfo = objectContext.PropertyInfo;
+      Member = objectContext.MemberInfo;
     }
   }
 }

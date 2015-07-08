@@ -12,10 +12,6 @@ namespace Farada.TestDataGeneration.IntegrationTests
     public TestDataGeneratorEdgeCaseSpeck ()
     {
       Specify (x => x.ToString ())
-          .Case ("should throw exception for fields", _ => _
-              .Given (ConfigurationContext (c => c.For ((ClassWithVariousMembers y) => y.PublicField).AddProvider (dummy => "")))
-              .It ("throws correct exception", x => CreationException.GetType ().Should ().Be (typeof (NotSupportedException)))
-              .ItThrows (typeof(Exception))) //"throws exception with correct message", //TODO RN-246
           //x => CreationException.Message.Should ().Be ("PublicField is not a property. Members that are not properties are not supported")))
           .Case ("should throw exception for methods", _ => _
               .Given (ConfigurationContext (c => c.For ((ClassWithVariousMembers y) => y.PublicMethod ()).AddProvider (dummy => "")))

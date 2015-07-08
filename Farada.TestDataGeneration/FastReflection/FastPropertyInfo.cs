@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.FastReflection
 {
-  internal class FastFieldInfo: FastMemberBase, IFastPropertyInfo
+  internal class FastFieldInfo: FastMemberBase, IFastMemberWithValues
   {
     private readonly Func<object, object> _getFunction;
     private readonly Action<object, object> _setAction;
@@ -28,7 +28,7 @@ namespace Farada.TestDataGeneration.FastReflection
       return _getFunction(instance);
     }
 
-    public void SetValue (object instance, object value)
+    public void SetValue (object instance, [CanBeNull] object value)
     {
       _setAction(instance, value);
     }
@@ -58,7 +58,7 @@ namespace Farada.TestDataGeneration.FastReflection
     }
   }
 
-  internal class FastPropertyInfo: FastMemberBase, IFastPropertyInfo
+  internal class FastPropertyInfo: FastMemberBase, IFastMemberWithValues
   {
     private readonly Func<object, object> _getFunction;
     private readonly Action<object, object> _setAction;
@@ -118,11 +118,10 @@ namespace Farada.TestDataGeneration.FastReflection
     }
   }
 
-  // TODO: rename
   /// <summary>
   /// Provides a faster way to access a property than <see cref="PropertyInfo"/>
   /// </summary>
-  public interface IFastPropertyInfo:IFastMemberInfo
+  public interface IFastMemberWithValues:IFastMemberInfo
   {
      /// <summary>
     /// A fast way to get the value of the property
@@ -135,7 +134,7 @@ namespace Farada.TestDataGeneration.FastReflection
     /// A fast way to set the value of the property
     /// </summary>
     /// <param name="instance">the class instance</param>
-    /// <param name="value">the value to set, needs to match the <see cref="PropertyType"/></param>
+    /// <param name="value">the value to set, needs to match the <see cref="FastMemberBase.Type"/></param>
     void SetValue (object instance, [CanBeNull] object value);
   }
 }
