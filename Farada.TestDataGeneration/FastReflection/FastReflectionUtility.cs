@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Farada.TestDataGeneration.Extensions;
 
 namespace Farada.TestDataGeneration.FastReflection
 {
@@ -27,6 +29,9 @@ namespace Farada.TestDataGeneration.FastReflection
 
     private static IFastTypeInfo CreateTypeInfo (Type type)
     {
+      if (type.IsCollection())
+        return new FastTypeInfo (new IFastArgumentInfo[0], new IFastPropertyInfo[0]);
+
       //At the moment we only support the first constructor (immutability...)
       //as soon a specific ctor is needed - implement  a strategy for choosing the constructor
       var ctor = type.GetConstructors().FirstOrDefault();

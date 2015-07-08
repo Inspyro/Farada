@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -21,6 +23,11 @@ namespace Farada.TestDataGeneration.Extensions
 		{
 			return type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Nullable<>));
 		}
+    public static bool IsCollection (this Type type)
+    {
+      return type.GetInterface (typeof (IEnumerable).FullName) != null
+             || type.GetInterface (typeof (IEnumerable<>).FullName) != null;
+    }
 
     /// <summary>
     /// Checks if a type is derived from another type.
