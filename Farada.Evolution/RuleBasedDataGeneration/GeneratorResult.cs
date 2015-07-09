@@ -6,13 +6,13 @@ namespace Farada.Evolution.RuleBasedDataGeneration
 {
   public class GeneratorResult
   {
-    private readonly Dictionary<Type,  List<IRuleValue>> _dataLists;
-    internal GeneratorResult(Dictionary<Type, List<IRuleValue>> dataLists)
+    private readonly Dictionary<Type,  LinkedList<IRuleValue>> _dataLists;
+    internal GeneratorResult(Dictionary<Type, LinkedList<IRuleValue>> dataLists)
     {
       _dataLists = dataLists;
     }
 
-    internal Dictionary<Type,  List<IRuleValue>> DataLists { get { return _dataLists; } }
+    internal Dictionary<Type,  LinkedList<IRuleValue>> DataLists { get { return _dataLists; } }
 
     public IList<T> GetResult<T>()
     {

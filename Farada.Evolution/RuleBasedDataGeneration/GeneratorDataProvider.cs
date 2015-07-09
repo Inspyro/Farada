@@ -6,15 +6,14 @@ namespace Farada.Evolution.RuleBasedDataGeneration
 {
   public class GeneratorDataProvider
   {
-    private readonly Random _random;
-    private readonly Dictionary<Type, List<IRuleValue>> _dataLists; 
-    internal GeneratorDataProvider(Random random, Dictionary<Type, List<IRuleValue>> initialData=null)
+    private readonly Dictionary<Type, LinkedList<IRuleValue>> _dataLists;
+
+    internal GeneratorDataProvider(Dictionary<Type, LinkedList<IRuleValue>> initialData=null)
     {
-      _random = random;
-      _dataLists = initialData ?? new Dictionary<Type, List<IRuleValue>>();
+      _dataLists = initialData ?? new Dictionary<Type, LinkedList<IRuleValue>>();
     }
 
-    internal Dictionary<Type, List<IRuleValue>> DataLists { get { return _dataLists; } }
+    internal Dictionary<Type, LinkedList<IRuleValue>> DataLists { get { return _dataLists; } }
 
     internal IEnumerable<IRuleValue> GetAll (IRuleParameter ruleParameter)
     {
@@ -31,22 +30,28 @@ namespace Farada.Evolution.RuleBasedDataGeneration
     {
       var dataType = value.GetDataType();
 
-      List<IRuleValue> valueList;
+      LinkedList<IRuleValue> valueList;
       if(_dataLists.ContainsKey(dataType))
       {
         valueList = _dataLists[dataType];
       }
       else
       {
-        valueList = new List<IRuleValue>();
+        valueList = new LinkedList<IRuleValue>();
         _dataLists.Add(dataType, valueList);
       }
 
-      value.OnDeleted(() => Delete(dataType, value));
-      valueList.Add(value);
+      var valueNode = new LinkedListNode<IRuleValue> (value);
+
+      if (valueList.Last == null)
+        valueList.AddLast (valueNode);
+      else
+        valueList.AddAfter (valueList.Last, valueNode);
+
+      value.OnDeleted(() => Delete(dataType, valueNode));
     }
 
-    private void Delete (Type dataType, IRuleValue value)
+    private void Delete (Type dataType, LinkedListNode<IRuleValue> nodeToDelete)
     {
       if (!_dataLists.ContainsKey(dataType))
       {
@@ -54,7 +59,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
       }
 
       var valueList = _dataLists[dataType];
-      valueList.Remove(value);
+      valueList.Remove (nodeToDelete);
     }
   }
 }

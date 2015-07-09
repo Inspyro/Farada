@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.Extensions
 {
@@ -57,10 +58,10 @@ namespace Farada.TestDataGeneration.Extensions
     /// <returns>all values that match the predicate</returns>
 
     // ReSharper disable once ParameterTypeCanBeEnumerable.Global
-    public static IEnumerable<T> WhereValues<T> (this IList<T> list, Func<T, bool> predicate)
-    {
-      return list.WhereIndices(predicate).Select(index => list[index]);
-    }
+    public static IEnumerable<T> WhereValues<T> (this IEnumerable<T> list, [CanBeNull] Func<T, bool> predicate)
+   {
+     return list.Where (l=>predicate==null || predicate(l));
+   }
 
     /// <summary>
     /// This method selects all indices of a list that match the given predicate
@@ -69,36 +70,13 @@ namespace Farada.TestDataGeneration.Extensions
     /// <param name="list">The list to search</param>
     /// <param name="predicate">The predicate (optional), default=null means no criteria</param>
     /// <returns>all indices that match the predicate</returns>
-    public static IEnumerable<int> WhereIndices<T>(this IList<T> list, Func<T, bool> predicate=null)
+    public static IEnumerable<int> WhereIndices<T>(this IEnumerable<T> list, [CanBeNull] Func<T, bool> predicate=null)
     {
-      if (list.Count <= 0)
-        yield break;
-
-      if(predicate==null)
+      var index = 0;
+      foreach (var l in list.Where (l=>predicate==null || predicate(l)))
       {
-        for(int i=0;i<list.Count;i++)
-        {
-          yield return i;
-        }
-
-        yield break;
-      }
-
-      var matchingIndices = new List<int>();
-      for (var i = 0; i < list.Count; i++)
-      {
-        if (predicate(list[i]))
-        {
-          matchingIndices.Add(i);
-        }
-      }
-
-      if (matchingIndices.Count <= 0)
-        yield break;
-
-      foreach (var matchingIndex in matchingIndices)
-      {
-        yield return matchingIndex;
+        yield return index;
+        index++;
       }
     }
   }

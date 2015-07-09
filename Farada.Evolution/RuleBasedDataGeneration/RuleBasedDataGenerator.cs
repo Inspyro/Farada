@@ -20,7 +20,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
       TestDataGenerator = testDataGenerator;
       _random = testDataGenerator.Random;
       _ruleSet = ruleSet;
-      InitialDataProvider = new InitialDataProvider(new GeneratorDataProvider(_random));
+      InitialDataProvider = new InitialDataProvider(new GeneratorDataProvider());
     }
 
     public GeneratorResult Generate (int generations = 1, GeneratorResult initialData = null)
@@ -42,7 +42,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
     
     private void Generate (World world)
     {
-      var dataProvider = world.CurrentData==null?new GeneratorDataProvider(_random):new GeneratorDataProvider(_random, world.CurrentData.DataLists);
+      var dataProvider = world.CurrentData==null?new GeneratorDataProvider():new GeneratorDataProvider(world.CurrentData.DataLists);
 
       var generatedData = new List<IRuleValue>();
 
