@@ -42,13 +42,11 @@ namespace Farada.Evolution.RuleBasedDataGeneration
         _dataLists.Add(dataType, valueList);
       }
 
-      var indexInList = valueList.Count;
-
-      value.OnDeleted(() => Delete(dataType, indexInList));
+      value.OnDeleted(() => Delete(dataType, value));
       valueList.Add(value);
     }
 
-    private void Delete (Type dataType, int index)
+    private void Delete (Type dataType, IRuleValue value)
     {
       if (!_dataLists.ContainsKey(dataType))
       {
@@ -56,7 +54,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
       }
 
       var valueList = _dataLists[dataType];
-      valueList.RemoveAt(index);
+      valueList.Remove(value);
     }
   }
 }

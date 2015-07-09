@@ -46,7 +46,11 @@ namespace Farada.Evolution.RuleBasedDataGeneration
 
     public bool IsValidFor (IEnumerable<IRuleParameter> inputParameters)
     {
-      return _values.All(value => inputParameters.All(inputParameter => inputParameter.ParameterPredicate(value, this) == null));
+      return
+          _values.All (
+              value =>
+                  inputParameters.Where (inputParameter => inputParameter.DataType == value.GetDataType())
+                      .All (inputParameter => inputParameter.ParameterPredicate (value, this) == null));
     }
   }
   

@@ -64,22 +64,23 @@ namespace Farada.Evolution.RuleBasedDataGeneration
           parameterValues.Randomize(_random);
         }
 
-        var count = inputDataList.Select(inputData => inputData.Count).Concat(new[] { int.MaxValue }).Min();
-        var executionCount = (int) (rule.GetExecutionProbability(world) * count);
+        var count = inputDataList.Any(inputData => inputData.Count <= 0) ? 0 : inputDataList.Select(inputData => inputData.Count).Max();
+        
+        var executionCount = (int) Math.Round(rule.GetExecutionProbability(world) * count);
 
         var inputList = new List<CompoundRuleInput>();
         for (var i = 0; i < count; i++)
         {
+          if(inputList.Count>=executionCount)
+            break;
+
           var compoundRuleInput = new CompoundRuleInput();
-          inputDataList.ForEach(values => compoundRuleInput.AddParameterValue(values[i]));
+          inputDataList.ForEach(values => compoundRuleInput.AddParameterValue(values[i%values.Count]));
 
           if (compoundRuleInput.IsValidFor(inputParameters))
           {
             inputList.Add(compoundRuleInput);
           }
-
-          if(inputList.Count>=executionCount)
-            break;
         }
 
         //TODO: Use plinq here... but never give them the same value

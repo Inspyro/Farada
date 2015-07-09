@@ -18,13 +18,17 @@ namespace Farada.Evolution.IntegrationTests.TestDomain
 
     public override IEnumerable<IRuleParameter> GetRuleInputs (IReadableWorld world)
     {
-      yield return new RuleParameter<Person> (p => p.Value.Age >= 14 && p.Value.Gender == Gender.Male,
-          (p, ruleInput) => p.Value.Likes (ruleInput.GetValue<Person> (1).Value) ? null : new[] { 1 });
+      yield return new RuleParameter<Person> (p =>
+        p.Value.Age >= 14 && p.Value.Gender == Gender.Male,
+          (p, ruleInput) => 
+            p.Value.Likes (ruleInput.GetValue<Person> (1).Value) ? null : new[] { 1 });
 
       yield return
           new RuleParameter<Person> (
-              p => p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant),
-              (p, ruleInput) => p.Value.Likes (ruleInput.GetValue<Person> (0).Value) ? null : new[] { 0 });
+              p => 
+                p.Value.Age >= 14 && p.Value.Gender == Gender.Female && (p.UserData.IsPregnant == null || !p.UserData.IsPregnant),
+              (p, ruleInput) =>
+                p.Value.Likes (ruleInput.GetValue<Person> (0).Value) ? null : new[] { 0 });
     }
 
     public override IEnumerable<IRuleValue> Execute (CompoundRuleExecutionContext context)

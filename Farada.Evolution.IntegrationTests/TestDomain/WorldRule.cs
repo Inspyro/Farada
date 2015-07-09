@@ -8,7 +8,7 @@ namespace Farada.Evolution.IntegrationTests.TestDomain
   {
     public void Execute (IWriteableWorld world)
     {
-      world.Write (x => x.Fertility = LerpUtility.LerpFromLowToHigh (100000, world.Count<Person> (), 1f, 0.1f));
+      world.Write (x => x.Fertility = LerpUtility.LerpFromLowToHigh (1000, world.Count<Person> (), 1f, 0.1f));
     }
   }
 }
