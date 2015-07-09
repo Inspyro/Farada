@@ -25,6 +25,17 @@ namespace Farada.Evolution.RuleBasedDataGeneration
       return _dataLists[dataType].Select(value => value.GetValue<T>()).ToList();
     }
 
+    public int Count<T>()
+    {
+      var dataType = typeof (T);
+      if(!_dataLists.ContainsKey(dataType))
+      {
+        throw new ArgumentException("Could not find a result of type " + dataType);
+      }
+
+      return _dataLists[dataType].Count;
+    }
+
     public IList<Type> GetResultTypes()
     {
       return _dataLists.Keys.ToList();

@@ -60,24 +60,7 @@ namespace Farada.TestDataGeneration.Extensions
     // ReSharper disable once ParameterTypeCanBeEnumerable.Global
     public static IEnumerable<T> WhereValues<T> (this IEnumerable<T> list, [CanBeNull] Func<T, bool> predicate)
    {
-     return list.Where (l=>predicate==null || predicate(l));
+     return predicate==null? list: list.Where (predicate);
    }
-
-    /// <summary>
-    /// This method selects all indices of a list that match the given predicate
-    /// Performance: O(n)
-    /// </summary>
-    /// <param name="list">The list to search</param>
-    /// <param name="predicate">The predicate (optional), default=null means no criteria</param>
-    /// <returns>all indices that match the predicate</returns>
-    public static IEnumerable<int> WhereIndices<T>(this IEnumerable<T> list, [CanBeNull] Func<T, bool> predicate=null)
-    {
-      var index = 0;
-      foreach (var l in list.Where (l=>predicate==null || predicate(l)))
-      {
-        yield return index;
-        index++;
-      }
-    }
   }
 }

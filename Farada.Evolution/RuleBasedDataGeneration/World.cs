@@ -22,7 +22,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
 
     public int Count<T> ()
     {
-      return CurrentData == null ? 0 : CurrentData.GetResult<T>().Count;
+      return CurrentData == null ? 0 : CurrentData.Count<T>();
     }
 
     public void Write (Action<dynamic> writeFunc)
