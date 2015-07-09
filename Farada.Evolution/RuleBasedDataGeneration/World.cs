@@ -38,6 +38,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
 
   public interface IReadableWorld
   {
+    [CanBeNull]
     T Read<T> (Func<dynamic, T> readFunc);
     int Count<T> ();
   }

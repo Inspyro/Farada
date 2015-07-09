@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Dynamic;
+using JetBrains.Annotations;
 
 namespace Farada.Evolution.RuleBasedDataGeneration
 {
@@ -7,7 +8,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
   {
     private bool _isWriteable = true;
 
-    public override bool TrySetMember (SetMemberBinder binder, object value)
+    public override bool TrySetMember (SetMemberBinder binder, [CanBeNull] object value)
     {
       if(!_isWriteable)
       {

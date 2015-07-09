@@ -30,7 +30,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
       return true;
     }
 
-    public override bool TrySetMember (SetMemberBinder binder, [NotNull] object value)
+    public override bool TrySetMember (SetMemberBinder binder, [CanBeNull] object value)
     {
       throw new InvalidOperationException("you cannot set values on this object as it is readonly..");
     }
