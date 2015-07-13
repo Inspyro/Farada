@@ -75,6 +75,7 @@
     <Compile Include="CompoundValueProviders\Keys\AlphaNumericComparer.cs" />
     <Compile Include="CompoundValueProviders\ModificationFactory.cs" />
     <Compile Include="CompoundValueProviders\SubTypeInstanceHolder.cs" />
+    <Compile Include="Exceptions\MissingValueProviderException.cs" />
     <Compile Include="FastReflection\FastArgumentInfo.cs" />
     <Compile Include="FastReflection\FastMemberBase.cs" />
     <Compile Include="FastReflection\IFastMemberInfo.cs" />

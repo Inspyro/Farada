@@ -37,7 +37,7 @@ namespace Farada.TestDataGeneration.FastReflection
       //as soon a specific ctor is needed - implement  a strategy for choosing the constructor
       var ctor = type.GetConstructors().FirstOrDefault();
       var fastCtorArguments = ctor != null ? ctor.GetParameters().Select (GetArgumentInfo).ToList() : new List<IFastArgumentInfo>();
-      var fastProperties = type.GetProperties().Select(GetPropertyInfo).Concat(type.GetFields().Select(GetFieldInfo)).ToList();
+      var fastProperties = type.GetProperties().Select(GetPropertyInfo).Concat(type.GetFields().Where(f=>!f.IsLiteral).Select(GetFieldInfo)).ToList();
       return new FastTypeInfo(fastCtorArguments, fastProperties);
     }
 

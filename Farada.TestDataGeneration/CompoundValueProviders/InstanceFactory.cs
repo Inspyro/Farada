@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
+using Farada.TestDataGeneration.Exceptions;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.ValueProviders;
@@ -44,7 +44,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       if (valueProvider == null || valueProviderContext == null)
       {
         //TODO RN-246: Adapt check to be sure before creating new instances...
-        if (key.Type.IsValueType||key.Type==typeof(string))
+        if (key.Type.IsValueType || key.Type == typeof (string))
           return null;
 
         try
@@ -79,6 +79,15 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
             key.CreateKey (ctorArgument.ToMember (_parameterConversionService)),
             numberOfObjects,
             2);
+
+        if (ctorArgumentValues == null)
+        {
+          throw new MissingValueProviderException (
+              string.Format (
+                  "No value provider specified for type '{0}' but needed for creating an object of type '{1}'.",
+                  ctorArgument.Type.FullName,
+                  key.Type.FullName));
+        }
 
         for (int valueIndex = 0; valueIndex < ctorArgumentValues.Count; valueIndex++)
         {
