@@ -77,6 +77,11 @@ namespace Farada.TestDataGeneration.IntegrationTests
           //
           .It ("should be a random ushort", x => x.Result.Should ().Be(11087)));
 
+      Specify (x => Create<Guid> ()).Case ("simple Guid case", _ => _
+          .Given (BaseDomainContext (seed: 5))
+          //
+          .It ("should be a random Guid", x => x.Result.Should ().Be (Guid.Parse ("cf85ddf4-1ece-d1e2-3171-650938abd2b7"))));
+
       Specify (x => Create<string>()).Case ("simple string case", _ => _
         .Given(BaseDomainContext(seed:5))
           //
@@ -153,6 +158,11 @@ namespace Farada.TestDataGeneration.IntegrationTests
         .Given(BaseDomainContext(false))
           //
           .It ("should be a default ushort", x => x.Result.Should ().Be(default(ushort))));
+
+      Specify (x => Create<Guid>()).Case ("simple Guid case with empty domain", _ => _
+        .Given(BaseDomainContext(false))
+          //
+          .It ("should be a default Guid", x => x.Result.Should ().Be(default(Guid))));
 
       Specify (x => Create<string>()).Case ("simple string case with empty domain", _ => _
         .Given(BaseDomainContext(false))

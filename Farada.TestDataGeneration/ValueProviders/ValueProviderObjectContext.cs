@@ -15,7 +15,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     internal Type TargetValueType { get; private set; }
 
     [CanBeNull]
-    internal IFastMemberWithValues MemberInfo { get; private set; }
+    public IFastMemberWithValues MemberInfo { get; private set; }
 
     internal ITestDataGenerator TestDataGenerator { get; private set; }
 

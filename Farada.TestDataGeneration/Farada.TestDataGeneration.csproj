@@ -110,6 +110,7 @@
     <Compile Include="BaseDomain\ValueProviders\RandomUShortGenerator.cs" />
     <Compile Include="BaseDomain\ValueProviders\RandomWordGenerator.cs" />
     <Compile Include="Fluent\IDomainConfigurator.cs" />
+    <Compile Include="BaseDomain\ValueProviders\RandomGuidGenerator.cs" />
     <Compile Include="IProviderConfiguratorExtensions.cs" />
     <Compile Include="Fluent\DomainConfigurator.cs" />
     <Compile Include="Fluent\ExpressionValueProviderConfigurator.cs" />

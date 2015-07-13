@@ -79,6 +79,7 @@ namespace Farada.TestDataGeneration.Fluent
       valueProviderBuilder.AddProvider<uint, RangeConstrainedValueProviderContext<uint>> (new RandomUIntGenerator());
       valueProviderBuilder.AddProvider<ulong, RangeConstrainedValueProviderContext<ulong>> (new RandomULongGenerator());
       valueProviderBuilder.AddProvider<ushort, ValueProviderContext<ushort>> (new RandomUShortGenerator());
+      valueProviderBuilder.AddProvider<Guid, ValueProviderContext<Guid>> (new RandomGuidGenerator());
 
       valueProviderBuilder.AddProvider<string, StringConstrainedValueProviderContext> (new RandomWordGenerator (new RandomSyllabileGenerator()));
           //string
