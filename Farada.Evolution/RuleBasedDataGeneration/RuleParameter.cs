@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace Farada.Evolution.RuleBasedDataGeneration
 {
@@ -24,9 +25,10 @@ namespace Farada.Evolution.RuleBasedDataGeneration
       return (_predicate == null || _predicate((RuleValue<T>) arg));
     }
 
+    [CanBeNull]
     int[] IRuleParameter.ParameterPredicate(IRuleValue arg, CompoundRuleInput targetInput)
     {
-      return _getUnwantedParameterIndices == null ? null : _getUnwantedParameterIndices((RuleValue<T>) arg, targetInput);
+      return _getUnwantedParameterIndices?.Invoke((RuleValue<T>) arg, targetInput);
     }
   }
 
@@ -34,6 +36,7 @@ namespace Farada.Evolution.RuleBasedDataGeneration
   {
     Type DataType { get; }
     bool Predicate (IRuleValue arg);
+    [CanBeNull]
     int[] ParameterPredicate (IRuleValue arg, CompoundRuleInput targetInput);
   }
 }

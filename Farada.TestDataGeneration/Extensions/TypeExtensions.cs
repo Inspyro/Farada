@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.Extensions
 {
@@ -11,6 +12,7 @@ namespace Farada.TestDataGeneration.Extensions
   /// </summary>
   public static class TypeExtensions
   {
+    [CanBeNull] //TODO PRES-675: Check
     public static Type GetTypeOfNullable (this Type type)
     {
       if (!type.IsNullableType())

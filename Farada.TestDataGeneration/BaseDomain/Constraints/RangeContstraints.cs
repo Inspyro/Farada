@@ -44,6 +44,9 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
 
       var rangeAttribute = member.GetCustomAttribute<RangeAttribute>();
 
+      if (rangeAttribute == null)
+        return null;
+
       if (rangeAttribute.OperandType != typeof (T))
         return null;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Farada.TestDataGeneration.Extensions;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
@@ -11,6 +12,7 @@ namespace Farada.TestDataGeneration.ValueProviders
   public abstract class ValueProvider<TMember, TContext> : IValueProvider
       where TContext : ValueProviderContext<TMember>
   {
+    [CanBeNull]
     object IValueProvider.CreateValue (IValueProviderContext context)
     {
       return CreateValue((TContext) context);
@@ -32,6 +34,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// Creates a value of the given property type
     /// </summary>
     /// <param name="context">the concrete context to considre</param>
+    [CanBeNull]
     protected abstract TMember CreateValue (TContext context);
   }
 

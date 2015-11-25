@@ -28,6 +28,7 @@ namespace Farada.TestDataGeneration.FastReflection
       get { return _attributeTypes; }
     }
 
+    [CanBeNull]
     public T GetCustomAttribute<T> () where T : Attribute
     {
       return (T) _attributes.FirstOrDefault(a => a is T); 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Farada.TestDataGeneration.CompoundValueProviders;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
@@ -13,6 +14,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// </summary>
     /// <param name="context">the context for the value generation</param>
     /// <returns>the created value</returns>
+    [CanBeNull]
     object CreateValue (IValueProviderContext context);
 
     /// <summary>

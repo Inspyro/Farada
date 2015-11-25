@@ -35,6 +35,7 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
     /// <param name="member">The member for which the string constraints should be extracted</param>
     /// <returns>the resulting string constraints or null if no attribute was found</returns>
     /// <exception cref="ArgumentOutOfRangeException">throws when maxLength is smaller than minLength - so the attributes are declared in an incorrect manner</exception>
+    [CanBeNull]
     public static StringConstraints FromMember ([CanBeNull] IFastMemberWithValues member)
     {
       if (member == null)
@@ -49,14 +50,14 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
       if (member.IsDefined (typeof (MinLengthAttribute)))
       {
         var minLengthAttribute = member.GetCustomAttribute<MinLengthAttribute>();
-        minLength = minLengthAttribute.Length;
+        minLength = minLengthAttribute?.Length ?? 0;
         minLengthDefined = true;
       }
 
       if (member.IsDefined (typeof (MaxLengthAttribute)))
       {
         var maxLengthAttribute = member.GetCustomAttribute<MaxLengthAttribute>();
-        maxLength = maxLengthAttribute.Length;
+        maxLength = maxLengthAttribute?.Length ?? 0;
         maxLengthDefined = true;
       }
 
@@ -72,8 +73,8 @@ namespace Farada.TestDataGeneration.BaseDomain.Constraints
       if (member.IsDefined (typeof (StringLengthAttribute)))
       {
         var stringLengthAttribute = member.GetCustomAttribute<StringLengthAttribute>();
-        minLength = stringLengthAttribute.MinimumLength;
-        maxLength = stringLengthAttribute.MaximumLength;
+        minLength = stringLengthAttribute?.MinimumLength ?? 0;
+        maxLength = stringLengthAttribute?.MaximumLength ?? 0;
 
         if (maxLength < minLength)
         {

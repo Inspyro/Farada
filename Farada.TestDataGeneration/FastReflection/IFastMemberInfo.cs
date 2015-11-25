@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.FastReflection
 {
@@ -14,6 +15,7 @@ namespace Farada.TestDataGeneration.FastReflection
     /// </summary>
     /// <typeparam name="T">the type of the attribute</typeparam>
     /// <returns>the attribute instance from the member</returns>
+    [CanBeNull]
     T GetCustomAttribute<T> () where T : Attribute;
 
     /// <summary>

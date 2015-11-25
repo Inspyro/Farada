@@ -96,9 +96,9 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
                 .Given ("AttributedDTO.AttributedProperty",
                     x => PropertyInfoToConvert = TypeExtensions.GetPropertyInfo<AttributedDTO, int> (y => y.AttributedProperty))
                 //
-                .It ("returns value of cool int attribute", x => x.Result.GetCustomAttribute<CoolIntAttribute> ().Value.Should ().Be (5))
+                .It ("returns value of cool int attribute", x => x.Result.GetCustomAttribute<CoolIntAttribute> ()?.Value.Should ().Be (5))
                 .It ("returns fanciness of fancy number attribute",
-                    x => x.Result.GetCustomAttribute<FancyNumberAttribute> ().Fanciness.Should ().Be (Fanciness.VeryFancy))
+                    x => x.Result.GetCustomAttribute<FancyNumberAttribute> ()?.Fanciness.Should ().Be (Fanciness.VeryFancy))
                 .It ("does not get other attribute", x => x.Result.GetCustomAttribute<OtherAttribute> ().Should ().BeNull ()));
       }
     }

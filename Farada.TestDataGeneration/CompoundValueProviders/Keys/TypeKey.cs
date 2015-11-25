@@ -20,6 +20,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       PreviousKey = CreatePreviousKey();
     }
 
+    [CanBeNull]
     //TODO: Support Interfaces when needed
     private IKey CreatePreviousKey ()
     {
@@ -32,10 +33,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       }
 
       var baseType = _type.BaseType;
-      if (baseType != null)
-        return new TypeKey(baseType);
-
-      return null;
+      return baseType != null ? new TypeKey(baseType) : null;
     }
 
     public IKey PreviousKey { get; private set; }

@@ -5,6 +5,7 @@ using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.Modifiers;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
@@ -58,6 +59,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     ///1: If you create 100 Dog objects it will first created 100 instances of Dog (with a fast version of the Activator)
     ///   Then it searches the value provider for each member and generates 100 values per member for each instance of Dog
     /// 2: It uses a cached but thread safe version of reflection <see cref="FastReflectionUtility"/>
+    [CanBeNull]
     internal IList<object> CreateMany (IKey currentKey, int numberOfObjects, int maxRecursionDepth)
     {
       //we check for recursion depth in order to avoid endless recursions (e.g. a->b->a->b->a->...)

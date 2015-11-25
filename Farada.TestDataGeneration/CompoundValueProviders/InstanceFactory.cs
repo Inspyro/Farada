@@ -29,12 +29,14 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _parameterConversionService = parameterConversionService;
     }
 
+    [CanBeNull]
     internal IList<object> CreateInstances (IKey key, int numberOfObjects)
     {
       var rootLink = _valueProviderDictionary.GetLink (key);
-      return CreateInstances (key, rootLink == null ? null : rootLink.Value, CreateValueProviderContext (rootLink, key), numberOfObjects);
+      return CreateInstances (key, rootLink?.Value, CreateValueProviderContext (rootLink, key), numberOfObjects);
     }
-
+    
+    [CanBeNull]
     private IList<object> CreateInstances (
         IKey key,
         [CanBeNull] IValueProvider valueProvider,
@@ -83,13 +85,10 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
         if (ctorArgumentValues == null)
         {
           throw new MissingValueProviderException (
-              string.Format (
-                  "No value provider specified for type '{0}' but needed for creating an object of type '{1}'.",
-                  ctorArgument.Type.FullName,
-                  key.Type.FullName));
+                  $"No value provider specified for type '{ctorArgument.Type.FullName}' but needed for creating an object of type '{key.Type.FullName}'.");
         }
 
-        for (int valueIndex = 0; valueIndex < ctorArgumentValues.Count; valueIndex++)
+        for (var valueIndex = 0; valueIndex < ctorArgumentValues.Count; valueIndex++)
         {
           ctorValuesCollections[valueIndex][argumentIndex] = ctorArgumentValues[valueIndex];
         }
@@ -98,19 +97,20 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       var typeFactoryWithArguments = FastActivator.GetFactory (key.Type, typeInfo.CtorArguments);
       return ctorValuesCollections.Select (ctorValues => typeFactoryWithArguments (ctorValues)).ToList();
     }
-
+   
+    [CanBeNull]
     private IValueProviderContext CreateValueProviderContext ([CanBeNull] ValueProviderLink providerLink, IKey key)
     {
       if (providerLink == null)
         return null;
 
-      var previousLink = providerLink.Previous == null ? null : providerLink.Previous();
+      var previousLink = providerLink.Previous?.Invoke();
       var previousContext = previousLink == null ? null : CreateValueProviderContext (previousLink, key);
 
       return providerLink.Value.CreateContext (
           new ValueProviderObjectContext (
               _compoundValueProvider,
-              () => previousLink == null ? null : CreateInstances (previousLink.Key, previousLink.Value, previousContext, 1).Single(),
+              () => previousLink == null ? null : CreateInstances (previousLink.Key, previousLink.Value, previousContext, 1)?.Single(),
               key.Type,
               key.Member));
     }
