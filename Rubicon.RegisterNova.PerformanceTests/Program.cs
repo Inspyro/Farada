@@ -9,15 +9,13 @@ namespace Rubicon.RegisterNova.PerformanceTests
   {
     private static void Main ()
     {
-      var testDataGenerator = TestDataGeneratorFactory.Create();
-
       const int count = 1000000; //1 million
 
       var start = DateTime.Now;
-      var listOfUniverses = Parallelization.DistributeParallel(chunkCount => testDataGenerator.CreateMany<Universe>(chunkCount), count).ToList();
-      //var listOfUniverses = valueProvider.CreateMany<Universe>(count).ToList();
+      var listOfUniverses =
+          Parallelization.DistributeParallel (chunkCount => TestDataGeneratorFactory.Create().CreateMany<Universe> (chunkCount), count).ToList();
 
-      Console.WriteLine(
+      Console.WriteLine (
           "Took {0}s to generate {1} universes",
           (DateTime.Now - start).TotalSeconds,
           listOfUniverses.Count);
