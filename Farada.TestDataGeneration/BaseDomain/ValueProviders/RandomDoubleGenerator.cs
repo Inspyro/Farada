@@ -12,7 +12,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
   {
     protected override RangeConstrainedValueProviderContext<double> CreateContext (ValueProviderObjectContext objectContext)
     {
-      var rangeContstraints = RangeContstraints<double>.FromMember(objectContext.MemberInfo)
+      var rangeContstraints = RangeContstraints<double>.FromMember(objectContext.Member)
                               ?? new RangeContstraints<double>(double.MinValue, double.MaxValue);
 
       return new RangeConstrainedValueProviderContext<double>(objectContext, rangeContstraints);

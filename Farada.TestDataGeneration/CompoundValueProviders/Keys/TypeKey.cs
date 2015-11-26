@@ -63,6 +63,11 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       return new TypeKey(newMemberType);
     }
 
+    public override string ToString ()
+    {
+      return Type.FullName + ">" + Member;
+    }
+
     public bool Equals ([CanBeNull] TypeKey other)
     {
       if (!EqualityUtility.ClassEquals(this, other))

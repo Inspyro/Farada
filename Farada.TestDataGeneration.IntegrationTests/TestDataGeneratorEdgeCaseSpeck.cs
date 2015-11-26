@@ -2,7 +2,7 @@
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using FluentAssertions;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {

@@ -19,6 +19,7 @@ namespace Farada.TestDataGeneration.ValueProviders
   public class ValueProviderContext<TMember>:IValueProviderContext
   {
     private readonly Func<TMember> _previousValueFunction;
+    private object _advanced;
 
     /// <summary>
     /// The random to use for random value generation
@@ -48,13 +49,19 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// </summary>
     public ITestDataGenerator TestDataGenerator { get; private set; }
 
+    /// <summary>
+    /// Advanced context values.
+    /// </summary>
+    public ValueProviderObjectContext.AdvancedContext Advanced { get; private set; }
+
     protected internal ValueProviderContext (ValueProviderObjectContext objectContext)
     {
       TestDataGenerator = objectContext.TestDataGenerator;
       Random = objectContext.Random;
       _previousValueFunction = () => (TMember) objectContext.GetPreviousValue();
       TargetValueType = objectContext.TargetValueType;
-      Member = objectContext.MemberInfo;
+      Member = objectContext.Member;
+      Advanced = objectContext.Advanced;
     }
   }
 }

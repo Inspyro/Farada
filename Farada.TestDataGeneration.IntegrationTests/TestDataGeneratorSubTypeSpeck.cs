@@ -1,8 +1,9 @@
 ﻿using System;
 using Farada.TestDataGeneration.CompoundValueProviders;
+using Farada.TestDataGeneration.Exceptions;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using FluentAssertions;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
@@ -25,17 +26,17 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
       Specify (x =>
           TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
-          .Case ("should not fill landvehicle (no exception)", _ => _
+          .Case ("should throw when creating LandVehicle", _ => _
               .Given (VehicleOnlyValueProviderContext ())
-              .It ("should not create land vehicle as only abstract vehicle would be filled", x => x.Result.Tire.Should().BeNull()));
+              .ItThrows(typeof(MissingValueProviderException), "No value provider registered for \"LandVehicle>\""));
 
        Specify (x =>
           TestDataGenerator.Create<AirVehicle> (MaxRecursionDepth, null))
-          .Case ("should not fill (no exception)", _ => _
+          .Case ("should throw when creating AirVehicle", _ => _
               .Given (VehicleOnlyValueProviderContext ())
-              .It ("should not create air vehicle as only abstract vehicle would be filled", x =>x.Result.Engine.Should().BeNull()));
+              .ItThrows(typeof(MissingValueProviderException), "No value provider registered for \"AirVehicle>\""));
     }
-    
+
     Context ValueProviderSubTypeContext ()
      {
        return c => c.Given ("domain provider with sub type provider", x =>

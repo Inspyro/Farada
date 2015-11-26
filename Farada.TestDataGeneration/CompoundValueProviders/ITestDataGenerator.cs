@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.FastReflection;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders
@@ -7,7 +8,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
   /// <summary>
   /// Generates random instances of any type that is supported by the concrete test data generator
   /// </summary>
-  public interface ITestDataGenerator
+  public interface ITestDataGenerator : ITestDataGeneratorAdvanced
   {
     /// <summary>
     /// Creates exactly one value for the specified type

@@ -1,9 +1,9 @@
 ﻿using System;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
+using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
-using TestFx;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
@@ -41,7 +41,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
       return c => c.Given ("simple domain provider using custom context", x =>
       {
         TestDataDomainConfiguration = configurator => configurator
-          .UseDefaults(false)
+            .UseDefaults (false)
+            .For<ClassWithAttribute> ().AddProvider (new DefaultInstanceValueProvider<ClassWithAttribute> ())
             .For<int, ClassWithAttribute.CoolIntAttribute> ().AddProvider (new CoolIntCustomContextValueProvider (contextValue));
       })
           .Given (TestDataGeneratorContext ());

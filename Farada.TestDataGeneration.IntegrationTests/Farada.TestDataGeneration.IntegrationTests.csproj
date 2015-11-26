@@ -61,15 +61,14 @@
     <Reference Include="System.Xml" />
     <Reference Include="TestFx.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\TestFx.Core.0.0.1-Pre00159\lib\net45\TestFx.Core.dll</HintPath>
+      <HintPath>..\..\3rdparty\TestFx\src\TestFx.SpecK\bin\Debug\TestFx.Core.dll</HintPath>
     </Reference>
     <Reference Include="TestFx.FakeItEasy, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\TestFx.FakeItEasy.0.0.1-Pre00159\lib\net45\TestFx.FakeItEasy.dll</HintPath>
+      <HintPath>..\..\3rdparty\TestFx\src\TestFx.FakeItEasy\bin\Debug\TestFx.FakeItEasy.dll</HintPath>
     </Reference>
-    <Reference Include="TestFx.Specifications, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\TestFx.Specifications.0.0.1-Pre00159\lib\net45\TestFx.Specifications.dll</HintPath>
+    <Reference Include="TestFx.SpecK">
+      <HintPath>..\..\3rdparty\TestFx\src\TestFx.SpecK\bin\Debug\TestFx.SpecK.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +124,7 @@
     <Compile Include="TestDomain\AbstractVehicle.cs" />
     <Compile Include="TestDomain\Universe.cs" />
     <Compile Include="TestDomain\VehicleOnlyValueProvider.cs" />
+    <Compile Include="Utils\AssertionExtensions.cs" />
     <Compile Include="_TestExtensions\FakeItEasyTestExtensions.cs" />
     <Compile Include="_TestExtensions\ResetInstanceFieldsTestExtension.cs" />
   </ItemGroup>
@@ -139,6 +139,7 @@
       <Name>Farada.TestDataGeneration</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

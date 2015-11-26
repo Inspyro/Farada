@@ -89,6 +89,9 @@ namespace Farada.TestDataGeneration.Fluent
       //constraint providers
       valueProviderBuilder.AddProvider (new EmailGenerator());
 
+      //default instance provider (also supports subtypes thus object means = all types)
+      valueProviderBuilder.AddProvider(new DefaultInstanceValueProvider<object>());
+
       return valueProviderBuilder;
     }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
@@ -13,9 +14,15 @@ namespace Farada.TestDataGeneration.ValueProviders
   {
     protected abstract TMember CreateValue (TContext context);
 
-    public object CreateValue (IValueProviderContext context)
+    public object Create (IValueProviderContext context)
     {
       return CreateValue((TContext) context);
+    }
+
+    public IEnumerable<object> CreateMany (IValueProviderContext context, int numberOfObjects)
+    {
+      for (var i = 0; i < numberOfObjects; i++)
+        yield return CreateValue ((TContext) context);
     }
 
     protected abstract TContext CreateContext (ValueProviderObjectContext objectContext);

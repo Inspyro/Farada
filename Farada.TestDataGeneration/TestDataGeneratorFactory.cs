@@ -1,5 +1,4 @@
-﻿using System;
-using Farada.TestDataGeneration.CompoundValueProviders;
+﻿using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.Fluent;
 
 namespace Farada.TestDataGeneration

@@ -17,7 +17,7 @@ namespace Farada.TestDataGeneration.IntegrationTests.TestDomain
         return new LandVehicle { Tire = new Tire { Diameter = 10 } };
       }
 
-      throw new InvalidOperationException ("property of type " + context.TargetValueType + " is not supported by " + this.GetType ().FullName);
+      throw new InvalidOperationException ("property of type " + context.TargetValueType + " is not supported by " + GetType ().FullName);
     }
   }
 }

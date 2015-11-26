@@ -72,6 +72,7 @@
     <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
     <Compile Include="BaseDomain\ValueProviders\RangeConstrainedValueProvider.cs" />
     <Compile Include="CompoundValueProviders\InstanceFactory.cs" />
+    <Compile Include="CompoundValueProviders\ITestDataGeneratorAdvanced.cs" />
     <Compile Include="CompoundValueProviders\Keys\AlphaNumericComparer.cs" />
     <Compile Include="CompoundValueProviders\ModificationFactory.cs" />
     <Compile Include="CompoundValueProviders\SubTypeInstanceHolder.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="TypeValueProviderConfigurator.cs" />
     <Compile Include="ValueProviders\AttributeBasedValueProvider.cs" />
     <Compile Include="ValueProviders\AttributeValueProviderContext.cs" />
+    <Compile Include="ValueProviders\DefaultInstanceValueProvider.cs" />
     <Compile Include="ValueProviders\IValueProvider.cs" />
     <Compile Include="ValueProviders\SubTypeValueProvider.cs" />
     <Compile Include="ValueProviders\ValueProvider.cs" />

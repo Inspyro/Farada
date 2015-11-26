@@ -1,6 +1,5 @@
 ﻿using System;
-using Farada.TestDataGeneration.CompoundValueProviders;
-using JetBrains.Annotations;
+using System.Collections.Generic;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
@@ -14,8 +13,15 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// </summary>
     /// <param name="context">the context for the value generation</param>
     /// <returns>the created value</returns>
-    [CanBeNull]
-    object CreateValue (IValueProviderContext context);
+    object Create (IValueProviderContext context);
+
+    /// <summary>
+    /// Creates many object values. See <see cref="Create"/> for details.
+    /// </summary>
+    /// <param name="context">the context for the value generation.</param>
+    /// <param name="numberOfObjects">the number of objects to create</param>
+    /// <returns>the created values</returns>
+    IEnumerable<object> CreateMany (IValueProviderContext context, int numberOfObjects);
 
     /// <summary>
     /// Checks wether the given type can be handled by this ValueProvider

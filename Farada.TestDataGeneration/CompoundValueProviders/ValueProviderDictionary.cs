@@ -43,7 +43,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       ValueProviderLink link = null;
       var concreteType = key.Type;
 
-      while ((link == null||link.Value==null||!link.Value.CanHandle(concreteType)) && key != null)
+      while ((link?.Value == null || !link.Value.CanHandle(concreteType)) && key != null)
       {
         link = GetOrDefault(key);
         key = key.PreviousKey;

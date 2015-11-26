@@ -1,8 +1,9 @@
 ﻿using System;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.Exceptions;
+using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
@@ -15,15 +16,17 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Case ("Properties Are Initialized", _ => _
               .Given (ConfigurationContext (cfg =>
                   cfg.UseDefaults (false)
+                      .For<Ice> ().AddProvider (new DefaultInstanceValueProvider<Ice> ())
                       .For ((Ice ice) => ice.Origin).AddProvider (f => "FixedOrigin") //IDEA - ForCtorArg("origin")
                       .For ((Ice ice) => ice.Temperature).AddProvider (f => -100)))
               .It ("initialized first property correctly", x => x.Result.Origin.Should ().Be ("FixedOrigin"))
               .It ("initialized second property correctly", x => x.Result.Temperature.Should ().Be (-100)))
           .Case ("No value providers defined", _ => _
-              .Given (ConfigurationContext (cfg => cfg.UseDefaults (false)))
+              .Given (ConfigurationContext (cfg =>
+                  cfg.UseDefaults (false)
+                      .For<Ice> ().AddProvider (new DefaultInstanceValueProvider<Ice> ())))
               .ItThrows (typeof (MissingValueProviderException),
-                  "No value provider specified for type 'System.String' " +
-                  "but needed for creating an object of type 'Farada.TestDataGeneration.IntegrationTests.Ice'."));
+                  "No value provider registered for \"KEY on Farada.TestDataGeneration.IntegrationTests.Ice: Type: String, Member: Origin\""));
     }
 
     Context ConfigurationContext (TestDataDomainConfiguration config)

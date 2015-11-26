@@ -8,7 +8,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
   /// A Key can describe a member chain, a type or and attribute
   /// So basically a key describes the filling chain for the <see cref="CompoundValueProvider"/>
   /// </summary>
-  internal interface IKey:IEquatable<IKey>
+  public interface IKey:IEquatable<IKey>
   {
     [CanBeNull]
     IKey PreviousKey { get; }

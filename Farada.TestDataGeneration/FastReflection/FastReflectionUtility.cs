@@ -30,18 +30,26 @@ namespace Farada.TestDataGeneration.FastReflection
 
     private static IFastTypeInfo CreateTypeInfo (Type type)
     {
-      if (type.IsCollection())
-        return new FastTypeInfo (new IFastArgumentInfo[0], new IFastMemberWithValues[0]);
+      //we choose the ctor with the lowest parameter count (easiest to construct).
+      var ctor = type.GetConstructors().OrderBy (c => c.GetParameters().Length).FirstOrDefault();
+      var fastCtorArguments = ctor?.GetParameters().Select (GetArgumentInfo).ToList() ?? new List<IFastArgumentInfo>();
 
-      //At the moment we only support the first constructor (immutability...)
-      //as soon a specific ctor is needed - implement  a strategy for choosing the constructor
-      var ctor = type.GetConstructors().FirstOrDefault();
-      var fastCtorArguments = ctor != null ? ctor.GetParameters().Select (GetArgumentInfo).ToList() : new List<IFastArgumentInfo>();
-      var fastProperties = type.GetProperties().Select(GetPropertyInfo).Concat(type.GetFields().Where(f=>!f.IsLiteral).Select(GetFieldInfo)).ToList();
-      return new FastTypeInfo(fastCtorArguments, fastProperties);
+      //we filter indexers and readonly properties...
+      var properties =
+          type.GetProperties (BindingFlags.Instance | BindingFlags.Public | BindingFlags.Public)
+              .Where (p => p.SetMethod != null)
+              .Where (p => p.GetIndexParameters().Length == 0);
+
+      var fields =
+          type.GetFields (BindingFlags.Instance | BindingFlags.Public | BindingFlags.Public)
+              .Where (f => !f.IsInitOnly)
+              .Where (f => !f.IsLiteral);
+
+      var fastProperties = properties.Select (GetPropertyInfo).Concat (fields.Select (GetFieldInfo)).ToList();
+      return new FastTypeInfo (fastCtorArguments, fastProperties);
     }
 
-     /// <summary>
+    /// <summary>
     /// Creates an <see cref="IFastArgumentInfo"/> for faster argument access
     /// </summary>
     /// <param name="parameterInfo">the parameter info to convert</param>

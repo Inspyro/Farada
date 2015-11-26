@@ -20,6 +20,13 @@ namespace Farada.TestDataGeneration.FastReflection
       {
         var propertyName = parameterConversion.ToPropertyName (Name);
         _cachedProperty = _declaringType.GetProperty (propertyName);
+
+
+        if (_cachedProperty == null)
+        {
+          throw new NotSupportedException (
+              "Type: " + _declaringType.FullName + "'s - ctor argument " + Name + " had no corresponding member (searched for: " + propertyName + ").");
+        }
       }
 
       return new FastPropertyInfo (_cachedProperty);

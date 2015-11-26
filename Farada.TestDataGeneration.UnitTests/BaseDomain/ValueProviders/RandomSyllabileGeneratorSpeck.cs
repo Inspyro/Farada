@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders;
+using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
+using JetBrains.Annotations;
 using TestFx.Specifications;
 using TestFx.Specifications.InferredApi;
 
@@ -61,16 +63,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
     class CustomValueProviderObjectContext : ValueProviderObjectContext
     {
       internal CustomValueProviderObjectContext (Random random)
-          : this (new DummyTestDataGenerator (random), () => new object (), typeof (Dummy), new DummyFastProperty ())
-      {
-      }
-
-      CustomValueProviderObjectContext (
-          ITestDataGenerator testDataGenerator,
-          Func<object> getPreviousValue,
-          Type targetValueType,
-          IFastMemberWithValues member)
-          : base (testDataGenerator, getPreviousValue, targetValueType, member)
+          : base (new DummyTestDataGenerator (random), () => new object (), typeof (Dummy), new DummyAdvancedContext(), new DummyFastProperty ())
       {
       }
     }
@@ -94,7 +87,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
         throw new NotImplementedException ();
       }
 
-      public void SetValue (object instance, object value)
+      public void SetValue (object instance, [CanBeNull] object value)
       {
         throw new NotImplementedException ();
       }
@@ -124,7 +117,11 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
         throw new NotSupportedException ();
       }
 
-      public Random Random { get; private set; }
+      public Random Random { get; }
+      public IList<object> CreateMany (IKey currentKey, int numberOfObjects, int maxRecursionDepth)
+      {
+        throw new NotSupportedException();
+      }
     }
 
     class CustomValueProviderContext : ValueProviderContext<string>
@@ -133,6 +130,59 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
           : base (objectContext)
       {
       }
+    }
+  }
+
+  class DummyAdvancedContext : ValueProviderObjectContext.AdvancedContext
+  {
+    public DummyAdvancedContext ()
+        : base (new DummyKey(), new DummyConverter(), new DummyTestDataGenerator())
+    {
+    }
+  }
+
+  class DummyTestDataGenerator : ITestDataGeneratorAdvanced
+  {
+    public IList<object> CreateMany (IKey currentKey, int numberOfObjects, int maxRecursionDepth)
+    {
+      throw new NotSupportedException();
+    }
+  }
+
+  class DummyConverter : IParameterConversionService
+  {
+    public string ToPropertyName (string parameterName)
+    {
+      throw new NotSupportedException();
+    }
+  }
+
+  class DummyKey : IKey
+  {
+    public bool Equals ([CanBeNull] IKey other)
+    {
+      if (other == null)
+        throw new ArgumentNullException (nameof (other));
+
+      throw new NotSupportedException();
+    }
+
+    public IKey PreviousKey { get; }
+
+    public IKey CreateKey (IFastMemberWithValues member)
+    {
+      throw new NotSupportedException();
+    }
+
+    public Type Type { get; }
+
+    public IFastMemberWithValues Member { get; }
+
+    public int RecursionDepth  { get; }
+
+  public IKey ChangeMemberType (Type newMemberType)
+    {
+      throw new NotSupportedException();
     }
   }
 }

@@ -55,15 +55,14 @@
     <Reference Include="System.Xml" />
     <Reference Include="TestFx.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\TestFx.Core.0.0.1-Pre00159\lib\net45\TestFx.Core.dll</HintPath>
+      <HintPath>..\..\3rdparty\TestFx\src\TestFx.Core\bin\Debug\TestFx.Core.dll</HintPath>
     </Reference>
     <Reference Include="TestFx.FakeItEasy, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\TestFx.FakeItEasy.0.0.1-Pre00159\lib\net45\TestFx.FakeItEasy.dll</HintPath>
+      <HintPath>..\..\3rdparty\TestFx\src\TestFx.FakeItEasy\bin\Debug\TestFx.FakeItEasy.dll</HintPath>
     </Reference>
-    <Reference Include="TestFx.Specifications, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\TestFx.Specifications.0.0.1-Pre00159\lib\net45\TestFx.Specifications.dll</HintPath>
+    <Reference Include="TestFx.SpecK">
+      <HintPath>..\..\3rdparty\TestFx\src\TestFx.SpecK\bin\Debug\TestFx.SpecK.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

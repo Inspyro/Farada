@@ -4,12 +4,13 @@ using Farada.Evolution.IntegrationTests.TestDomain;
 using Farada.Evolution.RuleBasedDataGeneration;
 using Farada.TestDataGeneration;
 using FluentAssertions;
-using TestFx.Specifications;
+using TestFx.SpecK;
+using Context = TestFx.SpecK.Context;
 
 namespace Farada.Evolution.IntegrationTests
 {
-  [Subject (typeof (RuleBasedDataGenerator),"Generate")]
-  public class RuleBasedDataGeneratorSpeck : SpecK
+  [TestFx.SpecK.Subject (typeof (RuleBasedDataGenerator),"Generate")]
+  public class RuleBasedDataGeneratorSpeck : Spec
   {
     TestDataDomainConfiguration TestDataDomain=null;
     EvolutionaryDomainConfiguration EvolutionaryDomain;

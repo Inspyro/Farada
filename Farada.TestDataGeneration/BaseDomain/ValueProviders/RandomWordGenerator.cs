@@ -35,7 +35,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 
     protected override StringConstrainedValueProviderContext CreateContext (ValueProviderObjectContext objectContext)
     {
-      var stringConstraints = StringConstraints.FromMember(objectContext.MemberInfo) ?? new StringConstraints(_minWordLength, _maxWordLength);
+      var stringConstraints = StringConstraints.FromMember(objectContext.Member) ?? new StringConstraints(_minWordLength, _maxWordLength);
       return new StringConstrainedValueProviderContext(objectContext, stringConstraints);
     }
 

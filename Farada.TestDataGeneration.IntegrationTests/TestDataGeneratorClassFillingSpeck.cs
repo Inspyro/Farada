@@ -2,9 +2,10 @@
 using System.Linq;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
+using Farada.TestDataGeneration.IntegrationTests.Utils;
+using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
-using FluentAssertions.Common;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
@@ -41,18 +42,21 @@ namespace Farada.TestDataGeneration.IntegrationTests
           TestDataGenerator.Create<AirVehicle> (MaxRecursionDepth, null))
           .Case ("should fill properties according to provider chain2", _ => _
               .Given (PropertyProviderContext ())
-              .It ("should fill weight with default int", x => x.Result.Weight.Should ().Be (5))
-              .It ("should fill main color with first enum value", x => x.Result.MainColor.Should ().Be (Color.White))
+              .It ("should fill weight as specified", x => x.Result.Weight.Should ().Be (5))
+              .It ("should fill main color as specified", x => x.Result.MainColor.Should ().Be (Color.Green))
               .It ("should fill engine with jetengine", x => x.Result.Engine.Should ().BeOfType (typeof (JetEngine)))
-              .It ("should fill fuel use per second with default float",
-                  x => ((JetEngine) x.Result.Engine).FuelUsePerSecond.Should ().Be (0f))
+              .It ("should fill fuel use per second as specified",
+                  x => ((JetEngine) x.Result.Engine).FuelUsePerSecond.Should ().Be (1.1f))
               .It ("should fill powerinnewtons as specified", x => x.Result.Engine.PowerInNewtons.Should ().Be (5000f)));
 
-        Specify (x =>
+      Specify (x =>
           TestDataGenerator.Create<AirVehicle> (MaxRecursionDepth, null))
-          .Case ("should not fill abstact properties because of default provider chain", _ => _
+          .Case ("throws for abstract properties because of default provider chain", _ => _
               .Given (BaseDomainContext ())
-              .It ("should not fill abstract engine", x => x.Result.Engine.Should ().BeNull()));
+              .ItThrows (typeof (NotSupportedException), "Could not auto-fill AirVehicle> (member Engine). Please provide a value provider")
+              .ItThrowsInner (typeof (NotSupportedException),
+                  "No valid ctor found on 'Engine': Classes with non-public constructors and abstract classes are not supported."));
+
 
       Specify (x =>
           TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
@@ -60,10 +64,10 @@ namespace Farada.TestDataGeneration.IntegrationTests
               .Given (HierarchyPropertyProviderContext ())
               //
               //test simple cases again because of more complex domain
-              .It ("should fill weight", x => x.Result.Weight.Should ().Be (50))
-              .It ("should fill default color", x => x.Result.MainColor.Should ().Be (Color.White))
-              .It ("should fill tire diameter with default value", x => x.Result.Tire.Diameter.Should ().Be (0))
-              .It ("should fill grip with default value", x => x.Result.Tire.Grip.Should ().Be (0)));
+              .It ("should fill weight as specified", x => x.Result.Weight.Should ().Be (50))
+              .It ("should fill main color as specified", x => x.Result.MainColor.Should ().Be (Color.Black))
+              .It ("should fill tire diameter as specified", x => x.Result.Tire.Diameter.Should ().Be (1.2))
+              .It ("should fill grip  as specified", x => x.Result.Tire.Grip.Should ().Be (1.2)));
 
       Specify (x =>
           TestDataGenerator.CreateMany<AirVehicle> (2,MaxRecursionDepth, null).First())
@@ -71,15 +75,15 @@ namespace Farada.TestDataGeneration.IntegrationTests
               .Given (HierarchyPropertyProviderContext ())
               //
               //test simple cases again because of more complex domain
-              .It ("should fill weight with specified int", x => x.Result.Weight.Should ().Be (50))
-              .It ("should fill main color with first enum value", x => x.Result.MainColor.Should ().Be (Color.White))
+              .It ("should fill weight as specified", x => x.Result.Weight.Should ().Be (50))
+              .It ("should fill main color as specified", x => x.Result.MainColor.Should ().Be (Color.Black))
 
               //start testing concrete domain logic
-              .It ("should fill engine with propellorengine", x => x.Result.Engine.Should ().BeOfType (typeof (PropellorEngine)))
-              .It ("should fill fuel use per second with float",
+              .It ("should fill engine with PropellorEngine", x => x.Result.Engine.Should ().BeOfType (typeof (PropellorEngine)))
+              .It ("should fill fuel use per second as specified",
                   x => 
                     ((PropellorEngine) x.Result.Engine).AverageRotationSpeed.Should ().Be (2.1f))
-              .It ("should fill powerinnewtons as specified", x => x.Result.Engine.PowerInNewtons.Should ().Be (250f)));
+              .It ("should fill PowerInNewtons as specified", x => x.Result.Engine.PowerInNewtons.Should ().Be (250f)));
 
       Specify (x =>
           TestDataGenerator.CreateMany<AirVehicle> (2, MaxRecursionDepth, null).Last())
@@ -87,13 +91,13 @@ namespace Farada.TestDataGeneration.IntegrationTests
               .Given (HierarchyPropertyProviderContext ())
               //
               //test simple cases again because of more complex domain
-              .It ("should fill weight with specified int", x => x.Result.Weight.Should ().Be (50))
-              .It ("should fill main color with first enum value", x => x.Result.MainColor.Should ().Be (Color.White))
+              .It ("should fill weight as specified", x => x.Result.Weight.Should ().Be (50))
+              .It ("should fill main color as specified", x => x.Result.MainColor.Should ().Be (Color.Black))
 
               //start testing concrete domain logic
               .It ("should fill engine with jetengine", x => x.Result.Engine.Should ().BeOfType (typeof (JetEngine)))
-              .It ("should fill fuel use per second with float", x => ((JetEngine) x.Result.Engine).FuelUsePerSecond.Should ().Be (2.1f))
-              .It ("should fill powerinnewtons as with float", x => x.Result.Engine.PowerInNewtons.Should ().Be (1200)));
+              .It ("should fill fuel use per second as specified", x => ((JetEngine) x.Result.Engine).FuelUsePerSecond.Should ().Be (2.1f))
+              .It ("should fill powerinnewtons as specified", x => x.Result.Engine.PowerInNewtons.Should ().Be (1200)));
 
       Specify (x =>
           TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
@@ -122,8 +126,9 @@ namespace Farada.TestDataGeneration.IntegrationTests
     {
       return c => c.Given ("simple string domain", x =>
       {
-        TestDataDomainConfiguration = configurator => configurator.UseDefaults(false)
-          .For<string> ().AddProvider (context => "SomeString");
+        TestDataDomainConfiguration = configurator => configurator.UseDefaults (false)
+            .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
+            .For<string> ().AddProvider (context => "SomeString");
       })
       .Given(TestDataGeneratorContext(recursionDepth));
     }
@@ -134,8 +139,12 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         TestDataDomainConfiguration = configurator => configurator
           .UseDefaults(false)
+            .For<object>().AddProvider(new DefaultInstanceValueProvider<object>())
             .For<int> ().AddProvider (context => 5)
             .For<double> ().AddProvider (context => 3.6)
+            .For<float>().AddProvider(context =>1.1f)
+            .For<Color>().AddProvider(context => Color.Green)
+            .For<string>().AddProvider(context => "some string")
             //no default float provider!
             .For ((LandVehicle lv) => lv.Weight).AddProvider (context => 100)
             .For ((LandVehicle lv) => lv.MainColor).AddProvider (context => Color.Red)
@@ -153,7 +162,11 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
         TestDataDomainConfiguration = configurator => configurator
             .UseDefaults (false)
+            .For<object>().AddProvider(new DefaultInstanceValueProvider<object>())
+            .For<double>().AddProvider(context=>1.2)
             .For<float> ().AddProvider (context => 2.1f)
+            .For<string>().AddProvider(context=>"some string")
+            .For<Color>().AddProvider(context => Color.Black)
             .For ((AbstractVehicle v) => v.Weight).AddProvider (context => 50)
             .For ((AirVehicle av) => av.Engine).AddProvider (context =>
             {
@@ -172,11 +185,15 @@ namespace Farada.TestDataGeneration.IntegrationTests
       return c => c.Given ("simple attribute domain", x =>
       {
         TestDataDomainConfiguration = configurator => configurator
-          .UseDefaults(false)
+            .UseDefaults (false)
+            .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
+            .For<double> ().AddProvider (context => 2.1)
+            .For<string>().AddProvider(context=>"something")
+            .For<Color>().AddProvider(context=>Color.White)
             .For<double, InitialValueForChainAttribute> ().AddProvider (context => context.Attribute.BaseValue + 0.1d)
             .For<int, InitialValueForChainAttribute> ().AddProvider (context => context.Attribute.BaseValue + 2);
       })
-      .Given(TestDataGeneratorContext());
+          .Given (TestDataGeneratorContext ());
     }
 
     Context TypeHierarchyChainProviderContext ()
@@ -185,6 +202,11 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         TestDataDomainConfiguration = configuration => configuration
             .UseDefaults (false)
+            .For<AbstractVehicle>().AddProvider(new DefaultInstanceValueProvider<AbstractVehicle>())
+            .For<Tire>().AddProvider(new DefaultInstanceValueProvider<Tire>())
+            .For<double>().AddProvider(context=>0.0)
+            .For<int>().AddProvider(context=>0)
+            .For<Color>().AddProvider(context=>Color.White)
             .For<string> ()
             .AddProvider (context => "8")
             .AddProvider (context => "7" + context.GetPreviousValue ())

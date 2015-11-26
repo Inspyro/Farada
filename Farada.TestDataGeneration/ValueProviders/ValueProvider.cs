@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Farada.TestDataGeneration.Extensions;
-using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
@@ -12,10 +13,14 @@ namespace Farada.TestDataGeneration.ValueProviders
   public abstract class ValueProvider<TMember, TContext> : IValueProvider
       where TContext : ValueProviderContext<TMember>
   {
-    [CanBeNull]
-    object IValueProvider.CreateValue (IValueProviderContext context)
+    object IValueProvider.Create (IValueProviderContext context)
     {
       return CreateValue((TContext) context);
+    }
+
+    IEnumerable<object> IValueProvider.CreateMany(IValueProviderContext context, int numberOfObjects)
+    {
+      return CreateManyValues ((TContext) context, numberOfObjects).Cast<object>();
     }
 
     public virtual bool CanHandle (Type memberType)
@@ -34,8 +39,13 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// Creates a value of the given property type
     /// </summary>
     /// <param name="context">the concrete context to considre</param>
-    [CanBeNull]
     protected abstract TMember CreateValue (TContext context);
+
+    protected virtual IEnumerable<TMember> CreateManyValues (TContext context, int numberOfObjects)
+    {
+      for (var i = 0; i < numberOfObjects; i++)
+        yield return CreateValue(context);
+    }
   }
 
   /// <summary>

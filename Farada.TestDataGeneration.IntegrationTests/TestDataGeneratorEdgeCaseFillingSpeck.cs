@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Farada.TestDataGeneration.CompoundValueProviders;
+using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
@@ -15,7 +16,11 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Case ("Properties Are Initialized", _ => _
               .Given (ConfigurationContext (cfg =>
                   cfg.UseDefaults (false)
-                      .For<IList<int>> ().AddProvider (f => new List<int> { 0, 1, 2, 3 })))
+                      .For<ClassWithList> ().AddProvider (new DefaultInstanceValueProvider<ClassWithList> ())
+                      .For<IList<int>> ()
+                      //
+                        .AddProvider (f => new List<int> { 0, 1, 2, 3 })
+                        .DisableAutoFill ()))
               .It ("initialized first list correctly", x => x.Result.IntegerList.Should ().BeEquivalentTo (new[] { 0, 1, 2, 3 })));
     }
 

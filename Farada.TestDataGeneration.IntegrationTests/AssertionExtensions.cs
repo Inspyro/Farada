@@ -1,12 +1,10 @@
 ﻿using System;
-using TestFx.Specifications.Implementation.Controllers;
-using TestFx.Specifications.InferredApi;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
   public static class AssertionExtensions
   {
-    public static IAssert ContainsMessage (
+    /*public static IAssert ContainsMessage (
         this IAssert assertion,
         string message)
     {
@@ -17,6 +15,6 @@ namespace Farada.TestDataGeneration.IntegrationTests
       }, true);
 
       return assertion;
-    }
+    }*/
   }
 }

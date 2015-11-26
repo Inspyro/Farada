@@ -1,8 +1,10 @@
 ﻿using System;
 using Farada.TestDataGeneration.CompoundValueProviders;
+using Farada.TestDataGeneration.Exceptions;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
+using Farada.TestDataGeneration.IntegrationTests.Utils;
 using FluentAssertions;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
@@ -17,10 +19,10 @@ namespace Farada.TestDataGeneration.IntegrationTests
           //
           .It ("should be a random byte", x => x.Result.Should ().Be(244)));
 
-      Specify (x => Create<char>()).Case ("simple char case", _ => _
-        .Given(BaseDomainContext(seed:5))
+      Specify (x => Create<char> ()).Case ("simple char case", _ => _
+          .Given (BaseDomainContext (seed: 5))
           //
-          .It ("should be a random char", x => x.Result.Should ().Be(';')));
+          .It ("should be a random char", x => x.Result.Should ().Be (';')));
 
       Specify (x => Create<decimal>()).Case ("simple decimal case", _ => _
         .Given(BaseDomainContext(seed:5))
@@ -94,85 +96,85 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
       //empty domain
 
-       Specify (x => Create<byte>()).Case ("simple byte case with empty domain", _ => _
-         .Given(BaseDomainContext(false))
+      Specify(x => Create<byte> ()).Case ("simple byte case with empty domain", _ => _
+          .Given (BaseDomainContext (false))
           //
-          .It ("should be a default byte", x => x.Result.Should ().Be(default(byte))));
+          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.Byte>\""));
 
       Specify (x => Create<char>()).Case ("simple char case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should be a default char", x => x.Result.Should ().Be(default(char))));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.Char>\""));
 
       Specify (x => Create<decimal>()).Case ("simple decimal case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should be a default decimal", x => x.Result.Should ().Be(default(decimal))));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.Decimal>\""));
 
-     Specify (x => Create<double>()).Case ("simple double case with empty domain", _ => _
+      Specify (x => Create<double>()).Case ("simple double case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should be a default double", x => x.Result.Should ().Be(default(double))));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.Double>\""));
 
       Specify (x => Create<SomeEnum>()).Case ("simple Enum case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should be a default Enum", x => x.Result.Should ().Be(SomeEnum.SomeMember1)));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"Farada.TestDataGeneration.IntegrationTests.TestDomain.SomeEnum>\""));
 
       Specify (x => Create<float>()).Case ("simple float case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should be a default float", x => x.Result.Should ().Be(default(float))));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.Single>\""));
 
       Specify (x => Create<int>()).Case ("simple int case with empty domain", _ => _
          .Given(BaseDomainContext(false))
           //
-          .It ("should be a default int", x => x.Result.Should ().Be(default(int))));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.Int32>\""));
 
       Specify (x => Create<long>()).Case ("simple long case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should be a default long", x => x.Result.Should ().Be(default(long))));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.Int64>\""));
 
-       Specify (x => Create<sbyte>()).Case ("simple sbyte case with empty domain", _ => _
+      Specify (x => Create<sbyte>()).Case ("simple sbyte case with empty domain", _ => _
          .Given(BaseDomainContext(false))
           //
-          .It ("should be a default sbyte", x => x.Result.Should ().Be(default(sbyte))));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.SByte>\""));
 
       Specify (x => Create<short>()).Case ("simple short case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should be a default short", x => x.Result.Should ().Be(default(short))));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.Int16>\""));
 
       Specify (x => Create<uint>()).Case ("simple uint case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should be a default uint", x => x.Result.Should ().Be(default(uint))));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.UInt32>\""));
 
       Specify (x => Create<ulong>()).Case ("simple ulong case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should be a default ulong", x => x.Result.Should ().Be(default(ulong))));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.UInt64>\""));
 
       Specify (x => Create<ushort>()).Case ("simple ushort case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should be a default ushort", x => x.Result.Should ().Be(default(ushort))));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.UInt16>\""));
 
       Specify (x => Create<Guid>()).Case ("simple Guid case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should be a default Guid", x => x.Result.Should ().Be(default(Guid))));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.Guid>\""));
 
       Specify (x => Create<string>()).Case ("simple string case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should equal null", x => x.Result.Should ().BeNull ()));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.String>\""));
 
       Specify (x => Create<DateTime>()).Case ("simple DateTime case with empty domain", _ => _
         .Given(BaseDomainContext(false))
           //
-          .It ("should be some DateTime", x => x.Result.GetType ().Should ().Be (typeof (DateTime))));
+          .ItThrowsContains(typeof(MissingValueProviderException), "No value provider registered for \"System.DateTime>\""));
     }
 
     T Create<T> ()

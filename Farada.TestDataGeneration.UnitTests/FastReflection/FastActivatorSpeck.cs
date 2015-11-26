@@ -20,16 +20,16 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
               .It ("creates a new object every time", x => x.Result(new object[0]).Should ().NotBeSameAs (x.Result(new object[0]))))
           .Case ("throws for value type", _ => _
               .Given ("value type", x => TypeToCreate = typeof (int))
-              .ItThrows (typeof(NotSupportedException), x=>"No valid ctor found: Classes with non-public constructors are not supported"))
+              .ItThrows (typeof(NotSupportedException), x=>"No valid ctor found: Classes with non-public constructors and abstract classes are not supported"))
           .Case ("throws for type with no default constructor", _ => _
               .Given ("ClassWithNoDefaultConstructor", x => TypeToCreate = typeof (ClassWithNoDefaultConstructor))
-              .ItThrows (typeof(NotSupportedException), x=>"No valid ctor found: Classes with non-public constructors are not supported"))
+              .ItThrows (typeof(NotSupportedException), x=> "No valid ctor found: Classes with non-public constructors and abstract classes are not supported"))
           .Case ("throws for type with private constructor", _ => _
               .Given ("ClassWithPrivateConstructor", x => TypeToCreate = typeof (ClassWithPrivateConstructor))
-              .ItThrows (typeof(NotSupportedException), x=>"No valid ctor found: Classes with non-public constructors are not supported"))
+              .ItThrows (typeof(NotSupportedException), x=> "No valid ctor found: Classes with non-public constructors and abstract classes are not supported"))
           .Case ("throws for type with internal constructor", _ => _
               .Given ("ClassWithInternalConstructor", x => TypeToCreate = typeof (ClassWithInternalConstructor))
-              .ItThrows (typeof(NotSupportedException), x=>"No valid ctor found: Classes with non-public constructors are not supported"));
+              .ItThrows (typeof(NotSupportedException), x=> "No valid ctor found: Classes with non-public constructors and abstract classes are not supported"));
     }
   }
 

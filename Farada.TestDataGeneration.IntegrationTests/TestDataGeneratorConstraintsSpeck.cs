@@ -2,8 +2,9 @@
 using Farada.TestDataGeneration.BaseDomain.Modifiers;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
+using Farada.TestDataGeneration.IntegrationTests.Utils;
 using FluentAssertions;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
@@ -29,14 +30,17 @@ namespace Farada.TestDataGeneration.IntegrationTests
           TestDataGenerator.Create<ClassWithInvalidStringLengthConstraint> (MaxRecursionDepth, null))
           .Case ("should raise argument out of range exception", _ => _
               .Given (BaseDomainContext ())
-              .ItThrows (typeof(ArgumentOutOfRangeException)));//x=>"On the property System.String InvalidRangedName the StringLength attribute has an invalid range")); //TODO RN-246: contains??
+              .ItThrows(typeof(NotSupportedException), "Could not auto-fill Farada.TestDataGeneration.IntegrationTests.TestDomain.ClassWithInvalidStringLengthConstraint> (member InvalidRangedName). Please provide a value provider")
+              .ItThrowsContainsInner(typeof (ArgumentOutOfRangeException),
+                  "On the member System.String InvalidRangedName the StringLength attribute has an invalid range"));
 
       Specify (x =>
           TestDataGenerator.Create<ClassWithInvalidRangeConstraint> (MaxRecursionDepth, null))
           .Case ("should raise argument exception", _ => _
               .Given (BaseDomainContext ())
-              .ItThrows (typeof(ArgumentOutOfRangeException)));
-          //x => "On the property System.Int32 InvalidRangedNumber the Range attribute has an invalid range")); //TODO RN-246
+              .ItThrows(typeof(NotSupportedException), "Could not auto-fill Farada.TestDataGeneration.IntegrationTests.TestDomain.ClassWithInvalidRangeConstraint> (member InvalidRangedNumber). Please provide a value provider")
+              .ItThrowsContainsInner(typeof (ArgumentOutOfRangeException),
+                  "On the member System.Int32 InvalidRangedNumber the Range attribute has an invalid range"));
     }
 
     Context NullModifierContext ()

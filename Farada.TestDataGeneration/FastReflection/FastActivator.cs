@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Farada.TestDataGeneration.Extensions;
 
 namespace Farada.TestDataGeneration.FastReflection
 {
@@ -26,6 +27,14 @@ namespace Farada.TestDataGeneration.FastReflection
 
     private static Func<object[], object> CreateFactoryMethod (Type type, IList<IFastArgumentInfo> ctorArguments)
     {
+      if (type.IsPrimitive)
+        throw new NotSupportedException ("Primitive types are not supported. Please configure a value provider for type " + type + ".");
+
+      if (type.IsArray)
+        throw new NotSupportedException ("Array types are not supported. Please configure a value provider");
+
+
+      //sample: (params) => new Ice(params[0], params[1]);
       var constructor = type.GetConstructor (
           BindingFlags.Instance | BindingFlags.Public,
           null,
@@ -34,7 +43,8 @@ namespace Farada.TestDataGeneration.FastReflection
           new ParameterModifier[0]);
 
       if (constructor == null)
-        throw new NotSupportedException ("No valid ctor found: Classes with non-public constructors are not supported");
+        throw new NotSupportedException (
+            "No valid ctor found on '"+type+"': Classes with non-public constructors and abstract classes are not supported.");
 
       var argsParam = Expression.Parameter (typeof (object[]), "args");
 

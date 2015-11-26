@@ -26,5 +26,11 @@ namespace Farada.TestDataGeneration.Fluent
       _lazyValueProviderBuilder().AddProvider(_memberExpression, valueProvider);
       return this;
     }
+
+    public IValueProviderAndChainConfigurator<TMember> DisableAutoFill ()
+    {
+      _lazyValueProviderBuilder().DisableAutoFill (_memberExpression);
+      return this;
+    }
   }
 }
