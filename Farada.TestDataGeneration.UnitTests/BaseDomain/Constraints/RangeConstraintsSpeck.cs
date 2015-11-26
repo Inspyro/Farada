@@ -5,14 +5,14 @@ using Farada.TestDataGeneration.BaseDomain.Constraints;
 using Farada.TestDataGeneration.FastReflection;
 using FluentAssertions;
 using TestFx.FakeItEasy;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
 {
   public class RangeConstraintsSpecK
   {
     [Subject (typeof (RangeContstraints<>), "Constructor")]
-    public class ConstructorSpecK : SpecK
+    public class ConstructorSpecK : Spec
     {
       RangeAttribute RangeAttribute;
 
@@ -27,7 +27,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
     }
 
     [Subject (typeof (RangeContstraints<>), "FromProperty")]
-    public class FromPropertySpecK : SpecK
+    public class FromPropertySpecK : Spec
     {
       [Faked] IFastMemberWithValues Member;
       RangeAttribute RangeAttribute;

@@ -6,13 +6,13 @@ using Farada.TestDataGeneration.BaseDomain.Constraints;
 using Farada.TestDataGeneration.FastReflection;
 using FluentAssertions;
 using TestFx.FakeItEasy;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
 {
   [Subject (typeof (StringConstraints), "FromProperty")]
   [Guid ("499547D2-CA5C-4A48-86E6-ED489D704CEA")]
-  public class StringConstraintsSpeck : SpecK
+  public class StringConstraintsSpeck : Spec
   {
     [Faked] IFastMemberWithValues Member;
 

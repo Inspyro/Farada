@@ -8,15 +8,15 @@ using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
 using JetBrains.Annotations;
-using TestFx.Specifications;
-using TestFx.Specifications.InferredApi;
+using TestFx.SpecK;
+using TestFx.SpecK.InferredApi;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 {
   public class RandomSyllabileGeneratorSpeck
   {
     [Subject (typeof (RandomSyllabileGenerator), "Constructor")]
-    public class ConstructorSpecK : SpecK
+    public class ConstructorSpecK : Spec
     {
       ValueProviderContext<string> Context;
 
@@ -29,7 +29,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
     }
 
     [Subject (typeof (RandomSyllabileGenerator), "Fill")]
-    public class FillSpecK : SpecK<RandomSyllabileGenerator>
+    public class FillSpecK : Spec<RandomSyllabileGenerator>
     {
       ValueProviderContext<string> Context;
       static StringBuilder StringBuilder = new StringBuilder ();

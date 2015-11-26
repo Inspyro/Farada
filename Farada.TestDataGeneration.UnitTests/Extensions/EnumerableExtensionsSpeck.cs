@@ -4,11 +4,11 @@ using System.Linq;
 using Farada.TestDataGeneration.Extensions;
 using FluentAssertions;
 using JetBrains.Annotations;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.Extensions
 {
-  public class EnumerableExtensionsSpeck:SpecK
+  public class EnumerableExtensionsSpeck:Spec
   {
     Type TypeToCreate;
     int NumberOfObjects;

@@ -1,12 +1,12 @@
 ﻿using System;
 using Farada.TestDataGeneration.Extensions;
 using FluentAssertions;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.Extensions
 {
   [Subject (typeof (RandomExtensions), "Next")]
-  public class RandomExtensionsSpecK :SpecK<Random>
+  public class RandomExtensionsSpecK :Spec<Random>
   {
     public RandomExtensionsSpecK ()
     {

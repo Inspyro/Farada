@@ -1,12 +1,12 @@
 ﻿using System;
 using Farada.TestDataGeneration.Extensions;
 using FluentAssertions;
-using TestFx.Specifications;
+using TestFx.SpecK;
 using TypeExtensions = Farada.TestDataGeneration.Extensions.TypeExtensions;
 
 namespace Farada.TestDataGeneration.UnitTests.Extensions
 {
-  public class TypeExtensionsSpecK : SpecK
+  public class TypeExtensionsSpecK : Spec
   {
     Type Type;
 

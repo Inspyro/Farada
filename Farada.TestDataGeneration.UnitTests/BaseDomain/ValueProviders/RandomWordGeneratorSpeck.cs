@@ -1,12 +1,12 @@
 ﻿using System;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
 using TestFx.FakeItEasy;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 {
   [Subject(typeof(RandomWordGenerator),"Constructor")]
-  public class RandomWordGeneratorSpeck:SpecK
+  public class RandomWordGeneratorSpeck:Spec
   {
     [Faked] RandomSyllabileGenerator RandomSyllabileGenerator;
 

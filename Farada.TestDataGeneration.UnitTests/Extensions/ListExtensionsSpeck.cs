@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using Farada.TestDataGeneration.Extensions;
 using FluentAssertions;
-using TestFx.Specifications;
+using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.Extensions
 {
   public class ListExtensionsSpecK
   {
     [Subject (typeof (ListExtensions), "Randomize")]
-    public class RandomizeSpecK : SpecK<List<int>>
+    public class RandomizeSpecK : Spec<List<int>>
     {
       Random Random;
 
@@ -29,7 +29,7 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
     }
 
     [Subject (typeof (ListExtensions), "Slice")]
-    public class SliceSpecK : SpecK<List<int>>
+    public class SliceSpecK : Spec<List<int>>
     {
       Random Random;
 

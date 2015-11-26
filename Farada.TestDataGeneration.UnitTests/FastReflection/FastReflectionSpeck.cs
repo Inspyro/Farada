@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Farada.TestDataGeneration.FastReflection;
 using FluentAssertions;
-using TestFx.Specifications;
+using TestFx.SpecK;
 using TypeExtensions = Farada.TestDataGeneration.Extensions.TypeExtensions;
 
 namespace Farada.TestDataGeneration.UnitTests.FastReflection
@@ -17,7 +17,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
     static DerivedDTO Instance;
 
     [Subject (typeof (FastReflectionUtility), "GetTypeInfo")]
-    public class GetTypeInfoSpecK : SpecK
+    public class GetTypeInfoSpecK : Spec
     {
       public GetTypeInfoSpecK ()
       {
@@ -46,7 +46,7 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
     }
 
     [Subject (typeof (FastReflectionUtility), "GetPropertyInfo")]
-    public class GetPropertyInfoSpecK : SpecK
+    public class GetPropertyInfoSpecK : Spec
     {
       public GetPropertyInfoSpecK ()
       {
