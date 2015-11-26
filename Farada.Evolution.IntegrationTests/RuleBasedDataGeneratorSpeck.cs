@@ -30,8 +30,8 @@ namespace Farada.Evolution.IntegrationTests
           .Case ("Planet Earth", _ => _
               .Given (PersonDomainContext ())
               .Given ("60 years", x => Generations = 60)
-              .It ("successfully creates 1352 persons",
-                  x => x.Result.GetResult<Person> ().Count.Should ().Be (1352)));
+              .It ("successfully creates 1353 persons",
+                  x => x.Result.GetResult<Person> ().Count.Should ().Be (1353)));
     }
 
     Context DataGeneratorContext ()
