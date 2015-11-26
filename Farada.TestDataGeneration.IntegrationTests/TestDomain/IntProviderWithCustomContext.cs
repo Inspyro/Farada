@@ -1,36 +1,17 @@
-﻿using System;
-using Farada.TestDataGeneration.ValueProviders;
+﻿using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.IntegrationTests.TestDomain
 {
-  class IntProviderWithCustomContext:ValueProvider<int, IntProviderWithCustomContext.CustomIntContext>
+  class IntProviderWithCustomContext : ExtendedValueProvider<int, int>
   {
-    readonly int _contextValue;
-
-    public IntProviderWithCustomContext(int contextValue)
+    public IntProviderWithCustomContext (int contextValue)
+        : base (contextValue)
     {
-      _contextValue = contextValue;
     }
 
-    internal class CustomIntContext : ValueProviderContext<int>
+    protected override int CreateValue (ExtendedValueProviderContext<int, int> context)
     {
-      public int ContextValue { get; private set; }
-
-      public CustomIntContext (ValueProviderObjectContext objectContext, int contextValue)
-          : base (objectContext)
-      {
-        ContextValue = contextValue;
-      }
-    }
-
-    protected override CustomIntContext CreateContext (ValueProviderObjectContext objectContext)
-    {
-      return new CustomIntContext(objectContext, _contextValue);
-    }
-
-    protected override int CreateValue (CustomIntContext context)
-    {
-      return context.ContextValue;
+      return context.AdditionalData;
     }
   }
 }

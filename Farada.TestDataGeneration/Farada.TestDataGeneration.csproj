@@ -153,7 +153,9 @@
     <Compile Include="ValueProviders\IRandom.cs" />
     <Compile Include="ValueProviders\IValueProvider.cs" />
     <Compile Include="ValueProviders\SubTypeValueProvider.cs" />
+    <Compile Include="ValueProviders\ExtendedValueProvider.cs" />
     <Compile Include="ValueProviders\ValueProvider.cs" />
+    <Compile Include="ValueProviders\ExtendedValueProviderContext.cs" />
     <Compile Include="ValueProviders\ValueProviderContext.cs" />
     <Compile Include="ValueProviders\ValueProviderObjectContext.cs" />
   </ItemGroup>
