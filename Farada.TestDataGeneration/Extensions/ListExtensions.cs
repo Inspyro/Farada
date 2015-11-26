@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Farada.TestDataGeneration.ValueProviders;
 using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.Extensions
@@ -16,9 +17,9 @@ namespace Farada.TestDataGeneration.Extensions
     /// <typeparam name="T">The type of the list to randomize</typeparam>
     /// <param name="list">The list to randomize</param>
     /// <param name="random">The random to use for shuffeling (if you want to use a seed, etc...), default=null means a new Random is used</param>
-    public static void Randomize<T> (this IList<T> list, Random random = null)
+    public static void Randomize<T> (this IList<T> list, IRandom random = null)
     {
-      random = random ?? new Random();
+      random = random ?? new DefaultRandom();
       
       var n = list.Count;
       while (n > 1)

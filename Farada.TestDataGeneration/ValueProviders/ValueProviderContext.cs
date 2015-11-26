@@ -24,7 +24,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// <summary>
     /// The random to use for random value generation
     /// </summary>
-    public Random Random { get; private set; }
+    public IRandom Random { get; private set; }
 
     /// <summary>
     /// The func that referes to the previous value generator in the chain

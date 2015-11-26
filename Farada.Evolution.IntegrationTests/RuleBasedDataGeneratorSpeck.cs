@@ -3,6 +3,7 @@ using System.Linq;
 using Farada.Evolution.IntegrationTests.TestDomain;
 using Farada.Evolution.RuleBasedDataGeneration;
 using Farada.TestDataGeneration;
+using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
 using TestFx.SpecK;
 using Context = TestFx.SpecK.Context;
@@ -59,7 +60,7 @@ namespace Farada.Evolution.IntegrationTests
     Context StringDomainContext (bool useDefaults, int seed)
     {
       return c => c
-          .Given ("string base domain", x => TestDataDomain = configurator => configurator.UseDefaults (useDefaults).UseRandom(new Random(seed)))
+          .Given ("string base domain", x => TestDataDomain = configurator => configurator.UseDefaults (useDefaults).UseRandom(new DefaultRandom(seed)))
           .Given ("string evolutionary domain", x => EvolutionaryDomain = configurator => configurator.AddRule (new StringMarryRule ()))
           .Given (DataGeneratorContext ())
           .Given (StringInitialDataContext ());
@@ -82,7 +83,7 @@ namespace Farada.Evolution.IntegrationTests
       return c => c
           .Given ("person test domain", x => TestDataDomain = configurator => configurator
               //
-              .UseDefaults (useDefaults).UseRandom (new Random (seed))
+              .UseDefaults (useDefaults).UseRandom (new DefaultRandom (seed))
               //
               .For<Gender> ().AddProvider (context => (Gender) (context.Random.Next (0, 2))))
           .Given ("person evolution domain", x => EvolutionaryDomain = configurator => configurator

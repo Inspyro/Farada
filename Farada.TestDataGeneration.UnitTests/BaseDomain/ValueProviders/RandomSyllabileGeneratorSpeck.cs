@@ -51,7 +51,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
       {
         return x =>
         {
-          var customValueProviderObjectContext = new CustomValueProviderObjectContext (new Random (seed));
+          var customValueProviderObjectContext = new CustomValueProviderObjectContext (new DefaultRandom (seed));
           var customValueProviderContext = new CustomValueProviderContext (customValueProviderObjectContext);
 
           Context = customValueProviderContext;
@@ -62,7 +62,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 
     class CustomValueProviderObjectContext : ValueProviderObjectContext
     {
-      internal CustomValueProviderObjectContext (Random random)
+      internal CustomValueProviderObjectContext (IRandom random)
           : base (new DummyTestDataGenerator (random), () => new object (), typeof (Dummy), new DummyAdvancedContext(), new DummyFastProperty ())
       {
       }
@@ -99,7 +99,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 
     class DummyTestDataGenerator : ITestDataGenerator
     {
-      public DummyTestDataGenerator (Random random)
+      public DummyTestDataGenerator (IRandom random)
       {
         Random = random;
       }
@@ -117,7 +117,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
         throw new NotSupportedException ();
       }
 
-      public Random Random { get; }
+      public IRandom Random { get; }
       public IList<object> CreateMany (IKey currentKey, int numberOfObjects, int maxRecursionDepth)
       {
         throw new NotSupportedException();

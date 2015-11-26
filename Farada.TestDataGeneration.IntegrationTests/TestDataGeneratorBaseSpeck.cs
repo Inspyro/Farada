@@ -1,5 +1,6 @@
 ﻿using System;
 using Farada.TestDataGeneration.CompoundValueProviders;
+using Farada.TestDataGeneration.ValueProviders;
 using TestFx.SpecK;
 using TestFx.SpecK.InferredApi;
 
@@ -43,7 +44,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Given ((useDefaults ? "default domain" : "empty domain") + " with seed " + (!seed.HasValue ? "random" : seed.ToString ()),
               x =>
                   TestDataDomainConfiguration =
-                      (configurator => configurator.UseDefaults (useDefaults).UseRandom (seed.HasValue ? new Random (seed.Value) : new Random ())))
+                      (configurator => configurator.UseDefaults (useDefaults).UseRandom (seed.HasValue ? new DefaultRandom (seed.Value) : new DefaultRandom())))
           .Given (TestDataGeneratorContext ());
     }
   }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.Modifiers;
+using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
@@ -12,9 +13,9 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     internal class ModificationFactory
     {
         private readonly IList<IInstanceModifier> _instanceModifiers;
-        private readonly Random _random;
+        private readonly IRandom _random;
 
-        internal ModificationFactory(IList<IInstanceModifier> instanceModifiers, Random random)
+        internal ModificationFactory(IList<IInstanceModifier> instanceModifiers, IRandom random)
         {
             _instanceModifiers = instanceModifiers;
             _random = random;

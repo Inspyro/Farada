@@ -12,7 +12,7 @@ namespace Farada.TestDataGeneration.ValueProviders
   public class ValueProviderObjectContext
   {
     private AdvancedContext _advanced;
-    internal Random Random { get; private set; }
+    internal IRandom Random { get; private set; }
     internal Func<object> GetPreviousValue { get; private set; }
     internal Type TargetValueType { get; private set; }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Farada.TestDataGeneration.Extensions;
+using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
 using TestFx.SpecK;
 
@@ -11,7 +12,7 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
     [Subject (typeof (ListExtensions), "Randomize")]
     public class RandomizeSpecK : Spec<List<int>>
     {
-      Random Random;
+      IRandom Random;
 
       public RandomizeSpecK ()
       {
@@ -24,7 +25,7 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
 
       Context SeededRandomContext (int seed)
       {
-        return c => c.Given ("random with seed " + seed, x => Random = new Random (seed));
+        return c => c.Given ("random with seed " + seed, x => Random = new DefaultRandom (seed));
       }
     }
 

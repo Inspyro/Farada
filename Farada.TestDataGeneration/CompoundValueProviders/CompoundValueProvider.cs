@@ -5,6 +5,7 @@ using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.Modifiers;
+using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
@@ -18,9 +19,9 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     private readonly InstanceFactory _instanceFactory;
     private readonly ModificationFactory _modificationFactory;
 
-    public Random Random { get; }
+    public IRandom Random { get; }
 
-    internal CompoundValueProvider (ValueProviderDictionary valueProviderDictionary, HashSet<IKey> autoFillMapping, Random random, IList<IInstanceModifier> instanceModifiers, IParameterConversionService parameterConversionService)
+    internal CompoundValueProvider (ValueProviderDictionary valueProviderDictionary, HashSet<IKey> autoFillMapping, IRandom random, IList<IInstanceModifier> instanceModifiers, IParameterConversionService parameterConversionService)
     {
       Random = random;
       _autoFillMapping = autoFillMapping;

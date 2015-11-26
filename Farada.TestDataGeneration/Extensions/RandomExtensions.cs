@@ -1,4 +1,5 @@
 ﻿using System;
+using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.Extensions
 {
@@ -7,7 +8,7 @@ namespace Farada.TestDataGeneration.Extensions
   /// </summary>
   public static class RandomExtensions
   {
-    public static float Next (this Random random, float minValue = float.MinValue, float maxValue = float.MaxValue)
+    public static float Next (this IRandom random, float minValue = float.MinValue, float maxValue = float.MaxValue)
     {
       return Next(
           random,
@@ -18,7 +19,7 @@ namespace Farada.TestDataGeneration.Extensions
           (f, d) => (float) (f * d));
     }
 
-    public static long Next (this Random random, long minValue = long.MinValue, long maxValue = long.MaxValue)
+    public static long Next (this IRandom random, long minValue = long.MinValue, long maxValue = long.MaxValue)
     {
       return Next(
           random,
@@ -29,7 +30,7 @@ namespace Farada.TestDataGeneration.Extensions
           (f, d) => (long) (f * d));
     }
 
-    public static double Next (this Random random, double minValue = double.MinValue, double maxValue = double.MaxValue)
+    public static double Next (this IRandom random, double minValue = double.MinValue, double maxValue = double.MaxValue)
     {
       return Next(
           random,
@@ -40,7 +41,7 @@ namespace Farada.TestDataGeneration.Extensions
           (f, d) => f * d);
     }
 
-    public static ulong Next (this Random random, ulong minValue = ulong.MinValue, ulong maxValue = ulong.MaxValue)
+    public static ulong Next (this IRandom random, ulong minValue = ulong.MinValue, ulong maxValue = ulong.MaxValue)
     {
       return Next(
           random,
@@ -51,7 +52,7 @@ namespace Farada.TestDataGeneration.Extensions
           (f, d) => (ulong) (f * d));
     }
 
-    public static ushort NextUShort (this Random random, ushort minValue = ushort.MinValue, ushort maxValue = ushort.MaxValue)
+    public static ushort NextUShort (this IRandom random, ushort minValue = ushort.MinValue, ushort maxValue = ushort.MaxValue)
     {
       return Next(
           random,
@@ -62,7 +63,7 @@ namespace Farada.TestDataGeneration.Extensions
           (f, d) => (ushort) (f * d));
     }
 
-    public static short NextShort (this Random random, short minValue = short.MinValue, short maxValue = short.MaxValue)
+    public static short NextShort (this IRandom random, short minValue = short.MinValue, short maxValue = short.MaxValue)
     {
       return Next(
           random,
@@ -73,7 +74,7 @@ namespace Farada.TestDataGeneration.Extensions
           (f, d) => (short) (f * d));
     }
 
-    public static uint Next (this Random random, uint minValue = uint.MinValue, uint maxValue = uint.MaxValue)
+    public static uint Next (this IRandom random, uint minValue = uint.MinValue, uint maxValue = uint.MaxValue)
     {
       return Next(
           random,
@@ -84,7 +85,7 @@ namespace Farada.TestDataGeneration.Extensions
           (f, d) => (uint) (f * d));
     }
 
-    public static decimal Next (this Random random, decimal minValue = decimal.MinValue, decimal maxValue = decimal.MaxValue)
+    public static decimal Next (this IRandom random, decimal minValue = decimal.MinValue, decimal maxValue = decimal.MaxValue)
     {
       return Next(
           random,
@@ -96,7 +97,7 @@ namespace Farada.TestDataGeneration.Extensions
     }
 
     public static T Next<T> (
-        this Random random,
+        this IRandom random,
         T minValue,
         T maxValue,
         Func<T, T, T> addFunc,

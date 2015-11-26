@@ -15,13 +15,13 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
   /// </summary>
   internal class CompoundValueProviderBuilder : ICompoundValueProviderBuilder
   {
-    private readonly Random _random;
+    private readonly IRandom _random;
     private readonly IParameterConversionService _parameterConversionService;
     private readonly ValueProviderDictionary _valueProviderDictionary;
     private readonly HashSet<IKey> _autoFillMapping;
     private readonly IList<IInstanceModifier> _modifierList;
 
-    internal CompoundValueProviderBuilder(Random random, IParameterConversionService parameterConversionService)
+    internal CompoundValueProviderBuilder(IRandom random, IParameterConversionService parameterConversionService)
     {
       _random = random;
       _parameterConversionService = parameterConversionService;

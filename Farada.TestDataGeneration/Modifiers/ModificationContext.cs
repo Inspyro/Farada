@@ -1,5 +1,6 @@
 ﻿using System;
 using Farada.TestDataGeneration.FastReflection;
+using Farada.TestDataGeneration.ValueProviders;
 using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.Modifiers
@@ -23,9 +24,9 @@ namespace Farada.TestDataGeneration.Modifiers
     /// <summary>
     /// The random to use for the modification
     /// </summary>
-    public Random Random { get; private set; }
+    public IRandom Random { get; private set; }
 
-    internal ModificationContext (Type memberType, [CanBeNull] IFastMemberWithValues member, Random random)
+    internal ModificationContext (Type memberType, [CanBeNull] IFastMemberWithValues member, IRandom random)
     {
       MemberType = memberType;
       Member = member;

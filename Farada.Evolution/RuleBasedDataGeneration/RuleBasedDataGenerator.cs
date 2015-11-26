@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.Extensions;
+using Farada.TestDataGeneration.ValueProviders;
 using Remotion.Utilities;
 
 namespace Farada.Evolution.RuleBasedDataGeneration
 {
   public class RuleBasedDataGenerator
   {
-    private readonly Random _random;
+    private readonly IRandom _random;
     private readonly RuleSet _ruleSet;
-    public ITestDataGenerator TestDataGenerator { get; private set; }
+    public ITestDataGenerator TestDataGenerator { get; }
 
     internal RuleBasedDataGenerator (ITestDataGenerator testDataGenerator, RuleSet ruleSet)
     {

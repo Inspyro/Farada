@@ -1,12 +1,13 @@
 ﻿using System;
 using Farada.TestDataGeneration.Extensions;
+using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
 using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.Extensions
 {
   [Subject (typeof (RandomExtensions), "Next")]
-  public class RandomExtensionsSpecK :Spec<Random>
+  public class RandomExtensionsSpecK :Spec<IRandom>
   {
     public RandomExtensionsSpecK ()
     {
@@ -67,14 +68,14 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
               .It ("result is always 10", x => x.Result.Should ().Be(2086725849749066753)));
     }
     
-    static Context<Random> DefaultRandomContext ()
+    static Context<IRandom> DefaultRandomContext ()
     {
-      return c => c.GivenSubject ("default random", x => new Random ());
+      return c => c.GivenSubject ("default random", x => new DefaultRandom ());
     }
 
-    static Context<Random> SeededRandomContext (int seed)
+    static Context<IRandom> SeededRandomContext (int seed)
     {
-      return c => c.GivenSubject ("random with seed " + seed, x => new Random (seed));
+      return c => c.GivenSubject ("random with seed " + seed, x => new DefaultRandom (seed));
     }
   }
 }

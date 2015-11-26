@@ -11,7 +11,7 @@ namespace Farada.TestDataGeneration.Fluent
   internal class DomainConfigurator : ChainConfigurator, ITestDataConfigurator
   {
     private bool _useDefaults;
-    private Random _random;
+    private IRandom _random;
     private CompoundValueProviderBuilder _valueProviderBuilder;
     private Func<string, string> _paremeterToPropertyConversionFunc;
 
@@ -20,7 +20,7 @@ namespace Farada.TestDataGeneration.Fluent
     {
       _lazyValueProviderBuilder = () => ValueProviderBuilder;
 
-      _random = new Random();
+      _random = new DefaultRandom();
       _useDefaults = true;
 
       _paremeterToPropertyConversionFunc = parameterName => parameterName[0].ToString().ToUpper() + parameterName.Substring (1);
@@ -32,7 +32,7 @@ namespace Farada.TestDataGeneration.Fluent
       return this;
     }
 
-    public ITestDataConfigurator UseRandom (Random random)
+    public ITestDataConfigurator UseRandom (IRandom random)
     {
       _random = random;
       return this;
