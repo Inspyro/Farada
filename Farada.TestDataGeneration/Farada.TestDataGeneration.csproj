@@ -73,6 +73,8 @@
     <Compile Include="BaseDomain\ValueProviders\ChooseMultipleDistinctItemsValueProvider.cs" />
     <Compile Include="BaseDomain\ValueProviders\ChooseSingleItemValueProvider.cs" />
     <Compile Include="BaseDomain\ValueProviders\RangeConstrainedValueProvider.cs" />
+    <Compile Include="CompoundValueProviders\DependedPropertyCollection.cs" />
+    <Compile Include="CompoundValueProviders\DependendPropertyResolver.cs" />
     <Compile Include="CompoundValueProviders\InstanceFactory.cs" />
     <Compile Include="CompoundValueProviders\ITestDataGeneratorAdvanced.cs" />
     <Compile Include="CompoundValueProviders\ModificationFactory.cs" />

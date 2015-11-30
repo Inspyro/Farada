@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.FastReflection;
@@ -18,8 +19,9 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// <typeparam name="TMember"></typeparam>
   public class ValueProviderContext<TMember>:IValueProviderContext
   {
-    private readonly Func<TMember> _previousValueFunction;
+    private readonly Func<DependedPropertyCollection, TMember> _previousValueFunction;
     private object _advanced;
+    internal DependedPropertyCollection PropertyCollection { get; private set; }
 
     /// <summary>
     /// The random to use for random value generation
@@ -31,7 +33,23 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// </summary>
     public TMember GetPreviousValue ()
     {
-      return _previousValueFunction();
+      return _previousValueFunction(PropertyCollection);
+    }
+
+    /*public TType GetDependendValue<TType, TMember>(Expression<TType, TMember> expression)
+    {
+      return PropertyCollection[expression];
+    }*/
+
+    /// <summary>
+    /// Enriches the context with a new DependendPropertyCollection.
+    /// </summary>
+    /// <param name="dependedPropertyCollection">Containing a mapping between dependend properties and values</param>
+    public ValueProviderContext<TMember> Enrich(DependedPropertyCollection dependedPropertyCollection)
+    {
+      //after we enrich the context, we have a potentially filled property collection.
+      PropertyCollection = dependedPropertyCollection;
+      return this; //REVIEW: Should this be implemented as immutable (With method?)
     }
 
     /// <summary>
@@ -58,10 +76,13 @@ namespace Farada.TestDataGeneration.ValueProviders
     {
       TestDataGenerator = objectContext.TestDataGenerator;
       Random = objectContext.Random;
-      _previousValueFunction = () => (TMember) objectContext.GetPreviousValue();
+      _previousValueFunction = (dependedPropertyCollection) => (TMember) objectContext.GetPreviousValue(dependedPropertyCollection);
       TargetValueType = objectContext.TargetValueType;
       Member = objectContext.Member;
       Advanced = objectContext.Advanced;
+
+      //By default we have an empty property collection.
+      PropertyCollection = new DependedPropertyCollection();
     }
   }
 }

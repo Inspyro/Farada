@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.FastReflection;
@@ -13,7 +14,7 @@ namespace Farada.TestDataGeneration.ValueProviders
   {
     private AdvancedContext _advanced;
     internal IRandom Random { get; private set; }
-    internal Func<object> GetPreviousValue { get; private set; }
+    internal Func<DependedPropertyCollection, object> GetPreviousValue { get; private set; }
     internal Type TargetValueType { get; private set; }
 
     [CanBeNull]
@@ -23,10 +24,10 @@ namespace Farada.TestDataGeneration.ValueProviders
 
     public AdvancedContext Advanced { get; private set; }
 
-  
+
     protected internal ValueProviderObjectContext (
         ITestDataGenerator testDataGenerator,
-        Func<object> getPreviousValue,
+        Func<DependedPropertyCollection, object> getPreviousValue,
         Type targetValueType,
         AdvancedContext advanced,
         [CanBeNull] IFastMemberWithValues member)
@@ -47,15 +48,21 @@ namespace Farada.TestDataGeneration.ValueProviders
       public IKey Key { get; private set; }
 
       /// <summary>
+      /// The dependencies for each property.
+      /// </summary>
+      public Dictionary<IKey, IList<IKey>> DependencyMapping { get; private set; }
+
+      /// <summary>
       /// The conversion service between ctor params and properties.
       /// </summary>
       public IParameterConversionService ParameterConversionService { get; private set; }
 
       public ITestDataGeneratorAdvanced AdvancedTestDataGenerator { get; private set; }
 
-      public AdvancedContext (IKey key, IParameterConversionService parameterConversionService, ITestDataGeneratorAdvanced advancedTestDataGenerator)
+      public AdvancedContext (IKey key, Dictionary<IKey, IList<IKey>> dependencyMapping,  IParameterConversionService parameterConversionService, ITestDataGeneratorAdvanced advancedTestDataGenerator)
       {
         Key = key;
+        DependencyMapping = dependencyMapping;
         ParameterConversionService = parameterConversionService;
         AdvancedTestDataGenerator = advancedTestDataGenerator;
       }

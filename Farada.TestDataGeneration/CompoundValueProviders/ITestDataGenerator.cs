@@ -7,7 +7,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
   /// <summary>
   /// Generates random instances of any type that is supported by the concrete test data generator
   /// </summary>
-  public interface ITestDataGenerator : ITestDataGeneratorAdvanced
+  public interface ITestDataGenerator
   {
     /// <summary>
     /// Creates exactly one value for the specified type

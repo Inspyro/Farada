@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.Extensions;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
@@ -13,14 +15,12 @@ namespace Farada.TestDataGeneration.ValueProviders
   public abstract class ValueProvider<TMember, TContext> : IValueProvider
       where TContext : ValueProviderContext<TMember>
   {
-    object IValueProvider.Create (IValueProviderContext context)
+    IEnumerable<object> IValueProvider.CreateMany (
+        IValueProviderContext context,
+        [CanBeNull] IList<DependedPropertyCollection> dependedProperties,
+        int itemCount)
     {
-      return CreateValue((TContext) context);
-    }
-
-    IEnumerable<object> IValueProvider.CreateMany(IValueProviderContext context, int numberOfObjects)
-    {
-      return CreateManyValues ((TContext) context, numberOfObjects).Cast<object>();
+      return CreateManyValues ((TContext) context, dependedProperties, itemCount).Cast<object>();
     }
 
     public virtual bool CanHandle (Type memberType)
@@ -32,19 +32,24 @@ namespace Farada.TestDataGeneration.ValueProviders
 
     IValueProviderContext IValueProvider.CreateContext (ValueProviderObjectContext objectContext)
     {
-      return CreateContext(objectContext);
+      return CreateContext (objectContext);
     }
 
     /// <summary>
     /// Creates a value of the given property type
     /// </summary>
-    /// <param name="context">the concrete context to considre</param>
+    /// <param name="context">the concrete context to consider.</param>
     protected abstract TMember CreateValue (TContext context);
 
-    protected virtual IEnumerable<TMember> CreateManyValues (TContext context, int numberOfObjects)
+    protected virtual IEnumerable<TMember> CreateManyValues (
+        TContext context,
+        [CanBeNull] IList<DependedPropertyCollection> dependedProperties,
+        int itemCount)
     {
-      for (var i = 0; i < numberOfObjects; i++)
-        yield return CreateValue(context);
+      for (var i = 0; i < itemCount; i++)
+      {
+        yield return CreateValue (dependedProperties != null ? (TContext) context.Enrich (dependedProperties[i]) : context);
+      }
     }
   }
 

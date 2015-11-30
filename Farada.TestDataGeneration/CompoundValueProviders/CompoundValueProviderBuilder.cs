@@ -19,20 +19,22 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     private readonly IParameterConversionService _parameterConversionService;
     private readonly ValueProviderDictionary _valueProviderDictionary;
     private readonly HashSet<IKey> _autoFillMapping;
+    private readonly Dictionary<IKey, IList<IKey>> _dependencyMapping;
     private readonly IList<IInstanceModifier> _modifierList;
 
-    internal CompoundValueProviderBuilder(IRandom random, IParameterConversionService parameterConversionService)
+    internal CompoundValueProviderBuilder (IRandom random, IParameterConversionService parameterConversionService)
     {
       _random = random;
       _parameterConversionService = parameterConversionService;
       _valueProviderDictionary = new ValueProviderDictionary();
       _autoFillMapping = new HashSet<IKey>();
+      _dependencyMapping = new Dictionary<IKey, IList<IKey>>();
       _modifierList = new List<IInstanceModifier>();
     }
 
     public void AddProvider<TMember, TContext> (ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>
     {
-      _valueProviderDictionary.AddValueProvider(new TypeKey(typeof (TMember)), valueProvider);
+      _valueProviderDictionary.AddValueProvider (new TypeKey (typeof (TMember)), valueProvider);
     }
 
     public void AddProvider<TMember, TContainer, TContext> (
@@ -56,29 +58,36 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
     public void AddInstanceModifier (IInstanceModifier instanceModifier)
     {
-      _modifierList.Add(instanceModifier);
+      _modifierList.Add (instanceModifier);
     }
 
-    public void DisableAutoFill<TType>()
+    public void DisableAutoFill<TType> ()
     {
-      DisableAutoFill(new TypeKey(typeof(TType)));
+      DisableAutoFill (new TypeKey (typeof (TType)));
     }
 
     public void DisableAutoFill<TMember, TContainer> (Expression<Func<TContainer, TMember>> chainExpression)
     {
       DisableAutoFill (GetChainedKey (chainExpression));
     }
-    private void DisableAutoFill(IKey key)
+
+    private void DisableAutoFill (IKey key)
     {
       if (_autoFillMapping.Contains (key))
         throw new InvalidOperationException ("The key " + key + " was already disabled for auto fill.");
 
-      _autoFillMapping.Add(key);
+      _autoFillMapping.Add (key);
     }
 
-    internal CompoundValueProvider Build()
+    internal CompoundValueProvider Build ()
     {
-      return new CompoundValueProvider(_valueProviderDictionary, _autoFillMapping, _random, _modifierList, _parameterConversionService);
+      return new CompoundValueProvider (
+          _valueProviderDictionary,
+          _autoFillMapping,
+          _dependencyMapping,
+          _random,
+          _modifierList,
+          _parameterConversionService);
     }
   }
 }

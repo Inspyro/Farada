@@ -63,7 +63,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
     class CustomValueProviderObjectContext : ValueProviderObjectContext
     {
       internal CustomValueProviderObjectContext (IRandom random)
-          : base (new DummyTestDataGenerator (random), () => new object (), typeof (Dummy), new DummyAdvancedContext(), new DummyFastProperty ())
+          : base (new DummyTestDataGenerator (random), (x) => new object (), typeof (Dummy), new DummyAdvancedContext(), new DummyFastProperty ())
       {
       }
     }
@@ -123,9 +123,10 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
       }
 
       public IRandom Random { get; }
-      public IList<object> CreateMany (IKey currentKey, int numberOfObjects, int maxRecursionDepth)
+
+      public IList<object> CreateMany (IKey currentKey, IList<DependedPropertyCollection> dependedProperties, int maxRecursionDepth)
       {
-        throw new NotSupportedException();
+        throw new NotImplementedException ();
       }
     }
 
@@ -141,16 +142,16 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
   class DummyAdvancedContext : ValueProviderObjectContext.AdvancedContext
   {
     public DummyAdvancedContext ()
-        : base (new DummyKey(), new DummyConverter(), new DummyTestDataGenerator())
+        : base (new DummyKey(), new Dictionary<IKey, IList<IKey>>(), new DummyConverter(), new DummyTestDataGenerator())
     {
     }
   }
 
   class DummyTestDataGenerator : ITestDataGeneratorAdvanced
   {
-    public IList<object> CreateMany (IKey currentKey, int numberOfObjects, int maxRecursionDepth)
+    public IList<object> CreateMany (IKey currentKey, [CanBeNull] IList<DependedPropertyCollection> dependedProperties, int itemCount, int maxRecursionDepth)
     {
-      throw new NotSupportedException();
+      throw new NotImplementedException ();
     }
   }
 
