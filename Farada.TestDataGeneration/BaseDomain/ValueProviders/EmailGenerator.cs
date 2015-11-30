@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Farada.TestDataGeneration.ValueProviders;
 
@@ -9,7 +10,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
   /// </summary>
   public class EmailGenerator:AttributeBasedValueProvider<string, EmailAddressAttribute> //TODO: test and implement
   {
-    protected override string CreateValue (ExtendedValueProviderContext<string, EmailAddressAttribute> context)
+    protected override string CreateAttributeBasedValue(ExtendedValueProviderContext<string, IList<EmailAddressAttribute>> context)
     {
       return "some@gmx.at";
     }

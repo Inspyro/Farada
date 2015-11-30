@@ -19,6 +19,13 @@ namespace Farada.TestDataGeneration.FastReflection
     T GetCustomAttribute<T> () where T : Attribute;
 
     /// <summary>
+    /// A fast way to get attributes from the member
+    /// </summary>
+    /// <typeparam name="T">the type of the attributes</typeparam>
+    /// <returns>the attribute instances from the member</returns>
+    IEnumerable<T> GetCustomAttributes<T> () where T : Attribute;
+
+    /// <summary>
     /// The attribute types that are on the member
     /// To check if an attribute is on the type you can also use <see cref="IsDefined"/>
     /// </summary>

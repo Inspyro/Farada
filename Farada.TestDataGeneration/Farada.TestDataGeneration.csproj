@@ -75,7 +75,6 @@
     <Compile Include="BaseDomain\ValueProviders\RangeConstrainedValueProvider.cs" />
     <Compile Include="CompoundValueProviders\InstanceFactory.cs" />
     <Compile Include="CompoundValueProviders\ITestDataGeneratorAdvanced.cs" />
-    <Compile Include="CompoundValueProviders\Keys\AlphaNumericComparer.cs" />
     <Compile Include="CompoundValueProviders\ModificationFactory.cs" />
     <Compile Include="CompoundValueProviders\SubTypeInstanceHolder.cs" />
     <Compile Include="Exceptions\MissingValueProviderException.cs" />
@@ -83,7 +82,6 @@
     <Compile Include="FastReflection\FastMemberBase.cs" />
     <Compile Include="FastReflection\IFastMemberInfo.cs" />
     <Compile Include="FastReflection\IParameterConversionService.cs" />
-    <Compile Include="Fluent\AttributeProviderConfigurator.cs" />
     <Compile Include="BaseDomain\Constraints\RangeContstraints.cs" />
     <Compile Include="BaseDomain\Constraints\StringConstraints.cs" />
     <Compile Include="BaseDomain\ValueProviders\RandomSyllabileGenerator.cs" />
@@ -95,7 +93,6 @@
     <Compile Include="BaseDomain\Constraints\StringConstrainedValueProviderContext.cs" />
     <Compile Include="BaseDomain\ValueProviders\EmailGenerator.cs" />
     <Compile Include="BaseDomain\ValueProviders\FuncProvider.cs" />
-    <Compile Include="BaseDomain\ValueProviders\FuncProviderForAttributeBased.cs" />
     <Compile Include="BaseDomain\ValueProviders\RandomBoolGenerator.cs" />
     <Compile Include="BaseDomain\ValueProviders\RandomByteGenerator.cs" />
     <Compile Include="BaseDomain\ValueProviders\RandomCharGenerator.cs" />
@@ -129,14 +126,11 @@
     <Compile Include="FastReflection\FastTypeInfo.cs" />
     <Compile Include="CompoundValueProviders\ITestDataGenerator.cs" />
     <Compile Include="CompoundValueProviders\ICompoundValueProviderBuilder.cs" />
-    <Compile Include="Fluent\IAttributeProviderAndChainConfigurator.cs" />
-    <Compile Include="Fluent\IAttributeProviderConfigurator.cs" />
     <Compile Include="Fluent\IChainConfigurator.cs" />
     <Compile Include="Fluent\IValueProviderConfigurator.cs" />
     <Compile Include="Fluent\ITestDataConfigurator.cs" />
     <Compile Include="Fluent\IValueProviderAndChainConfigurator.cs" />
     <Compile Include="Modifiers\IInstanceModifier.cs" />
-    <Compile Include="CompoundValueProviders\Keys\AttributeKey.cs" />
     <Compile Include="CompoundValueProviders\Keys\ChainedKey.cs" />
     <Compile Include="CompoundValueProviders\Keys\IKey.cs" />
     <Compile Include="CompoundValueProviders\Keys\MemberKeyPart.cs" />

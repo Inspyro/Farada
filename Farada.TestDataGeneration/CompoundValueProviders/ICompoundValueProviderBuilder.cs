@@ -20,17 +20,6 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     void AddProvider<TMember, TContext> (ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>;
 
     /// <summary>
-    /// Adds a provider for an attribute and a given return type
-    /// You need to inject a provider for each attribute/type pair that you want to be filled
-    /// </summary>
-    /// <typeparam name="TMember">The type of the members which should filled</typeparam>
-    /// <typeparam name="TAttribute">The type of the attribute that should be on the properties</typeparam>
-    /// <typeparam name="TContext">The type of the context for the value provider</typeparam>
-    /// <param name="attributeBasedValueProvider">the value provider to inject into the chain</param>
-    void AddProvider<TMember, TAttribute> (
-        AttributeBasedValueProvider<TMember, TAttribute> attributeBasedValueProvider) where TAttribute : Attribute;
-
-    /// <summary>
     /// Adds a provider for a member in the chain
     /// </summary>
     /// <typeparam name="TMember">The type of the member</typeparam>

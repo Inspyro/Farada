@@ -23,11 +23,6 @@ namespace Farada.TestDataGeneration.Fluent
       return new ExpressionValueProviderConfigurator<TContainer, TMember>(memberExpression, _lazyValueProviderBuilder);
     }
 
-    public IAttributeProviderAndChainConfigurator<TMember, TAttribute> For<TMember, TAttribute> () where TAttribute : Attribute
-    {
-      return new AttributeProviderConfigurator<TMember, TAttribute>(_lazyValueProviderBuilder);
-    }
-
     internal ITestDataGenerator Build ()
     {
       return _lazyValueProviderBuilder().Build();

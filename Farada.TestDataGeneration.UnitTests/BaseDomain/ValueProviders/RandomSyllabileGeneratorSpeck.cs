@@ -75,6 +75,11 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
         throw new NotImplementedException ();
       }
 
+      public IEnumerable<T> GetCustomAttributes<T> () where T : Attribute
+      {
+        throw new NotImplementedException ();
+      }
+
       public IEnumerable<Type> Attributes { get { throw new NotImplementedException (); } }
 
       public bool IsDefined (Type type)

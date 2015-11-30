@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
@@ -8,26 +10,22 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// <typeparam name="TMember">The type of the member with the attribute</typeparam>
   /// <typeparam name="TAttribute">The type of the attribute</typeparam>
   public abstract class AttributeBasedValueProvider<TMember, TAttribute>
-      : ExtendedValueProvider<TMember, TAttribute>
+      : ExtendedValueProvider<TMember, IList<TAttribute>>
       where TAttribute : Attribute
   {
-    protected override TAttribute CreateData (ValueProviderObjectContext objectContext)
+    protected sealed override TMember CreateValue (ExtendedValueProviderContext<TMember, IList<TAttribute>> context)
     {
-      if (objectContext.Member == null)
-      {
-        throw new ArgumentException (
-            $"Expected objectContext.Member != null for {nameof (AttributeBasedValueProvider<TMember, TAttribute>)} but got null member.");
-      }
+      if(context.AdditionalData.Count==0) //no attributes found - go to previous provider.
+        return context.GetPreviousValue(); //TODO: Throw exception if no previous value exists.
 
-      var customAttribute = objectContext.Member.GetCustomAttribute<TAttribute>();
+      return CreateAttributeBasedValue(context);
+    }
 
-      if (customAttribute == null)
-      {
-        throw new ArgumentException (
-            $"Expected member {objectContext.Member.Name} to have an attribute of type {typeof (TAttribute).FullName} but did not find such an attribute. {nameof (AttributeBasedValueProvider<TMember, TAttribute>)}");
-      }
+    protected abstract TMember CreateAttributeBasedValue (ExtendedValueProviderContext<TMember, IList<TAttribute>> context);
 
-      return customAttribute;
+    protected override IList<TAttribute> CreateData (ValueProviderObjectContext objectContext)
+    {
+      return objectContext.Member?.GetCustomAttributes<TAttribute>().ToList() ?? new List<TAttribute>();
     }
   }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.IntegrationTests.TestDomain
@@ -12,9 +13,9 @@ namespace Farada.TestDataGeneration.IntegrationTests.TestDomain
       _additionalValue = additionalValue;
     }
 
-    protected override int CreateValue (ExtendedValueProviderContext<int, ClassWithAttribute.CoolIntAttribute> context)
+    protected override int CreateAttributeBasedValue (ExtendedValueProviderContext<int, IList<ClassWithAttribute.CoolIntAttribute>> context)
     {
-      return _additionalValue + context.AdditionalData.Value;
+      return _additionalValue + context.AdditionalData[0].Value;
     }
   }
 }

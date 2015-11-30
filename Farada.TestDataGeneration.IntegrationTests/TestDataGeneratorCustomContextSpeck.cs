@@ -43,7 +43,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
         TestDataDomainConfiguration = configurator => configurator
             .UseDefaults (false)
             .For<ClassWithAttribute> ().AddProvider (new DefaultInstanceValueProvider<ClassWithAttribute> ())
-            .For<int, ClassWithAttribute.CoolIntAttribute> ().AddProvider (new CoolIntCustomContextValueProvider (contextValue));
+            .For<int> ().AddProvider(new CoolIntCustomContextValueProvider (contextValue));
       })
           .Given (TestDataGeneratorContext ());
     }

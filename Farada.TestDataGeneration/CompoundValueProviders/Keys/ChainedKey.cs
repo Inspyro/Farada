@@ -75,12 +75,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       var previousProperties = _memberChain.Slice (1);
 
       if (previousProperties.Count == 0)
-      {
-        var attributes = firstMemberKey.Member.Attributes.ToList();
-        return attributes.Count > 0
-            ? (IKey) new AttributeKey (firstMemberKey.MemberType, attributes)
-            : new TypeKey (firstMemberKey.MemberType);
-      }
+        return new TypeKey (firstMemberKey.MemberType);
 
       var previousDeclaringType = firstMemberKey.MemberType;
       return new ChainedKey (previousDeclaringType, previousProperties);

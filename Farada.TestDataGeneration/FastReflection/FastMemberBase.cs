@@ -31,7 +31,12 @@ namespace Farada.TestDataGeneration.FastReflection
     [CanBeNull]
     public T GetCustomAttribute<T> () where T : Attribute
     {
-      return (T) _attributes.FirstOrDefault(a => a is T); 
+      return GetCustomAttributes<T>().FirstOrDefault();
+    }
+
+    public IEnumerable<T> GetCustomAttributes<T>() where T : Attribute
+    {
+      return _attributes.Where(a => a is T).Cast<T>();
     }
 
     public bool IsDefined (Type type)

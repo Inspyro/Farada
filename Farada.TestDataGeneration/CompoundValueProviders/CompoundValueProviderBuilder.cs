@@ -35,12 +35,6 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _valueProviderDictionary.AddValueProvider(new TypeKey(typeof (TMember)), valueProvider);
     }
 
-    public void AddProvider<TMember, TAttribute> (AttributeBasedValueProvider<TMember, TAttribute> attributeBasedValueProvider) where TAttribute : Attribute
-    {
-      var key = new AttributeKey(typeof (TMember), typeof (TAttribute));
-      _valueProviderDictionary.AddValueProvider(key, attributeBasedValueProvider);
-    }
-
     public void AddProvider<TMember, TContainer, TContext> (
         Expression<Func<TContainer, TMember>> chainExpression,
         ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>

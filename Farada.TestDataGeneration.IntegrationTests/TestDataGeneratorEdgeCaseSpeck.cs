@@ -59,16 +59,16 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
       Specify (x =>
           TestDataGenerator.Create<ClassAddingAttributes> (MaxRecursionDepth, null))
-          .Case ("should fill property with alphabetically first attribute", _ => _
+          .Case ("should fill property with last added provider", _ => _
               .Given (AttributeFillerContext ())
-              .It ("it assigns correct value", x => x.Result.SomeAttributedProperty.Should ().Be ("Subclass1")));
+              .It ("it assigns correct value", x => x.Result.SomeAttributedProperty.Should ().Be ("Subclass2")));
 
 
       Specify (x =>
           TestDataGenerator.Create<ClassAddingAttributes> (MaxRecursionDepth, null))
-          .Case ("should fill property with second subclass attribute", _ => _
-              .Given (AttributeConcreteForSecondContext ())
-              .It ("it assigns correct value", x => x.Result.SomeAttributedProperty.Should ().Be ("Subclass2")));
+          .Case ("should fill property with other subclass attribute", _ => _
+              .Given (AttributeConcreteForOtherContext ())
+              .It ("it assigns correct value", x => x.Result.SomeAttributedProperty.Should ().Be ("Subclass1")));
     }
 
     Context ConfigurationContext (TestDataDomainConfiguration config)
@@ -124,19 +124,22 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Given ("domain with providers configured for subclass string 1 and 2", x =>
           {
             TestDataDomainConfiguration = configuration => configuration
-                .For<string, SubClassString1Attribute> ().AddProvider (context => context.AdditionalData.Content)
-                .For<string, SubClassString2Attribute> ().AddProvider (context => context.AdditionalData.Content);
+                .For<string> ()
+                .AddProvider<string, SubClassString1Attribute> (context => context.AdditionalData[0].Content)
+                .AddProvider<string, SubClassString2Attribute> (context => context.AdditionalData[0].Content);
           })
           .Given (TestDataGeneratorContext ());
     }
 
-    Context AttributeConcreteForSecondContext ()
+    Context AttributeConcreteForOtherContext ()
     {
       return c => c
-          .Given ("domain with provider just for second attribute of subclass", x =>
+          .Given ("domain with provider just for other attribute of subclass", x =>
           {
             TestDataDomainConfiguration = configuration => configuration
-                .For<string, SubClassString2Attribute> ().AddProvider (context => context.AdditionalData.Content);
+                .For<string> ()
+                .AddProvider<string, SubClassString2Attribute> (context => context.AdditionalData[0].Content)
+                .AddProvider<string, SubClassString1Attribute> (context => context.AdditionalData[0].Content);
           })
           .Given (TestDataGeneratorContext ());
     }
