@@ -9,7 +9,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
   /// </summary>
   public class EmailGenerator:AttributeBasedValueProvider<string, EmailAddressAttribute> //TODO: test and implement
   {
-    protected override string CreateValue (AttributeValueProviderContext<string, EmailAddressAttribute> context)
+    protected override string CreateValue (ExtendedValueProviderContext<string, EmailAddressAttribute> context)
     {
       return "some@gmx.at";
     }

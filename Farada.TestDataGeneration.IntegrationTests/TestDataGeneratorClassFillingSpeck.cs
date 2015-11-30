@@ -190,8 +190,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .For<double> ().AddProvider (context => 2.1)
             .For<string>().AddProvider(context=>"something")
             .For<Color>().AddProvider(context=>Color.White)
-            .For<double, InitialValueForChainAttribute> ().AddProvider (context => context.Attribute.BaseValue + 0.1d)
-            .For<int, InitialValueForChainAttribute> ().AddProvider (context => context.Attribute.BaseValue + 2);
+            .For<double, InitialValueForChainAttribute> ().AddProvider (context => context.AdditionalData.BaseValue + 0.1d)
+            .For<int, InitialValueForChainAttribute> ().AddProvider (context => context.AdditionalData.BaseValue + 2);
       })
           .Given (TestDataGeneratorContext ());
     }
@@ -212,8 +212,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .AddProvider (context => "7" + context.GetPreviousValue ())
             //
             .For<string, InitialStringValueForChainAttribute> ()
-            .AddProvider (context => "6" + context.Attribute.BaseValue + context.GetPreviousValue ())
-            .AddProvider (context => "5" + context.Attribute.BaseValue + context.GetPreviousValue ())
+            .AddProvider (context => "6" + context.AdditionalData.BaseValue + context.GetPreviousValue ())
+            .AddProvider (context => "5" + context.AdditionalData.BaseValue + context.GetPreviousValue ())
             //
             .For ((AbstractVehicle v) => v.Name)
             .AddProvider (context => "4" + context.GetPreviousValue ())

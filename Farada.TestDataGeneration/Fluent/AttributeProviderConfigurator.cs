@@ -17,11 +17,5 @@ namespace Farada.TestDataGeneration.Fluent
       _lazyValueProviderBuilder().AddProvider(attributeValueProvider);
       return this;
     }
-
-    public IAttributeProviderAndChainConfigurator<TMember, TAttribute> AddProvider<TContext> (AttributeBasedValueProvider<TMember, TAttribute, TContext> attributeValueProvider) where TContext : AttributeValueProviderContext<TMember, TAttribute>
-    {
-      _lazyValueProviderBuilder().AddProvider(attributeValueProvider);
-      return this;
-    }
   }
 }

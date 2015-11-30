@@ -1,6 +1,5 @@
 ﻿using System;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
-using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.Fluent;
 using Farada.TestDataGeneration.ValueProviders;
 
@@ -21,7 +20,7 @@ namespace Farada.TestDataGeneration
     /// <typeparam name="TAttribute">The type of the attribute that should be on the properties</typeparam>
     /// <param name="attributeProviderConfigurator">The attribute provider configurator</param>
     /// <param name="attributeValueProviderFunc">the func generating the value</param>
-    public static IAttributeProviderAndChainConfigurator<TMember, TAttribute> AddProvider<TMember, TAttribute> (this IAttributeProviderConfigurator<TMember, TAttribute> attributeProviderConfigurator, Func<AttributeValueProviderContext<TMember, TAttribute>, TMember> attributeValueProviderFunc) where TAttribute : Attribute
+    public static IAttributeProviderAndChainConfigurator<TMember, TAttribute> AddProvider<TMember, TAttribute> (this IAttributeProviderConfigurator<TMember, TAttribute> attributeProviderConfigurator, Func<ExtendedValueProviderContext<TMember, TAttribute>, TMember> attributeValueProviderFunc) where TAttribute : Attribute
     {
      return attributeProviderConfigurator.AddProvider(new FuncProviderForAttributeBased<TMember, TAttribute>(attributeValueProviderFunc));
     }

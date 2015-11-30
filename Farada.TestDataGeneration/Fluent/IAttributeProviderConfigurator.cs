@@ -7,8 +7,5 @@ namespace Farada.TestDataGeneration.Fluent
       where TAttribute : Attribute
   {
     IAttributeProviderAndChainConfigurator<TMember, TAttribute> AddProvider (AttributeBasedValueProvider<TMember, TAttribute> attributeValueProvider);
-
-    IAttributeProviderAndChainConfigurator<TMember, TAttribute> AddProvider<TContext> (
-        AttributeBasedValueProvider<TMember, TAttribute, TContext> attributeValueProvider) where TContext : AttributeValueProviderContext<TMember, TAttribute>;
   }
 }

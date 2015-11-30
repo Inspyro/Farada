@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
@@ -8,49 +7,27 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// </summary>
   /// <typeparam name="TMember">The type of the member with the attribute</typeparam>
   /// <typeparam name="TAttribute">The type of the attribute</typeparam>
-  /// <typeparam name="TContext">The type of the <see cref="IValueProviderContext"/></typeparam>
-  public abstract class AttributeBasedValueProvider<TMember, TAttribute, TContext>:IValueProvider where TContext:AttributeValueProviderContext<TMember, TAttribute>
+  public abstract class AttributeBasedValueProvider<TMember, TAttribute>
+      : ExtendedValueProvider<TMember, TAttribute>
       where TAttribute : Attribute
   {
-    protected abstract TMember CreateValue (TContext context);
-
-    public object Create (IValueProviderContext context)
+    protected override TAttribute CreateData (ValueProviderObjectContext objectContext)
     {
-      return CreateValue((TContext) context);
-    }
+      if (objectContext.Member == null)
+      {
+        throw new ArgumentException (
+            $"Expected objectContext.Member != null for {nameof (AttributeBasedValueProvider<TMember, TAttribute>)} but got null member.");
+      }
 
-    public IEnumerable<object> CreateMany (IValueProviderContext context, int numberOfObjects)
-    {
-      for (var i = 0; i < numberOfObjects; i++)
-        yield return CreateValue ((TContext) context);
-    }
+      var customAttribute = objectContext.Member.GetCustomAttribute<TAttribute>();
 
-    protected abstract TContext CreateContext (ValueProviderObjectContext objectContext);
+      if (customAttribute == null)
+      {
+        throw new ArgumentException (
+            $"Expected member {objectContext.Member.Name} to have an attribute of type {typeof (TAttribute).FullName} but did not find such an attribute. {nameof (AttributeBasedValueProvider<TMember, TAttribute>)}");
+      }
 
-    public bool CanHandle (Type memberType)
-    {
-      return memberType == typeof (TMember);
-    }
-
-    IValueProviderContext IValueProvider.CreateContext (ValueProviderObjectContext objectContext)
-    {
-      return CreateContext(objectContext);
+      return customAttribute;
     }
   }
-
-  /// <summary>
-  /// A value provider for an attribute like <see cref="AttributeBasedValueProvider{TProperty,TAttribute,TContext}"/>
-  /// but with the default TContext which is <see cref="AttributeValueProviderContext{TProperty,TAttribute}"/>
-  /// </summary>
-  /// <typeparam name="TMember">The type of the member</typeparam>
-  /// <typeparam name="TAttribute">The type of the attribute</typeparam>
-  public abstract class AttributeBasedValueProvider<TMember, TAttribute>:AttributeBasedValueProvider<TMember, TAttribute, AttributeValueProviderContext<TMember, TAttribute>>
-      where TAttribute : Attribute
-  {
-    protected override AttributeValueProviderContext<TMember, TAttribute> CreateContext (ValueProviderObjectContext objectContext)
-    {
-      return new AttributeValueProviderContext<TMember, TAttribute>(objectContext);
-    }
-  }
-  
 }

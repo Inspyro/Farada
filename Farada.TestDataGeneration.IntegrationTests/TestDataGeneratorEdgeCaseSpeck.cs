@@ -124,8 +124,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Given ("domain with providers configured for sublclass string 1 and 2", x =>
           {
             TestDataDomainConfiguration = configuration => configuration
-                .For<string, SubClassString1Attribute> ().AddProvider (context => context.Attribute.Content)
-                .For<string, SubClassString2Attribute> ().AddProvider (context => context.Attribute.Content);
+                .For<string, SubClassString1Attribute> ().AddProvider (context => context.AdditionalData.Content)
+                .For<string, SubClassString2Attribute> ().AddProvider (context => context.AdditionalData.Content);
           })
           .Given (TestDataGeneratorContext ());
     }
@@ -136,7 +136,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Given ("domain with provider just for second attribute of subclass", x =>
           {
             TestDataDomainConfiguration = configuration => configuration
-                .For<string, SubClassString2Attribute> ().AddProvider (context => context.Attribute.Content);
+                .For<string, SubClassString2Attribute> ().AddProvider (context => context.AdditionalData.Content);
           })
           .Given (TestDataGeneratorContext ());
     }

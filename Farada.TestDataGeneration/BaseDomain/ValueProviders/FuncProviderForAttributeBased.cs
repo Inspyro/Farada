@@ -10,18 +10,18 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
   public class FuncProviderForAttributeBased<TMember, TAttribute>:AttributeBasedValueProvider<TMember, TAttribute>
     where TAttribute : Attribute
   {
-    private readonly Func<AttributeValueProviderContext<TMember, TAttribute>, TMember> _valueFunc;
+    private readonly Func<ExtendedValueProviderContext<TMember, TAttribute>, TMember> _valueFunc;
 
      /// <summary>
     /// Create a func value provider
     /// </summary>
     /// <param name="valueFunc">the func that creates the value based on a <see cref="AttributeValueProviderContext{TMember, TAttribute}"/></param>
-    public FuncProviderForAttributeBased (Func<AttributeValueProviderContext<TMember, TAttribute>, TMember> valueFunc)
+    public FuncProviderForAttributeBased (Func<ExtendedValueProviderContext<TMember, TAttribute>, TMember> valueFunc)
     {
       _valueFunc = valueFunc;
     }
 
-    protected override TMember CreateValue (AttributeValueProviderContext<TMember, TAttribute> context)
+    protected override TMember CreateValue (ExtendedValueProviderContext<TMember, TAttribute> context)
     {
       return _valueFunc(context);
     }
