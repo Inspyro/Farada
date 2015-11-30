@@ -121,7 +121,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
     Context AttributeFillerContext ()
     {
       return c => c
-          .Given ("domain with providers configured for sublclass string 1 and 2", x =>
+          .Given ("domain with providers configured for subclass string 1 and 2", x =>
           {
             TestDataDomainConfiguration = configuration => configuration
                 .For<string, SubClassString1Attribute> ().AddProvider (context => context.AdditionalData.Content)
