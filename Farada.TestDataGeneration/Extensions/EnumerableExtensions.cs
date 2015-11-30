@@ -70,5 +70,10 @@ namespace Farada.TestDataGeneration.Extensions
 
       return listOfLists.SelectMany(list => list);
     }
+
+    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> enumerable, Func<int> randomIntGenerator)
+    {
+      return enumerable.OrderBy(x => randomIntGenerator());
+    }
   }
 }

@@ -13,6 +13,8 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
     Type TypeToCreate;
     int NumberOfObjects;
     object[] ObjectArray;
+    int[] IntArray;
+    Random Random;
 
     [Subject (typeof (EnumerableExtensions), "Repeat")]
     public class RepeatSpecK : EnumerableExtensionsSpeck
@@ -30,6 +32,19 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
             .Case ("for invalid number of objects", _ => _
                 .Given ("-1 objects", x => NumberOfObjects = -1)
                 .It ("creates empty enumerable", x => x.Result.Count.Should ().Be (0)));
+      }
+    }
+
+    [Subject(typeof(EnumerableExtensions), "Shuffle")]
+    public class ShuffleSpecK : EnumerableExtensionsSpeck
+    {
+      public ShuffleSpecK()
+      {
+        Specify (x => EnumerableExtensions.Shuffle (IntArray, () => Random.Next (int.MinValue, int.MaxValue)).ToList ())
+            .Case ("for ordered array", _ => _
+                .Given("seeded random", x=>Random=new Random(Seed: 0))
+                .Given ("ordered array", x => IntArray = new[] { 0, 1, 2, 3 })
+                .It ("shuffles all items", x => x.Result.Should ().Equal (3, 0, 2, 1)));
       }
     }
 

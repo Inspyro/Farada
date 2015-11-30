@@ -97,6 +97,8 @@
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\UsedImplicitlyAttribute.cs" />
     <Compile Include="BaseDomain\Constraints\StringConstraintsSpeck.cs" />
     <Compile Include="BaseDomain\Constraints\RangeConstraintsSpeck.cs" />
+    <Compile Include="BaseDomain\ValueProviders\ChooseMultipleDistinctItemsValueProviderSpec.cs" />
+    <Compile Include="BaseDomain\ValueProviders\ChooseSingleItemValueProviderSpec.cs" />
     <Compile Include="BaseDomain\ValueProviders\RandomSyllabileGeneratorSpeck.cs">
       <SubType>Code</SubType>
     </Compile>
