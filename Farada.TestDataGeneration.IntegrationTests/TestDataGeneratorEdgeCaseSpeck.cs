@@ -1,6 +1,9 @@
 ﻿using System;
 using Farada.TestDataGeneration.CompoundValueProviders;
+using Farada.TestDataGeneration.Exceptions;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
+using Farada.TestDataGeneration.IntegrationTests.Utils;
+using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
 using TestFx.SpecK;
 
@@ -16,13 +19,13 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Case ("should throw exception for methods", _ => _
               .Given (ConfigurationContext (c => c.For ((ClassWithVariousMembers y) => y.PublicMethod ()).AddProvider (dummy => "")))
               .It ("throws correct exception", x => CreationException.GetType ().Should ().Be (typeof (NotSupportedException)))
-              .ItThrows (typeof(Exception))) //"throws exception with correct message", //TODO RN-246
+              .ItThrows (typeof (Exception))) //"throws exception with correct message", //TODO RN-246
           //x => CreationException.Message.Should ().Be ("A non parameter expression is not supported")))
           .Case ("should throw exception for types", _ => _
               .Given (ConfigurationContext (c => c.For ((ClassWithVariousMembers y) => y).AddProvider (dummy => null)))
               .It ("throws correct exception", x => CreationException.GetType ().Should ().Be (typeof (ArgumentException)))
-              .ItThrows (typeof(Exception))); //"throws exception with correct message", //TODO RN-246
-                  //x => CreationException.Message.Should ().Be ("Empty chains are not supported, please use AddProvider<T>()")));
+              .ItThrows (typeof (Exception))); //"throws exception with correct message", //TODO RN-246
+      //x => CreationException.Message.Should ().Be ("Empty chains are not supported, please use AddProvider<T>()")));
 
 
       Specify (x =>
@@ -69,6 +72,23 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Case ("should fill property with other subclass attribute", _ => _
               .Given (AttributeConcreteForOtherContext ())
               .It ("it assigns correct value", x => x.Result.SomeAttributedProperty.Should ().Be ("Subclass1")));
+
+      Specify (x =>
+          TestDataGenerator.Create<ClassWithoutAttribute> (MaxRecursionDepth, null))
+          .Case ("should fill property with previous provider value", _ => _
+              .Given (AttributeMixedContext ())
+              .It ("it assigns correct value", x => x.Result.PropertyWithoutAttribute.Should ().Be ("Some value")));
+
+      Specify (x =>
+          TestDataGenerator.Create<ClassWithoutAttribute> (MaxRecursionDepth, null))
+          .Case ("should throw exception because of missing provider", _ => _
+              .Given (AttributeMixedOtherWayContext ())
+              .ItThrows (typeof (NotSupportedException),
+                  "Could not auto-fill Farada.TestDataGeneration.IntegrationTests.TestDomain.ClassWithoutAttribute> " +
+                  "(member PropertyWithoutAttribute). Please provide a value provider")
+              .ItThrowsInner (typeof (MissingValueProviderException),
+                  "Tried to call previous provider on KEY on Farada.TestDataGeneration.IntegrationTests.TestDomain.ClassWithoutAttribute: " +
+                  "Type: String, Member: PropertyWithoutAttribute but no previous provider was registered. Are you missing a value provider registration?"));
     }
 
     Context ConfigurationContext (TestDataDomainConfiguration config)
@@ -139,6 +159,35 @@ namespace Farada.TestDataGeneration.IntegrationTests
             TestDataDomainConfiguration = configuration => configuration
                 .For<string> ()
                 .AddProvider<string, SubClassString2Attribute> (context => context.AdditionalData[0].Content)
+                .AddProvider<string, SubClassString1Attribute> (context => context.AdditionalData[0].Content);
+          })
+          .Given (TestDataGeneratorContext ());
+    }
+
+    Context AttributeMixedContext ()
+    {
+      return c => c
+          .Given ("domain with providers configured for default string -> subclass string 1", x =>
+          {
+            TestDataDomainConfiguration = configuration => configuration
+                .UseDefaults (false)
+                .For<ClassWithoutAttribute> ().AddProvider (new DefaultInstanceValueProvider<ClassWithoutAttribute> ())
+                .For<string> ()
+                .AddProvider<string> (context => "Some value")
+                .AddProvider<string, SubClassString1Attribute> (context => context.AdditionalData[0].Content);
+          })
+          .Given (TestDataGeneratorContext ());
+    }
+
+    Context AttributeMixedOtherWayContext ()
+    {
+      return c => c
+          .Given ("domain with providers configured for subclass string 1 -> default string", x =>
+          {
+            TestDataDomainConfiguration = configuration => configuration
+                .UseDefaults (false)
+                .For<ClassWithoutAttribute> ().AddProvider (new DefaultInstanceValueProvider<ClassWithoutAttribute> ())
+                .For<string> ()
                 .AddProvider<string, SubClassString1Attribute> (context => context.AdditionalData[0].Content);
           })
           .Given (TestDataGeneratorContext ());

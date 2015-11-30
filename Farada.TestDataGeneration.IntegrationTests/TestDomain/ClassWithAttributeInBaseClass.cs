@@ -2,7 +2,13 @@
 
 namespace Farada.TestDataGeneration.IntegrationTests.TestDomain
 {
-    class ClassAddingAttributes:BaseClassWithAttribute
+  class ClassWithoutAttribute
+  {
+    public string PropertyWithoutAttribute { get; set; }
+  }
+
+
+  class ClassAddingAttributes:BaseClassWithAttribute
     {
         [SubClassString1]
         [SubClassString2]
