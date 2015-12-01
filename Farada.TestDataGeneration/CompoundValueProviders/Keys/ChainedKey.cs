@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
 using JetBrains.Annotations;
@@ -25,6 +26,8 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     {
       get { return _lastMember.Member; }
     }
+
+    public int ChainLength => _memberChain.Count;
 
     public int RecursionDepth { get; private set; }
 
@@ -63,6 +66,18 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
       RecursionDepth = _memberChain.Count (keyPart => keyPart.MemberType == _lastMember.MemberType);
       PreviousKey = CreatePreviousKey();
+    }
+    public static ChainedKey FromExpression<TContainer, TMember>(Expression<Func<TContainer, TMember>> chainExpression)
+    {
+      var declaringType = typeof (TContainer);
+
+      var expressionChain = chainExpression.ToChain().ToList();
+
+      if (expressionChain.Count == 0)
+        throw new NotSupportedException("Empty chains / Non-member chains are not supported, please use AddProvider<T>()");
+
+      var chainedKey = new ChainedKey(declaringType, expressionChain);
+      return chainedKey;
     }
 
     private IKey CreatePreviousKey ()

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Reflection;
 using Farada.TestDataGeneration.CompoundValueProviders;
+using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.FastReflection;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
@@ -19,9 +20,10 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// <typeparam name="TMember"></typeparam>
   public class ValueProviderContext<TMember>:IValueProviderContext
   {
+    protected readonly ValueProviderObjectContext ObjectContext;
+
     private readonly Func<DependedPropertyCollection, TMember> _previousValueFunction;
     private object _advanced;
-    internal DependedPropertyCollection PropertyCollection { get; private set; }
 
     /// <summary>
     /// The random to use for random value generation
@@ -33,23 +35,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// </summary>
     public TMember GetPreviousValue ()
     {
-      return _previousValueFunction(PropertyCollection);
-    }
-
-    /*public TType GetDependendValue<TType, TMember>(Expression<TType, TMember> expression)
-    {
-      return PropertyCollection[expression];
-    }*/
-
-    /// <summary>
-    /// Enriches the context with a new DependendPropertyCollection.
-    /// </summary>
-    /// <param name="dependedPropertyCollection">Containing a mapping between dependend properties and values</param>
-    public ValueProviderContext<TMember> Enrich(DependedPropertyCollection dependedPropertyCollection)
-    {
-      //after we enrich the context, we have a potentially filled property collection.
-      PropertyCollection = dependedPropertyCollection;
-      return this; //REVIEW: Should this be implemented as immutable (With method?)
+      return _previousValueFunction(null); //we don't have any dependend propertier here.
     }
 
     /// <summary>
@@ -72,17 +58,52 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// </summary>
     public ValueProviderObjectContext.AdvancedContext Advanced { get; private set; }
 
+
+    /// <summary>
+    /// Enriches the context with a new DependendPropertyCollection.
+    /// </summary>
+    /// <param name="dependedPropertyCollection">Containing a mapping between dependend properties and values</param>
+    public virtual TContext Enrich<TContext> (DependedPropertyCollection dependedPropertyCollection)
+        where TContext : ValueProviderContext<TMember>
+    {
+      return (TContext) this;
+    }
+
     protected internal ValueProviderContext (ValueProviderObjectContext objectContext)
     {
+      ObjectContext=objectContext;
+
       TestDataGenerator = objectContext.TestDataGenerator;
       Random = objectContext.Random;
       _previousValueFunction = (dependedPropertyCollection) => (TMember) objectContext.GetPreviousValue(dependedPropertyCollection);
       TargetValueType = objectContext.TargetValueType;
       Member = objectContext.Member;
       Advanced = objectContext.Advanced;
+    }
+  }
 
-      //By default we have an empty property collection.
-      PropertyCollection = new DependedPropertyCollection();
+  public class ValueProviderContext<TContainer, TMember> : ValueProviderContext<TMember>
+  {
+    internal DependedPropertyCollection PropertyCollection { get; private set; }
+    
+    public ValueProviderContext ([NotNull] ValueProviderObjectContext objectContext)
+        : base(objectContext)
+    {
+    }
+
+    public TDependedMember GetDependendValue<TDependedMember>(Expression<Func<TContainer, TDependedMember>> memberExpression)
+    {
+      var key = ChainedKey.FromExpression(memberExpression);
+      if (!PropertyCollection.ContainsKey(key))
+        throw new ArgumentException("Could not find key:'" + key + "' in dependend property collection. Have you registered the dependency?");
+
+      return (TDependedMember)PropertyCollection[key];
+    }
+
+    public override TContext Enrich<TContext> (DependedPropertyCollection dependedPropertyCollection)
+    {
+      PropertyCollection = dependedPropertyCollection;
+      return (TContext) (object) this;
     }
   }
 }

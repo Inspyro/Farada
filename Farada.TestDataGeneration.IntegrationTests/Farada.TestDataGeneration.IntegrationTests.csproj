@@ -101,6 +101,7 @@
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\TerminatesProgramAttribute.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\UsedImplicitlyAttribute.cs" />
     <Compile Include="AssertionExtensions.cs" />
+    <Compile Include="TestDataGeneratorDependendPropertySpeck.cs" />
     <Compile Include="TestDataGeneratorEdgeCaseFillingSpeck.cs" />
     <Compile Include="TestDataGeneratorImmutabilitySpeck.cs" />
     <Compile Include="TestDataGeneratorEdgeCaseSpeck.cs" />

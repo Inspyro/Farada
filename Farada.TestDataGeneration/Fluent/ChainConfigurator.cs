@@ -18,7 +18,7 @@ namespace Farada.TestDataGeneration.Fluent
       return new TypeValueProviderConfigurator<TType>(_lazyValueProviderBuilder);
     }
 
-    public IValueProviderAndChainConfigurator<TMember> For<TContainer, TMember> (Expression<Func<TContainer, TMember>> memberExpression)
+    public IValueProviderAndChainConfigurator<TContainer, TMember> For<TContainer, TMember> (Expression<Func<TContainer, TMember>> memberExpression)
     {
       return new ExpressionValueProviderConfigurator<TContainer, TMember>(memberExpression, _lazyValueProviderBuilder);
     }

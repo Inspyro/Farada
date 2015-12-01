@@ -15,10 +15,10 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// -> Or a ctor with parameters that can be automatically mapped to properties (immutable DTO). 
   /// --> This mapping happens with the <see cref="IDomainConfigurator.UseParameterToPropertyConversion"/> func. 
   /// </summary>
-  public class DefaultInstanceValueProvider<TMember> : SubTypeValueProvider<TMember>
+  public class DefaultInstanceValueProvider<TMember> : SubTypeValueProvider<TMember, ValueProviderContext<object, TMember>>
   {
     protected override IEnumerable<TMember> CreateManyValues (
-        ValueProviderContext<TMember> context,
+        ValueProviderContext<object, TMember> context,
         [CanBeNull] IList<DependedPropertyCollection> dependedProperties, int itemCount)
     {
       var typeInfo = FastReflectionUtility.GetTypeInfo (context.Advanced.Key.Type);
@@ -67,7 +67,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     }
 
     [CanBeNull]
-    private IEnumerable<DependedPropertyCollection> ResolveDependendArguments (ValueProviderContext<TMember> context, IFastMemberWithValues ctorMember, int targetArgumentIndex, IFastTypeInfo typeInfo, object[][] ctorValuesCollections)
+    private IEnumerable<DependedPropertyCollection> ResolveDependendArguments (ValueProviderContext<object, TMember> context, IFastMemberWithValues ctorMember, int targetArgumentIndex, IFastTypeInfo typeInfo, object[][] ctorValuesCollections)
     {
       var ctorDependencies = GetDependencies (context, ctorMember).ToList();
       if (!ctorDependencies.Any())
@@ -95,13 +95,18 @@ namespace Farada.TestDataGeneration.ValueProviders
       return dependendPropertyList;
     }
 
-    protected override TMember CreateValue (ValueProviderContext<TMember> context)
+    protected override ValueProviderContext<object, TMember> CreateContext (ValueProviderObjectContext objectContext)
+    {
+      return new ValueProviderContext<object, TMember> (objectContext);
+    }
+
+    protected override TMember CreateValue (ValueProviderContext<object, TMember> context)
     {
       //we implement it like this, to be able to make some performance optimizations in the create many method.
       return CreateManyValues (context, new[] { context.PropertyCollection }, 1).Single();
     }
 
-    private IEnumerable<IFastMemberWithValues> GetDependencies (ValueProviderContext<TMember> context, IFastMemberWithValues ctorMember)
+    private IEnumerable<IFastMemberWithValues> GetDependencies (ValueProviderContext<object, TMember> context, IFastMemberWithValues ctorMember)
     {
       var memberKey = context.Advanced.Key.CreateKey (ctorMember);
       if (!context.Advanced.DependencyMapping.ContainsKey (memberKey))

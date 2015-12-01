@@ -5,7 +5,7 @@ using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.Fluent
 {
-  internal class ExpressionValueProviderConfigurator<TContainer,TMember>:ChainConfigurator, IValueProviderAndChainConfigurator<TMember>
+  internal class ExpressionValueProviderConfigurator<TContainer,TMember>:ChainConfigurator, IValueProviderAndChainConfigurator<TContainer, TMember>
   {
     private readonly Expression<Func<TContainer, TMember>> _memberExpression;
 
@@ -15,19 +15,21 @@ namespace Farada.TestDataGeneration.Fluent
       _memberExpression = memberExpression;
     }
 
-    public IValueProviderAndChainConfigurator<TMember> AddProvider (ValueProvider<TMember> valueProvider)
+    public IValueProviderAndChainConfigurator<TContainer, TMember> AddProvider (ValueProviderWithContainer<TContainer, TMember> valueProvider, params Expression<Func<TContainer, object>>[] dependencies)
     {
-      _lazyValueProviderBuilder().AddProvider(_memberExpression, valueProvider);
+      _lazyValueProviderBuilder().AddProvider(_memberExpression, valueProvider, dependencies);
       return this;
     }
 
-    public IValueProviderAndChainConfigurator<TMember> AddProvider<TContext> (ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>
+    IValueProviderAndChainConfigurator<TContainer, TMember> IValueProviderConfigurator<TContainer, TMember>.AddProvider<TContext> (
+        ValueProvider<TMember, TContext> valueProvider,
+        params Expression<Func<TContainer, object>>[] dependencies)
     {
-      _lazyValueProviderBuilder().AddProvider(_memberExpression, valueProvider);
+      _lazyValueProviderBuilder().AddProvider (_memberExpression, valueProvider, dependencies);
       return this;
     }
 
-    public IValueProviderAndChainConfigurator<TMember> DisableAutoFill ()
+    public IValueProviderAndChainConfigurator<TContainer, TMember> DisableAutoFill ()
     {
       _lazyValueProviderBuilder().DisableAutoFill (_memberExpression);
       return this;

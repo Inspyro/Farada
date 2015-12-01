@@ -105,7 +105,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
         //now we sort the members by dependency.
         var sortedMembers = members.TopologicalSort (
             member => GetDependencies (member, instancesForType),
-            throwOnCycle: true);
+            throwOnCycle: true).ToList();
 
         //now we fill each member
         foreach (var member in sortedMembers)

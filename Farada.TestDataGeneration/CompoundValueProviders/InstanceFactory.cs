@@ -71,7 +71,13 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
                       + " but no previous provider was registered. Are you missing a value provider registration?");
                 }
 
-                return CreateInstances (previousLink.Key, previousLink.Value, previousContext, new [] {dependendProperties}, 1).Single();
+                return
+                    CreateInstances (
+                        previousLink.Key,
+                        previousLink.Value,
+                        previousContext,
+                        dependendProperties == null ? null : new[] { dependendProperties },
+                        1).Single();
               },
               key.Type,
               new ValueProviderObjectContext.AdvancedContext (key, _dependencyMapping, _parameterConversionService, _compoundValueProvider),

@@ -47,22 +47,23 @@ namespace Farada.TestDataGeneration.ValueProviders
         int itemCount)
     {
       for (var i = 0; i < itemCount; i++)
-      {
-        yield return CreateValue (dependedProperties != null ? (TContext) context.Enrich (dependedProperties[i]) : context);
-      }
+        yield return CreateValue (dependedProperties == null ? context : context.Enrich<TContext> (dependedProperties[i]));
     }
   }
 
-  /// <summary>
-  /// Like <see cref="ValueProvider{TMember,TContext}"/> but with the default context which is <see cref="ValueProviderContext{TProperty}"/>
-  /// </summary>
-  /// <typeparam name="TMember"></typeparam>
+  public abstract class ValueProviderWithContainer<TContainer, TMember> : ValueProvider<TMember, ValueProviderContext<TContainer, TMember>>
+  {
+    protected override ValueProviderContext<TContainer, TMember> CreateContext(ValueProviderObjectContext objectContext)
+    {
+      return new ValueProviderContext<TContainer, TMember>(objectContext);
+    }
+  }
+
   public abstract class ValueProvider<TMember> : ValueProvider<TMember, ValueProviderContext<TMember>>
   {
     protected override ValueProviderContext<TMember> CreateContext (ValueProviderObjectContext objectContext)
     {
-      return new ValueProviderContext<TMember>(objectContext);
+      return new ValueProviderContext<TMember> (objectContext);
     }
   }
-
 }

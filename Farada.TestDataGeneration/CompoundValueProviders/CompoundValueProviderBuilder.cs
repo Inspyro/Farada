@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
-using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.Modifiers;
 using Farada.TestDataGeneration.ValueProviders;
@@ -39,21 +38,32 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
     public void AddProvider<TMember, TContainer, TContext> (
         Expression<Func<TContainer, TMember>> chainExpression,
-        ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>
+        ValueProvider<TMember, TContext> valueProvider,
+        Expression<Func<TContainer, object>>[] dependencies) where TContext : ValueProviderContext<TMember>
     {
-      _valueProviderDictionary.AddValueProvider (GetChainedKey (chainExpression), valueProvider);
-    }
+      var providerKey = ChainedKey.FromExpression (chainExpression);
+      var dependencyKeys = dependencies.Select (ChainedKey.FromExpression).Cast<IKey>().ToList();
 
-    private static ChainedKey GetChainedKey<TMember, TContainer> (Expression<Func<TContainer, TMember>> chainExpression)
-    {
-      var declaringType = chainExpression.GetParameterType();
-      var expressionChain = chainExpression.ToChain().ToList();
+      var invalidKey = dependencyKeys.Cast<ChainedKey>().FirstOrDefault (c => c.ChainLength != 1);
+      if (invalidKey != null)
+      {
+        throw new ArgumentException (
+            "Chain '" + invalidKey
+            + "' is invalid. You can only add dependencies with a chain of length 1. 'Deep Property dependencies' are not supported at the moment.");
+      }
 
-      if (expressionChain.Count == 0)
-        throw new ArgumentException ("Empty chains are not supported, please use AddProvider<T>()");
+      _valueProviderDictionary.AddValueProvider (providerKey, valueProvider);
 
-      var chainedKey = new ChainedKey (declaringType, expressionChain);
-      return chainedKey;
+      //it's possible to add multiple providers per "key".
+      if (!_dependencyMapping.ContainsKey (providerKey))
+      {
+        _dependencyMapping.Add (providerKey, dependencyKeys);
+      }
+      else
+      {
+        foreach (var dependencyKey in dependencyKeys)
+          _dependencyMapping[providerKey].Add (dependencyKey);
+      }
     }
 
     public void AddInstanceModifier (IInstanceModifier instanceModifier)
@@ -68,7 +78,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
     public void DisableAutoFill<TMember, TContainer> (Expression<Func<TContainer, TMember>> chainExpression)
     {
-      DisableAutoFill (GetChainedKey (chainExpression));
+      DisableAutoFill (ChainedKey.FromExpression (chainExpression));
     }
 
     private void DisableAutoFill (IKey key)

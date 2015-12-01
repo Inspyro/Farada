@@ -19,5 +19,10 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     }
 
     internal object this[IKey key] => _valueMapping[key];
+
+    internal bool ContainsKey(IKey key)
+    {
+      return _valueMapping.ContainsKey (key);
+    }
   }
 }

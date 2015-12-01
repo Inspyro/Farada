@@ -16,6 +16,15 @@ namespace Farada.TestDataGeneration.Extensions
     internal static IEnumerable<MemberKeyPart> ToChain(this Expression expression)
     {
       var memberExpression = expression as MemberExpression;
+
+      //DEBT: This is a hack to support convert statements (automatically introduced by the compiler).
+      if(memberExpression == null)
+      {
+        var unaryExpression = expression as UnaryExpression;
+        if(unaryExpression!=null)
+          memberExpression=unaryExpression.Operand as MemberExpression;
+      }
+
       if (memberExpression != null)
       {
         foreach (var chainKey in memberExpression.Expression.ToChain())

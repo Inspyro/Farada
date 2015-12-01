@@ -6,6 +6,6 @@ namespace Farada.TestDataGeneration.Fluent
   public interface IChainConfigurator
   {
     IValueProviderAndChainConfigurator<TMember> For<TMember> ();
-    IValueProviderAndChainConfigurator<TMember> For<TContainer, TMember> (Expression<Func<TContainer, TMember>> memberExpression);
+    IValueProviderAndChainConfigurator<TContainer, TMember> For<TContainer, TMember> (Expression<Func<TContainer, TMember>> memberExpression);
   }
 }

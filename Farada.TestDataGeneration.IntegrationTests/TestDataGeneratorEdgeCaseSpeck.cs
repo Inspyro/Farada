@@ -14,18 +14,17 @@ namespace Farada.TestDataGeneration.IntegrationTests
   {
     public TestDataGeneratorEdgeCaseSpeck ()
     {
-      Specify (x => x.ToString ())
-          //x => CreationException.Message.Should ().Be ("PublicField is not a property. Members that are not properties are not supported")))
+      Specify (x => "empty")
           .Case ("should throw exception for methods", _ => _
               .Given (ConfigurationContext (c => c.For ((ClassWithVariousMembers y) => y.PublicMethod ()).AddProvider (dummy => "")))
-              .It ("throws correct exception", x => CreationException.GetType ().Should ().Be (typeof (NotSupportedException)))
-              .ItThrows (typeof (Exception))) //"throws exception with correct message", //TODO RN-246
-          //x => CreationException.Message.Should ().Be ("A non parameter expression is not supported")))
+              .It ("ex", x => CreationException.Should ().BeOfType<NotSupportedException> ())
+              .It ("ex",
+                  x => CreationException.Message.Should ().Be ("Empty chains / Non-member chains are not supported, please use AddProvider<T>()")))
           .Case ("should throw exception for types", _ => _
               .Given (ConfigurationContext (c => c.For ((ClassWithVariousMembers y) => y).AddProvider (dummy => null)))
-              .It ("throws correct exception", x => CreationException.GetType ().Should ().Be (typeof (ArgumentException)))
-              .ItThrows (typeof (Exception))); //"throws exception with correct message", //TODO RN-246
-      //x => CreationException.Message.Should ().Be ("Empty chains are not supported, please use AddProvider<T>()")));
+              .It ("ex", x => CreationException.Should ().BeOfType<NotSupportedException> ())
+              .It ("ex",
+                  x => CreationException.Message.Should ().Be ("Empty chains / Non-member chains are not supported, please use AddProvider<T>()")));
 
 
       Specify (x =>

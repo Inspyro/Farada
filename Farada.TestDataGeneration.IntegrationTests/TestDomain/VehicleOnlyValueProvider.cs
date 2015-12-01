@@ -1,5 +1,4 @@
-﻿using System;
-using Farada.TestDataGeneration.ValueProviders;
+﻿using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.IntegrationTests.TestDomain
 {
