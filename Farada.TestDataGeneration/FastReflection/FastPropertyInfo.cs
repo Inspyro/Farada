@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.FastReflection
@@ -9,10 +10,13 @@ namespace Farada.TestDataGeneration.FastReflection
   {
     private readonly Func<object, object> _getFunction;
     private readonly Action<object, object> _setAction;
+    private readonly FieldInfo _fieldInfo;
 
     internal FastFieldInfo (FieldInfo fieldInfo)
         : base(fieldInfo.Name, fieldInfo.FieldType, fieldInfo.GetCustomAttributes())
     {
+      _fieldInfo = fieldInfo;
+
       var targetType = fieldInfo.DeclaringType;
       if (targetType == null)
       {
@@ -56,16 +60,39 @@ namespace Farada.TestDataGeneration.FastReflection
       var lambda = Expression.Lambda<Action<object, object>>(exBody, exTarget, exValue);
       return lambda.Compile();
     }
+
+    protected bool Equals (FastFieldInfo other)
+    {
+      return Equals (_fieldInfo, other._fieldInfo);
+    }
+
+    public override bool Equals ([CanBeNull] object obj)
+    {
+      if (ReferenceEquals (null, obj))
+        return false;
+      if (ReferenceEquals (this, obj))
+        return true;
+      if (obj.GetType() != this.GetType())
+        return false;
+      return Equals ((FastFieldInfo) obj);
+    }
+
+    public override int GetHashCode ()
+    {
+      return _fieldInfo?.GetHashCode() ?? 0;
+    }
   }
 
   internal class FastPropertyInfo: FastMemberBase, IFastMemberWithValues
   {
+    private readonly PropertyInfo _propertyInfo;
     private readonly Func<object, object> _getFunction;
     private readonly Action<object, object> _setAction;
 
     internal FastPropertyInfo (PropertyInfo propertyInfo)
       :base(propertyInfo.Name, propertyInfo.PropertyType, propertyInfo.GetCustomAttributes())
     {
+      _propertyInfo = propertyInfo;
       var targetType = propertyInfo.DeclaringType;
       if (targetType == null)
       {
@@ -115,6 +142,27 @@ namespace Farada.TestDataGeneration.FastReflection
     public void SetValue (object instance, [CanBeNull] object value)
     {
       _setAction(instance, value);
+    }
+
+    protected bool Equals(FastPropertyInfo other)
+    {
+      return Equals(_propertyInfo, other._propertyInfo);
+    }
+
+    public override bool Equals([CanBeNull] object obj)
+    {
+      if (ReferenceEquals(null, obj))
+        return false;
+      if (ReferenceEquals(this, obj))
+        return true;
+      if (obj.GetType() != this.GetType())
+        return false;
+      return Equals((FastPropertyInfo)obj);
+    }
+
+    public override int GetHashCode()
+    {
+      return _propertyInfo?.GetHashCode() ?? 0;
     }
   }
 

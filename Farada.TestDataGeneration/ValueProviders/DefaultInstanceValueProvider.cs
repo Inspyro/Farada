@@ -25,19 +25,24 @@ namespace Farada.TestDataGeneration.ValueProviders
       var ctorValuesCollections = InitializeCtorValues (itemCount, typeInfo);
 
       var ctorMembers = typeInfo.CtorArguments.Select (
-          c => c.ToMember (context.Advanced.ParameterConversionService)).ToList();
+          c =>c.ToMember (context.Advanced.ParameterConversionService)).ToList();
 
       var sortedCtorMembers = ctorMembers.TopologicalSort (
           ctorMember => GetDependencies (context, ctorMember),
           throwOnCycle: true).ToList();
 
+      //TODO: Check if performance for this method is ok.
+      var sortedToUnsorted = new List<int>();
+      for(int i=0;i<sortedCtorMembers.Count;i++)
+      {
+        sortedToUnsorted.Add (ctorMembers.IndexOf (sortedCtorMembers[i]));
+      }
+
       for (var argumentIndex = 0; argumentIndex < sortedCtorMembers.Count; argumentIndex++)
       {
         var ctorMember = sortedCtorMembers[argumentIndex];
 
-        var dependedArguments = dependedProperties == null
-            ? null
-            : ResolveDependendArguments (context, ctorMember, argumentIndex, typeInfo, ctorValuesCollections)?.ToList();
+        var dependedArguments = ResolveDependendArguments (context, sortedCtorMembers, sortedToUnsorted, ctorMember, argumentIndex, typeInfo, ctorValuesCollections)?.ToList();
 
         //Note: Here we have a recursion to the compound value provider. e.g. other immutable types could be a ctor argument
         var ctorMemberValues = context.Advanced.AdvancedTestDataGenerator.CreateMany (
@@ -48,7 +53,7 @@ namespace Farada.TestDataGeneration.ValueProviders
 
         for (var valueIndex = 0; valueIndex < ctorMemberValues.Count; valueIndex++)
         {
-          ctorValuesCollections[valueIndex][argumentIndex] = ctorMemberValues[valueIndex];
+          ctorValuesCollections[valueIndex][sortedToUnsorted[argumentIndex]] = ctorMemberValues[valueIndex];
         }
       }
 
@@ -67,7 +72,14 @@ namespace Farada.TestDataGeneration.ValueProviders
     }
 
     [CanBeNull]
-    private IEnumerable<DependedPropertyCollection> ResolveDependendArguments (ValueProviderContext<object, TMember> context, IFastMemberWithValues ctorMember, int targetArgumentIndex, IFastTypeInfo typeInfo, object[][] ctorValuesCollections)
+    private IEnumerable<DependedPropertyCollection> ResolveDependendArguments (
+        ValueProviderContext<object, TMember> context,
+        List<IFastMemberWithValues> sortedCtorMembers,
+        List<int> sortedToUnsorted,
+        IFastMemberWithValues ctorMember,
+        int targetArgumentIndex,
+        IFastTypeInfo typeInfo,
+        object[][] ctorValuesCollections)
     {
       var ctorDependencies = GetDependencies (context, ctorMember).ToList();
       if (!ctorDependencies.Any())
@@ -80,13 +92,12 @@ namespace Farada.TestDataGeneration.ValueProviders
 
         for (var argumentIndex = 0; argumentIndex < targetArgumentIndex; argumentIndex++)
         {
-          var otherCtorMember =
-              context.Advanced.Key.CreateKey (typeInfo.CtorArguments[argumentIndex].ToMember (context.Advanced.ParameterConversionService));
+          var otherCtorMember = context.Advanced.Key.CreateKey (sortedCtorMembers[argumentIndex]);
 
-          if(!ctorDependencies.Contains(otherCtorMember.Member))
+          if (!ctorDependencies.Contains (otherCtorMember.Member))
             continue;
 
-          dependendProperties.Add (otherCtorMember, ctorValuesCollections[valueIndex][argumentIndex]);
+          dependendProperties.Add (otherCtorMember, ctorValuesCollections[valueIndex][sortedToUnsorted[argumentIndex]]);
         }
 
         dependendPropertyList.Add (dependendProperties);
