@@ -2,7 +2,7 @@
 
 namespace Farada.TestDataGeneration.IntegrationTests.TestDomain
 {
-  class IntProviderWithCustomContext : ExtendedValueProvider<int, int>
+  class IntProviderWithCustomContext : ValueProvider<int, ExtendedValueProviderContext<int, int>>
   {
     readonly int _contextValue;
 
@@ -16,11 +16,10 @@ namespace Farada.TestDataGeneration.IntegrationTests.TestDomain
       return context.AdditionalData;
     }
 
-    protected override int CreateData (ValueProviderObjectContext objectContext)
+    //TODO: Remove ExtendedValueProvider.
+    protected override ExtendedValueProviderContext<int, int> CreateContext(ValueProviderObjectContext objectContext)
     {
-      // Note: Here we would use some ctor data + the object context, where there is all the relevant member info etc.
-      // So we could read attributes etc.
-      return _contextValue;
+      return new ExtendedValueProviderContext<int, int>(objectContext, _contextValue);
     }
   }
 }

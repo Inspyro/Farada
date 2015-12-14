@@ -30,6 +30,9 @@ namespace Farada.TestDataGeneration.ValueProviders
     }
   }
 
+  //TODO: Create attribute context because of api usage (AdditionalData is not the perfect name).
+  //TODO: Create another context for single attribute. Also add validation for "AllowMultiple".
+  //TODO: Create test for multiple attributes (AllowMultiple).
   public abstract class AttributeBasedValueProvider<TMember, TAttribute>
      : ExtendedValueProvider<TMember, IList<TAttribute>>
      where TAttribute : Attribute

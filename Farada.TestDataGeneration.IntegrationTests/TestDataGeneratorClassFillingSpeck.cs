@@ -198,7 +198,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
     Context TypeHierarchyChainProviderContext ()
     {
-      return c => c.Given ("simple hierachical type chained domain", x =>
+      return c => c.Given ("simple hierarchical type chained domain", x =>
       {
         TestDataDomainConfiguration = configuration => configuration
             .UseDefaults (false)

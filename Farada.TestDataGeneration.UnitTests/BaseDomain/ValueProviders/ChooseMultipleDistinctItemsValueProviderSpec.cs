@@ -76,7 +76,14 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
                                       .For<IList<string>> ()
                                       .AddProvider (new ChooseMultipleDistinctItemsValueProvider<int, string> (InputList, MinItems, MaxItems,
                                           conversionFunc: item => item.ToString ())).DisableAutoFill ()))
+                                      //TODO: Invert logic - disable autofill by default.
                   .Given ("TestDataGenerator", x => TestDataGenerator = TestDataGeneratorFactory.Create (TestDataDomainConfiguration));
     }
   }
 }
+
+//For<Cat>().AddProvider(c => new SpecialCat() {Name = ""}).DisableAutofill();
+//For<Cat>().AddProvider(c => new SpecialCat("nnn", c.TestDataGenerator.Create<string>()) {Name = ""}).EnableAutofill();
+//For<Cat>().AddProvider(c => new SpecialCat("nnn", c.TestDataGenerator.Create<string>((Dog d)=>d.Name))
+//For<AbstractCat>().AddProvider(c=> new Cat()).FillAll();
+//For<object>.AddProvider(ReflectionBasedIntstatinat())..-.

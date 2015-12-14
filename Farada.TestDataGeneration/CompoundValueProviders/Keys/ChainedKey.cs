@@ -138,6 +138,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
     public override string ToString ()
     {
+      //TODO: Make output more user friendly.
       return "KEY on " + _declaringType + ": " + string.Join (" > ", _memberChain.Select (kp => kp.ToString()));
     }
   }

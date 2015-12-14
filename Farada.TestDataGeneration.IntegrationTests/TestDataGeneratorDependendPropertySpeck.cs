@@ -89,8 +89,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
         TestDataDomainConfiguration = configurator => configurator.UseDefaults (false)
             .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
             .For<Engine> ()
-              .AddProvider (context => new JetEngine { PowerInNewtons = 5 })
-              .DisableAutoFill ()
+            .AddProvider (context => new JetEngine { PowerInNewtons = 5 })
+            .DisableAutoFill ()
             .For ((AirVehicle a) => a.Name)
             .AddProvider (
                 context =>
@@ -101,6 +101,21 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .For ((AirVehicle a) => a.MainColor).AddProvider (context => Color.Green);
       })
           .Given (TestDataGeneratorContext ());
+      /*
+      For<AirVehicle>()
+         /*.AddMetadataProvider(c=>
+         { 
+           var weight = c.TestDataGenerator.Create((AirVehicle av) => av.Weight;
+           var x=c.Tdg.Create<string>();
+           
+           returnValues.Set(a=>a.Weight, "test");
+           //return new {Weight = "test", Name="trea"};
+         }).ForSubProperty(a=>a.Weight).ForSubProerty(a=>a.Name).For<string>().*/
+      /*.AddMetadataProviderFunc(a=>a.Weight, a=>a.MainColor);
+     .For((AirVehicle a) => a.Weight).AddProvider(c=>c.GetMetadata(a=>a.Weight*2)
+     .For((AirVehicle a) => a.MainColor).AddProvider(c=>c.Metadata.MainColor);
+
+   */
     }
 
     Context MissingDependencyContext()
@@ -132,22 +147,72 @@ namespace Farada.TestDataGeneration.IntegrationTests
             //cycle: origin -> temperature -> origin
             .For ((ImmutableIce ice) => ice.Origin)
             .AddProvider (context => "don't care", ice => ice.Temperature)
-            .For ((ImmutableIce ice) => ice.Temperature).AddProvider (context => 4 /*don't care*/, ice=>ice.Origin);
+            .For ((ImmutableIce ice) => ice.Temperature).AddProvider (context => 4 /*don't care*/, ice =>ice.Origin);
       })
           .Given(TestDataGeneratorContext());
     }
 
-    Context SimpleCtorDependencyContext()
+    Context SimpleCtorDependencyContext ()
     {
-      return c => c.Given("simple ctor dependency domain", x =>
+      return c => c.Given ("simple ctor dependency domain", x =>
       {
-        TestDataDomainConfiguration = configurator => configurator.UseDefaults(false)
-            .For<object>().AddProvider(new DefaultInstanceValueProvider<object>())
-            .For((ImmutableIce ice) => ice.Origin)
-            .AddProvider(context => $"Antarctica ({context.GetDependendValue(ice => ice.Temperature)})", ice => ice.Temperature)
-            .For((ImmutableIce ice) => ice.Temperature).AddProvider(context => 4);
+        TestDataDomainConfiguration = configurator => configurator.UseDefaults (false)
+            .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
+            .For ((ImmutableIce ice) => ice.Origin)
+            .AddProvider (context => $"Antarctica ({context.GetDependendValue (ice => ice.Temperature)})", ice => ice.Temperature)
+            .For ((ImmutableIce ice) => ice.Temperature).AddProvider (context => 4);
       })
-          .Given(TestDataGeneratorContext());
+          .Given (TestDataGeneratorContext ());
+
+
+      //return c => c.Given("simple ctor dependency domain", x =>
+      //{
+      //  TestDataDomainConfiguration = configurator => configurator.UseDefaults(false)
+      //      .For<Order>().AddProvider (new DefaultInstanceValueProvider<object> ())
+      //      .For((Order o) => ice.PaymentMethod, ((Order o) => ice.PaymentAcceptedCurrencies)
+      //        .AddProvider(context => {
+      //           var result = RandomPaymentMethodGenerator.Next();
+      //           // ignored: result.PaymentProviderCompany
+      //           return Tuple.Create(result.PaymentMethod, result.PaymentAcceptedCurrencies);
+      //       });
+
+
+      /* For<RevokeEvent>().AddProvider<User>(c=>c.User.ChangeEvent = changeEvent);
+      *  For<RevokeEvent>(e=>e.AggregateId).AddProvider(c=>c.GetDependendValue(User.ChangeEvent).AggregateId, c.User);
+      */
+      /*
+       return c => c.Given("simple ctor dependency domain", x =>
+       {
+         TestDataDomainConfiguration = configurator => configurator.UseDefaults(false)
+             .For<Order>()
+             .AddMetaProvider(context => RandomPaymentMethodGenerator.Next())
+             .AddProvider (new DefaultInstanceValueProvider<object> ())
+             .AddProvider (c => new ImmutableOrder(c.Metadata.PaymentMethod))
+             .For((Order o) => ice.PaymentMethod).AddProvider(c => c.MetaData.PaymentMethod)
+             .For((Order o) => ice.PaymentAcceptedCurrencies).AddProvider(c => c.MetaData.PaymentAcceptedCurrencies)
+       })
+      */
+
+
+
+      /*
+  return c => c.Given("simple ctor dependency domain", x =>
+  {
+    TestDataDomainConfiguration = configurator => configurator.UseDefaults(false)
+        .For<Order>()
+        .AddMetaProvider(context => new { A = "a" })
+        .AddProvider (new DefaultInstanceValueProvider<object> ())
+        .AddProvider (c => new ImmutableOrder(c.Metadata.A))
+  })
+ */
+
+
+
+
+
+      /*
+        ValueProviderContext.Metadata : TMetadata - provided per instance with AddMetadataProvider.
+      */
     }
 
   }

@@ -39,14 +39,14 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// Creates a value of the given property type
     /// </summary>
     /// <param name="context">the concrete context to consider.</param>
-    protected abstract TMember CreateValue (TContext context);
+    protected abstract TMember CreateValue (TContext context); //TODO: CanBeNull!
 
     protected virtual IEnumerable<TMember> CreateManyValues (
         TContext context,
         [CanBeNull] IList<DependedPropertyCollection> dependedProperties,
         int itemCount)
     {
-      for (var i = 0; i < itemCount; i++)
+      for (var i = 0; i < itemCount; i++) //TODO: Null should be explicitly possible as return value..
         yield return CreateValue (dependedProperties == null ? context : context.Enrich<TContext> (dependedProperties[i]));
     }
   }

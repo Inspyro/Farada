@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FakeItEasy;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders;
@@ -34,19 +35,15 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
     Context BaseContext ()
     {
       return
-          c =>
-              c
-                  .Given ("{0,2,1}", x => InputList = new List<int> { 0, 2, 1 })
-                  .Given ("Empty domain with value provider",
-                      x =>
-                          TestDataDomainConfiguration =
-                              (context =>
-                                  context.UseDefaults (false)
-                                      .UseRandom (Random)
-                                      .For<string> ()
-                                      .AddProvider (new ChooseSingleItemValueProvider<int, string> (InputList, item => item.ToString ()))
-                                      .DisableAutoFill ()))
-                  .Given ("TestDataGenerator", x => TestDataGenerator = TestDataGeneratorFactory.Create (TestDataDomainConfiguration));
+          c => c
+              .Given ("{0,2,1}", x => InputList = new List<int> { 0, 2, 1 })
+              .Given ("Empty domain with value provider", x =>
+                  TestDataDomainConfiguration = (context => context
+                      .UseDefaults (false)
+                      .UseRandom (Random)
+                      .For<string> ().AddProvider (new ChooseSingleItemValueProvider<int, string> (InputList, item => item.ToString ()))
+                      .DisableAutoFill ()))
+              .Given ("TestDataGenerator", x => TestDataGenerator = TestDataGeneratorFactory.Create (TestDataDomainConfiguration));
     }
   }
 }
