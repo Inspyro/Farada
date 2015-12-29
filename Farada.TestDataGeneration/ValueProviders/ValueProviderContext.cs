@@ -18,12 +18,10 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// The type safe value provider context used to create values in a <see cref="IValueProvider"/>
   /// </summary>
   /// <typeparam name="TMember"></typeparam>
-  public class ValueProviderContext<TMember>:IValueProviderContext
+  public class ValueProviderContext<TMember> : IValueProviderContext
   {
-    protected readonly ValueProviderObjectContext ObjectContext;
-
-    private readonly Func<DependedPropertyCollection, TMember> _previousValueFunction;
-    private object _advanced;
+    private readonly Func<object, TMember> _previousValueFunction;
+    public object InternalMetadata { get; private set; }
 
     /// <summary>
     /// The random to use for random value generation
@@ -35,7 +33,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// </summary>
     public TMember GetPreviousValue ()
     {
-      return _previousValueFunction(null); //we don't have any dependend propertier here.
+      return _previousValueFunction(InternalMetadata);
     }
 
     /// <summary>
@@ -58,52 +56,28 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// </summary>
     public ValueProviderObjectContext.AdvancedContext Advanced { get; private set; }
 
-
-    /// <summary>
-    /// Enriches the context with a new DependendPropertyCollection.
-    /// </summary>
-    /// <param name="dependedPropertyCollection">Containing a mapping between dependend properties and values</param>
-    public virtual TContext Enrich<TContext> (DependedPropertyCollection dependedPropertyCollection)
-        where TContext : ValueProviderContext<TMember>
-    {
-      return (TContext) this;
-    }
-
     protected internal ValueProviderContext (ValueProviderObjectContext objectContext)
     {
-      ObjectContext=objectContext;
-
       TestDataGenerator = objectContext.TestDataGenerator;
       Random = objectContext.Random;
-      _previousValueFunction = (dependedPropertyCollection) => (TMember) objectContext.GetPreviousValue(dependedPropertyCollection);
+      _previousValueFunction = (metadata) => (TMember) objectContext.GetPreviousValue(metadata);
       TargetValueType = objectContext.TargetValueType;
       Member = objectContext.Member;
       Advanced = objectContext.Advanced;
     }
-  }
 
-  public class ValueProviderContext<TContainer, TMember> : ValueProviderContext<TMember>
-  {
-    internal DependedPropertyCollection PropertyCollection { get; private set; }
-    
-    public ValueProviderContext ([NotNull] ValueProviderObjectContext objectContext)
-        : base(objectContext)
+    //REVIEW: Make this method immutable?
+    internal virtual TContext Enrich<TContext> (object metadata) where TContext : ValueProviderContext<TMember>
     {
-    }
+      if (metadata == null)
+      {
+        throw new InvalidOperationException(
+            "Cannot convert value provider for " + Advanced.Key + " because there was no metadata found");
+      }
 
-    public TDependedMember GetDependendValue<TDependedMember>(Expression<Func<TContainer, TDependedMember>> memberExpression)
-    {
-      var key = ChainedKey.FromExpression(memberExpression);
-      if (!PropertyCollection.ContainsKey(key))
-        throw new ArgumentException("Could not find key:'" + key + "' in dependend property collection. Have you registered the dependency?");
 
-      return (TDependedMember)PropertyCollection[key];
-    }
-
-    public override TContext Enrich<TContext> (DependedPropertyCollection dependedPropertyCollection)
-    {
-      PropertyCollection = dependedPropertyCollection;
-      return (TContext) (object) this;
+      InternalMetadata = metadata;
+      return (TContext) this;
     }
   }
 }

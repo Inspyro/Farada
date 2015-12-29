@@ -1,10 +1,25 @@
-﻿namespace Farada.TestDataGeneration.Fluent
+﻿using System;
+
+namespace Farada.TestDataGeneration.Fluent
 {
-  public interface IValueProviderAndChainConfigurator<TContainer, TMember> : IChainConfigurator, IValueProviderConfigurator<TContainer, TMember>
+  public interface IContainerConfigurator<TContainer>
+      : IContainerChainConfigurator<TContainer>, IContainerValueProviderConfigurator<TContainer>
   {
   }
 
-  public interface IValueProviderAndChainConfigurator<TMember> : IChainConfigurator, IValueProviderConfigurator<TMember>
+  public interface IMemberConfigurator<TContainer, TMember>
+      : IMemberChainConfigurator<TContainer>, IMemberValueProviderConfigurator<TContainer, TMember>
+  {
+  }
+
+  public interface IContainerWithMetadataConfigurator<TContainer, TMetadata>
+      : IContainerWithMetadataChainConfigurator<TContainer, TMetadata>
+  {
+  }
+
+  public interface IMemberWithMetadataConfigurator<TContainer, TMember, TMetadata>
+      : IMemberWithMetadataChainConfigurator<TContainer, TMetadata>,
+          IMemberWithMetadataValueProviderConfigurator<TContainer, TMember, TMetadata>
   {
   }
 }

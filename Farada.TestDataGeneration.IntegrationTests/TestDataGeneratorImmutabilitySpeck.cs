@@ -18,8 +18,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
               .Given (ConfigurationContext (cfg =>
                   cfg.UseDefaults (false)
                       .For<ImmutableIce> ().AddProvider (new DefaultInstanceValueProvider<ImmutableIce> ())
-                      .For ((ImmutableIce ice) => ice.Origin).AddProvider (f => "FixedOrigin") //IDEA - ForCtorArg("origin")
-                      .For ((ImmutableIce ice) => ice.Temperature).AddProvider (f => -100)))
+                      .Select (ice => ice.Origin).AddProvider (f => "FixedOrigin") //IDEA - ForCtorArg("origin")
+                      .Select(ice => ice.Temperature).AddProvider (f => -100)))
               .It ("initialized first property correctly", x => x.Result.Origin.Should ().Be ("FixedOrigin"))
               .It ("initialized second property correctly", x => x.Result.Temperature.Should ().Be (-100)))
           .Case ("No value providers defined", _ => _

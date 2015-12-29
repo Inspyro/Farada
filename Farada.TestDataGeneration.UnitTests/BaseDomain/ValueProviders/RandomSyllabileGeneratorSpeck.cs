@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders;
+using Farada.TestDataGeneration.CompoundValueProviders.Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.ValueProviders;
@@ -123,11 +124,6 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
       }
 
       public IRandom Random { get; }
-
-      public IList<object> CreateMany (IKey currentKey, IList<DependedPropertyCollection> dependedProperties, int maxRecursionDepth)
-      {
-        throw new NotImplementedException ();
-      }
     }
 
     class CustomValueProviderContext : ValueProviderContext<string>
@@ -142,14 +138,35 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
   class DummyAdvancedContext : ValueProviderObjectContext.AdvancedContext
   {
     public DummyAdvancedContext ()
-        : base (new DummyKey(), new Dictionary<IKey, IList<IKey>>(), new DummyConverter(), new DummyTestDataGenerator())
+        : base (new DummyKey(), new DummySorter(), new DummyResolver(), new DummyConverter(), new DummyTestDataGenerator())
     {
+    }
+  }
+
+  class DummyResolver : IMetadataResolver
+  {
+    public bool NeedsMetadata (IKey memberKey)
+    {
+      throw new NotImplementedException ();
+    }
+
+    public IEnumerable<object> Resolve (IKey memberKey, IList<MetadataObjectContext> metadataContexts)
+    {
+      throw new NotImplementedException ();
+    }
+  }
+
+  class DummySorter : IMemberSorter
+  {
+    public IEnumerable<IFastMemberWithValues> Sort (IEnumerable<IFastMemberWithValues> members, IKey baseKey)
+    {
+      throw new NotImplementedException ();
     }
   }
 
   class DummyTestDataGenerator : ITestDataGeneratorAdvanced
   {
-    public IList<object> CreateMany (IKey currentKey, [CanBeNull] IList<DependedPropertyCollection> dependedProperties, int itemCount, int maxRecursionDepth)
+    public IList<object> CreateMany (IKey currentKey, IList<object> resolvedMetadatasForKey, int itemCount, int maxRecursionDepth)
     {
       throw new NotImplementedException ();
     }

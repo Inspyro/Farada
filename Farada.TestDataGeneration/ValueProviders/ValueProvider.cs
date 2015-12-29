@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.Extensions;
 using JetBrains.Annotations;
 
@@ -15,12 +14,9 @@ namespace Farada.TestDataGeneration.ValueProviders
   public abstract class ValueProvider<TMember, TContext> : IValueProvider
       where TContext : ValueProviderContext<TMember>
   {
-    IEnumerable<object> IValueProvider.CreateMany (
-        IValueProviderContext context,
-        [CanBeNull] IList<DependedPropertyCollection> dependedProperties,
-        int itemCount)
+    IEnumerable<object> IValueProvider.CreateMany (IValueProviderContext context, [CanBeNull] IList<object> metadatas, int itemCount)
     {
-      return CreateManyValues ((TContext) context, dependedProperties, itemCount).Cast<object>();
+      return CreateManyValues ((TContext) context, metadatas, itemCount).Cast<object>();
     }
 
     public virtual bool CanHandle (Type memberType)
@@ -41,21 +37,10 @@ namespace Farada.TestDataGeneration.ValueProviders
     /// <param name="context">the concrete context to consider.</param>
     protected abstract TMember CreateValue (TContext context); //TODO: CanBeNull!
 
-    protected virtual IEnumerable<TMember> CreateManyValues (
-        TContext context,
-        [CanBeNull] IList<DependedPropertyCollection> dependedProperties,
-        int itemCount)
+    protected virtual IEnumerable<TMember> CreateManyValues (TContext context, [CanBeNull] IList<object> metadatas, int itemCount)
     {
       for (var i = 0; i < itemCount; i++) //TODO: Null should be explicitly possible as return value..
-        yield return CreateValue (dependedProperties == null ? context : context.Enrich<TContext> (dependedProperties[i]));
-    }
-  }
-
-  public abstract class ValueProviderWithContainer<TContainer, TMember> : ValueProvider<TMember, ValueProviderContext<TContainer, TMember>>
-  {
-    protected override ValueProviderContext<TContainer, TMember> CreateContext(ValueProviderObjectContext objectContext)
-    {
-      return new ValueProviderContext<TContainer, TMember>(objectContext);
+        yield return CreateValue (metadatas == null ? context : context.Enrich<TContext> (metadatas[i]));
     }
   }
 

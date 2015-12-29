@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
+using Farada.TestDataGeneration.CompoundValueProviders.Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.Modifiers;
@@ -18,8 +18,12 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     private readonly IParameterConversionService _parameterConversionService;
     private readonly ValueProviderDictionary _valueProviderDictionary;
     private readonly HashSet<IKey> _autoFillMapping;
-    private readonly Dictionary<IKey, IList<IKey>> _dependencyMapping;
     private readonly IList<IInstanceModifier> _modifierList;
+
+    private readonly Dictionary<Type, int> _tempContainerCountMapping; 
+    private readonly Dictionary<IKey, int> _containerIndexMapping;
+
+    private Dictionary<IKey, Func<MetadataObjectContext, object>> _metadataProviderMapping;
 
     internal CompoundValueProviderBuilder (IRandom random, IParameterConversionService parameterConversionService)
     {
@@ -27,8 +31,12 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _parameterConversionService = parameterConversionService;
       _valueProviderDictionary = new ValueProviderDictionary();
       _autoFillMapping = new HashSet<IKey>();
-      _dependencyMapping = new Dictionary<IKey, IList<IKey>>();
       _modifierList = new List<IInstanceModifier>();
+
+      _tempContainerCountMapping = new Dictionary<Type, int>();
+      _containerIndexMapping = new Dictionary<IKey, int>();
+
+      _metadataProviderMapping = new Dictionary<IKey, Func<MetadataObjectContext, object>>();
     }
 
     public void AddProvider<TMember, TContext> (ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>
@@ -36,34 +44,38 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _valueProviderDictionary.AddValueProvider (new TypeKey (typeof (TMember)), valueProvider);
     }
 
-    public void AddProvider<TMember, TContainer, TContext> (
+    public void AddProvider<TMember, TContainer, TMetadata, TContext> (
         Expression<Func<TContainer, TMember>> chainExpression,
-        ValueProvider<TMember, TContext> valueProvider,
-        Expression<Func<TContainer, object>>[] dependencies) where TContext : ValueProviderContext<TMember>
+        Func<BoundMetadataContext<TContainer>, TMetadata> metadataProviderFunc,
+        ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>
     {
       var providerKey = ChainedKey.FromExpression (chainExpression);
-      var dependencyKeys = dependencies.Select (ChainedKey.FromExpression).Cast<IKey>().ToList();
-
-      var invalidKey = dependencyKeys.Cast<ChainedKey>().FirstOrDefault (c => c.ChainLength != 1);
-      if (invalidKey != null)
-      {
-        throw new ArgumentException (
-            "Chain '" + invalidKey
-            + "' is invalid. You can only add dependencies with a chain of length 1. 'Deep Property dependencies' are not supported at the moment.");
-      }
-
       _valueProviderDictionary.AddValueProvider (providerKey, valueProvider);
+      _containerIndexMapping[providerKey] = GetNextIndexInContainer<TContainer>();
 
-      //it's possible to add multiple providers per "key".
-      if (!_dependencyMapping.ContainsKey (providerKey))
+      //here we bend the metadata provider func to our needs :)
+      _metadataProviderMapping.Add (providerKey, objectContext => metadataProviderFunc (new BoundMetadataContext<TContainer> (objectContext)));
+    }
+    
+
+    public void AddProvider<TMember, TContainer, TContext> (
+        Expression<Func<TContainer, TMember>> chainExpression,
+        ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>
+    {
+      var providerKey = ChainedKey.FromExpression (chainExpression);
+      _valueProviderDictionary.AddValueProvider (providerKey, valueProvider);
+      _containerIndexMapping[providerKey] = GetNextIndexInContainer<TContainer>();
+    }
+    private int GetNextIndexInContainer<TContainer>()
+    {
+      if (!_tempContainerCountMapping.ContainsKey(typeof(TContainer)))
       {
-        _dependencyMapping.Add (providerKey, dependencyKeys);
+        _tempContainerCountMapping[typeof(TContainer)] = 0;
       }
-      else
-      {
-        foreach (var dependencyKey in dependencyKeys)
-          _dependencyMapping[providerKey].Add (dependencyKey);
-      }
+
+      var indexInContainer = _tempContainerCountMapping[typeof(TContainer)];
+      _tempContainerCountMapping[typeof(TContainer)]++;
+      return indexInContainer;
     }
 
     public void AddInstanceModifier (IInstanceModifier instanceModifier)
@@ -94,7 +106,8 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       return new CompoundValueProvider (
           _valueProviderDictionary,
           _autoFillMapping,
-          _dependencyMapping,
+          new MemberContainerIndexSorter(_containerIndexMapping),
+          new MetadataResolver(_metadataProviderMapping),
           _random,
           _modifierList,
           _parameterConversionService);

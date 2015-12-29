@@ -1,32 +1,36 @@
-﻿using System;
-using System.Linq.Expressions;
-using Farada.TestDataGeneration.ValueProviders;
+﻿using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.Fluent
 {
-  public interface IValueProviderConfigurator<TContainer, TMember>
+  public interface IValueProviderConfigurator<out TReturn, TType>
   {
-    IValueProviderAndChainConfigurator<TContainer, TMember> AddProvider (
-        ValueProviderWithContainer<TContainer, TMember> valueProvider,
-        params Expression<Func<TContainer, object>>[] dependencies);
+    TReturn AddProvider (ValueProvider<TType> valueProvider);
 
-    IValueProviderAndChainConfigurator<TContainer, TMember> AddProvider<TContext> (
-        ValueProvider<TMember, TContext> valueProvider,
-        params Expression<Func<TContainer, object>>[] dependencies)
-        where TContext : ValueProviderContext<TContainer, TMember>;
+    TReturn AddProvider<TContext> (ValueProvider<TType, TContext> valueProvider)
+        where TContext : ValueProviderContext<TType>;
 
-    IValueProviderAndChainConfigurator<TContainer, TMember> DisableAutoFill ();
+    TReturn DisableAutoFill ();
   }
 
-  public interface IValueProviderConfigurator<TMember>
+  public interface IValueProviderWithMetadataConfigurator<out TReturn, TMember, TMetadata>
   {
-    IValueProviderAndChainConfigurator<TMember> AddProvider (
-        ValueProvider<TMember> valueProvider);
+    TReturn AddProvider (MetadataValueProvider<TMember, TMetadata> valueProvider);
 
-    IValueProviderAndChainConfigurator<TMember> AddProvider<TContext> (
-        ValueProvider<TMember, TContext> valueProvider)
-        where TContext : ValueProviderContext<TMember>;
+    TReturn DisableAutoFill ();
+  }
 
-    IValueProviderAndChainConfigurator<TMember> DisableAutoFill ();
+  public interface IContainerValueProviderConfigurator<TContainer>
+      : IValueProviderConfigurator<IContainerConfigurator<TContainer>, TContainer>
+  {
+  }
+
+  public interface IMemberValueProviderConfigurator<TContainer, TMember>
+      : IValueProviderConfigurator<IMemberConfigurator<TContainer, TMember>, TMember>
+  {
+  }
+
+  public interface IMemberWithMetadataValueProviderConfigurator<TContainer, TMember, TMetadata>
+      : IValueProviderWithMetadataConfigurator<IMemberWithMetadataConfigurator<TContainer, TMember, TMetadata>, TMember, TMetadata>
+  {
   }
 }

@@ -14,7 +14,7 @@ namespace Farada.TestDataGeneration.ValueProviders
   {
     private AdvancedContext _advanced;
     internal IRandom Random { get; private set; }
-    internal Func<DependedPropertyCollection, object> GetPreviousValue { get; private set; }
+    internal Func<object, object> GetPreviousValue { get; private set; }
     internal Type TargetValueType { get; private set; }
 
     [CanBeNull]
@@ -27,7 +27,7 @@ namespace Farada.TestDataGeneration.ValueProviders
 
     protected internal ValueProviderObjectContext (
         ITestDataGenerator testDataGenerator,
-        Func<DependedPropertyCollection, object> getPreviousValue,
+        Func<object, object> getPreviousValue,
         Type targetValueType,
         AdvancedContext advanced,
         [CanBeNull] IFastMemberWithValues member)
@@ -48,9 +48,14 @@ namespace Farada.TestDataGeneration.ValueProviders
       public IKey Key { get; private set; }
 
       /// <summary>
-      /// The dependencies for each property.
+      /// Sorts the members according to their registration order.
       /// </summary>
-      public Dictionary<IKey, IList<IKey>> DependencyMapping { get; private set; }
+      public IMemberSorter MemberSorter { get; private set; }
+
+      /// <summary>
+      /// Resolves the metdata according to member and instance information
+      /// </summary>
+      public IMetadataResolver MetadataResolver { get; private set; }
 
       /// <summary>
       /// The conversion service between ctor params and properties.
@@ -59,10 +64,16 @@ namespace Farada.TestDataGeneration.ValueProviders
 
       public ITestDataGeneratorAdvanced AdvancedTestDataGenerator { get; private set; }
 
-      public AdvancedContext (IKey key, Dictionary<IKey, IList<IKey>> dependencyMapping,  IParameterConversionService parameterConversionService, ITestDataGeneratorAdvanced advancedTestDataGenerator)
+      public AdvancedContext (
+          IKey key,
+          IMemberSorter memberSorter,
+          IMetadataResolver metadataResolver,
+          IParameterConversionService parameterConversionService,
+          ITestDataGeneratorAdvanced advancedTestDataGenerator)
       {
         Key = key;
-        DependencyMapping = dependencyMapping;
+        MemberSorter = memberSorter;
+        MetadataResolver = metadataResolver;
         ParameterConversionService = parameterConversionService;
         AdvancedTestDataGenerator = advancedTestDataGenerator;
       }

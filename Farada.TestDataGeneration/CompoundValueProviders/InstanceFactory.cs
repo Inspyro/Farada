@@ -16,38 +16,41 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
   {
     private readonly CompoundValueProvider _compoundValueProvider;
     private readonly ValueProviderDictionary _valueProviderDictionary;
-    private readonly Dictionary<IKey, IList<IKey>> _dependencyMapping;
+    private readonly IMemberSorter _memberSorter;
+    private readonly IMetadataResolver _metadataResolver;
     private readonly IParameterConversionService _parameterConversionService;
 
     public InstanceFactory (
         CompoundValueProvider compoundValueProvider,
         ValueProviderDictionary valueProviderDictionary,
-        Dictionary<IKey, IList<IKey>> dependencyMapping,
+        IMemberSorter memberSorter,
+        IMetadataResolver metadataResolver,
         IParameterConversionService parameterConversionService)
     {
       _compoundValueProvider = compoundValueProvider;
       _valueProviderDictionary = valueProviderDictionary;
-      _dependencyMapping = dependencyMapping;
+      _memberSorter = memberSorter;
+      _metadataResolver = metadataResolver;
       _parameterConversionService = parameterConversionService;
     }
 
-    internal IList<object> CreateInstances (IKey key, [CanBeNull] IList<DependedPropertyCollection> dependendProperties, int itemCount)
+    internal IList<object> CreateInstances (IKey key, [CanBeNull] IList<object> metadatas, int itemCount)
     {
       var rootLink = _valueProviderDictionary.GetLink (key);
-      return CreateInstances (key, rootLink?.Value, CreateValueProviderContext (rootLink, key), dependendProperties, itemCount);
+      return CreateInstances (key, rootLink?.Value, CreateValueProviderContext (rootLink, key), metadatas, itemCount);
     }
 
     private IList<object> CreateInstances (
         IKey key,
         [CanBeNull] IValueProvider valueProvider,
         [CanBeNull] IValueProviderContext valueProviderContext,
-        [CanBeNull] IList<DependedPropertyCollection> dependendProperties,
+        [CanBeNull] IList<object> metadatas,
         int itemCount)
     {
       if (valueProvider == null || valueProviderContext == null)
         throw new MissingValueProviderException ("No value provider registered for \"" + key + "\"");
 
-      return valueProvider.CreateMany (valueProviderContext, dependendProperties, itemCount).ToList();
+      return valueProvider.CreateMany (valueProviderContext, metadatas, itemCount).ToList();
     }
 
     [CanBeNull]
@@ -62,9 +65,9 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       return providerLink.Value.CreateContext (
           new ValueProviderObjectContext (
               _compoundValueProvider,
-              (dependendProperties) =>
+              (metadata) =>
               {
-                if(previousLink==null)
+                if (previousLink == null)
                 {
                   throw new MissingValueProviderException (
                       "Tried to call previous provider on " + key
@@ -72,15 +75,15 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
                 }
 
                 return
-                    CreateInstances (
-                        previousLink.Key,
-                        previousLink.Value,
-                        previousContext,
-                        dependendProperties == null ? null : new[] { dependendProperties },
-                        1).Single();
+                    CreateInstances (previousLink.Key, previousLink.Value, previousContext, metadata == null ? null : new[] { metadata }, 1).Single();
               },
               key.Type,
-              new ValueProviderObjectContext.AdvancedContext (key, _dependencyMapping, _parameterConversionService, _compoundValueProvider),
+              new ValueProviderObjectContext.AdvancedContext (
+                  key,
+                  _memberSorter,
+                  _metadataResolver,
+                  _parameterConversionService,
+                  _compoundValueProvider),
               key.Member));
     }
   }

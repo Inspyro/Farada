@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Farada.TestDataGeneration.CompoundValueProviders;
+using Farada.TestDataGeneration.Fluent;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using Farada.TestDataGeneration.IntegrationTests.Utils;
 using Farada.TestDataGeneration.ValueProviders;
@@ -138,18 +139,19 @@ namespace Farada.TestDataGeneration.IntegrationTests
       return c => c.Given ("simple property domain", x =>
       {
         TestDataDomainConfiguration = configurator => configurator
-          .UseDefaults(false)
-            .For<object>().AddProvider(new DefaultInstanceValueProvider<object>())
+            .UseDefaults (false)
+            .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
             .For<int> ().AddProvider (context => 5)
             .For<double> ().AddProvider (context => 3.6)
-            .For<float>().AddProvider(context =>1.1f)
-            .For<Color>().AddProvider(context => Color.Green)
-            .For<string>().AddProvider(context => "some string")
+            .For<float> ().AddProvider (context => 1.1f)
+            .For<Color> ().AddProvider (context => Color.Green)
+            .For<string> ().AddProvider (context => "some string")
             //no default float provider!
-            .For ((LandVehicle lv) => lv.Weight).AddProvider (context => 100)
-            .For ((LandVehicle lv) => lv.MainColor).AddProvider (context => Color.Red)
-            .For ((AirVehicle av) => av.Engine).AddProvider (context => new JetEngine ())
-            .For ((JetEngine je) => je.PowerInNewtons).AddProvider (context => 5000);
+            .For<LandVehicle> ()
+            .Select (lv => lv.Weight).AddProvider (context => 100)
+            .Select (lv => lv.MainColor).AddProvider (context => Color.Red)
+            .For<AirVehicle> ().Select (av => av.Engine).AddProvider (context => new JetEngine ())
+            .For<JetEngine> ().Select (je => je.PowerInNewtons).AddProvider (context => 5000);
       })
           .Given (TestDataGeneratorContext ());
     }
@@ -162,20 +164,20 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
         TestDataDomainConfiguration = configurator => configurator
             .UseDefaults (false)
-            .For<object>().AddProvider(new DefaultInstanceValueProvider<object>())
-            .For<double>().AddProvider(context=>1.2)
+            .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
+            .For<double> ().AddProvider (context => 1.2)
             .For<float> ().AddProvider (context => 2.1f)
-            .For<string>().AddProvider(context=>"some string")
-            .For<Color>().AddProvider(context => Color.Black)
-            .For ((AbstractVehicle v) => v.Weight).AddProvider (context => 50)
-            .For ((AirVehicle av) => av.Engine).AddProvider (context =>
+            .For<string> ().AddProvider (context => "some string")
+            .For<Color> ().AddProvider (context => Color.Black)
+            .For<AbstractVehicle> ().Select (v => v.Weight).AddProvider (context => 50)
+            .For<AirVehicle> ().Select (av => av.Engine).AddProvider (context =>
             {
               //alternate between engine types
               i++;
               return i % 2 == 0 ? (Engine) new JetEngine () : new PropellorEngine ();
             })
-            .For ((Engine e) => e.PowerInNewtons).AddProvider (context => 1200)
-            .For ((PropellorEngine pe) => pe.PowerInNewtons).AddProvider (context => 250);
+            .For<Engine> ().Select (e => e.PowerInNewtons).AddProvider (context => 1200)
+            .For<PropellorEngine> ().Select (pe => pe.PowerInNewtons).AddProvider (context => 250);
       })
           .Given (TestDataGeneratorContext ());
     }
@@ -188,10 +190,10 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .UseDefaults (false)
             .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
             .For<double> ().AddProvider (context => 2.1)
-            .For<string>().AddProvider(context=>"something")
-            .For<Color>().AddProvider(context=>Color.White)
+            .For<string> ().AddProvider (context => "something")
+            .For<Color> ().AddProvider (context => Color.White)
             .For<double> ().AddProvider<double, InitialValueForChainAttribute> (context => context.AdditionalData[0].BaseValue + 0.1d)
-            .For<int> ().AddProvider<int, InitialValueForChainAttribute>(context => context.AdditionalData[0].BaseValue + 2);
+            .For<int> ().AddProvider<int, InitialValueForChainAttribute> (context => context.AdditionalData[0].BaseValue + 2);
       })
           .Given (TestDataGeneratorContext ());
     }
@@ -215,11 +217,11 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .AddProvider<string, InitialStringValueForChainAttribute> (context => "6" + context.AdditionalData[0].BaseValue + context.GetPreviousValue ())
             .AddProvider<string, InitialStringValueForChainAttribute> (context => "5" + context.AdditionalData[0].BaseValue + context.GetPreviousValue ())
             //
-            .For ((AbstractVehicle v) => v.Name)
+            .For < AbstractVehicle>().Select(v => v.Name)
             .AddProvider (context => "4" + context.GetPreviousValue ())
             .AddProvider (context => "3" + context.GetPreviousValue ())
             //
-            .For ((LandVehicle av) => av.Name)
+            .For< LandVehicle>().Select(av => av.Name)
             .AddProvider (context => "2" + context.GetPreviousValue ())
             .AddProvider (context => "1" + context.GetPreviousValue ());
 

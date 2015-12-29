@@ -2,7 +2,7 @@
 
 namespace Farada.TestDataGeneration.Fluent
 {
-  public interface ITestDataConfigurator:IChainConfigurator, IDomainConfigurator
+  public interface ITestDataConfigurator:IRootChainConfigurator, IDomainConfigurator
   {
 
   }

@@ -3,7 +3,7 @@ using Farada.TestDataGeneration.Fluent;
 
 namespace Farada.TestDataGeneration
 {
-  public delegate IChainConfigurator TestDataDomainConfiguration(ITestDataConfigurator testDataConfigurator);
+  public delegate IRootChainConfigurator TestDataDomainConfiguration(ITestDataConfigurator testDataConfigurator);
 
   /// <summary>
   /// Creates a test data generator for a given domain

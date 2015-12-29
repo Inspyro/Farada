@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Farada.TestDataGeneration.CompoundValueProviders.Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
@@ -16,28 +17,29 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
   /// </summary>
   internal class CompoundValueProvider : ITestDataGenerator, ITestDataGeneratorAdvanced
   {
-    private readonly HashSet<IKey> _autoFillMapping;
-    private readonly Dictionary<IKey, IList<IKey>> _dependencyMapping;
+    private readonly HashSet<IKey> _skipAutoFillMapping;
+    private readonly IMemberSorter _memberSorter;
+    private readonly IMetadataResolver _metadataResolver;
     private readonly InstanceFactory _instanceFactory;
     private readonly ModificationFactory _modificationFactory;
-    private readonly DependendPropertyResolver _dependendPropertyResolver;
 
     public IRandom Random { get; }
 
     internal CompoundValueProvider (
         ValueProviderDictionary valueProviderDictionary,
-        HashSet<IKey> autoFillMapping,
-        Dictionary<IKey, IList<IKey>> dependencyMapping,
+        HashSet<IKey> skipAutoFillMapping,
+        IMemberSorter memberSorter,
+        IMetadataResolver metadataResolver,
         IRandom random,
         IList<IInstanceModifier> instanceModifiers,
         IParameterConversionService parameterConversionService)
     {
       Random = random;
-      _autoFillMapping = autoFillMapping;
-      _dependencyMapping = dependencyMapping;
-      _instanceFactory = new InstanceFactory (this, valueProviderDictionary, dependencyMapping, parameterConversionService);
+      _skipAutoFillMapping = skipAutoFillMapping;
+      _memberSorter = memberSorter;
+      _metadataResolver = metadataResolver;
+      _instanceFactory = new InstanceFactory (this, valueProviderDictionary, _memberSorter, _metadataResolver, parameterConversionService);
       _modificationFactory = new ModificationFactory (instanceModifiers, random);
-      _dependendPropertyResolver = new DependendPropertyResolver();
     }
 
     public TValue Create<TValue> (int maxRecursionDepth = 2, IFastMemberWithValues member = null)
@@ -64,7 +66,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     /// 2: It uses a cached but thread safe version of reflection <see cref="FastReflectionUtility"/>
     public IList<object> CreateMany (
         IKey currentKey,
-        [CanBeNull] IList<DependedPropertyCollection> dependendProperties,
+        [CanBeNull] IList<object> resolvedMetadatasForKey,
         int itemCount,
         int maxRecursionDepth)
     {
@@ -73,21 +75,14 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
         throw new ArgumentException ("The current key " + currentKey + " had an higher recursion depth than maxRecursionDepth");
 
       //Here we create the actual instances of the type (these are values created by either the fast activator or the registered value providers)
-      var instances = _instanceFactory.CreateInstances (currentKey, dependendProperties, itemCount);
+      var instances = _instanceFactory.CreateInstances (currentKey, resolvedMetadatasForKey, itemCount);
 
       //now that we have valid instances we can modify them all in a batch by the registered instance modifiers (example: a null modifier, that makes 30% of the instances null)
       instances = _modificationFactory.ModifyInstances (currentKey, instances);
 
       //non-auto filled instances can be returned instantly. Others are filled below.
-      var startKey = currentKey;
-      while (startKey != null)
-      {
-        if (_autoFillMapping.Contains (startKey))
-          return instances;
-
-        //we also have to check the previous (more generic) keys.
-        startKey = startKey.PreviousKey;
-      }
+      if (AreFilledInstances(currentKey))
+        return instances;
 
       //check if type injection has taken place and split the base type into the correct sub types (important for base class properties)
       var typeToInstances = SubTypeInstanceHolder.SplitUpSubTypes (currentKey, instances);
@@ -103,13 +98,12 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
         var members = FastReflectionUtility.GetTypeInfo (instancesForType.Key.Type).Members;
 
         //now we sort the members by dependency.
-        var sortedMembers = members.TopologicalSort (
-            member => GetDependencies (member, instancesForType),
-            throwOnCycle: true).ToList();
+        var sortedMembers = _memberSorter.Sort (members, instancesForType.Key).ToList();
 
         //now we fill each member
-        foreach (var member in sortedMembers)
+        for (int index = 0; index < sortedMembers.Count; index++)
         {
+          var member = sortedMembers[index];
           //first we need to create the key that the member has in our creator chain
           var memberKey = instancesForType.Key.CreateKey (member);
 
@@ -117,16 +111,22 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
           if (memberKey.RecursionDepth >= maxRecursionDepth)
             continue;
 
-          //we map and resolve/fill the dependencies (from the instances):
-          //the values of the dependencies can only be correct, due to the fact that we sorted them by dependency beforehand.
-          var dependencies = _dependencyMapping.ContainsKey (memberKey) ? _dependencyMapping[memberKey] : null;
-          var resolvedDependencies = dependencies==null?null: _dependendPropertyResolver.ResolveDependendProperties (instancesForType, dependencies).ToList();
+          List<object> resolvedMetadatas = null;
+          if (_metadataResolver.NeedsMetadata (memberKey))
+          {
+            //we map and resolve/fill the metadatas (from the instances):
+            //the values of the dependencies can only be filled correctly, due to the fact that we sorted them beforehand.
+            var metadataContexts =
+                GetMetadataContexts (instancesForType.Key, sortedMembers.Take (index), instancesForType.Instances).ToList();
+
+            resolvedMetadatas = _metadataResolver.Resolve (memberKey, metadataContexts)?.ToList();
+          }
 
           //next we will recursively call this function (in case the member is compound/complex)
           //Note: we create many values, in order to execute the logic of the method less often
           try
           {
-            var memberValues = CreateMany (memberKey, resolvedDependencies, itemCount, maxRecursionDepth);
+            var memberValues = CreateMany (memberKey, resolvedMetadatas, itemCount, maxRecursionDepth);
             //now we iterate over all created values and set them for the corresponding previously created instance
             //Example: if you call CreatMany<Dog>(100) - all dog properties will be created 100 times and filled into the 100 dog instances
             for (var i = 0; i < instancesForType.Instances.Count; ++i)
@@ -153,14 +153,40 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       return instances;
     }
 
-    private IEnumerable<IFastMemberWithValues> GetDependencies (IFastMemberWithValues member, SubTypeInstanceHolder instancesForType)
+    private IEnumerable<MetadataObjectContext> GetMetadataContexts (
+        IKey baseKey,
+        IEnumerable<IFastMemberWithValues> dependendMembers,
+        IList<object> instances)
     {
-      var memberKey = instancesForType.Key.CreateKey (member);
-      if (!_dependencyMapping.ContainsKey (memberKey))
-        yield break;
+      var instanceToContext = new Dictionary<object, MetadataObjectContext>();
+      foreach (var member in dependendMembers)
+      {
+        var memberKey = baseKey.CreateKey (member);
+        foreach (var instance in instances)
+        {
+          if (!instanceToContext.ContainsKey (instance))
+            instanceToContext[instance] = new MetadataObjectContext();
 
-      foreach (var dependency in _dependencyMapping[memberKey].Select (k => k.Member))
-        yield return dependency;
+          instanceToContext[instance].Add (memberKey, member.GetValue (instance));
+        }
+      }
+
+      return instanceToContext.Select (i => i.Value);
+    }
+
+    private bool AreFilledInstances (IKey currentKey)
+    {
+      var startKey = currentKey;
+      while (startKey != null)
+      {
+        if (_skipAutoFillMapping.Contains (startKey))
+          return true;
+
+        //we also have to check the previous (more generic) keys.
+        startKey = startKey.PreviousKey;
+      }
+
+      return false;
     }
   }
 }

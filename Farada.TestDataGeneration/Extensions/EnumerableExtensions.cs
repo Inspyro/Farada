@@ -75,41 +75,5 @@ namespace Farada.TestDataGeneration.Extensions
     {
       return enumerable.OrderBy(x => randomIntGenerator());
     }
-
-    /// <summary>
-    /// Sorts the items topologically (by dependency)
-    /// </summary>
-    /// <param name="source">The source enumerable (unsorted).</param>
-    /// <param name="dependencies">A mapping between item and dependencies</param>
-    /// <param name="throwOnCycle">If true, throws an <see cref="ArgumentException"/> if a cycle is detected.</param>
-    /// <returns>The topolocially sorted enumerable.</returns>
-    public static IEnumerable<T> TopologicalSort<T>(this IEnumerable<T> source, Func<T, IEnumerable<T>> dependencies, bool throwOnCycle = false)
-    {
-      var sorted = new List<T>();
-      var visited = new HashSet<T>();
-
-      foreach (var item in source)
-        VisitTopologicItem(item, visited, sorted, dependencies, throwOnCycle);
-
-      return sorted;
-    }
-
-    private static void VisitTopologicItem<T>(T item, ISet<T> visited, ICollection<T> sorted, Func<T, IEnumerable<T>> dependencies, bool throwOnCycle)
-    {
-      if (!visited.Contains(item))
-      {
-        visited.Add(item);
-
-        foreach (var dep in dependencies(item))
-          VisitTopologicItem(dep, visited, sorted, dependencies, throwOnCycle);
-
-        sorted.Add(item);
-      }
-      else
-      {
-        if (throwOnCycle && !sorted.Contains(item))
-          throw new ArgumentException("Cyclic dependency found");
-      }
-    }
   }
 }

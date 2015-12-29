@@ -16,12 +16,12 @@ namespace Farada.TestDataGeneration.IntegrationTests
     {
       Specify (x => "empty")
           .Case ("should throw exception for methods", _ => _
-              .Given (ConfigurationContext (c => c.For ((ClassWithVariousMembers y) => y.PublicMethod ()).AddProvider (dummy => "")))
+              .Given (ConfigurationContext (c => c.For<ClassWithVariousMembers>().Select(y => y.PublicMethod ()).AddProvider (dummy => "")))
               .It ("ex", x => CreationException.Should ().BeOfType<NotSupportedException> ())
               .It ("ex",
                   x => CreationException.Message.Should ().Be ("Empty chains / Non-member chains are not supported, please use AddProvider<T>()")))
           .Case ("should throw exception for types", _ => _
-              .Given (ConfigurationContext (c => c.For ((ClassWithVariousMembers y) => y).AddProvider (dummy => null)))
+              .Given (ConfigurationContext (c => c.For<ClassWithVariousMembers>().Select(y => y).AddProvider (dummy => null)))
               .It ("ex", x => CreationException.Should ().BeOfType<NotSupportedException> ())
               .It ("ex",
                   x => CreationException.Message.Should ().Be ("Empty chains / Non-member chains are not supported, please use AddProvider<T>()")));
@@ -30,7 +30,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       Specify (x =>
           TestDataGenerator.Create<ClassWithVariousMembers> (MaxRecursionDepth, null))
           .Case ("should throw exception for setting the value of a get only member", _ => _
-              .Given (ConfigurationContext (c => c.For ((ClassWithVariousMembers y) => y.GetOnlyProperty).AddProvider (dummy => "content")))
+              .Given (ConfigurationContext (c => c.For<ClassWithVariousMembers>().Select(y => y.GetOnlyProperty).AddProvider (dummy => "content")))
               .It ("GetOnlyProperty should be null", x => x.Result.GetOnlyProperty.Should ().BeNull ()));
 
 
@@ -104,8 +104,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
           {
             TestDataDomainConfiguration =
                 configuration => configuration
-                    .For ((BaseClassWithProtectedProperty b) => b.OverrideMe).AddProvider (context => "BaseValue")
-                    .For ((ClassOveridingPropertyWithNewType b) => b.OverrideMe).AddProvider (context => 103);
+                    .For< BaseClassWithProtectedProperty>().Select(b => b.OverrideMe).AddProvider (context => "BaseValue")
+                    .For< ClassOveridingPropertyWithNewType>().Select(b => b.OverrideMe).AddProvider (context => 103);
           })
           .Given (TestDataGeneratorContext ());
     }
@@ -118,7 +118,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
             TestDataDomainConfiguration =
                 configuration => configuration
                     .For<int> ().AddProvider (context => 3)
-                    .For ((BaseClassWithProtectedProperty b) => b.OverrideMe).AddProvider (context => "BaseValue");
+                    .For<BaseClassWithProtectedProperty>().Select(b => b.OverrideMe).AddProvider (context => "BaseValue");
           })
           .Given (TestDataGeneratorContext ());
     }
@@ -131,8 +131,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
             TestDataDomainConfiguration =
                 configuration => configuration
                     .For<int> ().AddProvider (context => 3)
-                    .For ((BaseClassWithProtectedProperty b) => b.OverrideMe).AddProvider (context => "BaseValue")
-                    .For ((ClassOveridingPropertyWithNewType b) => b.OverrideMe).AddProvider (context => 1 + context.GetPreviousValue ());
+                    .For<BaseClassWithProtectedProperty>().Select(b => b.OverrideMe).AddProvider (context => "BaseValue")
+                    .For< ClassOveridingPropertyWithNewType>().Select(b => b.OverrideMe).AddProvider (context => 1 + context.GetPreviousValue ());
           })
           .Given (TestDataGeneratorContext ());
     }
@@ -172,7 +172,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
                 .UseDefaults (false)
                 .For<ClassWithoutAttribute> ().AddProvider (new DefaultInstanceValueProvider<ClassWithoutAttribute> ())
                 .For<string> ()
-                .AddProvider<string> (context => "Some value")
+                .AddProvider(context => "Some value")
                 .AddProvider<string, SubClassString1Attribute> (context => context.AdditionalData[0].Content);
           })
           .Given (TestDataGeneratorContext ());
