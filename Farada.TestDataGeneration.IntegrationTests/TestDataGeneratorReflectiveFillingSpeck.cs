@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq;
-using Farada.TestDataGeneration.CompoundValueProviders;
-using Farada.TestDataGeneration.Fluent;
+﻿using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
-using Farada.TestDataGeneration.IntegrationTests.Utils;
 using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
 using TestFx.SpecK;
