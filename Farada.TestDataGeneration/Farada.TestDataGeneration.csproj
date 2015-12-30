@@ -153,6 +153,7 @@
     <Compile Include="ValueProviders\IRandom.cs" />
     <Compile Include="ValueProviders\IValueProvider.cs" />
     <Compile Include="ValueProviders\MetadataValueProvider.cs" />
+    <Compile Include="ValueProviders\RangedValueProvider.cs" />
     <Compile Include="ValueProviders\SubTypeValueProvider.cs" />
     <Compile Include="ValueProviders\ValueProvider.cs" />
     <Compile Include="ValueProviders\ValueProviderContext.cs" />
