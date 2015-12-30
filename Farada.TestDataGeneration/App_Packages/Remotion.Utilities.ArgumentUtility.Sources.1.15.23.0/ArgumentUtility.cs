@@ -56,7 +56,7 @@ namespace Remotion.Utilities
     [AssertionMethod]
     public static T CheckNotNull<T> (
         [InvokerParameterName] string argumentName,
-        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] T actualValue)
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] [CanBeNull] T actualValue)
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (actualValue == null)
@@ -162,9 +162,8 @@ namespace Remotion.Utilities
     public static T CheckNotEmpty<T> ([InvokerParameterName] string argumentName, T enumerable)
         where T: IEnumerable
     {
-      // ReSharper disable CompareNonConstrainedGenericWithNull
+      // ReSharper disable once ConditionIsAlwaysTrueOrFalse
       if (enumerable != null)
-          // ReSharper restore CompareNonConstrainedGenericWithNull
       {
         var collection = enumerable as ICollection;
         if (collection != null)
@@ -256,6 +255,7 @@ namespace Remotion.Utilities
 
     public static object CheckType ([InvokerParameterName] string argumentName, [NoEnumeration] object actualValue, Type expectedType)
     {
+      // ReSharper disable once ConditionIsAlwaysTrueOrFalse
       if (actualValue == null)
       {
         if (NullableTypeUtility.IsNullableType_NoArgumentCheck (expectedType))
@@ -284,6 +284,7 @@ namespace Remotion.Utilities
     /// </remarks>
     public static TExpected CheckType<TExpected> ([InvokerParameterName] string argumentName, [NoEnumeration] object actualValue)
     {
+      // ReSharper disable once ConditionIsAlwaysTrueOrFalse
       if (actualValue == null)
       {
         try
@@ -324,6 +325,7 @@ namespace Remotion.Utilities
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] Type expectedType)
     {
       CheckNotNull ("expectedType", expectedType);
+      // ReSharper disable once ConditionIsAlwaysTrueOrFalse
       if (actualType != null)
       {
         if (!expectedType.GetTypeInfo().IsAssignableFrom (actualType.GetTypeInfo()))
@@ -358,6 +360,7 @@ namespace Remotion.Utilities
         where T: ICollection
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
+      // ReSharper disable once ConditionIsAlwaysTrueOrFalse
       if (collection != null)
           // ReSharper restore CompareNonConstrainedGenericWithNull
       {
@@ -383,6 +386,7 @@ namespace Remotion.Utilities
         where T: ICollection
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
+      // ReSharper disable once ConditionIsAlwaysTrueOrFalse
       if (collection != null)
           // ReSharper restore CompareNonConstrainedGenericWithNull
       {
@@ -410,7 +414,9 @@ namespace Remotion.Utilities
 
     public static ArgumentException CreateArgumentTypeException ([InvokerParameterName] string argumentName, Type actualType, Type expectedType)
     {
+      // ReSharper disable once ConditionIsAlwaysTrueOrFalse
       string actualTypeName = actualType != null ? actualType.ToString() : "<null>";
+      // ReSharper disable once ConditionIsAlwaysTrueOrFalse
       if (expectedType == null)
       {
         return new ArgumentException (string.Format ("Parameter '{0}' has unexpected type '{1}'.", argumentName, actualTypeName), argumentName);

@@ -85,7 +85,7 @@ namespace JetBrains.Annotations
     /// <returns>
     /// <c>true</c> if the value of the given object is equal to that of the current; otherwise, <c>false</c>.
     /// </returns>
-    public override bool Equals (object obj)
+    public override bool Equals ([CanBeNull] object obj)
     {
       var attribute = obj as LocalizationRequiredAttribute;
       return attribute != null && attribute.Required == Required;

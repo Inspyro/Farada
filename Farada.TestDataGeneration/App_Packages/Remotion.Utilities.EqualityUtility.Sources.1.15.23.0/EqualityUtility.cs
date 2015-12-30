@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections;
+using JetBrains.Annotations;
 
 // ReSharper disable once CheckNamespace
 namespace Remotion.Utilities
@@ -29,7 +30,7 @@ namespace Remotion.Utilities
     /// <summary>
     /// Gets an object's hash code or null, if the object is <see langword="null"/>.
     /// </summary>
-    public static int SafeGetHashCode<T> (T obj)
+    public static int SafeGetHashCode<T> ([CanBeNull] T obj)
     {
       return (obj == null) ? 0 : obj.GetHashCode ();
     }
@@ -192,7 +193,7 @@ namespace Remotion.Utilities
     /// Similar to <see cref="Equals{T}"/>, but without any boxing (better performance). 
     /// Equatable objects implement the <see cref="IEquatable{T}"/> interface. 
     /// </remarks>
-    public static bool EqualsEquatable<T> (T a, T b)
+    public static bool EqualsEquatable<T> ([CanBeNull] T a, [CanBeNull] T b)
       where T : IEquatable<T>
     {
       if (a == null)
@@ -226,7 +227,7 @@ namespace Remotion.Utilities
         return false;
     }
 
-    public static bool NotNullAndSameType<T> (T a, T b)
+    public static bool NotNullAndSameType<T> ([CanBeNull] T a, [CanBeNull] T b)
       where T: class, IEquatable<T>
     {
       ArgumentUtility.CheckNotNull ("a", a);
@@ -239,7 +240,7 @@ namespace Remotion.Utilities
     /// <remarks>
     /// Similar to <see cref="object.Equals(object,object)"/>, only with less boxing going on (better performance).
     /// </remarks>
-    public static bool Equals<T> (T a, T b)
+    public static bool Equals<T> ([CanBeNull] T a, [CanBeNull] T b)
     {
       if (a == null)
         return (b == null);
