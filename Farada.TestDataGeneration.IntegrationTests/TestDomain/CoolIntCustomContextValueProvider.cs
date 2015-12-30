@@ -13,9 +13,9 @@ namespace Farada.TestDataGeneration.IntegrationTests.TestDomain
       _additionalValue = additionalValue;
     }
 
-    protected override int CreateAttributeBasedValue (ExtendedValueProviderContext<int, IList<ClassWithAttribute.CoolIntAttribute>> context)
+    protected override int CreateAttributeBasedValue (AttributeValueProviderContext<int, ClassWithAttribute.CoolIntAttribute> context)
     {
-      return _additionalValue + context.AdditionalData[0].Value;
+      return _additionalValue + context.Attribute.Value;
     }
   }
 }

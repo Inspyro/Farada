@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Farada.TestDataGeneration.ValueProviders;
 
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
@@ -50,18 +49,18 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
   public class AttributeFuncProvider<TMember, TAttribute> : AttributeBasedValueProvider<TMember, TAttribute>
       where TAttribute : Attribute
   {
-    private readonly Func<ExtendedValueProviderContext<TMember, IList<TAttribute>>, TMember> _valueFunc;
+    private readonly Func<AttributeValueProviderContext<TMember, TAttribute>, TMember> _valueFunc;
 
     /// <summary>
     /// Create a func value provider
     /// </summary>
     /// <param name="valueFunc">the func that creates the value based on a <see cref="ValueProviderContext{TMember}"/></param>
-    public AttributeFuncProvider(Func<ExtendedValueProviderContext<TMember, IList<TAttribute>>, TMember> valueFunc)
+    public AttributeFuncProvider(Func<AttributeValueProviderContext<TMember, TAttribute>, TMember> valueFunc)
     {
       _valueFunc = valueFunc;
     }
 
-    protected override TMember CreateAttributeBasedValue (ExtendedValueProviderContext<TMember, IList<TAttribute>> context)
+    protected override TMember CreateAttributeBasedValue (AttributeValueProviderContext<TMember, TAttribute> context)
     {
       return _valueFunc (context);
     }

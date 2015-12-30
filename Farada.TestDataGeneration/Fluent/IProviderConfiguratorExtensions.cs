@@ -39,7 +39,7 @@ namespace Farada.TestDataGeneration
     //NOTE: ATM we do this just for the container - later also for the member as its easier..
     public static IContainerConfigurator<TMember> AddProvider<TMember, TAttribute> (
         this IValueProviderConfigurator<IContainerConfigurator<TMember>, TMember> configurator,
-        Func<ExtendedValueProviderContext<TMember, IList<TAttribute>>, TMember> valueProviderFunc)
+        Func<AttributeValueProviderContext<TMember, TAttribute>, TMember> valueProviderFunc)
         where TAttribute : Attribute
     {
       return configurator.AddProvider (new AttributeFuncProvider<TMember, TAttribute> (valueProviderFunc));

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
@@ -9,28 +11,41 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// </summary>
   /// <typeparam name="TMember">The type of the member with the attribute</typeparam>
   /// <typeparam name="TAttribute">The type of the attribute</typeparam>
-  //TODO: Create attribute context because of api usage (AdditionalData is not the perfect name).
   //TODO: Create another context for single attribute. Also add validation for "AllowMultiple".
   //TODO: Create test for multiple attributes (AllowMultiple).
   public abstract class AttributeBasedValueProvider<TMember, TAttribute>
-     : ValueProvider<TMember, ExtendedValueProviderContext<TMember, IList<TAttribute>>>
-     where TAttribute : Attribute
+      : ValueProvider<TMember, AttributeValueProviderContext<TMember, TAttribute>>
+      where TAttribute : Attribute
   {
 
-    protected sealed override TMember CreateValue(ExtendedValueProviderContext<TMember, IList<TAttribute>> context)
+    protected override sealed TMember CreateValue (AttributeValueProviderContext<TMember, TAttribute> context)
     {
-      if (context.AdditionalData.Count == 0) //no attributes found - go to previous provider.
+      if (context.Attributes.Count == 0) //no attributes found - go to previous provider.
         return context.GetPreviousValue(); //TODO: Throw exception if no previous value exists.
 
-      return CreateAttributeBasedValue(context);
+      Debug.Assert (context.Attribute != null, "The attribute was null, but should never be null");
+      return CreateAttributeBasedValue (context);
     }
 
-    protected abstract TMember CreateAttributeBasedValue(ExtendedValueProviderContext<TMember, IList<TAttribute>> context);
+    protected abstract TMember CreateAttributeBasedValue (AttributeValueProviderContext<TMember, TAttribute> context);
 
-    protected override ExtendedValueProviderContext<TMember, IList<TAttribute>> CreateContext (ValueProviderObjectContext objectContext)
+    protected override AttributeValueProviderContext<TMember, TAttribute> CreateContext (ValueProviderObjectContext objectContext)
     {
       var customAttributes = objectContext.Member?.GetCustomAttributes<TAttribute>().ToList() ?? new List<TAttribute>();
-      return new ExtendedValueProviderContext<TMember, IList<TAttribute>> (objectContext, customAttributes);
+      return new AttributeValueProviderContext<TMember, TAttribute> (objectContext, customAttributes);
+    }
+  }
+
+  public class AttributeValueProviderContext<TMember, TAttribute> : ValueProviderContext<TMember>
+  {
+    public TAttribute Attribute { get; }
+    public IList<TAttribute> Attributes { get; }
+
+    public AttributeValueProviderContext([NotNull] ValueProviderObjectContext objectContext, IList<TAttribute> attributes)
+        : base(objectContext)
+    {
+      Attribute = attributes.Count > 0 ? attributes[0] : default(TAttribute);
+      Attributes = attributes;
     }
   }
 }

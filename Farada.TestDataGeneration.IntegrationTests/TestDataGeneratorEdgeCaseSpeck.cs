@@ -144,8 +144,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
           {
             TestDataDomainConfiguration = configuration => configuration
                 .For<string> ()
-                .AddProvider<string, SubClassString1Attribute> (context => context.AdditionalData[0].Content)
-                .AddProvider<string, SubClassString2Attribute> (context => context.AdditionalData[0].Content);
+                .AddProvider<string, SubClassString1Attribute> (context => context.Attribute.Content)
+                .AddProvider<string, SubClassString2Attribute> (context => context.Attribute.Content);
           })
           .Given (TestDataGeneratorContext ());
     }
@@ -157,8 +157,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
           {
             TestDataDomainConfiguration = configuration => configuration
                 .For<string> ()
-                .AddProvider<string, SubClassString2Attribute> (context => context.AdditionalData[0].Content)
-                .AddProvider<string, SubClassString1Attribute> (context => context.AdditionalData[0].Content);
+                .AddProvider<string, SubClassString2Attribute> (context => context.Attribute.Content)
+                .AddProvider<string, SubClassString1Attribute> (context => context.Attribute.Content);
           })
           .Given (TestDataGeneratorContext ());
     }
@@ -173,7 +173,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
                 .For<ClassWithoutAttribute> ().AddProvider (new DefaultInstanceValueProvider<ClassWithoutAttribute> ())
                 .For<string> ()
                 .AddProvider(context => "Some value")
-                .AddProvider<string, SubClassString1Attribute> (context => context.AdditionalData[0].Content);
+                .AddProvider<string, SubClassString1Attribute> (context => context.Attribute.Content);
           })
           .Given (TestDataGeneratorContext ());
     }
@@ -187,7 +187,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
                 .UseDefaults (false)
                 .For<ClassWithoutAttribute> ().AddProvider (new DefaultInstanceValueProvider<ClassWithoutAttribute> ())
                 .For<string> ()
-                .AddProvider<string, SubClassString1Attribute> (context => context.AdditionalData[0].Content);
+                .AddProvider<string, SubClassString1Attribute> (context => context.Attribute.Content);
           })
           .Given (TestDataGeneratorContext ());
     }
