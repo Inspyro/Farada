@@ -12,6 +12,15 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
   internal interface ICompoundValueProviderBuilder
   {
     /// <summary>
+    /// Adds a generic object based value provider for a member in the chain
+    /// </summary>
+    /// <typeparam name="TContext">The type of the context for the value provider</typeparam>
+    /// <param name="valueProvider">The value provider to inject in the chain</param>
+    /// <param name="realType">The real type (reflected)</param>
+    void AddProvider<TContext> (ValueProvider<object, TContext> valueProvider, Type realType) where TContext : ValueProviderContext<object>;
+
+
+    /// <summary>
     /// Adds a provider for a member in the chain
     /// </summary>
     /// <typeparam name="TMember">The type of the member</typeparam>

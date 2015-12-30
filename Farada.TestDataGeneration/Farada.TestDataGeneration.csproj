@@ -74,6 +74,7 @@
     <Compile Include="BaseDomain\ValueProviders\ChooseSingleItemValueProvider.cs" />
     <Compile Include="BaseDomain\ValueProviders\RangeConstrainedValueProvider.cs" />
     <Compile Include="CompoundValueProviders\ContextMetadata.cs" />
+    <Compile Include="CompoundValueProviders\IReflectiveTestDataGenerator.cs" />
     <Compile Include="CompoundValueProviders\MetadataResolver.cs" />
     <Compile Include="CompoundValueProviders\IMemberSorter.cs" />
     <Compile Include="CompoundValueProviders\IMetadataResolver.cs" />
@@ -154,6 +155,7 @@
     <Compile Include="ValueProviders\IValueProvider.cs" />
     <Compile Include="ValueProviders\MetadataValueProvider.cs" />
     <Compile Include="ValueProviders\RangedValueProvider.cs" />
+    <Compile Include="ValueProviders\ReflectiveValueProvider.cs" />
     <Compile Include="ValueProviders\SubTypeValueProvider.cs" />
     <Compile Include="ValueProviders\ValueProvider.cs" />
     <Compile Include="ValueProviders\ValueProviderContext.cs" />

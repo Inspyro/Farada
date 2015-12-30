@@ -19,6 +19,10 @@ namespace Farada.TestDataGeneration.Fluent
     TReturn EnableAutoFill();
   }
 
+  public interface IReflectiveValueProviderConfigurator: IValueProviderConfigurator<IReflectiveConfigurator, object>
+  {
+  }
+
   public interface IContainerValueProviderConfigurator<TContainer>
       : IValueProviderConfigurator<IContainerConfigurator<TContainer>, TContainer>
   {

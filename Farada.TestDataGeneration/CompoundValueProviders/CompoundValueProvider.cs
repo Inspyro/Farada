@@ -24,6 +24,8 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     private readonly InstanceFactory _instanceFactory;
     private readonly ModificationFactory _modificationFactory;
 
+    
+
     public IRandom Random { get; }
 
     internal CompoundValueProvider (
@@ -44,22 +46,31 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _modificationFactory = new ModificationFactory (instanceModifiers, random);
     }
 
-    public TValue Create<TValue> (int maxRecursionDepth = 2, IFastMemberWithValues member = null)
+    public TValue Create<TValue>(int maxRecursionDepth = 2, IFastMemberWithValues member = null)
     {
-      return CreateMany<TValue> (1, maxRecursionDepth, member).Single();
+      return (TValue)Create(typeof(TValue), maxRecursionDepth, member);
     }
 
-    public IReadOnlyList<TValue> CreateMany<TValue> (
+    public IList<TValue> CreateMany<TValue>(
         int numberOfObjects,
         int maxRecursionDepth = 2,
         IFastMemberWithValues member = null)
     {
-      var rootKey = member == null
-          ? (IKey) new TypeKey (typeof (TValue))
-          : new ChainedKey (typeof (TValue), member);
+      return CreateMany (typeof (TValue), numberOfObjects, maxRecursionDepth, member).CastOrDefault<TValue>().ToList();
+    }
 
-      var instances = CreateMany (rootKey, null, numberOfObjects, maxRecursionDepth);
-      return instances.CastOrDefault<TValue>().ToList();
+    public object Create(Type type, int maxRecursionDepth = 2, IFastMemberWithValues member = null)
+    {
+      return CreateMany(type, 1, maxRecursionDepth, member).Single();
+    }
+
+    public IList<object> CreateMany(Type type, int numberOfObjects, int maxRecursionDepth = 2, IFastMemberWithValues member = null)
+    {
+      var rootKey = member == null
+          ? (IKey)new TypeKey(type)
+          : new ChainedKey(type, member);
+
+      return CreateMany (rootKey, null, numberOfObjects, maxRecursionDepth);
     }
 
     ///Note: The create many method is optimized in many ways

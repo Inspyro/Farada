@@ -21,10 +21,44 @@ namespace Farada.TestDataGeneration.Fluent
       return new ContainerChainConfigurator<TContainer> (_lazyValueProviderBuilder);
     }
 
+    public IReflectiveConfigurator For (Type containerType)
+    {
+      return new ReflectiveConfigurator (_lazyValueProviderBuilder, containerType);
+    }
 
-    internal ITestDataGenerator Build ()
+
+    internal CompoundValueProvider Build ()
     {
       return _lazyValueProviderBuilder().Build();
+    }
+  }
+
+  internal class ReflectiveConfigurator : ChainConfigurator, IReflectiveConfigurator
+  {
+    private readonly Type _containerType;
+
+    public ReflectiveConfigurator ([CanBeNull] Func<CompoundValueProviderBuilder> lazyValueProviderBuilder, Type containerType)
+        : base (lazyValueProviderBuilder)
+    {
+      _containerType = containerType;
+    }
+
+    public IReflectiveConfigurator AddProvider (ValueProvider<object> valueProvider)
+    {
+      _lazyValueProviderBuilder().AddProvider (valueProvider, _containerType);
+      return this;
+    }
+
+    public IReflectiveConfigurator AddProvider<TContext> (ValueProvider<object, TContext> valueProvider) where TContext : ValueProviderContext<object>
+    {
+      _lazyValueProviderBuilder().AddProvider (valueProvider, _containerType);
+      return this;
+    }
+
+    public IReflectiveConfigurator EnableAutoFill ()
+    {
+      _lazyValueProviderBuilder().EnableAutoFill (_containerType);
+      return this;
     }
   }
 

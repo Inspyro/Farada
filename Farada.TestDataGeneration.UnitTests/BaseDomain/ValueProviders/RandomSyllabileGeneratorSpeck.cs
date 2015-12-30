@@ -115,12 +115,22 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
         throw new NotSupportedException ();
       }
 
-      public IReadOnlyList<TCompoundValue> CreateMany<TCompoundValue> (
+      public IList<TCompoundValue> CreateMany<TCompoundValue> (
           int numberOfObjects,
           int maxRecursionDepth = 2,
           IFastMemberWithValues member = null)
       {
         throw new NotSupportedException ();
+      }
+
+      public object Create (Type type, int maxRecursionDepth = 2, IFastMemberWithValues member = null)
+      {
+        throw new NotSupportedException();
+      }
+
+      public IList<object> CreateMany (Type type, int numberOfObjects, int maxRecursionDepth = 2, IFastMemberWithValues member = null)
+      {
+        throw new NotSupportedException();
       }
 
       public IRandom Random { get; }

@@ -4,6 +4,30 @@ using Farada.TestDataGeneration.ValueProviders;
 namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 {
   /// <summary>
+  /// Handles reflectively built up value providers via func and type to handle. 
+  /// </summary>
+  public class ReflectiveFuncProvider : ReflectiveValueProvider
+  {
+    private readonly Func<ValueProviderContext<object>, object> _valueFunc;
+
+    /// <summary>
+    /// Create a func value provider
+    /// </summary>
+    /// <param name="reflectedType">the real type of the property to create.</param>
+    /// <param name="valueFunc">the func that creates the value based on a <see cref="ValueProviderContext{TMember}"/></param>
+    public ReflectiveFuncProvider(Type reflectedType, Func<ValueProviderContext<object>, object> valueFunc)
+      :base(reflectedType)
+    {
+      _valueFunc = valueFunc;
+    }
+
+    protected override object CreateValue(ValueProviderContext<object> context)
+    {
+      return _valueFunc(context);
+    }
+  }
+
+  /// <summary>
   /// Allows to define a func instead of deriving from <see cref="ValueProvider{TMember}"/>
   /// In order to simplify this process even more one can use the <see cref="IProviderConfiguratorExtensions"/>
   /// </summary>

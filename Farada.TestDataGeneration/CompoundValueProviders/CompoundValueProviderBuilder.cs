@@ -40,6 +40,11 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _metadataProviderMapping = new Dictionary<IKey, Func<MetadataObjectContext, object>>();
     }
 
+    public void AddProvider<TContext>(ValueProvider<object, TContext> valueProvider, Type realType) where TContext:ValueProviderContext<object>
+    {
+      _valueProviderDictionary.AddValueProvider (new TypeKey (realType), valueProvider);
+    } 
+
     public void AddProvider<TMember, TContext> (ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>
     {
       _valueProviderDictionary.AddValueProvider (new TypeKey (typeof (TMember)), valueProvider);
@@ -86,6 +91,11 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     public void AddInstanceModifier (IInstanceModifier instanceModifier)
     {
       _modifierList.Add (instanceModifier);
+    }
+
+    public void EnableAutoFill(Type type)
+    {
+      EnableAutoFill(new TypeKey(type));
     }
 
     public void EnableAutoFill<TType> ()

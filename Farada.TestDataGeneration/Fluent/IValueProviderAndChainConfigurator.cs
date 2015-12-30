@@ -2,6 +2,11 @@
 
 namespace Farada.TestDataGeneration.Fluent
 {
+  public interface IReflectiveConfigurator
+      : IReflectiveChainConfigurator, IReflectiveValueProviderConfigurator
+  {
+  }
+
   public interface IContainerConfigurator<TContainer>
       : IContainerChainConfigurator<TContainer>, IContainerValueProviderConfigurator<TContainer>
   {

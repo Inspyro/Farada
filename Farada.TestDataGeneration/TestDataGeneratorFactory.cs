@@ -19,9 +19,9 @@ namespace Farada.TestDataGeneration
     {
       ChainConfigurator chainConfigurator = new DomainConfigurator();
 
-      if (testDataDomainConfiguration!=null)
+      if (testDataDomainConfiguration != null)
       {
-        chainConfigurator= (ChainConfigurator) testDataDomainConfiguration((DomainConfigurator) chainConfigurator);
+        chainConfigurator = (ChainConfigurator) testDataDomainConfiguration ((DomainConfigurator) chainConfigurator);
       }
 
       return chainConfigurator.Build();

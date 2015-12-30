@@ -1,10 +1,13 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq.Expressions;
 using Farada.TestDataGeneration.CompoundValueProviders.Farada.TestDataGeneration.CompoundValueProviders;
 
 namespace Farada.TestDataGeneration.Fluent
 {
+  public interface IReflectiveChainConfigurator : IRootChainConfigurator
+  {
+  }
+
   public interface IContainerChainConfigurator<TContainer> : IRootChainConfigurator
   {
     IContainerWithMetadataChainConfigurator<TContainer, TMetadata> WithMetadata<TMetadata> (Func<BoundMetadataContext<TContainer>, TMetadata> metadataProvider);
@@ -33,5 +36,6 @@ namespace Farada.TestDataGeneration.Fluent
   public interface IRootChainConfigurator
   {
     IContainerConfigurator<TContainer> For<TContainer> ();
+    IReflectiveConfigurator For (Type containerType);
   }
 }

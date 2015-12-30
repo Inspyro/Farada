@@ -17,6 +17,21 @@ namespace Farada.TestDataGeneration
     /// <summary>
     /// Adds a provider for a property in the chain
     /// </summary>
+    /// <typeparam name="TReturn"></typeparam>
+    /// <param name="configurator">The value configurator</param>
+    /// <param name="reflectedType">the real type to create for the reflective value provider.</param>
+    /// <param name="valueProviderFunc">the func generating the value</param>
+    public static TReturn AddProvider<TReturn> (
+        this IValueProviderConfigurator<TReturn, object> configurator,
+        Type reflectedType,
+        Func<ValueProviderContext<object>, object> valueProviderFunc)
+    {
+      return configurator.AddProvider (new ReflectiveFuncProvider (reflectedType, valueProviderFunc));
+    }
+
+    /// <summary>
+    /// Adds a provider for a property in the chain
+    /// </summary>
     /// <typeparam name="TMember">The type of the property</typeparam>
     /// <typeparam name="TReturn"></typeparam>
     /// <param name="configurator">The value configurator</param>
