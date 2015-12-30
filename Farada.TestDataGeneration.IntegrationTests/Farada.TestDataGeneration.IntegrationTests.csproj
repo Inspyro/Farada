@@ -102,6 +102,7 @@
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\UsedImplicitlyAttribute.cs" />
     <Compile Include="AssertionExtensions.cs" />
     <Compile Include="TestDataGeneratorReflectiveFillingSpeck.cs" />
+    <Compile Include="TestDomain\ClassWithEmail.cs" />
     <Compile Include="TestDomain\ImmutableIce.cs" />
     <Compile Include="TestDataGeneratorDependendPropertySpeck.cs" />
     <Compile Include="TestDataGeneratorEdgeCaseFillingSpeck.cs" />

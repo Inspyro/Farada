@@ -144,23 +144,6 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .Select (a => a.Name).AddProvider (context => context.Metadata.MainColor.ToString ())
             .For<AirVehicle> ()
             .Select (a => a.MainColor).AddProvider (ctx => Color.White); //this is too late.
-
-        //Here: Weight depends on Engine and MainColor. //TODO: Use?
-        /*TestDataDomainConfiguration = configurator =>
-            configurator
-              .For<AirVehicle>()
-                .Select(a => a.Engine)
-                .Select(a => a.Name)
-                  .AddProvider(ctx => "string")
-                .Select(a => a.Engine)
-                  .AddProvider(ctx => new JetEngine())
-                .For<AirVehicle>().WithMetadata(ctx => new { E = ctx.Get(a => a.Engine), C = ctx.Get(a => a.MainColor) })
-                    .Select(a => a.Weight)
-                      .AddProvider(ctx => ctx.Metadata.C == Color.White ? 0 : (int)ctx.Metadata.E.PowerInNewtons)
-                    .Select(a => a.Name)
-                      .AddProvider(ctx => ctx.Metadata.C + " Ferrari")
-                .For<AirVehicle>().WithMetadata(ctx => new { E = ctx.Get(a => a.Engine) })
-                     .Select(a => a.MainColor).AddProvider(ctx => ctx.Metadata.E is JetEngine ? Color.Black : Color.White);*/
       })
           .Given (TestDataGeneratorContext ());
     }
@@ -214,7 +197,6 @@ namespace Farada.TestDataGeneration.IntegrationTests
 
     Context CyclicCtorDependencyContext ()
     {
-      //TODO: Dependency mapping is null in ice.Temperature?...
       return c => c.Given ("cyclic ctor dependency domain", x =>
       {
         TestDataDomainConfiguration = configurator => configurator.UseDefaults (false)

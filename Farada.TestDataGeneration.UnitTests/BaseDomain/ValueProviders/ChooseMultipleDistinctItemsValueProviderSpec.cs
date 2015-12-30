@@ -76,7 +76,6 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
                                       .For<IList<string>> ()
                                       .AddProvider (new ChooseMultipleDistinctItemsValueProvider<int, string> (InputList, MinItems, MaxItems,
                                           conversionFunc: item => item.ToString ()))))
-                                      //TODO: Invert logic - disable autofill by default.
                   .Given ("TestDataGenerator", x => TestDataGenerator = TestDataGeneratorFactory.Create (TestDataDomainConfiguration));
     }
   }

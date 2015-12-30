@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Farada.TestDataGeneration.BaseDomain.Constraints;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders;
@@ -87,10 +88,10 @@ namespace Farada.TestDataGeneration.Fluent
       // ReSharper restore RedundantTypeArgumentsOfMethod
 
       //constraint providers
-      valueProviderBuilder.AddProvider (new EmailGenerator());
+      valueProviderBuilder.AddProvider<string, AttributeValueProviderContext<string, EmailAddressAttribute>> (new EmailGenerator());
 
       //default instance provider (also supports subtypes thus object means = all types)
-      valueProviderBuilder.AddProvider(new DefaultInstanceValueProvider<object>());
+      valueProviderBuilder.AddProvider<object, ValueProviderContext<object>> (new DefaultInstanceValueProvider<object>());
 
       return valueProviderBuilder;
     }

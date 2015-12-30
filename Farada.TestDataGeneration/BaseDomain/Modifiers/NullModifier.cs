@@ -24,7 +24,6 @@ namespace Farada.TestDataGeneration.BaseDomain.Modifiers
 
     public IList<object> Modify (ModificationContext context, IList<object> instances)
     {
-      //TODO: Remove compound type check? - int? is filtered through "IsValueType"
       if (context.MemberType.IsCompoundType() || context.MemberType.IsValueType)
         return instances;
 

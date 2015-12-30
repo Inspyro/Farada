@@ -73,34 +73,34 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
     {
       public T GetCustomAttribute<T> () where T : Attribute
       {
-        throw new NotImplementedException ();
+        throw new InvalidOperationException ();
       }
 
       public IEnumerable<T> GetCustomAttributes<T> () where T : Attribute
       {
-        throw new NotImplementedException ();
+        throw new InvalidOperationException();
       }
 
-      public IEnumerable<Type> Attributes { get { throw new NotImplementedException (); } }
+      public IEnumerable<Type> Attributes { get { throw new InvalidOperationException(); } }
 
       public bool IsDefined (Type type)
       {
-        throw new NotImplementedException ();
+        throw new InvalidOperationException();
       }
 
       public object GetValue (object instance)
       {
-        throw new NotImplementedException ();
+        throw new InvalidOperationException();
       }
 
       public void SetValue (object instance, [CanBeNull] object value)
       {
-        throw new NotImplementedException ();
+        throw new InvalidOperationException();
       }
 
-      public string Name { get { throw new NotImplementedException (); } }
+      public string Name { get { throw new InvalidOperationException(); } }
 
-      public Type Type { get { throw new NotImplementedException (); } }
+      public Type Type { get { throw new InvalidOperationException(); } }
     }
 
     class DummyTestDataGenerator : ITestDataGenerator
@@ -157,12 +157,12 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
   {
     public bool NeedsMetadata (IKey memberKey)
     {
-      throw new NotImplementedException ();
+      throw new InvalidOperationException();
     }
 
     public IEnumerable<object> Resolve (IKey memberKey, IList<MetadataObjectContext> metadataContexts)
     {
-      throw new NotImplementedException ();
+      throw new InvalidOperationException();
     }
   }
 
@@ -170,7 +170,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
   {
     public IEnumerable<IFastMemberWithValues> Sort (IEnumerable<IFastMemberWithValues> members, IKey baseKey)
     {
-      throw new NotImplementedException ();
+      throw new InvalidOperationException();
     }
   }
 
@@ -178,7 +178,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
   {
     public IList<object> CreateMany (IKey currentKey, IList<object> resolvedMetadatasForKey, int itemCount, int maxRecursionDepth)
     {
-      throw new NotImplementedException ();
+      throw new InvalidOperationException();
     }
   }
 

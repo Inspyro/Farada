@@ -15,8 +15,7 @@ namespace Farada.TestDataGeneration.IntegrationTests.TestDomain
     {
       return context.AdditionalData;
     }
-
-    //TODO: Remove ExtendedValueProvider.
+    
     protected override ExtendedValueProviderContext<int, int> CreateContext(ValueProviderObjectContext objectContext)
     {
       return new ExtendedValueProviderContext<int, int>(objectContext, _contextValue);
