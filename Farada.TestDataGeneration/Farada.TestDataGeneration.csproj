@@ -154,7 +154,6 @@
     <Compile Include="ValueProviders\IValueProvider.cs" />
     <Compile Include="ValueProviders\MetadataValueProvider.cs" />
     <Compile Include="ValueProviders\SubTypeValueProvider.cs" />
-    <Compile Include="ValueProviders\ExtendedValueProvider.cs" />
     <Compile Include="ValueProviders\ValueProvider.cs" />
     <Compile Include="ValueProviders\ValueProviderContext.cs" />
     <Compile Include="ValueProviders\ValueProviderObjectContext.cs" />

@@ -13,9 +13,10 @@ namespace Farada.TestDataGeneration.ValueProviders
   //TODO: Create another context for single attribute. Also add validation for "AllowMultiple".
   //TODO: Create test for multiple attributes (AllowMultiple).
   public abstract class AttributeBasedValueProvider<TMember, TAttribute>
-     : ExtendedValueProvider<TMember, IList<TAttribute>>
+     : ValueProvider<TMember, ExtendedValueProviderContext<TMember, IList<TAttribute>>>
      where TAttribute : Attribute
   {
+
     protected sealed override TMember CreateValue(ExtendedValueProviderContext<TMember, IList<TAttribute>> context)
     {
       if (context.AdditionalData.Count == 0) //no attributes found - go to previous provider.
@@ -26,9 +27,10 @@ namespace Farada.TestDataGeneration.ValueProviders
 
     protected abstract TMember CreateAttributeBasedValue(ExtendedValueProviderContext<TMember, IList<TAttribute>> context);
 
-    protected override IList<TAttribute> CreateData(ValueProviderObjectContext objectContext)
+    protected override ExtendedValueProviderContext<TMember, IList<TAttribute>> CreateContext (ValueProviderObjectContext objectContext)
     {
-      return objectContext.Member?.GetCustomAttributes<TAttribute>().ToList() ?? new List<TAttribute>();
+      var customAttributes = objectContext.Member?.GetCustomAttributes<TAttribute>().ToList() ?? new List<TAttribute>();
+      return new ExtendedValueProviderContext<TMember, IList<TAttribute>> (objectContext, customAttributes);
     }
   }
 }
