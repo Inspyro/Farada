@@ -6,6 +6,7 @@ using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.Modifiers;
 using Farada.TestDataGeneration.ValueProviders;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
@@ -54,9 +55,13 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _containerIndexMapping[providerKey] = GetNextIndexInContainer<TContainer>();
 
       //here we bend the metadata provider func to our needs :)
-      _metadataProviderMapping.Add (providerKey, objectContext => metadataProviderFunc (new BoundMetadataContext<TContainer> (objectContext)));
+      _metadataProviderMapping.Add (providerKey, BendFuncToMetadata (metadataProviderFunc));
     }
-    
+
+    private static Func<MetadataObjectContext, object> BendFuncToMetadata<TContainer, TMetadata> (Func<BoundMetadataContext<TContainer>, TMetadata> metadataProviderFunc)
+    {
+      return objectContext => metadataProviderFunc (new BoundMetadataContext<TContainer> (objectContext));
+    }
 
     public void AddProvider<TMember, TContainer, TContext> (
         Expression<Func<TContainer, TMember>> chainExpression,

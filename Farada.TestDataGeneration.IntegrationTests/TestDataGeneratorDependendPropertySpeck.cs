@@ -1,5 +1,6 @@
 ﻿using System;
 using Farada.TestDataGeneration.CompoundValueProviders;
+using Farada.TestDataGeneration.CompoundValueProviders.Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
@@ -22,6 +23,10 @@ namespace Farada.TestDataGeneration.IntegrationTests
               .It ("fills weight", x => x.Result.Weight.Should ().Be (10))
               .It ("fills engine.PowerInNewtons", x => x.Result.Engine.PowerInNewtons.Should ().Be (5))
               .It ("fills name with dependencies", x => x.Result.Name.Should ().Be ("VehicleX (Color:Green, Weight:10)")))
+          .Case ("should fill pass through properties", _ => _
+              .Given (PassThroughDependencyContext ())
+              .It ("fills main color", x => x.Result.MainColor.Should ().Be (Color.Green))
+              .It ("fills name with dependencies", x => x.Result.Name.Should ().Be ("VehicleX (Color:Green)")))
           .Case ("Should throw on missing dependency", _ => _
               .Given (MissingDependencyContext ())
               .ItThrows (typeof (ArgumentException),
@@ -50,8 +55,9 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Case ("should throw on cycles in ctor args", _ => _
               .Given (CyclicCtorDependencyContext ())
               .ItThrows (typeof (ArgumentException),
-              //REVIEW: We get a different message here because the DefaultInstanceValueProvider does not construct the metadata on the wrong registration order...
-                  "Could not find metadata context for key:'KEY on Farada.TestDataGeneration.IntegrationTests.TestDomain.ImmutableIce: Type: String, Member: Origin' . "+
+                  //REVIEW: We get a different message here because the DefaultInstanceValueProvider does not construct the metadata on the wrong registration order...
+                  "Could not find metadata context for key:'KEY on Farada.TestDataGeneration.IntegrationTests.TestDomain.ImmutableIce: Type: String, Member: Origin' . "
+                  +
                   "Have you registered the dependency before the metadata provider?"));
     }
 
@@ -85,6 +91,22 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .Select (a => a.Name).AddProvider (context => $"VehicleX (Color:{context.Metadata.Color}," + $" Weight:{context.Metadata.Weight})");
       })
           .Given (TestDataGeneratorContext ());
+    }
+
+    Context PassThroughDependencyContext()
+    {
+      return c => c.Given("simple dependency domain", x =>
+      {
+        TestDataDomainConfiguration = configurator => configurator.UseDefaults (false)
+            .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
+            .For<Engine> ().AddProvider (context => new JetEngine { PowerInNewtons = 5 })
+            .For<AirVehicle> ()
+            .Select(a => a.Weight).AddProvider(context => 0)
+            .Select (a => a.MainColor).AddProvider (context => Color.Green)
+            .For<AirVehicle> ().WithMetadata (ctx=>ctx)
+            .Select (a => a.Name).AddProvider (context => $"VehicleX (Color:{context.Metadata.Get (a => a.MainColor)})");
+      })
+          .Given(TestDataGeneratorContext());
     }
 
     Context CyclicDependencyContext ()
