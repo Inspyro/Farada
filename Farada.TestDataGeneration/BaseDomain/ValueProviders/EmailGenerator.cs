@@ -7,7 +7,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
   /// <summary>
   /// Creates a value that respects the email address attribute
   /// </summary>
-  public class EmailGenerator : AttributeBasedValueProvider<string, EmailAddressAttribute> //TODO: test and implement
+  public class EmailGenerator : AttributeBasedValueProvider<string, EmailAddressAttribute>
   {
     private readonly RandomSyllabileGenerator _firstNameGenerator;
     private readonly RandomSyllabileGenerator _secondNameGenerator;
