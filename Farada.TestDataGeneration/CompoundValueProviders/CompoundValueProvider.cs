@@ -17,7 +17,8 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
   /// </summary>
   internal class CompoundValueProvider : ITestDataGenerator, ITestDataGeneratorAdvanced
   {
-    private readonly HashSet<IKey> _skipAutoFillMapping;
+    private readonly ValueProviderDictionary _valueProviderDictionary;
+    private readonly HashSet<IKey> _autoFillMapping;
     private readonly IMemberSorter _memberSorter;
     private readonly IMetadataResolver _metadataResolver;
     private readonly InstanceFactory _instanceFactory;
@@ -27,7 +28,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
     internal CompoundValueProvider (
         ValueProviderDictionary valueProviderDictionary,
-        HashSet<IKey> skipAutoFillMapping,
+        HashSet<IKey> autoFillMapping,
         IMemberSorter memberSorter,
         IMetadataResolver metadataResolver,
         IRandom random,
@@ -35,7 +36,8 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
         IParameterConversionService parameterConversionService)
     {
       Random = random;
-      _skipAutoFillMapping = skipAutoFillMapping;
+      _valueProviderDictionary = valueProviderDictionary;
+      _autoFillMapping = autoFillMapping;
       _memberSorter = memberSorter;
       _metadataResolver = metadataResolver;
       _instanceFactory = new InstanceFactory (this, valueProviderDictionary, _memberSorter, _metadataResolver, parameterConversionService);
@@ -81,7 +83,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       instances = _modificationFactory.ModifyInstances (currentKey, instances);
 
       //non-auto filled instances can be returned instantly. Others are filled below.
-      if (AreFilledInstances(currentKey))
+      if (!ShouldBeFilled(currentKey))
         return instances;
 
       //check if type injection has taken place and split the base type into the correct sub types (important for base class properties)
@@ -174,19 +176,12 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       return instanceToContext.Select (i => i.Value);
     }
 
-    private bool AreFilledInstances (IKey currentKey)
+    private bool ShouldBeFilled (IKey startKey)
     {
-      var startKey = currentKey;
-      while (startKey != null)
-      {
-        if (_skipAutoFillMapping.Contains (startKey))
-          return true;
+      if (_autoFillMapping.Contains (startKey))
+        return true; //if auto fill is "enforced" we always fill the current key (explicitly set by user). 
 
-        //we also have to check the previous (more generic) keys.
-        startKey = startKey.PreviousKey;
-      }
-
-      return false;
+      return !_valueProviderDictionary.IsTypeFilledByValueProvider(startKey); //when the type is not filled, we fill it.
     }
   }
 }

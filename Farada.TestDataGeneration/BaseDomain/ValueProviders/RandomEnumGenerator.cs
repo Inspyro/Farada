@@ -20,5 +20,11 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 
       return (Enum) Enum.Parse(context.TargetValueType, randomValue);
     }
+
+    //we indicate that we fill the enums, but enums are not auto-fillable anyway as they are primitive types. 
+    public override ValueFillMode FillMode
+    {
+      get { return ValueFillMode.All; }
+    }
   }
 }

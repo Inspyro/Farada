@@ -19,5 +19,8 @@ namespace Farada.TestDataGeneration.IntegrationTests.TestDomain
 
       throw new InvalidOperationException ("property of type " + context.TargetValueType + " is not supported by " + GetType ().FullName);
     }
+
+    //We indicate that we fill all types with values, so they are not automatically filled by farada anymore.
+    public override ValueFillMode FillMode { get { return ValueFillMode.All; } }
   }
 }

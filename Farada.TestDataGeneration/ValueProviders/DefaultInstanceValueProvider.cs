@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Farada.TestDataGeneration.CompoundValueProviders.Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
@@ -108,6 +107,14 @@ namespace Farada.TestDataGeneration.ValueProviders
     {
       //we implement it like this, to be able to make some performance optimizations in the create many method.
       return CreateManyValues (context, context.InternalMetadata == null ? null : new[] { context.InternalMetadata }, 1).Single();
+    }
+
+    //we indicate that we don't fill any types, as this provider just creates blank instances by default.
+    //however, immutable types are filled by default (because there is no other ctor). 
+    //Autofill will however skip those ctor params.
+    public override ValueFillMode FillMode
+    {
+      get { return ValueFillMode.None; }
     }
   }
 }

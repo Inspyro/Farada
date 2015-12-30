@@ -61,7 +61,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         TestDataDomainConfiguration = configurator => configurator.UseDefaults (false)
             .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
-            .For<Engine> ().AddProvider (context => new JetEngine { PowerInNewtons = 5 }).DisableAutoFill () //TODO: Default...
+            .For<Engine> ().AddProvider (context => new JetEngine { PowerInNewtons = 5 })
             .For<AirVehicle> ()
             .Select (a => a.Weight).AddProvider (context => 0)
             .Select (a => a.MainColor).AddProvider (context => Color.White)
@@ -77,7 +77,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         TestDataDomainConfiguration = configurator => configurator.UseDefaults (false)
             .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
-            .For<Engine> ().AddProvider (context => new JetEngine { PowerInNewtons = 5 }).DisableAutoFill () //TODO: Default...
+            .For<Engine> ().AddProvider (context => new JetEngine { PowerInNewtons = 5 })
             .For<AirVehicle> ()
             .Select (a => a.Weight).AddProvider (context => 10)
             .Select (a => a.MainColor).AddProvider (context => Color.Green)
@@ -95,7 +95,6 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
             .For<Engine> ()
             .AddProvider (context => new JetEngine ())
-            .DisableAutoFill ()
             //cycle: Name->Weight->Name
             .For<AirVehicle> ()
             .Select (a => a.MainColor).AddProvider (ctx => Color.White) //colors can't be contstructed
@@ -115,7 +114,6 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
             .For<Engine> ()
             .AddProvider (context => new JetEngine { PowerInNewtons = 5 })
-            .DisableAutoFill ()
             .For<AirVehicle> ()
             .Select (a => a.Weight).AddProvider (ctx => 0)
             .Select (a => a.Name).AddProvider (ctx => "")
@@ -153,8 +151,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
             .For<Engine> ()
             .AddProvider (context => new JetEngine ())
-            .DisableAutoFill ()
-            //deep dependency: TODO!! 
+            //deep dependency
             .For<AirVehicle> ()
             .Select (a => a.Weight).AddProvider (context => 10)
             .Select (a => a.MainColor).AddProvider (context => Color.Green)

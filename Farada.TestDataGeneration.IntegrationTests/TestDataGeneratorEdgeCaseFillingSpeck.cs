@@ -19,8 +19,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
                       .For<ClassWithList> ().AddProvider (new DefaultInstanceValueProvider<ClassWithList> ())
                       .For<IList<int>> ()
                       //
-                        .AddProvider (f => new List<int> { 0, 1, 2, 3 })
-                        .DisableAutoFill ()))
+                        .AddProvider (f => new List<int> { 0, 1, 2, 3 })))
               .It ("initialized first list correctly", x => x.Result.IntegerList.Should ().BeEquivalentTo (new[] { 0, 1, 2, 3 })));
     }
 

@@ -58,9 +58,9 @@ namespace Farada.TestDataGeneration.Fluent
       return this;
     }
 
-    public IContainerConfigurator<TContainer> DisableAutoFill ()
+    public IContainerConfigurator<TContainer> EnableAutoFill()
     {
-      _lazyValueProviderBuilder().DisableAutoFill<TContainer>();
+      _lazyValueProviderBuilder().EnableAutoFill<TContainer>();
       return this;
     }
   }
@@ -96,9 +96,9 @@ namespace Farada.TestDataGeneration.Fluent
       return this;
     }
 
-    public IMemberConfigurator<TContainer, TMember> DisableAutoFill ()
+    public IMemberConfigurator<TContainer, TMember> EnableAutoFill()
     {
-      _lazyValueProviderBuilder().DisableAutoFill (_memberExpression);
+      _lazyValueProviderBuilder().EnableAutoFill(_memberExpression);
       return this;
     }
   }
@@ -119,12 +119,6 @@ namespace Farada.TestDataGeneration.Fluent
     public IMemberWithMetadataConfigurator<TContainer, TMember, TMetadata> Select<TMember> (Expression<Func<TContainer, TMember>> memberExpression)
     {
       return new MemberWithMetadataConfigurator<TContainer, TMember, TMetadata> (_lazyValueProviderBuilder, _metadataProvider, memberExpression);
-    }
-
-    public IContainerWithMetadataConfigurator<TContainer, TMetadata> DisableAutoFill ()
-    {
-      _lazyValueProviderBuilder().DisableAutoFill<TContainer>();
-      return this;
     }
   }
 
@@ -155,9 +149,9 @@ namespace Farada.TestDataGeneration.Fluent
       return this;
     }
 
-    public IMemberWithMetadataConfigurator<TContainer, TMember, TMetadata> DisableAutoFill ()
+    public IMemberWithMetadataConfigurator<TContainer, TMember, TMetadata> EnableAutoFill()
     {
-      _lazyValueProviderBuilder().DisableAutoFill (_memberExpression);
+      _lazyValueProviderBuilder().EnableAutoFill(_memberExpression);
       return this;
     }
   }

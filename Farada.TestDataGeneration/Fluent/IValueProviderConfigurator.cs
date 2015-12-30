@@ -9,14 +9,14 @@ namespace Farada.TestDataGeneration.Fluent
     TReturn AddProvider<TContext> (ValueProvider<TType, TContext> valueProvider)
         where TContext : ValueProviderContext<TType>;
 
-    TReturn DisableAutoFill ();
+    TReturn EnableAutoFill();
   }
 
   public interface IValueProviderWithMetadataConfigurator<out TReturn, TMember, TMetadata>
   {
     TReturn AddProvider (MetadataValueProvider<TMember, TMetadata> valueProvider);
 
-    TReturn DisableAutoFill ();
+    TReturn EnableAutoFill();
   }
 
   public interface IContainerValueProviderConfigurator<TContainer>

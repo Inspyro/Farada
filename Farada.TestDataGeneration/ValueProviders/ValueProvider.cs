@@ -24,6 +24,14 @@ namespace Farada.TestDataGeneration.ValueProviders
       return memberType == typeof (TMember) || (memberType.IsNullableType() && memberType.GetTypeOfNullable() == typeof (TMember));
     }
 
+    public virtual bool FillsType (Type memberType)
+    {
+      //by default all value provider should be able to fill the direct type they were registered for.
+      //e.g if you registered a value provider for Vehicle, it should be possible to fill the vehicle type completely 
+      //however the user can always enforce auto fill by using EnableAutoFill() in the registration.
+      return memberType == typeof (TMember) || (memberType.IsNullableType() && memberType.GetTypeOfNullable() == typeof (TMember));
+    }
+
     protected abstract TContext CreateContext (ValueProviderObjectContext objectContext);
 
     IValueProviderContext IValueProvider.CreateContext (ValueProviderObjectContext objectContext)

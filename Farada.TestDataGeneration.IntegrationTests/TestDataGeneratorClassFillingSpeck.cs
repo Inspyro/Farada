@@ -150,7 +150,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .For<LandVehicle> ()
             .Select (lv => lv.Weight).AddProvider (context => 100)
             .Select (lv => lv.MainColor).AddProvider (context => Color.Red)
-            .For<AirVehicle> ().Select (av => av.Engine).AddProvider (context => new JetEngine ())
+            .For<AirVehicle> ().Select (av => av.Engine).AddProvider (context => new JetEngine ()).EnableAutoFill()
             .For<JetEngine> ().Select (je => je.PowerInNewtons).AddProvider (context => 5000);
       })
           .Given (TestDataGeneratorContext ());
@@ -175,7 +175,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
               //alternate between engine types
               i++;
               return i % 2 == 0 ? (Engine) new JetEngine () : new PropellorEngine ();
-            })
+            }).EnableAutoFill()
             .For<Engine> ().Select (e => e.PowerInNewtons).AddProvider (context => 1200)
             .For<PropellorEngine> ().Select (pe => pe.PowerInNewtons).AddProvider (context => 250);
       })

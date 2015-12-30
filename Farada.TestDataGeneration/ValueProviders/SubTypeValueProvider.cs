@@ -2,6 +2,13 @@
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
+  public enum ValueFillMode
+  {
+    All,
+    Specific,
+    None
+  }
+
   /// <summary>
   /// A <see cref="IValueProvider"/> that can not only generate properties of type TMember but also all subtypes
   /// </summary>
@@ -14,6 +21,23 @@ namespace Farada.TestDataGeneration.ValueProviders
     {
       return typeof (TMember).IsAssignableFrom(memberType);
     }
+
+    public override bool FillsType (Type memberType)
+    {
+      switch (FillMode)
+      {
+        case ValueFillMode.All:
+          return typeof (TMember).IsAssignableFrom (memberType);
+        case ValueFillMode.Specific:
+          return base.FillsType (memberType);
+        case ValueFillMode.None:
+          return false;
+      }
+
+      throw new NotSupportedException (FillMode + " fill mode is not supported");
+    }
+
+    public abstract ValueFillMode FillMode { get; }
   }
 
   /// <summary>
@@ -22,11 +46,11 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// which is <see cref="ValueProviderContext{TMember}"/>
   /// </summary>
   /// <typeparam name="TMember">The type of the property</typeparam>
-  public abstract class SubTypeValueProvider<TMember> : ValueProvider<TMember>
+  public abstract class SubTypeValueProvider<TMember> : SubTypeValueProvider<TMember, ValueProviderContext<TMember>>
   {
-    public override bool CanHandle (Type memberType)
+    protected override ValueProviderContext<TMember> CreateContext(ValueProviderObjectContext objectContext)
     {
-      return typeof (TMember).IsAssignableFrom(memberType);
+      return new ValueProviderContext<TMember>(objectContext);
     }
   }
 }

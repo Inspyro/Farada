@@ -83,20 +83,20 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _modifierList.Add (instanceModifier);
     }
 
-    public void DisableAutoFill<TType> ()
+    public void EnableAutoFill<TType> ()
     {
-      DisableAutoFill (new TypeKey (typeof (TType)));
+      EnableAutoFill(new TypeKey (typeof (TType)));
     }
 
-    public void DisableAutoFill<TMember, TContainer> (Expression<Func<TContainer, TMember>> chainExpression)
+    public void EnableAutoFill<TMember, TContainer> (Expression<Func<TContainer, TMember>> chainExpression)
     {
-      DisableAutoFill (ChainedKey.FromExpression (chainExpression));
+      EnableAutoFill(ChainedKey.FromExpression (chainExpression));
     }
 
-    private void DisableAutoFill (IKey key)
+    private void EnableAutoFill(IKey key)
     {
       if (_autoFillMapping.Contains (key))
-        throw new InvalidOperationException ("The key " + key + " was already disabled for auto fill.");
+        throw new InvalidOperationException ("The key " + key + " was already enabled for auto fill.");
 
       _autoFillMapping.Add (key);
     }

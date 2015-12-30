@@ -31,10 +31,31 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       }
     }
 
+   
     [CanBeNull]
     private ValueProviderLink GetOrDefault ([CanBeNull] IKey key)
     {
       return key!=null&&_valueProviders.ContainsKey(key) ? _valueProviders[key] : null;
+    }
+
+    /// <summary>
+    /// Returns true if the given type is filled by a value provider already (so auto-filling can be skipped).
+    /// </summary>
+    internal bool IsTypeFilledByValueProvider(IKey key)
+    {
+      var currentKey = key;
+      while (currentKey != null)
+      {
+        var link = GetOrDefault (currentKey);
+        if (link?.Value!=null)
+        {
+          if (link.Value.FillsType(key.Type))
+            return true; //we have no direct value provider link, so we will try to auto-fill the key.
+        }
+
+        currentKey = currentKey.PreviousKey;
+      }
+      return false;
     }
 
     [CanBeNull]

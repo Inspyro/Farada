@@ -41,8 +41,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
                   TestDataDomainConfiguration = (context => context
                       .UseDefaults (false)
                       .UseRandom (Random)
-                      .For<string> ().AddProvider (new ChooseSingleItemValueProvider<int, string> (InputList, item => item.ToString ()))
-                      .DisableAutoFill ()))
+                      .For<string> ().AddProvider (new ChooseSingleItemValueProvider<int, string> (InputList, item => item.ToString ()))))
               .Given ("TestDataGenerator", x => TestDataGenerator = TestDataGeneratorFactory.Create (TestDataDomainConfiguration));
     }
   }

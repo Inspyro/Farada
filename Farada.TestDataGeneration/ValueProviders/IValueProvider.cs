@@ -27,10 +27,18 @@ namespace Farada.TestDataGeneration.ValueProviders
     bool CanHandle (Type memberType);
 
     /// <summary>
+    /// Checks wethere the given type will be filled by this ValueProvider or not. 
+    /// </summary>
+    /// <param name="type">the type that should be checked</param>
+    /// <returns>true if the type will be filled by this value provider</returns>
+    bool FillsType(Type type);
+
+    /// <summary>
     /// Creates the type safe context out of the non type safe context and might extend the context
     /// </summary>
     /// <param name="objectContext">the non type safe context, containing some basic info</param>
     /// <returns>the type safe and maybe extended context for this value provider</returns>
     IValueProviderContext CreateContext (ValueProviderObjectContext objectContext);
+
   }
 }
