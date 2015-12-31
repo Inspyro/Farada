@@ -15,13 +15,13 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
     {
       public IsNullableTypeSpecK ()
       {
-        Specify (x => Type.IsNullableType ())
+        Specify (x => Type.IsUnwrappableNullableType ())
             .Case ("simple nullable", _ => _
                 .Given ("int?", x => Type = typeof (int?))
                 .It ("should be nullable", x => x.Result.Should ().BeTrue ()))
             .Case ("complex nullable", _ => _
                 .Given ("Nullable<>", x => Type = typeof (Nullable<>))
-                .It ("should be nullable", x => x.Result.Should ().BeTrue ()))
+                .It ("should be nullable", x => x.Result.Should ().BeFalse ()))
             .Case ("non nullable", _ => _
                 .Given ("int", x => Type = typeof (int))
                 .It ("should not be nullable", x => x.Result.Should ().BeFalse ()))
@@ -31,42 +31,21 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
       }
     }
 
-    [Subject (typeof (TypeExtensions), "GetTypeOfNullable")]
-    public class GetTypeOfNullableSpecK : TypeExtensionsSpecK
+    [Subject (typeof (TypeExtensions), "UnwrapIfNullable")]
+    public class UnwrapIfNullableSpecK : TypeExtensionsSpecK
     {
-      public GetTypeOfNullableSpecK ()
+      public UnwrapIfNullableSpecK ()
       {
-        Specify (x => Type.GetTypeOfNullable ())
+        Specify (x => Type.UnwrapIfNullable ())
             .Case ("simple nullable", _ => _
                 .Given ("int?", x => Type = typeof (int?))
                 .It ("should be int", x => x.Result.Should ().Be (typeof (int))))
             .Case ("complex nullable", _ => _
                 .Given ("Nullable<>", x => Type = typeof (Nullable<>))
-                .It ("should not be empty", x => x.Result.Should ().NotBeNull ()))
+                .It ("should skip non-unwrappable nullable", x => x.Result.Should ().Be (typeof (Nullable<>))))
             .Case ("non nullable", _ => _
                 .Given ("int", x => Type = typeof (int))
-                .ItThrows (typeof (ArgumentException)))
-            .Case ("nullable class", _ => _
-                .Given ("string", x => Type = typeof (string))
-                .ItThrows (typeof (ArgumentException)));
-      }
-    }
-
-    [Subject (typeof (TypeExtensions), "IsDerivedFrom")]
-    public class IsDerivedFromSpecK : TypeExtensionsSpecK
-    {
-      public IsDerivedFromSpecK ()
-      {
-        Specify (x => Type.IsDerivedFrom<Base> ()).
-            Case ("simple derived", _ => _
-                .Given ("Derived", x =>Type= typeof (Derived))
-                .It ("should be derived", x => x.Result.Should ().BeTrue ())).
-            Case ("complex derived", _ => _
-                .Given ("DerivedDerived", x => Type=typeof (DerivedDerived))
-                .It ("should be derived", x => x.Result.Should ().BeTrue ()))
-            .Case ("not derived", _ => _
-                .Given ("NotDerived", x =>Type= typeof (NotDerived))
-                .It ("should not be derived", x => x.Result.Should ().BeFalse ()));
+                .It ("should be int", x => x.Result.Should ().Be (typeof (int))));
       }
     }
 

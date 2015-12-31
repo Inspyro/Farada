@@ -12,26 +12,23 @@ namespace Farada.TestDataGeneration.Extensions
   /// </summary>
   public static class TypeExtensions
   {
-    [CanBeNull] //TODO PRES-675: Check
-    public static Type GetTypeOfNullable (this Type type)
-    {
-      if (!type.IsNullableType())
-        throw new ArgumentException ("You cannot retrieve the nullable type of a type that is not nullable");
 
+
+    public static bool IsUnwrappableNullableType (this Type type)
+    {
+      return type.IsGenericType
+             && (type.GetGenericTypeDefinition() == typeof (Nullable<>))
+             && type.GenericTypeArguments.Length > 0;
+    }
+
+    public static Type UnwrapIfNullable(this Type type)
+    {
+      return type.IsUnwrappableNullableType() ? type.GetTypeOfNullable() : type;
+    }
+
+    private static Type GetTypeOfNullable(this Type type)
+    {
       return type.GetGenericArguments()[0];
-    }
-
-    public static bool IsNullableType (this Type type)
-    {
-      return type.IsGenericType && (type.GetGenericTypeDefinition() == typeof (Nullable<>));
-    }
-
-    /// <summary>
-    /// Checks if a type is derived from another type.
-    /// </summary>
-    public static bool IsDerivedFrom<T> (this Type type)
-    {
-      return typeof (T).IsAssignableFrom (type);
     }
 
     /// <summary>

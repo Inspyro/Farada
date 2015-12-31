@@ -1,4 +1,5 @@
 ﻿using System;
+using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.ValueProviders.Context;
 
 namespace Farada.TestDataGeneration.ValueProviders
@@ -23,12 +24,12 @@ namespace Farada.TestDataGeneration.ValueProviders
     //we explicitly handle / fill only the reflective type..
     public override bool CanHandle(Type memberType)
     {
-      return _reflectedType == memberType; //TODO: Nullability?
+      return _reflectedType == memberType.UnwrapIfNullable();
     }
 
     public override bool FillsType(Type memberType)
     {
-      return _reflectedType == memberType; //TODO: Nullability?
+      return _reflectedType == memberType.UnwrapIfNullable();
     }
   }
 }

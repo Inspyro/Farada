@@ -1,4 +1,5 @@
 ﻿using System;
+using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.ValueProviders.Context;
 
 namespace Farada.TestDataGeneration.ValueProviders
@@ -20,7 +21,7 @@ namespace Farada.TestDataGeneration.ValueProviders
   {
     public override bool CanHandle (Type memberType)
     {
-      return typeof (TMember).IsAssignableFrom(memberType);
+      return typeof (TMember).IsAssignableFrom(memberType.UnwrapIfNullable());
     }
 
     public override bool FillsType (Type memberType)
@@ -28,7 +29,7 @@ namespace Farada.TestDataGeneration.ValueProviders
       switch (FillMode)
       {
         case ValueFillMode.All:
-          return typeof (TMember).IsAssignableFrom (memberType);
+          return typeof (TMember).IsAssignableFrom (memberType.UnwrapIfNullable());
         case ValueFillMode.Specific:
           return base.FillsType (memberType);
         case ValueFillMode.None:

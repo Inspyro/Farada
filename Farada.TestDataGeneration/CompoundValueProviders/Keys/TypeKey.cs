@@ -24,14 +24,9 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     //IDEA: Support Interfaces when needed
     private IKey CreatePreviousKey ()
     {
-      if (_type.IsNullableType())
-      {
-        var typeOfNullable = _type.GetTypeOfNullable();
-
-        if (typeOfNullable != null)
-          return new TypeKey(typeOfNullable);
-      }
-
+      if (_type.IsUnwrappableNullableType())
+       return new TypeKey(_type.UnwrapIfNullable());
+      
       var baseType = _type.BaseType;
       return baseType != null ? new TypeKey(baseType) : null;
     }
