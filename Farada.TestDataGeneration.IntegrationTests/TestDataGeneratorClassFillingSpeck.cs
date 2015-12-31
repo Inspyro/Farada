@@ -54,7 +54,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
           TestDataGenerator.Create<AirVehicle> (MaxRecursionDepth, null))
           .Case ("throws for abstract properties because of default provider chain", _ => _
               .Given (BaseDomainContext ())
-              .ItThrows (typeof (NotSupportedException), "Could not auto-fill AirVehicle> (member Engine). Please provide a value provider")
+              .ItThrows (typeof (NotSupportedException), "Could not auto-fill AirVehicle (member Engine). Please provide a value provider")
               .ItThrowsInner (typeof (NotSupportedException),
                   "No valid ctor found on 'Engine': Classes with non-public constructors and abstract classes are not supported."));
 

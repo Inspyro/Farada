@@ -27,7 +27,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
                   cfg.UseDefaults (false)
                       .For<ImmutableIce> ().AddProvider (new DefaultInstanceValueProvider<ImmutableIce> ())))
               .ItThrows (typeof (MissingValueProviderException),
-                  "No value provider registered for \"KEY on Farada.TestDataGeneration.IntegrationTests.TestDomain.ImmutableIce: Type: String, Member: Origin\""));
+                  "No value provider registered for \"Farada.TestDataGeneration.IntegrationTests.TestDomain.ImmutableIce.Origin\""));
     }
 
     Context ConfigurationContext (TestDataDomainConfiguration config)

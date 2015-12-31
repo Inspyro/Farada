@@ -77,7 +77,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
     public override string ToString ()
     {
-      return Type.FullName + ">" + Member;
+      return Type.FullName + (Member != null ? "." + Member : "");
     }
 
     public bool Equals ([CanBeNull] TypeKey other)

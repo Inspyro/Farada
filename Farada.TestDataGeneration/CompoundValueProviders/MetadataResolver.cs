@@ -35,8 +35,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       if (metadataContexts.Count <= 0)
       {
         throw new ArgumentException (
-            "Could not find metadata context for key:'" + memberKey + "' . " +
-            "Have you registered the dependency before the metadata provider?");
+            $"Could not find metadata context for key:'{memberKey}'. Have you registered the dependency before the metadata provider?");
       }
 
       var metadataProvider = _metadataProviderMapping[memberKey];

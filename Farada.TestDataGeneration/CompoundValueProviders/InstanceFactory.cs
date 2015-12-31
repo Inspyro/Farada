@@ -71,8 +71,8 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
                 if (previousLink == null)
                 {
                   throw new MissingValueProviderException (
-                      "Tried to call previous provider on " + key
-                      + " but no previous provider was registered. Are you missing a value provider registration?");
+                      $"Tried to call previous provider on '{key}' but no previous provider was registered. " +
+                      "Are you missing a value provider registration?");
                 }
 
                 return

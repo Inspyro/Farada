@@ -30,16 +30,16 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Case ("Should throw on missing dependency", _ => _
               .Given (MissingDependencyContext ())
               .ItThrows (typeof (ArgumentException),
-                  "Could not find key:'KEY on AirVehicle: Type: Color, Member: MainColor' in metadata context. " +
+                  "Could not find key:'AirVehicle.MainColor' in metadata context. " +
                   "Have you registered the dependency before the metadata provider?"))
           .Case ("should throw on cycles", _ => _
               .Given (CyclicDependencyContext ())
-              .ItThrows (typeof (ArgumentException), "Could not find key:'KEY on AirVehicle: Type: Int32, Member: Weight' in metadata context. " +
+              .ItThrows (typeof (ArgumentException), "Could not find key:'AirVehicle.Weight' in metadata context. " +
                                                      "Have you registered the dependency before the metadata provider?"))
           .Case ("should throw on deep dependencies", _ => _
               .Given (DeepDependencyContext ())
               .ItThrows (typeof (ArgumentException),
-                  "Could not find key:'KEY on AirVehicle: Type: Engine, Member: Engine > Type: Single, Member: PowerInNewtons' in metadata context. "
+                  "Could not find key:'AirVehicle.Engine.PowerInNewtons' in metadata context. "
                   +
                   "Have you registered the dependency before the metadata provider?"));
 
@@ -56,7 +56,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
               .Given (CyclicCtorDependencyContext ())
               .ItThrows (typeof (ArgumentException),
                   //REVIEW: We get a different message here because the DefaultInstanceValueProvider does not construct the metadata on the wrong registration order...
-                  "Could not find metadata context for key:'KEY on Farada.TestDataGeneration.IntegrationTests.TestDomain.ImmutableIce: Type: String, Member: Origin' . "
+                  "Could not find metadata context for key:'Farada.TestDataGeneration.IntegrationTests.TestDomain.ImmutableIce.Origin'. "
                   +
                   "Have you registered the dependency before the metadata provider?"));
     }
@@ -93,20 +93,20 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Given (TestDataGeneratorContext ());
     }
 
-    Context PassThroughDependencyContext()
+    Context PassThroughDependencyContext ()
     {
-      return c => c.Given("simple dependency domain", x =>
+      return c => c.Given ("simple dependency domain", x =>
       {
         TestDataDomainConfiguration = configurator => configurator.UseDefaults (false)
             .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
             .For<Engine> ().AddProvider (context => new JetEngine { PowerInNewtons = 5 })
             .For<AirVehicle> ()
-            .Select(a => a.Weight).AddProvider(context => 0)
+            .Select (a => a.Weight).AddProvider (context => 0)
             .Select (a => a.MainColor).AddProvider (context => Color.Green)
-            .For<AirVehicle> ().WithMetadata (ctx=>ctx)
+            .For<AirVehicle> ().WithMetadata (ctx => ctx)
             .Select (a => a.Name).AddProvider (context => $"VehicleX (Color:{context.Metadata.Get (a => a.MainColor)})");
       })
-          .Given(TestDataGeneratorContext());
+          .Given (TestDataGeneratorContext ());
     }
 
     Context CyclicDependencyContext ()
@@ -173,7 +173,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       {
         TestDataDomainConfiguration = configurator => configurator.UseDefaults (false)
             .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
-            .For<ImmutableIce>()
+            .For<ImmutableIce> ()
             .Select (ice => ice.Temperature).AddProvider (context => 1)
             .For<ImmutableIce> ().WithMetadata (ctx => temperature)
             .Select (ice => ice.Origin).AddProvider (context => $"Antarctica ({context.Metadata})");
@@ -202,58 +202,12 @@ namespace Farada.TestDataGeneration.IntegrationTests
         TestDataDomainConfiguration = configurator => configurator.UseDefaults (false)
             .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
             //cycle: origin -> temperature -> origin
-            .For<ImmutableIce> ().WithMetadata(ctx=>ctx.Get(ice=>ice.Temperature))
+            .For<ImmutableIce> ().WithMetadata (ctx => ctx.Get (ice => ice.Temperature))
             .Select (ice => ice.Origin).AddProvider (context => "don't care")
-            .For<ImmutableIce>().WithMetadata(ctx=>ctx.Get(ice=>ice.Origin))
+            .For<ImmutableIce> ().WithMetadata (ctx => ctx.Get (ice => ice.Origin))
             .Select (ice => ice.Temperature).AddProvider (context => 4 /*don't care*/);
       })
           .Given (TestDataGeneratorContext ());
     }
-
-
-    //return c => c.Given("simple ctor dependency domain", x =>
-    //{
-    //  TestDataDomainConfiguration = configurator => configurator.UseDefaults(false)
-    //      .For<Order>().AddProvider (new DefaultInstanceValueProvider<object> ())
-    //      .For((Order o) => ice.PaymentMethod, ((Order o) => ice.PaymentAcceptedCurrencies)
-    //        .AddProvider(context => {
-    //           var result = RandomPaymentMethodGenerator.Next();
-    //           // ignored: result.PaymentProviderCompany
-    //           return Tuple.Create(result.PaymentMethod, result.PaymentAcceptedCurrencies);
-    //       });
-
-
-    /* For<RevokeEvent>().AddProvider<User>(c=>c.User.ChangeEvent = changeEvent);
-      *  For<RevokeEvent>(e=>e.AggregateId).AddProvider(c=>c.GetDependendValue(User.ChangeEvent).AggregateId, c.User);
-      */
-    /*
-       return c => c.Given("simple ctor dependency domain", x =>
-       {
-         TestDataDomainConfiguration = configurator => configurator.UseDefaults(false)
-             .For<Order>()
-             .AddMetaProvider(context => RandomPaymentMethodGenerator.Next())
-             .AddProvider (new DefaultInstanceValueProvider<object> ())
-             .AddProvider (c => new ImmutableOrder(c.Metadata.PaymentMethod))
-             .For((Order o) => ice.PaymentMethod).AddProvider(c => c.MetaData.PaymentMethod)
-             .For((Order o) => ice.PaymentAcceptedCurrencies).AddProvider(c => c.MetaData.PaymentAcceptedCurrencies)
-       })
-      */
-
-
-    /*
-  return c => c.Given("simple ctor dependency domain", x =>
-  {
-    TestDataDomainConfiguration = configurator => configurator.UseDefaults(false)
-        .For<Order>()
-        .AddMetaProvider(context => new { A = "a" })
-        .AddProvider (new DefaultInstanceValueProvider<object> ())
-        .AddProvider (c => new ImmutableOrder(c.Metadata.A))
-  })
- */
-
-
-    /*
-        ValueProviderContext.Metadata : TMetadata - provided per instance with AddMetadataProvider.
-      */
   }
 }

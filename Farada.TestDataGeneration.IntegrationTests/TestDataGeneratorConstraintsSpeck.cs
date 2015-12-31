@@ -30,7 +30,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
           TestDataGenerator.Create<ClassWithInvalidStringLengthConstraint> (MaxRecursionDepth, null))
           .Case ("should raise argument out of range exception", _ => _
               .Given (BaseDomainContext ())
-              .ItThrows(typeof(NotSupportedException), "Could not auto-fill Farada.TestDataGeneration.IntegrationTests.TestDomain.ClassWithInvalidStringLengthConstraint> (member InvalidRangedName). Please provide a value provider")
+              .ItThrows(typeof(NotSupportedException), "Could not auto-fill Farada.TestDataGeneration.IntegrationTests.TestDomain.ClassWithInvalidStringLengthConstraint (member InvalidRangedName). Please provide a value provider")
               .ItThrowsContainsInner(typeof (ArgumentOutOfRangeException),
                   "On the member System.String InvalidRangedName the StringLength attribute has an invalid range"));
 
@@ -38,7 +38,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
           TestDataGenerator.Create<ClassWithInvalidRangeConstraint> (MaxRecursionDepth, null))
           .Case ("should raise argument exception", _ => _
               .Given (BaseDomainContext ())
-              .ItThrows(typeof(NotSupportedException), "Could not auto-fill Farada.TestDataGeneration.IntegrationTests.TestDomain.ClassWithInvalidRangeConstraint> (member InvalidRangedNumber). Please provide a value provider")
+              .ItThrows(typeof(NotSupportedException), "Could not auto-fill Farada.TestDataGeneration.IntegrationTests.TestDomain.ClassWithInvalidRangeConstraint (member InvalidRangedNumber). Please provide a value provider")
               .ItThrowsContainsInner(typeof (ArgumentOutOfRangeException),
                   "On the member System.Int32 InvalidRangedNumber the Range attribute has an invalid range"));
     }

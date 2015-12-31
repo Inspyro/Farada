@@ -22,7 +22,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
     public override string ToString ()
     {
-      return string.Format("Type: {0}, Member: {1}", MemberType.Name, Member.Name);
+      return $"{Member.Name}";
     }
 
     public bool Equals ([CanBeNull] MemberKeyPart other)

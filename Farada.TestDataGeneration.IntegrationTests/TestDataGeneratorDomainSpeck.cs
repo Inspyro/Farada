@@ -106,83 +106,83 @@ namespace Farada.TestDataGeneration.IntegrationTests
       Specify (x => Create<byte> ()).Case ("simple byte case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.Byte>\""));
+          .ItThrows (typeof (MissingValueProviderException), "No value provider registered for \"System.Byte\""));
 
       Specify (x => Create<char> ()).Case ("simple char case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.Char>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.Char\""));
 
       Specify (x => Create<decimal> ()).Case ("simple decimal case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.Decimal>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.Decimal\""));
 
       Specify (x => Create<double> ()).Case ("simple double case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.Double>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.Double\""));
 
       Specify (x => Create<SomeEnum> ()).Case ("simple Enum case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException),
-              "No value provider registered for \"Farada.TestDataGeneration.IntegrationTests.TestDomain.SomeEnum>\""));
+          .ItThrows(typeof (MissingValueProviderException),
+              "No value provider registered for \"Farada.TestDataGeneration.IntegrationTests.TestDomain.SomeEnum\""));
 
       Specify (x => Create<float> ()).Case ("simple float case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.Single>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.Single\""));
 
       Specify (x => Create<int> ()).Case ("simple int case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.Int32>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.Int32\""));
 
       Specify (x => Create<long> ()).Case ("simple long case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.Int64>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.Int64\""));
 
       Specify (x => Create<sbyte> ()).Case ("simple sbyte case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.SByte>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.SByte\""));
 
       Specify (x => Create<short> ()).Case ("simple short case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.Int16>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.Int16\""));
 
       Specify (x => Create<uint> ()).Case ("simple uint case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.UInt32>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.UInt32\""));
 
       Specify (x => Create<ulong> ()).Case ("simple ulong case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.UInt64>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.UInt64\""));
 
       Specify (x => Create<ushort> ()).Case ("simple ushort case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.UInt16>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.UInt16\""));
 
       Specify (x => Create<Guid> ()).Case ("simple Guid case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.Guid>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.Guid\""));
 
       Specify (x => Create<string> ()).Case ("simple string case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.String>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.String\""));
 
       Specify (x => Create<DateTime> ()).Case ("simple DateTime case with empty domain", _ => _
           .Given (BaseDomainContext (useDefaults: false))
           //
-          .ItThrowsContains (typeof (MissingValueProviderException), "No value provider registered for \"System.DateTime>\""));
+          .ItThrows(typeof (MissingValueProviderException), "No value provider registered for \"System.DateTime\""));
       Specify (x => Create<ClassWithEmail> ()).Case ("email case with empty domain", _ => _
           .Given (SimpleStringDomain ("simple string"))
           //

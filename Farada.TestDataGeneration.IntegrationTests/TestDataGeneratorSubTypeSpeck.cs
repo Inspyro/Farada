@@ -30,13 +30,13 @@ namespace Farada.TestDataGeneration.IntegrationTests
           TestDataGenerator.Create<LandVehicle> (MaxRecursionDepth, null))
           .Case ("should throw when creating LandVehicle", _ => _
               .Given (VehicleOnlyValueProviderContext ())
-              .ItThrows (typeof (MissingValueProviderException), "No value provider registered for \"LandVehicle>\""));
+              .ItThrows (typeof (MissingValueProviderException), "No value provider registered for \"LandVehicle\""));
 
       Specify (x =>
           TestDataGenerator.Create<AirVehicle> (MaxRecursionDepth, null))
           .Case ("should throw when creating AirVehicle", _ => _
               .Given (VehicleOnlyValueProviderContext ())
-              .ItThrows (typeof (MissingValueProviderException), "No value provider registered for \"AirVehicle>\""));
+              .ItThrows (typeof (MissingValueProviderException), "No value provider registered for \"AirVehicle\""));
 
 
       Specify (x =>

@@ -110,11 +110,12 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Case ("should throw exception because of missing provider", _ => _
               .Given (AttributeMixedOtherWayContext ())
               .ItThrows (typeof (NotSupportedException),
-                  "Could not auto-fill Farada.TestDataGeneration.IntegrationTests.TestDomain.ClassWithoutAttribute> " +
+                  "Could not auto-fill Farada.TestDataGeneration.IntegrationTests.TestDomain.ClassWithoutAttribute " +
                   "(member PropertyWithoutAttribute). Please provide a value provider")
               .ItThrowsInner (typeof (MissingValueProviderException),
-                  "Tried to call previous provider on KEY on Farada.TestDataGeneration.IntegrationTests.TestDomain.ClassWithoutAttribute: " +
-                  "Type: String, Member: PropertyWithoutAttribute but no previous provider was registered. Are you missing a value provider registration?"));
+                  "Tried to call previous provider on " +
+                  "'Farada.TestDataGeneration.IntegrationTests.TestDomain.ClassWithoutAttribute.PropertyWithoutAttribute'" +
+                  " but no previous provider was registered. Are you missing a value provider registration?"));
     }
 
     Context ConfigurationContext (TestDataDomainConfiguration config)
