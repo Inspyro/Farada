@@ -177,7 +177,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 
   class DummyTestDataGenerator : ITestDataGeneratorAdvanced
   {
-    public IList<object> CreateMany (IKey currentKey, IList<object> resolvedMetadatasForKey, int itemCount, int maxRecursionDepth)
+    public IList<object> CreateMany (IKey currentKey, [CanBeNull] IList<object> resolvedMetadatasForKey, int itemCount, int maxRecursionDepth)
     {
       throw new InvalidOperationException();
     }

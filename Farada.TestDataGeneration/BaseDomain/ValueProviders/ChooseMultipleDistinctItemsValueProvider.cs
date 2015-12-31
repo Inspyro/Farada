@@ -44,7 +44,8 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 
       Trace.Assert(numberOfReturnedItems <= _items.Count);
 
-      Func<int> randomIntGenerator = () => context.Random.Next(int.MinValue, int.MaxValue);
+      Func<int> randomIntGenerator =
+        () => context.Random.Next(int.MinValue, int.MaxValue);
 
       return Enumerable.Range(0, _items.Count)
               .Shuffle(randomIntGenerator)
