@@ -1,6 +1,7 @@
 ﻿using System;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.FastReflection;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.ValueProviders.Context
 {
@@ -63,16 +64,8 @@ namespace Farada.TestDataGeneration.ValueProviders.Context
       Advanced = objectContext.Advanced;
     }
 
-    //REVIEW: Make this method immutable?
     internal virtual TContext Enrich<TContext> (object metadata) where TContext : ValueProviderContext<TMember>
     {
-      if (metadata == null)
-      {
-        throw new InvalidOperationException(
-            "Cannot convert value provider for " + Advanced.Key + " because there was no metadata found");
-      }
-
-
       InternalMetadata = metadata;
       return (TContext) this;
     }

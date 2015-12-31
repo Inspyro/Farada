@@ -19,7 +19,7 @@ namespace Farada.TestDataGeneration.ValueProviders.Context
 
     internal override TContext Enrich<TContext> (object metadata)
     {
-      Metadata = (TMetadata) metadata; //REVIEW: Should we catch the potential cast exception here?
+      Metadata = (TMetadata) metadata;
       return base.Enrich<TContext> (metadata);
     }
   }

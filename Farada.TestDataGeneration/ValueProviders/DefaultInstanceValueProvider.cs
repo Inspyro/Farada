@@ -29,12 +29,9 @@ namespace Farada.TestDataGeneration.ValueProviders
 
       var sortedCtorMembers = context.Advanced.MemberSorter.Sort (ctorMembers, context.Advanced.Key).ToList();
 
-      //TODO: Check if performance for this method is ok.
-      var sortedToUnsorted = new List<int>();
-      for(int i=0;i<sortedCtorMembers.Count;i++)
-      {
-        sortedToUnsorted.Add (ctorMembers.IndexOf (sortedCtorMembers[i]));
-      }
+      //Note: We use a dictionary because when we have many ctor members, we gain some performance.
+      var toUnsortedDictionary = ctorMembers.Select ((value, index) => new { value, index }).ToDictionary (x => x.value, x => x.index);
+      var sortedToUnsorted = sortedCtorMembers.Select (member => toUnsortedDictionary[member]).ToList();
 
       for (var argumentIndex = 0; argumentIndex < sortedCtorMembers.Count; argumentIndex++)
       {
