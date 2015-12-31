@@ -22,6 +22,6 @@ namespace Farada.TestDataGeneration.IntegrationTests.TestDomain
     }
 
     //We indicate that we fill all types with values, so they are not automatically filled by farada anymore.
-    public override ValueFillMode FillMode { get { return ValueFillMode.All; } }
+    public override ValueFillMode FillMode { get { return ValueFillMode.FillAll; } }
   }
 }

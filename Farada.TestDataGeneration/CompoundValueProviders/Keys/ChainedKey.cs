@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using Farada.TestDataGeneration.Extensions;
 using Farada.TestDataGeneration.FastReflection;
 using JetBrains.Annotations;
@@ -21,6 +22,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
 
     private readonly MemberKeyPart _lastMember;
     private readonly Type _concreteDeclaringType;
+    private readonly Queue<Type> _interfaces;
 
     public IFastMemberWithValues Member
     {
@@ -50,16 +52,17 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     }
 
     internal ChainedKey (Type declaringType, IList<MemberKeyPart> memberChain)
-        : this (declaringType, declaringType, memberChain)
+        : this (declaringType, declaringType, TypeKey.GetInterfaces(declaringType), memberChain)
     {
     }
 
-    private ChainedKey (Type declaringType, Type concreteDeclaringType, IList<MemberKeyPart> memberChain)
+    private ChainedKey (Type declaringType, Type concreteDeclaringType, Queue<Type> interfaces, IList<MemberKeyPart> memberChain)
     {
       ArgumentUtility.CheckNotNull ("declaringType", declaringType);
 
       _declaringType = declaringType;
       _concreteDeclaringType = concreteDeclaringType;
+      _interfaces = interfaces;
       _memberChain = memberChain;
 
       _lastMember = memberChain.Last();
@@ -84,7 +87,10 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
     {
       var baseType = _declaringType.BaseType;
       if (baseType != typeof (object) && baseType != typeof (ValueType) && baseType != null)
-        return new ChainedKey (baseType, _concreteDeclaringType, _memberChain);
+        return new ChainedKey (baseType, _concreteDeclaringType, _interfaces, _memberChain);
+
+      if (_interfaces.Count > 0)
+        return new ChainedKey (_interfaces.Dequeue(), _concreteDeclaringType, _interfaces, _memberChain);
 
       var firstMemberKey = _memberChain[0];
       var previousProperties = _memberChain.Slice (1);

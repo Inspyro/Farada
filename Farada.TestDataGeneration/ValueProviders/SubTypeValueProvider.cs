@@ -6,9 +6,9 @@ namespace Farada.TestDataGeneration.ValueProviders
 {
   public enum ValueFillMode
   {
-    All,
-    Specific,
-    None
+    FillAll,
+    FillSpecificInstance,
+    FillNone
   }
 
   /// <summary>
@@ -28,11 +28,11 @@ namespace Farada.TestDataGeneration.ValueProviders
     {
       switch (FillMode)
       {
-        case ValueFillMode.All:
+        case ValueFillMode.FillAll:
           return typeof (TMember).IsAssignableFrom (memberType.UnwrapIfNullable());
-        case ValueFillMode.Specific:
+        case ValueFillMode.FillSpecificInstance:
           return base.FillsType (memberType);
-        case ValueFillMode.None:
+        case ValueFillMode.FillNone:
           return false;
       }
 

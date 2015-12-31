@@ -34,6 +34,20 @@ class AirVehicle : AbstractVehicle
   public Engine Engine { get; set; }
 }
 
+class CustomVehicle :AbstractVehicle
+{
+  public Vector? CurrentDirection;
+}
+
+interface IVector
+{
+  
+}
+struct Vector : IVector
+{
+  public string Id { get; set; }
+}
+
 class JetEngine : Engine
 {
   public float FuelUsePerSecond { get; set; }

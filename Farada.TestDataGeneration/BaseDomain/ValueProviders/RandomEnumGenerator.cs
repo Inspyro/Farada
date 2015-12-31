@@ -25,7 +25,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
     //we indicate that we fill the enums, but enums are not auto-fillable anyway as they are primitive types. 
     public override ValueFillMode FillMode
     {
-      get { return ValueFillMode.All; }
+      get { return ValueFillMode.FillAll; }
     }
   }
 }

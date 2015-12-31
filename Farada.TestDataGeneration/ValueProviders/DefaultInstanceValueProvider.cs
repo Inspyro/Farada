@@ -115,7 +115,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     //Autofill will however skip those ctor params.
     public override ValueFillMode FillMode
     {
-      get { return ValueFillMode.None; }
+      get { return ValueFillMode.FillNone; }
     }
   }
 }

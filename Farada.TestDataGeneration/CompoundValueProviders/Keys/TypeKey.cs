@@ -13,22 +13,39 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
   internal class TypeKey : IKey, IEquatable<TypeKey>
   {
     private readonly Type _type;
+    private readonly Queue<Type> _interfaces;
 
-    public TypeKey (Type type)
+    public TypeKey (Type type) : this(type, interfaces: GetInterfaces(type))
+    {
+    }
+
+    internal static Queue<Type> GetInterfaces (Type type)
+    {
+      return new Queue<Type> (type.UnwrapIfNullable().GetInterfaces());
+    }
+
+    private TypeKey(Type type, Queue<Type> interfaces)
     {
       _type = type;
+      _interfaces = interfaces;
       PreviousKey = CreatePreviousKey();
     }
 
     [CanBeNull]
-    //IDEA: Support Interfaces when needed
     private IKey CreatePreviousKey ()
     {
       if (_type.IsUnwrappableNullableType())
        return new TypeKey(_type.UnwrapIfNullable());
-      
+
       var baseType = _type.BaseType;
-      return baseType != null ? new TypeKey(baseType) : null;
+      if (baseType != null)
+        return new TypeKey (baseType, _interfaces);
+
+      //we go through all interfaces of the most concrete (not nullable) type.
+      if (_interfaces.Count > 0)
+        return new TypeKey (_interfaces.Dequeue(), _interfaces);
+
+      return null;
     }
 
     public IKey PreviousKey { get; private set; }

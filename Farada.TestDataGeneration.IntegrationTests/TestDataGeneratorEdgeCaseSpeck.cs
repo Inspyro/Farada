@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.Exceptions;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using Farada.TestDataGeneration.IntegrationTests.Utils;
 using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
+using FluentAssertions.Common;
 using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
@@ -14,14 +16,39 @@ namespace Farada.TestDataGeneration.IntegrationTests
   {
     public TestDataGeneratorEdgeCaseSpeck ()
     {
+      Specify (x => TestDataGenerator.Create<ClassWithList> (MaxRecursionDepth, null))
+          .Case ("Properties Are Initialized", _ => _
+              .Given (ConfigurationContext (cfg =>
+                  cfg.UseDefaults (false)
+                      .For<ClassWithList> ().AddProvider (new DefaultInstanceValueProvider<ClassWithList> ())
+                      .For<IList<int>> ().AddProvider (f => new List<int> { 0, 1, 2, 3 })))
+              .It ("initialized first list correctly", x => x.Result.IntegerList.Should ().BeEquivalentTo (new[] { 0, 1, 2, 3 })));
+
+      Specify (x => 
+       TestDataGenerator.Create<ClassWithInterfacedMembers> (MaxRecursionDepth, null))
+          .Case ("Interfaced Properties Are Initialized", _ => _
+              .Given (ConfigurationContext (cfg =>
+                  cfg.UseDefaults (false)
+                      .For<ClassWithInterfacedMembers> ().AddProvider (new DefaultInstanceValueProvider<ClassWithInterfacedMembers> ())
+                      .For<InterfacedClass> ().AddProvider (new DefaultInstanceValueProvider<InterfacedClass> ())
+                      .For<IInterface> ().Select (i => i.Name).AddProvider (ctx => "IInterfaced - Name")
+                      .For<DerivedInterfacedClass> ().Select (d => d.Value).AddProvider (ctx => "My Value")
+                      .For<DerivedInterfacedClass> ().Select (d => d.Name).AddProvider (ctx => "Derived + " + ctx.GetPreviousValue ())))
+              .It ("initialized interfaced class according to interface registration",
+                  x => x.Result.InterfacedClass.Name.Should ().Be ("IInterfaced - Name"))
+              .It ("initialized derived interfaced class according to interface registration",
+                  x => x.Result.DerivedInterfacedClass.Name.Should ().Be ("Derived + IInterfaced - Name"))
+              .It ("initialized derived interfaced class value according to it's registration",
+                  x => x.Result.DerivedInterfacedClass.Value.Should ().Be ("My Value")));
+
       Specify (x => "empty")
           .Case ("should throw exception for methods", _ => _
-              .Given (ConfigurationContext (c => c.For<ClassWithVariousMembers>().Select(y => y.PublicMethod ()).AddProvider (dummy => "")))
+              .Given (ConfigurationContext (c => c.For<ClassWithVariousMembers> ().Select (y => y.PublicMethod ()).AddProvider (dummy => "")))
               .It ("ex", x => CreationException.Should ().BeOfType<NotSupportedException> ())
               .It ("ex",
                   x => CreationException.Message.Should ().Be ("Empty chains / Non-member chains are not supported, please use AddProvider<T>()")))
           .Case ("should throw exception for types", _ => _
-              .Given (ConfigurationContext (c => c.For<ClassWithVariousMembers>().Select(y => y).AddProvider (dummy => null)))
+              .Given (ConfigurationContext (c => c.For<ClassWithVariousMembers> ().Select (y => y).AddProvider (dummy => null)))
               .It ("ex", x => CreationException.Should ().BeOfType<NotSupportedException> ())
               .It ("ex",
                   x => CreationException.Message.Should ().Be ("Empty chains / Non-member chains are not supported, please use AddProvider<T>()")));
@@ -30,7 +57,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       Specify (x =>
           TestDataGenerator.Create<ClassWithVariousMembers> (MaxRecursionDepth, null))
           .Case ("should throw exception for setting the value of a get only member", _ => _
-              .Given (ConfigurationContext (c => c.For<ClassWithVariousMembers>().Select(y => y.GetOnlyProperty).AddProvider (dummy => "content")))
+              .Given (ConfigurationContext (c => c.For<ClassWithVariousMembers> ().Select (y => y.GetOnlyProperty).AddProvider (dummy => "content")))
               .It ("GetOnlyProperty should be null", x => x.Result.GetOnlyProperty.Should ().BeNull ()));
 
 
@@ -104,8 +131,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
           {
             TestDataDomainConfiguration =
                 configuration => configuration
-                    .For< BaseClassWithProtectedProperty>().Select(b => b.OverrideMe).AddProvider (context => "BaseValue")
-                    .For< ClassOveridingPropertyWithNewType>().Select(b => b.OverrideMe).AddProvider (context => 103);
+                    .For<BaseClassWithProtectedProperty> ().Select (b => b.OverrideMe).AddProvider (context => "BaseValue")
+                    .For<ClassOveridingPropertyWithNewType> ().Select (b => b.OverrideMe).AddProvider (context => 103);
           })
           .Given (TestDataGeneratorContext ());
     }
@@ -118,7 +145,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
             TestDataDomainConfiguration =
                 configuration => configuration
                     .For<int> ().AddProvider (context => 3)
-                    .For<BaseClassWithProtectedProperty>().Select(b => b.OverrideMe).AddProvider (context => "BaseValue");
+                    .For<BaseClassWithProtectedProperty> ().Select (b => b.OverrideMe).AddProvider (context => "BaseValue");
           })
           .Given (TestDataGeneratorContext ());
     }
@@ -131,8 +158,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
             TestDataDomainConfiguration =
                 configuration => configuration
                     .For<int> ().AddProvider (context => 3)
-                    .For<BaseClassWithProtectedProperty>().Select(b => b.OverrideMe).AddProvider (context => "BaseValue")
-                    .For< ClassOveridingPropertyWithNewType>().Select(b => b.OverrideMe).AddProvider (context => 1 + context.GetPreviousValue ());
+                    .For<BaseClassWithProtectedProperty> ().Select (b => b.OverrideMe).AddProvider (context => "BaseValue")
+                    .For<ClassOveridingPropertyWithNewType> ().Select (b => b.OverrideMe).AddProvider (context => 1 + context.GetPreviousValue ());
           })
           .Given (TestDataGeneratorContext ());
     }
@@ -172,7 +199,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
                 .UseDefaults (false)
                 .For<ClassWithoutAttribute> ().AddProvider (new DefaultInstanceValueProvider<ClassWithoutAttribute> ())
                 .For<string> ()
-                .AddProvider(context => "Some value")
+                .AddProvider (context => "Some value")
                 .AddProvider<string, SubClassString1Attribute> (context => context.Attribute.Content);
           })
           .Given (TestDataGeneratorContext ());
@@ -190,6 +217,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
                 .AddProvider<string, SubClassString1Attribute> (context => context.Attribute.Content);
           })
           .Given (TestDataGeneratorContext ());
+
     }
   }
 }
