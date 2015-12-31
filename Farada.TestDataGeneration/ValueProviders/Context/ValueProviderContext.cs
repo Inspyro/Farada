@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Linq.Expressions;
 using Farada.TestDataGeneration.CompoundValueProviders;
-using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.FastReflection;
-using JetBrains.Annotations;
 
-namespace Farada.TestDataGeneration.ValueProviders
+namespace Farada.TestDataGeneration.ValueProviders.Context
 {
   /// <summary>
   /// The concrete value provider context

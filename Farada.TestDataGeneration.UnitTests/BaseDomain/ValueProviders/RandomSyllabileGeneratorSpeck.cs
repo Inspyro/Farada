@@ -7,6 +7,7 @@ using Farada.TestDataGeneration.CompoundValueProviders.Farada.TestDataGeneration
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.ValueProviders;
+using Farada.TestDataGeneration.ValueProviders.Context;
 using FluentAssertions;
 using JetBrains.Annotations;
 using TestFx.SpecK;

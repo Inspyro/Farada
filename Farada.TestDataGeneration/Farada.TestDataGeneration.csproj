@@ -149,8 +149,8 @@
     <Compile Include="TestDataGeneratorFactory.cs" />
     <Compile Include="ValueProviders\AttributeBasedValueProvider.cs" />
     <Compile Include="ValueProviders\DefaultInstanceValueProvider.cs" />
-    <Compile Include="ValueProviders\MetatadaValueProviderContext.cs" />
-    <Compile Include="ValueProviders\ExtendedValueProviderContext.cs" />
+    <Compile Include="ValueProviders\Context\MetatadaValueProviderContext.cs" />
+    <Compile Include="ValueProviders\Context\ExtendedValueProviderContext.cs" />
     <Compile Include="ValueProviders\IRandom.cs" />
     <Compile Include="ValueProviders\IValueProvider.cs" />
     <Compile Include="ValueProviders\MetadataValueProvider.cs" />
@@ -158,8 +158,8 @@
     <Compile Include="ValueProviders\ReflectiveValueProvider.cs" />
     <Compile Include="ValueProviders\SubTypeValueProvider.cs" />
     <Compile Include="ValueProviders\ValueProvider.cs" />
-    <Compile Include="ValueProviders\ValueProviderContext.cs" />
-    <Compile Include="ValueProviders\ValueProviderObjectContext.cs" />
+    <Compile Include="ValueProviders\Context\ValueProviderContext.cs" />
+    <Compile Include="ValueProviders\Context\ValueProviderObjectContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ReSharperAnnotations Apache-2.0.licenseheader" />

@@ -6,6 +6,7 @@ using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.Modifiers;
 using Farada.TestDataGeneration.ValueProviders;
+using Farada.TestDataGeneration.ValueProviders.Context;
 
 namespace Farada.TestDataGeneration.Fluent
 {

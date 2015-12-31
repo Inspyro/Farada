@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace Farada.TestDataGeneration.ValueProviders
+namespace Farada.TestDataGeneration.ValueProviders.Context
 {
   /// <summary>
   /// A value provider context with metadata.
