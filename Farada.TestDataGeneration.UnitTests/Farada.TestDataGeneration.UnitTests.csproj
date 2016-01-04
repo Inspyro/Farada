@@ -106,6 +106,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BaseDomain\ValueProviders\RandomWordGeneratorSpeck.cs" />
+    <Compile Include="BaseDomain\ValueProviders\RangedValueProviderSpeck.cs" />
     <Compile Include="Extensions\EnumerableExtensionsSpecK.cs" />
     <Compile Include="FastReflection\FastActivatorSpeck.cs" />
     <Compile Include="FastReflection\FastReflectionSpeck.cs" />

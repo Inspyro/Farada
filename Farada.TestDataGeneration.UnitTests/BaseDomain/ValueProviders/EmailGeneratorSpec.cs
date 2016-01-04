@@ -11,7 +11,6 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
   [Subject (typeof (EmailGenerator), "Create")]
   public class EmailGeneratorSpec : Spec
   {
-    static List<int> InputList;
     static TestDataDomainConfiguration TestDataDomainConfiguration;
     static ITestDataGenerator TestDataGenerator;
 

@@ -8,24 +8,43 @@ namespace Farada.TestDataGeneration.ValueProviders
   //REVIEW: Is this ok?
   public abstract class RangedValueProvider<TMember> : ValueProvider<TMember, RangedValueProviderContext<TMember>>
   {
-    private readonly Func<ValueProviderObjectContext, GenericRangeConstraints<TMember>> _constraintsProvider;
-
-    public RangedValueProvider(Func<ValueProviderObjectContext, GenericRangeConstraints<TMember>> constraintsProvider)
-    {
-      _constraintsProvider = constraintsProvider;
-    }
-
     protected override RangedValueProviderContext<TMember> CreateContext (ValueProviderObjectContext objectContext)
     {
-      return new RangedValueProviderContext<TMember> (objectContext, _constraintsProvider (objectContext));
+      return new RangedValueProviderContext<TMember> (objectContext, CreateConstraints(objectContext));
     }
+
+    protected abstract GenericRangeConstraints<TMember> CreateConstraints (ValueProviderObjectContext objectContext);
+  }
+
+  public abstract class AttributeBasedRangedValueProvider<TMember, TAttribute>:RangedValueProvider<TMember>
+      where TAttribute : Attribute
+  {
+    protected override sealed GenericRangeConstraints<TMember> CreateConstraints(ValueProviderObjectContext objectContext)
+    {
+      var attribute = objectContext.Member?.GetCustomAttribute<TAttribute>();
+      if (attribute == null)
+        throw new ArgumentException ($"Did not find {nameof (TAttribute)} attribute on '{objectContext.Member}'.");
+
+      return CreateConstraints (attribute);
+    }
+
+    protected abstract GenericRangeConstraints<TMember> CreateConstraints (TAttribute attribute);
   }
 
   public abstract class DirectRangedValueProvider<TMember>:RangedValueProvider<TMember>
   {
-    public DirectRangedValueProvider (TMember from, TMember to)
-        : base(ctx=>new GenericRangeConstraints<TMember>(from, to))
+    private readonly TMember _from;
+    private readonly TMember _to;
+
+    protected DirectRangedValueProvider (TMember from, TMember to)
     {
+      _from = from;
+      _to = to;
+    }
+
+    protected override GenericRangeConstraints<TMember> CreateConstraints (ValueProviderObjectContext objectContext)
+    {
+      return new GenericRangeConstraints<TMember> (_from, _to);
     }
   }
 

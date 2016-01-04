@@ -14,7 +14,7 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// <typeparam name="TAttribute">The type of the attribute</typeparam>
   //TODO: Create another context for single attribute. Also add validation for "AllowMultiple".
   //TODO: Create test for multiple attributes (AllowMultiple).
-  public abstract class AttributeBasedValueProvider<TMember, TAttribute>
+  public abstract partial class AttributeBasedValueProvider<TMember, TAttribute>
       : ValueProvider<TMember, AttributeValueProviderContext<TMember, TAttribute>>
       where TAttribute : Attribute
   {
@@ -22,7 +22,7 @@ namespace Farada.TestDataGeneration.ValueProviders
     protected override sealed TMember CreateValue (AttributeValueProviderContext<TMember, TAttribute> context)
     {
       if (context.Attributes.Count == 0) //no attributes found - go to previous provider.
-        return context.GetPreviousValue(); //TODO: Throw exception if no previous value exists.
+        return context.GetPreviousValue();
 
       Debug.Assert (context.Attribute != null, "The attribute was null, but should never be null");
       return CreateAttributeBasedValue (context);
