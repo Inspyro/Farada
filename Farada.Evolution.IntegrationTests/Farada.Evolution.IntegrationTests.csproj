@@ -55,15 +55,15 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
     <Reference Include="TestFx.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TestFx.Core.0.3.1-Pre00008\lib\net40\TestFx.Core.dll</HintPath>
+      <HintPath>..\packages\TestFx.Core.0.3.1-Pre00042\lib\net40\TestFx.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="TestFx.FakeItEasy, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TestFx.FakeItEasy.0.3.1-Pre00008\lib\net40\TestFx.FakeItEasy.dll</HintPath>
+      <HintPath>..\packages\TestFx.FakeItEasy.0.3.1-Pre00042\lib\net40\TestFx.FakeItEasy.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="TestFx.SpecK, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TestFx.SpecK.0.3.1-Pre00008\lib\net40\TestFx.SpecK.dll</HintPath>
+      <HintPath>..\packages\TestFx.SpecK.0.3.1-Pre00042\lib\net40\TestFx.SpecK.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -128,10 +128,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
     <Error Condition="!Exists('..\packages\Fody.1.28.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.28.1\build\Fody.targets'))" />
-    <Error Condition="!Exists('..\packages\TestFx.Core.0.3.1-Pre00008\build\net45\TestFx.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\TestFx.Core.0.3.1-Pre00008\build\net45\TestFx.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\TestFx.Core.0.3.1-Pre00042\build\net45\TestFx.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\TestFx.Core.0.3.1-Pre00042\build\net45\TestFx.Core.targets'))" />
   </Target>
   <Import Project="..\packages\Fody.1.28.1\build\Fody.targets" Condition="Exists('..\packages\Fody.1.28.1\build\Fody.targets')" />
-  <Import Project="..\packages\TestFx.Core.0.3.1-Pre00008\build\net45\TestFx.Core.targets" Condition="Exists('..\packages\TestFx.Core.0.3.1-Pre00008\build\net45\TestFx.Core.targets')" />
+  <Import Project="..\packages\TestFx.Core.0.3.1-Pre00042\build\net45\TestFx.Core.targets" Condition="Exists('..\packages\TestFx.Core.0.3.1-Pre00042\build\net45\TestFx.Core.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
