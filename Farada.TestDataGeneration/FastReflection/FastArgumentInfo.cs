@@ -5,12 +5,14 @@ namespace Farada.TestDataGeneration.FastReflection
 {
   internal class FastArgumentInfo:FastMemberBase, IFastArgumentInfo
   {
+    private readonly IMemberExtensionService _memberExtensionService;
     private readonly Type _declaringType;
     private PropertyInfo _cachedProperty;
 
-    internal FastArgumentInfo (ParameterInfo parameterInfo)
-      :base(parameterInfo.Name, parameterInfo.ParameterType, parameterInfo.GetCustomAttributes())
+    internal FastArgumentInfo (IMemberExtensionService memberExtensionService, ParameterInfo parameterInfo)
+      :base(memberExtensionService, parameterInfo.Name, parameterInfo.ParameterType, parameterInfo.GetCustomAttributes())
     {
+      _memberExtensionService = memberExtensionService;
       _declaringType = parameterInfo.Member.DeclaringType;
     }
 
@@ -29,7 +31,7 @@ namespace Farada.TestDataGeneration.FastReflection
         }
       }
 
-      return new FastPropertyInfo (_cachedProperty);
+      return new FastPropertyInfo (_memberExtensionService, _cachedProperty);
     }
   }
 

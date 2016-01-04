@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Farada.TestDataGeneration.BaseDomain.Constraints;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
@@ -7,6 +8,7 @@ using Farada.TestDataGeneration.FastReflection;
 using Farada.TestDataGeneration.Modifiers;
 using Farada.TestDataGeneration.ValueProviders;
 using Farada.TestDataGeneration.ValueProviders.Context;
+using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.Fluent
 {
@@ -27,7 +29,7 @@ namespace Farada.TestDataGeneration.Fluent
       _useDefaults = true;
 
       _parameterToPropertyConversionFunc = parameterName => parameterName[0].ToString().ToUpper() + parameterName.Substring (1);
-      _fastReflectionUtility = new FastReflectionUtility();
+      _fastReflectionUtility = new FastReflectionUtility (new DefaultMemberExtensionService());
     }
 
     public ITestDataConfigurator UseDefaults (bool useDefaults)
@@ -45,6 +47,12 @@ namespace Farada.TestDataGeneration.Fluent
     public ITestDataConfigurator UseParameterToPropertyConversion (Func<string, string> paremeterToPropertyConversionFunc)
     {
       _parameterToPropertyConversionFunc = paremeterToPropertyConversionFunc;
+      return this;
+    }
+
+    public ITestDataConfigurator UseMemberExtensionService (IMemberExtensionService memberExtensionService)
+    {
+      _fastReflectionUtility = new FastReflectionUtility (memberExtensionService);
       return this;
     }
 

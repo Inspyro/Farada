@@ -87,6 +87,7 @@
     <Compile Include="FastReflection\FastArgumentInfo.cs" />
     <Compile Include="FastReflection\FastMemberBase.cs" />
     <Compile Include="FastReflection\IFastMemberInfo.cs" />
+    <Compile Include="FastReflection\IMemberExtensionService.cs" />
     <Compile Include="FastReflection\IParameterConversionService.cs" />
     <Compile Include="BaseDomain\Constraints\RangeContstraints.cs" />
     <Compile Include="BaseDomain\Constraints\StringConstraints.cs" />

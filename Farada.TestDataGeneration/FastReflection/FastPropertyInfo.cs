@@ -12,8 +12,8 @@ namespace Farada.TestDataGeneration.FastReflection
     private readonly Action<object, object> _setAction;
     private readonly FieldInfo _fieldInfo;
 
-    internal FastFieldInfo (FieldInfo fieldInfo)
-        : base(fieldInfo.Name, fieldInfo.FieldType, fieldInfo.GetCustomAttributes())
+    internal FastFieldInfo (IMemberExtensionService memberExtensionService, FieldInfo fieldInfo)
+        : base(memberExtensionService, fieldInfo.Name, fieldInfo.FieldType, fieldInfo.GetCustomAttributes())
     {
       _fieldInfo = fieldInfo;
 
@@ -89,8 +89,8 @@ namespace Farada.TestDataGeneration.FastReflection
     private readonly Func<object, object> _getFunction;
     private readonly Action<object, object> _setAction;
 
-    internal FastPropertyInfo (PropertyInfo propertyInfo)
-      :base(propertyInfo.Name, propertyInfo.PropertyType, propertyInfo.GetCustomAttributes())
+    internal FastPropertyInfo (IMemberExtensionService memberExtensionService, PropertyInfo propertyInfo)
+      :base(memberExtensionService, propertyInfo.Name, propertyInfo.PropertyType, propertyInfo.GetCustomAttributes())
     {
       _propertyInfo = propertyInfo;
       var targetType = propertyInfo.DeclaringType;

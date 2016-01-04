@@ -10,12 +10,12 @@ namespace Farada.TestDataGeneration.FastReflection
     private readonly List<Type> _attributeTypes;
     private readonly List<Attribute> _attributes;
 
-    protected FastMemberBase (string name, [CanBeNull] Type type, IEnumerable<Attribute> attributes)
+    protected FastMemberBase (IMemberExtensionService memberExtensionService, string name, [CanBeNull] Type type, IEnumerable<Attribute> attributes)
     {
       Name = name;
       Type = type;
 
-      _attributes = attributes.ToList(); //TODO: Create extension point for injecting attributes.
+      _attributes = memberExtensionService.GetAttributesFor (type, name, attributes).ToList();
       _attributeTypes = _attributes.Select (a => a.GetType()).ToList();
     }
 

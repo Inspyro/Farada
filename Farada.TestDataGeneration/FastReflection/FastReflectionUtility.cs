@@ -44,7 +44,13 @@ namespace Farada.TestDataGeneration.FastReflection
   /// </summary>
   public class FastReflectionUtility : IFastReflectionUtility
   {
+    private readonly IMemberExtensionService _memberExtensionService;
     private readonly ConcurrentDictionary<Type, IFastTypeInfo> _typeInfos = new ConcurrentDictionary<Type, IFastTypeInfo>();
+
+    public FastReflectionUtility(IMemberExtensionService memberExtensionService)
+    {
+      _memberExtensionService = memberExtensionService;
+    }
 
     /// <summary>
     /// Gets the complete type info from a type, with all properties already converted into <see cref="IFastMemberWithValues"/>
@@ -90,7 +96,7 @@ namespace Farada.TestDataGeneration.FastReflection
 
     private IFastArgumentInfo CreateArgumentInfo (ParameterInfo parameterInfo)
     {
-       return new FastArgumentInfo(parameterInfo);
+       return new FastArgumentInfo(_memberExtensionService, parameterInfo);
     }
 
     /// <summary>
@@ -105,7 +111,7 @@ namespace Farada.TestDataGeneration.FastReflection
 
     private IFastMemberWithValues CreatePropertyInfo (PropertyInfo propertyInfo)
     {
-      return new FastPropertyInfo(propertyInfo);
+      return new FastPropertyInfo(_memberExtensionService, propertyInfo);
     }
 
     /// <summary>
@@ -120,7 +126,7 @@ namespace Farada.TestDataGeneration.FastReflection
 
     private IFastMemberWithValues CreateFieldInfo (FieldInfo fieldInfo)
     {
-      return new FastFieldInfo(fieldInfo);
+      return new FastFieldInfo(_memberExtensionService, fieldInfo);
     }
   }
 }
