@@ -10,12 +10,23 @@ namespace Farada.TestDataGeneration.FastReflection
     private readonly List<Type> _attributeTypes;
     private readonly List<Attribute> _attributes;
 
-    protected FastMemberBase (IMemberExtensionService memberExtensionService, string name, [CanBeNull] Type type, IEnumerable<Attribute> attributes)
+    protected FastMemberBase (
+        IMemberExtensionService memberExtensionService,
+        [CanBeNull] Type containingType,
+        [CanBeNull] Type memberType,
+        string name,
+        IEnumerable<Attribute> attributes)
     {
-      Name = name;
-      Type = type;
+      if (containingType == null)
+        throw new ArgumentException ("The containingType of member " + name + " was null. This is not allowed", nameof (containingType));
 
-      _attributes = memberExtensionService.GetAttributesFor (type, name, attributes).ToList();
+      if (memberType == null)
+        throw new ArgumentException ("The memberType of member " + name + " was null. This is not allowed", nameof (memberType));
+
+      Name = name;
+      Type = memberType;
+
+      _attributes = memberExtensionService.GetAttributesFor (containingType, memberType, name, attributes).ToList();
       _attributeTypes = _attributes.Select (a => a.GetType()).ToList();
     }
 

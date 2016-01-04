@@ -74,10 +74,16 @@ namespace Farada.TestDataGeneration.IntegrationTests
       _additionalAttribute = additionalAttribute;
     }
 
-    public IEnumerable<Attribute> GetAttributesFor ([CanBeNull] Type type, string memberName, IEnumerable<Attribute> memberAttributes)
+    public IEnumerable<Attribute> GetAttributesFor(Type containingType, Type memberType, string memberName, IEnumerable<Attribute> memberAttributes)
     {
-      foreach (var memberAttribute in memberAttributes)
+      var memberAttributeList = memberAttributes.ToList ();
+      foreach (var memberAttribute in memberAttributeList)
         yield return memberAttribute;
+
+      containingType.Should ().Be<ClassWithAttribute> ();
+      memberType.Should ().Be<int> ();
+      memberName.Should ().Be ("AttributedInt");
+      memberAttributeList.Count.Should ().Be (1);
 
       yield return _additionalAttribute;
     }

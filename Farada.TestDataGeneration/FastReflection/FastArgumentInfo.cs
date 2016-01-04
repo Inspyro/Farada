@@ -10,7 +10,7 @@ namespace Farada.TestDataGeneration.FastReflection
     private PropertyInfo _cachedProperty;
 
     internal FastArgumentInfo (IMemberExtensionService memberExtensionService, ParameterInfo parameterInfo)
-      :base(memberExtensionService, parameterInfo.Name, parameterInfo.ParameterType, parameterInfo.GetCustomAttributes())
+      :base(memberExtensionService, parameterInfo.Member.DeclaringType, parameterInfo.ParameterType, parameterInfo.Name, parameterInfo.GetCustomAttributes())
     {
       _memberExtensionService = memberExtensionService;
       _declaringType = parameterInfo.Member.DeclaringType;
