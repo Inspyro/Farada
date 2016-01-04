@@ -26,8 +26,14 @@ namespace Farada.TestDataGeneration.IntegrationTests
       Specify (x =>
           TestDataGenerator.Create<ClassWithAttribute> (MaxRecursionDepth, null))
           .Case ("should fill class according to extended attributes", _ => _
-              .Given (ValueProviderWithExtendedAttributes (new ClassWithAttribute.CoolIntAttribute(10)))
+              .Given (ValueProviderWithExtendedAttributes (new ClassWithAttribute.CoolIntAttribute (10)))
               .It ("should fill attributed int through extended attributes", x => x.Result.AttributedInt.Should ().Be (21)));
+
+      Specify (x =>
+          TestDataGenerator.Create<ImmutableIce> (MaxRecursionDepth, null))
+          .Case ("should fill immutable class according to extended attributes", _ => _
+              .Given (ValueProviderForImmutableClassWithExtendedAttributes (new ClassWithAttribute.CoolIntAttribute (100)))
+              .It ("should fill temperature through extended attributes", x => x.Result.Temperature.Should ().Be (100)));
     }
 
     Context ValueProviderCustomConversion ()
@@ -63,6 +69,22 @@ namespace Farada.TestDataGeneration.IntegrationTests
       })
          .Given(TestDataGeneratorContext());
     }
+
+    Context ValueProviderForImmutableClassWithExtendedAttributes(Attribute additionalAttribute)
+    {
+      return c => c.Given("domain provider with custom member extension service", x =>
+      {
+        TestDataDomainConfiguration = configurator => configurator
+            .UseDefaults (false)
+            .UseMemberExtensionService (new CustomMemberImmutableExtensions (additionalAttribute))
+            .For<ImmutableIce> ().AddProvider (new DefaultInstanceValueProvider<ImmutableIce> ())
+            .For<ImmutableIce> ()
+            .Select (ii => ii.Temperature)
+            .AddProvider<ImmutableIce, int, ClassWithAttribute.CoolIntAttribute> (ctx => ctx.Attributes.Sum (a => a.Value))
+            .Select (ii => ii.Origin).AddProvider (ctx => "don't care");
+      })
+         .Given(TestDataGeneratorContext());
+    }
   }
 
   class CustomMemberExtensions : IMemberExtensionService
@@ -86,6 +108,26 @@ namespace Farada.TestDataGeneration.IntegrationTests
       memberAttributeList.Count.Should ().Be (1);
 
       yield return _additionalAttribute;
+    }
+  }
+
+  class CustomMemberImmutableExtensions : IMemberExtensionService
+  {
+    readonly Attribute _additionalAttribute;
+
+    public CustomMemberImmutableExtensions(Attribute additionalAttribute)
+    {
+      _additionalAttribute = additionalAttribute;
+    }
+
+    public IEnumerable<Attribute> GetAttributesFor (Type containingType, Type memberType, string memberName, IEnumerable<Attribute> memberAttributes)
+    {
+      var memberAttributeList = memberAttributes.ToList ();
+      foreach (var memberAttribute in memberAttributeList)
+        yield return memberAttribute;
+
+      if (containingType == typeof (ImmutableIce) && memberType == typeof (int) && memberName == "Temperature")
+        yield return _additionalAttribute;
     }
   }
 }
