@@ -1,4 +1,5 @@
 ﻿using Farada.TestDataGeneration.CompoundValueProviders;
+using Farada.TestDataGeneration.Fluent;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;

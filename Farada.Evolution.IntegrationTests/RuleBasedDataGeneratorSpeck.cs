@@ -3,6 +3,7 @@ using System.Linq;
 using Farada.Evolution.IntegrationTests.TestDomain;
 using Farada.Evolution.RuleBasedDataGeneration;
 using Farada.TestDataGeneration;
+using Farada.TestDataGeneration.Fluent;
 using Farada.TestDataGeneration.ValueProviders;
 using FluentAssertions;
 using TestFx.SpecK;

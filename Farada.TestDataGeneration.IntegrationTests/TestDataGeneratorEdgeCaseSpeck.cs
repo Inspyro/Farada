@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.Exceptions;
+using Farada.TestDataGeneration.Fluent;
 using Farada.TestDataGeneration.IntegrationTests.TestDomain;
 using Farada.TestDataGeneration.IntegrationTests.Utils;
 using Farada.TestDataGeneration.ValueProviders;

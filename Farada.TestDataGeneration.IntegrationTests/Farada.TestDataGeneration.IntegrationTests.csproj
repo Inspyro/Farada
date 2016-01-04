@@ -101,6 +101,8 @@
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\TerminatesProgramAttribute.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\UsedImplicitlyAttribute.cs" />
     <Compile Include="AssertionExtensions.cs" />
+    <Compile Include="TestDomain\ClassWithVeryPropertyToArgConversion.cs" />
+    <Compile Include="TestDataGeneratorTypeExtensionSpeck.cs" />
     <Compile Include="TestDomain\ClassWithNullableInt.cs" />
     <Compile Include="TestDataGeneratorReflectiveFillingSpeck.cs" />
     <Compile Include="TestDomain\ClassWithInterfacedMembers.cs" />
