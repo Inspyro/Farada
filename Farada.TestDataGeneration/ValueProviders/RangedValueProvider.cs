@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.ValueProviders
 {
-  //TODO: Write test showing the usage of this value provider
   //REVIEW: Is this ok?
   public abstract class RangedValueProvider<TMember> : ValueProvider<TMember, RangedValueProviderContext<TMember>>
   {

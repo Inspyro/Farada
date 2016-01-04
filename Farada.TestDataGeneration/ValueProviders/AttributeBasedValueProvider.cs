@@ -12,9 +12,8 @@ namespace Farada.TestDataGeneration.ValueProviders
   /// </summary>
   /// <typeparam name="TMember">The type of the member with the attribute</typeparam>
   /// <typeparam name="TAttribute">The type of the attribute</typeparam>
-  //TODO: Create another context for single attribute. Also add validation for "AllowMultiple".
-  //TODO: Create test for multiple attributes (AllowMultiple).
-  public abstract partial class AttributeBasedValueProvider<TMember, TAttribute>
+  //REVIEW: How to add validation for "AllowMultiple"? Is it really necessary, or checked by the compiler?
+  public abstract class AttributeBasedValueProvider<TMember, TAttribute>
       : ValueProvider<TMember, AttributeValueProviderContext<TMember, TAttribute>>
       where TAttribute : Attribute
   {
