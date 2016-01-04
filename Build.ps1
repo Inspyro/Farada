@@ -20,7 +20,8 @@ $OutputDir     = Join-Path $SolutionDir "output"
 $NuspecdDir    = Join-Path $SolutionDir "nuspec"
 $ToolsDir      = Join-Path $SolutionDir "tools"
 $SourceDir     = $SolutionDir
-$MsBuild       = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
+$MsBuild       = "C:\Program Files (x86)\MSBuild\14.0\Bin\MsBuild.exe"
+$ToolsVersion  = "14.0"
 
 Import-Module (Join-Path $ToolsDir "GetGitInfo.dll")
 
@@ -51,7 +52,7 @@ try {
   $SolutionFiles | %{ $_.FullName } | %{
     & $NuGet @("restore", $_, "-NonInteractive")
     & $MsBuild @($_, "/t:$Targets", "/p:Configuration=$Configuration;Platform=Any CPU;BuildRunner=$BuildRunner", "/m", "/nr:false", `
-                 "/fl", "/flp:LogFile=$OutputDir\msbuild.log;Verbosity=diag")
+                 "/fl", "/flp:LogFile=$OutputDir\msbuild.log;Verbosity=diag", "/toolsversion:$ToolsVersion")
   }
 }
 finally {
