@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using JetBrains.Annotations;
 
 namespace Farada.TestDataGeneration.FastReflection
@@ -16,7 +15,7 @@ namespace Farada.TestDataGeneration.FastReflection
       Name = name;
       Type = type;
 
-      _attributes = attributes.ToList();
+      _attributes = attributes.ToList(); //TODO: Create extension point for injecting attributes.
       _attributeTypes = _attributes.Select (a => a.GetType()).ToList();
     }
 

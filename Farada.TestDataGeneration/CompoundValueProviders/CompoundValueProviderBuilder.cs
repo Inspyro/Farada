@@ -17,6 +17,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
   internal class CompoundValueProviderBuilder : ICompoundValueProviderBuilder
   {
     private readonly IRandom _random;
+    private readonly IFastReflectionUtility _fastReflectionUtility;
     private readonly IParameterConversionService _parameterConversionService;
     private readonly ValueProviderDictionary _valueProviderDictionary;
     private readonly HashSet<IKey> _autoFillMapping;
@@ -27,10 +28,11 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
     private Dictionary<IKey, Func<MetadataObjectContext, object>> _metadataProviderMapping;
 
-    internal CompoundValueProviderBuilder (IRandom random, IParameterConversionService parameterConversionService)
+    internal CompoundValueProviderBuilder (IRandom random, IParameterConversionService parameterConversionService, IFastReflectionUtility fastReflectionUtility)
     {
       _random = random;
       _parameterConversionService = parameterConversionService;
+      _fastReflectionUtility = fastReflectionUtility;
       _valueProviderDictionary = new ValueProviderDictionary();
       _autoFillMapping = new HashSet<IKey>();
       _modifierList = new List<IInstanceModifier>();
@@ -56,7 +58,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
         Func<BoundMetadataContext<TContainer>, TMetadata> metadataProviderFunc,
         ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>
     {
-      var providerKey = ChainedKey.FromExpression (chainExpression);
+      var providerKey = ChainedKey.FromExpression (chainExpression, _fastReflectionUtility);
       _valueProviderDictionary.AddValueProvider (providerKey, valueProvider);
       _containerIndexMapping[providerKey] = GetNextIndexInContainer<TContainer>();
 
@@ -64,16 +66,16 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       _metadataProviderMapping.Add (providerKey, BendFuncToMetadata (metadataProviderFunc));
     }
 
-    private static Func<MetadataObjectContext, object> BendFuncToMetadata<TContainer, TMetadata> (Func<BoundMetadataContext<TContainer>, TMetadata> metadataProviderFunc)
+    private Func<MetadataObjectContext, object> BendFuncToMetadata<TContainer, TMetadata> (Func<BoundMetadataContext<TContainer>, TMetadata> metadataProviderFunc)
     {
-      return objectContext => metadataProviderFunc (new BoundMetadataContext<TContainer> (objectContext));
+      return objectContext => metadataProviderFunc (new BoundMetadataContext<TContainer> (objectContext, _fastReflectionUtility));
     }
 
     public void AddProvider<TMember, TContainer, TContext> (
         Expression<Func<TContainer, TMember>> chainExpression,
         ValueProvider<TMember, TContext> valueProvider) where TContext : ValueProviderContext<TMember>
     {
-      var providerKey = ChainedKey.FromExpression (chainExpression);
+      var providerKey = ChainedKey.FromExpression (chainExpression, _fastReflectionUtility);
       _valueProviderDictionary.AddValueProvider (providerKey, valueProvider);
       _containerIndexMapping[providerKey] = GetNextIndexInContainer<TContainer>();
     }
@@ -106,7 +108,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
     public void EnableAutoFill<TMember, TContainer> (Expression<Func<TContainer, TMember>> chainExpression)
     {
-      EnableAutoFill(ChainedKey.FromExpression (chainExpression));
+      EnableAutoFill(ChainedKey.FromExpression (chainExpression, _fastReflectionUtility));
     }
 
     private void EnableAutoFill(IKey key)
@@ -126,7 +128,8 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
           new MetadataResolver(_metadataProviderMapping),
           _random,
           _modifierList,
-          _parameterConversionService);
+          _parameterConversionService,
+          _fastReflectionUtility);
     }
   }
 }

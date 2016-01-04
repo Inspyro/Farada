@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders;
@@ -149,8 +150,31 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
   class DummyAdvancedContext : ValueProviderObjectContext.AdvancedContext
   {
     public DummyAdvancedContext ()
-        : base (new DummyKey(), new DummySorter(), new DummyResolver(), new DummyConverter(), new DummyTestDataGenerator())
+        : base (new DummyKey(), new DummySorter(), new DummyResolver(), new DummyConverter(), new DummyTestDataGenerator(), new DummyFastReflection())
     {
+    }
+  }
+
+  class DummyFastReflection : IFastReflectionUtility
+  {
+    public IFastTypeInfo GetTypeInfo (Type type)
+    {
+      throw new InvalidOperationException();
+    }
+
+    public IFastArgumentInfo GetArgumentInfo (ParameterInfo parameterInfo)
+    {
+      throw new InvalidOperationException();
+    }
+
+    public IFastMemberWithValues GetPropertyInfo (PropertyInfo propertyInfo)
+    {
+      throw new InvalidOperationException();
+    }
+
+    public IFastMemberWithValues GetFieldInfo (FieldInfo fieldInfo)
+    {
+      throw new InvalidOperationException();
     }
   }
 

@@ -21,6 +21,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     private readonly HashSet<IKey> _autoFillMapping;
     private readonly IMemberSorter _memberSorter;
     private readonly IMetadataResolver _metadataResolver;
+    private readonly IFastReflectionUtility _fastReflectionUtility;
     private readonly InstanceFactory _instanceFactory;
     private readonly ModificationFactory _modificationFactory;
 
@@ -35,14 +36,22 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
         IMetadataResolver metadataResolver,
         IRandom random,
         IList<IInstanceModifier> instanceModifiers,
-        IParameterConversionService parameterConversionService)
+        IParameterConversionService parameterConversionService,
+        IFastReflectionUtility fastReflectionUtility)
     {
       Random = random;
       _valueProviderDictionary = valueProviderDictionary;
       _autoFillMapping = autoFillMapping;
       _memberSorter = memberSorter;
       _metadataResolver = metadataResolver;
-      _instanceFactory = new InstanceFactory (this, valueProviderDictionary, _memberSorter, _metadataResolver, parameterConversionService);
+      _fastReflectionUtility = fastReflectionUtility;
+      _instanceFactory = new InstanceFactory (
+          this,
+          valueProviderDictionary,
+          _memberSorter,
+          _metadataResolver,
+          parameterConversionService,
+          fastReflectionUtility);
       _modificationFactory = new ModificationFactory (instanceModifiers, random);
     }
 
@@ -108,7 +117,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
           continue;
 
         //now we reflect the properties of the concrete sub type (note:this is cached in a concurrent dictionary) 
-        var members = FastReflectionUtility.GetTypeInfo (instancesForType.Key.Type).Members;
+        var members = _fastReflectionUtility.GetTypeInfo (instancesForType.Key.Type).Members;
 
         //now we sort the members by dependency.
         var sortedMembers = _memberSorter.Sort (members, instancesForType.Key).ToList();

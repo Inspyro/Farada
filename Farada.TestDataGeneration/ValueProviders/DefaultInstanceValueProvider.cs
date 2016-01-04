@@ -21,7 +21,7 @@ namespace Farada.TestDataGeneration.ValueProviders
         ValueProviderContext<TMember> context,
         [CanBeNull] IList<object> metadatas, int itemCount)
     {
-      var typeInfo = FastReflectionUtility.GetTypeInfo (context.Advanced.Key.Type);
+      var typeInfo = context.Advanced.FastReflection.GetTypeInfo (context.Advanced.Key.Type);
       var ctorValuesCollections = InitializeCtorValues (itemCount, typeInfo);
 
       var ctorMembers = typeInfo.CtorArguments.Select (

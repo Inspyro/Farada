@@ -15,7 +15,8 @@ namespace Farada.TestDataGeneration.Fluent
     private bool _useDefaults;
     private IRandom _random;
     private CompoundValueProviderBuilder _valueProviderBuilder;
-    private Func<string, string> _paremeterToPropertyConversionFunc;
+    private Func<string, string> _parameterToPropertyConversionFunc;
+    private IFastReflectionUtility _fastReflectionUtility;
 
     protected internal DomainConfigurator ()
         : base (null)
@@ -25,7 +26,8 @@ namespace Farada.TestDataGeneration.Fluent
       _random = new DefaultRandom();
       _useDefaults = true;
 
-      _paremeterToPropertyConversionFunc = parameterName => parameterName[0].ToString().ToUpper() + parameterName.Substring (1);
+      _parameterToPropertyConversionFunc = parameterName => parameterName[0].ToString().ToUpper() + parameterName.Substring (1);
+      _fastReflectionUtility = new FastReflectionUtility();
     }
 
     public ITestDataConfigurator UseDefaults (bool useDefaults)
@@ -42,7 +44,7 @@ namespace Farada.TestDataGeneration.Fluent
 
     public ITestDataConfigurator UseParameterToPropertyConversion (Func<string, string> paremeterToPropertyConversionFunc)
     {
-      _paremeterToPropertyConversionFunc = paremeterToPropertyConversionFunc;
+      _parameterToPropertyConversionFunc = paremeterToPropertyConversionFunc;
       return this;
     }
 
@@ -60,7 +62,9 @@ namespace Farada.TestDataGeneration.Fluent
     private CompoundValueProviderBuilder CreateValueProviderBuilder ()
     {
       var valueProviderBuilder = new CompoundValueProviderBuilder (
-          _random, new FuncParameterConversionSerivce (_paremeterToPropertyConversionFunc));
+          _random,
+          new FuncParameterConversionSerivce (_parameterToPropertyConversionFunc),
+          _fastReflectionUtility);
 
       if (!_useDefaults)
         return valueProviderBuilder;

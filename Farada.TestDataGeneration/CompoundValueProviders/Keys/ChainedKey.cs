@@ -70,11 +70,11 @@ namespace Farada.TestDataGeneration.CompoundValueProviders.Keys
       RecursionDepth = _memberChain.Count (keyPart => keyPart.MemberType == _lastMember.MemberType);
       PreviousKey = CreatePreviousKey();
     }
-    public static ChainedKey FromExpression<TContainer, TMember>(Expression<Func<TContainer, TMember>> chainExpression)
+    public static ChainedKey FromExpression<TContainer, TMember>(Expression<Func<TContainer, TMember>> chainExpression, IFastReflectionUtility fastReflectionUtility)
     {
       var declaringType = typeof (TContainer);
 
-      var expressionChain = chainExpression.ToChain().ToList();
+      var expressionChain = chainExpression.ToChain(fastReflectionUtility).ToList();
 
       if (expressionChain.Count == 0)
         throw new NotSupportedException("Empty chains / Non-member chains are not supported, please use AddProvider<T>()");

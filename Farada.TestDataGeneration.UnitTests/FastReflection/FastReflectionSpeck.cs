@@ -17,11 +17,11 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
     static DerivedDTO Instance;
 
     [Subject (typeof (FastReflectionUtility), "GetTypeInfo")]
-    public class GetTypeInfoSpecK : Spec
+    public class GetTypeInfoSpecK : Spec<FastReflectionUtility>
     {
       public GetTypeInfoSpecK ()
       {
-        Specify (x => FastReflectionUtility.GetTypeInfo (TypeToReflect))
+        Specify (x => x.GetTypeInfo (TypeToReflect))
             //
             .Case ("returns valid property for simple type", _ => _
                 //
@@ -46,11 +46,11 @@ namespace Farada.TestDataGeneration.UnitTests.FastReflection
     }
 
     [Subject (typeof (FastReflectionUtility), "GetPropertyInfo")]
-    public class GetPropertyInfoSpecK : Spec
+    public class GetPropertyInfoSpecK : Spec<FastReflectionUtility>
     {
       public GetPropertyInfoSpecK ()
       {
-        Specify (x => FastReflectionUtility.GetPropertyInfo (PropertyInfoToConvert))
+        Specify (x => x.GetPropertyInfo (PropertyInfoToConvert))
             //
             .Case ("returns valid property info", _ => _
                 //

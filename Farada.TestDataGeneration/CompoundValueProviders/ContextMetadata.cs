@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
+using Farada.TestDataGeneration.FastReflection;
 
 namespace Farada.TestDataGeneration.CompoundValueProviders
 {
@@ -33,15 +34,17 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     public class BoundMetadataContext<TContainer>
     {
       private readonly MetadataObjectContext _objectContext;
+      private readonly IFastReflectionUtility _fastReflectionUtility;
 
-      public BoundMetadataContext(MetadataObjectContext objectContext)
+      public BoundMetadataContext(MetadataObjectContext objectContext, IFastReflectionUtility fastReflectionUtility)
       {
         _objectContext = objectContext;
+        _fastReflectionUtility = fastReflectionUtility;
       }
 
       public TDependendMember Get<TDependendMember>(Expression<Func<TContainer, TDependendMember>> memberExpression)
       {
-        var key = ChainedKey.FromExpression(memberExpression);
+        var key = ChainedKey.FromExpression(memberExpression, _fastReflectionUtility);
         if (!_objectContext.ContainsKey (key))
         {
           throw new ArgumentException (

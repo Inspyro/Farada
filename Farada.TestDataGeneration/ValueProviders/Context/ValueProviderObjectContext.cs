@@ -63,18 +63,23 @@ namespace Farada.TestDataGeneration.ValueProviders.Context
 
       public ITestDataGeneratorAdvanced AdvancedTestDataGenerator { get; private set; }
 
+      public IFastReflectionUtility FastReflection { get; private set; }
+
+
       public AdvancedContext (
           IKey key,
           IMemberSorter memberSorter,
           IMetadataResolver metadataResolver,
           IParameterConversionService parameterConversionService,
-          ITestDataGeneratorAdvanced advancedTestDataGenerator)
+          ITestDataGeneratorAdvanced advancedTestDataGenerator,
+          IFastReflectionUtility fastReflectionUtility)
       {
         Key = key;
         MemberSorter = memberSorter;
         MetadataResolver = metadataResolver;
         ParameterConversionService = parameterConversionService;
         AdvancedTestDataGenerator = advancedTestDataGenerator;
+        FastReflection = fastReflectionUtility;
       }
     }
   }

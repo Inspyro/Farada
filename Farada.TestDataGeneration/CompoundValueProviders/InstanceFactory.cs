@@ -20,19 +20,22 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
     private readonly IMemberSorter _memberSorter;
     private readonly IMetadataResolver _metadataResolver;
     private readonly IParameterConversionService _parameterConversionService;
+    private readonly IFastReflectionUtility _fastReflectionUtility;
 
     public InstanceFactory (
         CompoundValueProvider compoundValueProvider,
         ValueProviderDictionary valueProviderDictionary,
         IMemberSorter memberSorter,
         IMetadataResolver metadataResolver,
-        IParameterConversionService parameterConversionService)
+        IParameterConversionService parameterConversionService,
+        IFastReflectionUtility fastReflectionUtility)
     {
       _compoundValueProvider = compoundValueProvider;
       _valueProviderDictionary = valueProviderDictionary;
       _memberSorter = memberSorter;
       _metadataResolver = metadataResolver;
       _parameterConversionService = parameterConversionService;
+      _fastReflectionUtility = fastReflectionUtility;
     }
 
     internal IList<object> CreateInstances (IKey key, [CanBeNull] IList<object> metadatas, int itemCount)
@@ -84,7 +87,8 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
                   _memberSorter,
                   _metadataResolver,
                   _parameterConversionService,
-                  _compoundValueProvider),
+                  _compoundValueProvider,
+                  _fastReflectionUtility),
               key.Member));
     }
   }
