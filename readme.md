@@ -1,5 +1,5 @@
 # Farada
-![stringsresult](https://raw.githubusercontent.com/Inspyro/Data/master/Farada/images/createmanystring.gif)  
+![main](https://raw.githubusercontent.com/Inspyro/Data/master/Farada/images/main.gif)  
 Farada is short for Fast random data Generator. And it does exactly what it means.
   - Create random data with blazing fast performance
     - By using compiled LINQ expressions instead of reflection
