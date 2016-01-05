@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders.Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders.Keys;
 using Farada.TestDataGeneration.FastReflection;
@@ -47,7 +48,8 @@ namespace Farada.TestDataGeneration.ValueProviders
               context.Advanced.Key,
               sortedCtorMembers.Take (argumentIndex).ToList(),
               ctorValuesCollections,
-              sortedToUnsorted).ToList();
+              sortedToUnsorted,
+              context.TestDataGenerator).ToList();
 
           memberMetadatas = context.Advanced.MetadataResolver.Resolve (memberKey, metadataContexts).ToList();
         }
@@ -78,7 +80,8 @@ namespace Farada.TestDataGeneration.ValueProviders
         IKey baseKey,
         IList<IFastMemberWithValues> dependendArguments,
         object[][] ctorValuesCollections,
-        IReadOnlyList<int> sortedToUnsorted)
+        IReadOnlyList<int> sortedToUnsorted,
+        ITestDataGenerator testDataGenerator)
     {
       for (int i=0;i<dependendArguments.Count;i++)
       {
@@ -86,7 +89,7 @@ namespace Farada.TestDataGeneration.ValueProviders
         var argumentKey = baseKey.CreateKey (argument);
         var argumentIndex = sortedToUnsorted[i];
 
-        var context = new MetadataObjectContext();
+        var context = new MetadataObjectContext(testDataGenerator);
         foreach (var argumentValue in ctorValuesCollections.Select (valueCollection => valueCollection[argumentIndex]))
         {
           context.Add (argumentKey, argumentValue);

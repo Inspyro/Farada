@@ -68,7 +68,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
     private Func<MetadataObjectContext, object> BendFuncToMetadata<TContainer, TMetadata> (Func<BoundMetadataContext<TContainer>, TMetadata> metadataProviderFunc)
     {
-      return objectContext => metadataProviderFunc (new BoundMetadataContext<TContainer> (objectContext, _fastReflectionUtility));
+      return objectContext => metadataProviderFunc (new BoundMetadataContext<TContainer> (objectContext, _fastReflectionUtility, _random));
     }
 
     public void AddProvider<TMember, TContainer, TContext> (

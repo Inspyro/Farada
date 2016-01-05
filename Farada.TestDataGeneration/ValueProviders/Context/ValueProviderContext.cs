@@ -19,7 +19,7 @@ namespace Farada.TestDataGeneration.ValueProviders.Context
   public class ValueProviderContext<TMember> : IValueProviderContext
   {
     private readonly Func<object, TMember> _previousValueFunction;
-    public object InternalMetadata { get; private set; }
+    internal object InternalMetadata { get; private set; }
 
     /// <summary>
     /// The random to use for random value generation

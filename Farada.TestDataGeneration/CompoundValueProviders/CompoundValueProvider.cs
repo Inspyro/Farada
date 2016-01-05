@@ -187,7 +187,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
         foreach (var instance in instances)
         {
           if (!instanceToContext.ContainsKey (instance))
-            instanceToContext[instance] = new MetadataObjectContext();
+            instanceToContext[instance] = new MetadataObjectContext (this);
 
           instanceToContext[instance].Add (memberKey, member.GetValue (instance));
         }

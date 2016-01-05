@@ -79,8 +79,9 @@
     <Compile Include="BaseDomain\ValueProviders\ChooseMultipleDistinctItemsValueProvider.cs" />
     <Compile Include="BaseDomain\ValueProviders\ChooseSingleItemValueProvider.cs" />
     <Compile Include="BaseDomain\ValueProviders\RangeConstrainedValueProvider.cs" />
-    <Compile Include="CompoundValueProviders\ContextMetadata.cs" />
+    <Compile Include="CompoundValueProviders\BoundMetadataContext.cs" />
     <Compile Include="CompoundValueProviders\IReflectiveTestDataGenerator.cs" />
+    <Compile Include="CompoundValueProviders\MetadataObjectContext.cs" />
     <Compile Include="CompoundValueProviders\MetadataResolver.cs" />
     <Compile Include="CompoundValueProviders\IMemberSorter.cs" />
     <Compile Include="CompoundValueProviders\IMetadataResolver.cs" />
