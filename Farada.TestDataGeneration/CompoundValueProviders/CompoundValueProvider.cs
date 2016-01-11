@@ -112,10 +112,6 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
       //now we iterate over all instances for each sub type (this is more efficient)
       foreach (var instancesForType in typeToInstances.Values)
       {
-        //if the sub type cannot be instantiated, we just skip it, it will not be filled (maybe it is a value type)
-        if (!instancesForType.Key.Type.IsCompoundType())
-          continue;
-
         //now we reflect the properties of the concrete sub type (note:this is cached in a concurrent dictionary) 
         var members = _fastReflectionUtility.GetTypeInfo (instancesForType.Key.Type).Members;
 

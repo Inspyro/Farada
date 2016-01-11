@@ -22,7 +22,7 @@ namespace Farada.TestDataGeneration.ValueProviders
 
     public virtual bool CanHandle (Type memberType)
     {
-      return memberType.UnwrapIfNullable() == typeof (TMember);
+      return memberType==typeof(TMember) || memberType.UnwrapIfNullable() == typeof (TMember);
     }
 
     public virtual bool FillsType (Type memberType)
@@ -30,7 +30,7 @@ namespace Farada.TestDataGeneration.ValueProviders
       //by default all value provider should be able to fill the direct type they were registered for.
       //e.g if you registered a value provider for Vehicle, it should be possible to fill the vehicle type completely 
       //however the user can always enforce auto fill by using EnableAutoFill() in the registration.
-      return memberType.UnwrapIfNullable() == typeof (TMember);
+      return memberType == typeof(TMember) || memberType.UnwrapIfNullable() == typeof (TMember);
     }
 
     protected abstract TContext CreateContext (ValueProviderObjectContext objectContext);

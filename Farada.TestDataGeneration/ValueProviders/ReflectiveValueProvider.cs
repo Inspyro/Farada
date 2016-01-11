@@ -24,12 +24,12 @@ namespace Farada.TestDataGeneration.ValueProviders
     //we explicitly handle / fill only the reflective type..
     public override bool CanHandle(Type memberType)
     {
-      return _reflectedType == memberType.UnwrapIfNullable();
+      return _reflectedType==memberType || _reflectedType == memberType.UnwrapIfNullable();
     }
 
     public override bool FillsType(Type memberType)
     {
-      return _reflectedType == memberType.UnwrapIfNullable();
+      return _reflectedType == memberType || _reflectedType == memberType.UnwrapIfNullable();
     }
   }
 }

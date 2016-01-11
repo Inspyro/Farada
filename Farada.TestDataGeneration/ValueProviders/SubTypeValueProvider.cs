@@ -21,7 +21,7 @@ namespace Farada.TestDataGeneration.ValueProviders
   {
     public override bool CanHandle (Type memberType)
     {
-      return typeof (TMember).IsAssignableFrom(memberType.UnwrapIfNullable());
+      return typeof(TMember).IsAssignableFrom(memberType) || typeof (TMember).IsAssignableFrom(memberType.UnwrapIfNullable());
     }
 
     public override bool FillsType (Type memberType)
@@ -29,7 +29,7 @@ namespace Farada.TestDataGeneration.ValueProviders
       switch (FillMode)
       {
         case ValueFillMode.FillAll:
-          return typeof (TMember).IsAssignableFrom (memberType.UnwrapIfNullable());
+          return typeof (TMember).IsAssignableFrom (memberType) || typeof (TMember).IsAssignableFrom (memberType.UnwrapIfNullable());
         case ValueFillMode.FillSpecificInstance:
           return base.FillsType (memberType);
         case ValueFillMode.FillNone:
