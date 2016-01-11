@@ -121,6 +121,8 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
 
         //now we sort the members by dependency.
         var sortedMembers = _memberSorter.Sort (members, instancesForType.Key).ToList();
+        
+        List<object> resolvedMetadatas = null;
 
         //now we fill each member
         for (int index = 0; index < sortedMembers.Count; index++)
@@ -133,13 +135,13 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
           if (memberKey.RecursionDepth >= maxRecursionDepth)
             continue;
 
-          List<object> resolvedMetadatas = null;
-          if (_metadataResolver.NeedsMetadata (memberKey))
+          //we only resolve once per parent (not for each member), so the data is shared between all members.
+          if (resolvedMetadatas == null && _metadataResolver.NeedsMetadata (memberKey)) 
           {
             //we map and resolve/fill the metadatas (from the instances):
             //the values of the dependencies can only be filled correctly, due to the fact that we sorted them beforehand.
-            var metadataContexts =
-                GetMetadataContexts (instancesForType.Key, sortedMembers.Take (index), instancesForType.Instances).ToList();
+            var dependendMembers = sortedMembers.Take (index);
+            var metadataContexts = GetMetadataContexts (instancesForType.Key, dependendMembers, instancesForType.Instances).ToList();
 
             resolvedMetadatas = _metadataResolver.Resolve (memberKey, metadataContexts)?.ToList();
           }

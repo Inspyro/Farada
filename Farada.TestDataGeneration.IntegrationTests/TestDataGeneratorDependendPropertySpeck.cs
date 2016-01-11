@@ -18,6 +18,10 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Case ("should fill by metadata", _ => _
               .Given (SimpleMetadataContext (weight: 15, color: Color.Red))
               .It ("fills name with metadata", x => x.Result.Name.Should ().Be ("VehicleX (Color:Red, Weight:15)")))
+          .Case ("should fill by reuused metadata", _ => _
+              .Given (ReusedDependencyContext (seed: 0))
+              .It ("fills weight with same metadata", x => x.Result.Weight.Should ().Be (1559595546))
+              .It ("fills name with same metadata", x => x.Result.Name.Should ().Be ("Vehicle (Weight:1559595546)")))
           .Case ("should fill dependend properties", _ => _
               .Given (SimpleDependencyContext ())
               .It ("fills main color", x => x.Result.MainColor.Should ().Be (Color.Green))
@@ -47,8 +51,12 @@ namespace Farada.TestDataGeneration.IntegrationTests
       Specify (x => TestDataGenerator.Create<ImmutableIce> ())
           .Case ("should fill ctor args according to metadata", _ => _
               .Given (SimpleCtorMetadataContext (temperature: 4))
-              .It ("fills temperature", x => x.Result.Temperature.Should ().Be (1))
+              .It ("fills temperature", x => x.Result.Temperature.Should ().Be (4))
               .It ("fills origin", x => x.Result.Origin.Should ().Be ("Antarctica (4)")))
+          .Case ("should fill ctor args according to reuused metadata", _ => _
+              .Given (ReusedCtorDependencyContext (seed: 0))
+              .It ("fills temperature", x => x.Result.Temperature.Should ().Be (1559595546))
+              .It ("fills origin", x => x.Result.Origin.Should ().Be ("Antarctica (1559595546)")))
           .Case ("should fill dependend ctor args", _ => _
               .Given (SimpleCtorDependencyContext ())
               .It ("fills temperature", x => x.Result.Temperature.Should ().Be (4))
@@ -56,10 +64,9 @@ namespace Farada.TestDataGeneration.IntegrationTests
           .Case ("should throw on cycles in ctor args", _ => _
               .Given (CyclicCtorDependencyContext ())
               .ItThrows (typeof (ArgumentException),
-                  //REVIEW: We get a different message here because the DefaultInstanceValueProvider does not construct the metadata on the wrong registration order...
-                  "Could not find metadata context for key:'Farada.TestDataGeneration.IntegrationTests.TestDomain.ImmutableIce.Origin'. "
+                  "Could not find key:'Farada.TestDataGeneration.IntegrationTests.TestDomain.ImmutableIce.Temperature' "
                   +
-                  "Have you registered the dependency before the metadata provider?"));
+                  "in metadata context. Have you registered the dependency before the metadata provider?"));
     }
 
     Context SimpleMetadataContext (int weight, Color color)
@@ -92,6 +99,22 @@ namespace Farada.TestDataGeneration.IntegrationTests
             .Select (a => a.Name).AddProvider (context => $"VehicleX (Color:{context.Metadata.Color}," + $" Weight:{context.Metadata.Weight})");
       })
           .Given (TestDataGeneratorContext ());
+    }
+
+    Context ReusedDependencyContext(int seed)
+    {
+      return c => c.Given("reused dependency domain", x =>
+      {
+        TestDataDomainConfiguration = configurator => configurator.UseDefaults (false).UseRandom(new DefaultRandom(seed))
+            .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
+            .For<Engine> ().AddProvider (context => new JetEngine { PowerInNewtons = 5 })
+            .For<AirVehicle> ()
+            .Select (a => a.MainColor).AddProvider (context => Color.White)
+            .For<AirVehicle> ().WithMetadata (ctx => ctx.Random.Next ())
+            .Select (a => a.Weight).AddProvider (context => context.Metadata)
+            .Select (a => a.Name).AddProvider (context => $"Vehicle (Weight:{context.Metadata})");
+      })
+          .Given(TestDataGeneratorContext());
     }
 
     Context PassThroughDependencyContext ()
@@ -175,11 +198,24 @@ namespace Farada.TestDataGeneration.IntegrationTests
         TestDataDomainConfiguration = configurator => configurator.UseDefaults (false)
             .For<object> ().AddProvider (new DefaultInstanceValueProvider<object> ())
             .For<ImmutableIce> ()
-            .Select (ice => ice.Temperature).AddProvider (context => 1)
+            .Select (ice => ice.Temperature).AddProvider (context => temperature)
             .For<ImmutableIce> ().WithMetadata (ctx => temperature)
             .Select (ice => ice.Origin).AddProvider (context => $"Antarctica ({context.Metadata})");
       })
           .Given (TestDataGeneratorContext ());
+    }
+
+    Context ReusedCtorDependencyContext(int seed)
+    {
+      return c => c.Given("reused ctor dependency domain", x =>
+      {
+        TestDataDomainConfiguration = configurator => configurator.UseDefaults(false).UseRandom(new DefaultRandom(seed))
+            .For<object>().AddProvider(new DefaultInstanceValueProvider<object>())
+            .For<ImmutableIce>().WithMetadata(ctx => ctx.Random.Next())
+            .Select(ice => ice.Temperature).AddProvider(context => context.Metadata)
+            .Select(ice => ice.Origin).AddProvider(context => $"Antarctica ({context.Metadata})");
+      })
+          .Given(TestDataGeneratorContext());
     }
 
     Context SimpleCtorDependencyContext ()

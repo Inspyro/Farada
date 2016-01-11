@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Farada.TestDataGeneration.CompoundValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders.Farada.TestDataGeneration.CompoundValueProviders;
@@ -34,6 +35,7 @@ namespace Farada.TestDataGeneration.ValueProviders
       var toUnsortedDictionary = ctorMembers.Select ((value, index) => new { value, index }).ToDictionary (x => x.value, x => x.index);
       var sortedToUnsorted = sortedCtorMembers.Select (member => toUnsortedDictionary[member]).ToList();
 
+      List<object> resolvedMetadatas = null;
       for (var argumentIndex = 0; argumentIndex < sortedCtorMembers.Count; argumentIndex++)
       {
         var ctorMember = sortedCtorMembers[argumentIndex];
@@ -41,21 +43,23 @@ namespace Farada.TestDataGeneration.ValueProviders
 
         var memberKey = context.Advanced.Key.CreateKey (ctorMember);
 
-        List<object> memberMetadatas = null;
-        if (context.Advanced.MetadataResolver.NeedsMetadata (memberKey))
+        //we only resolve once per parent (not for each member), so the data is shared between all members.
+        if (resolvedMetadatas == null && context.Advanced.MetadataResolver.NeedsMetadata (memberKey))
         {
+          var dependendArguments = sortedCtorMembers.Take (argumentIndex).ToList();
+
           var metadataContexts = GetMetadataContexts (
               context.Advanced.Key,
-              sortedCtorMembers.Take (argumentIndex).ToList(),
+              dependendArguments,
               ctorValuesCollections,
               sortedToUnsorted,
               context.TestDataGenerator).ToList();
 
-          memberMetadatas = context.Advanced.MetadataResolver.Resolve (memberKey, metadataContexts).ToList();
+          resolvedMetadatas = context.Advanced.MetadataResolver.Resolve (memberKey, metadataContexts).ToList();
         }
 
         //Note: Here we have a recursion to the compound value provider. e.g. other immutable types could be a ctor argument
-        var ctorMemberValues = context.Advanced.AdvancedTestDataGenerator.CreateMany (memberKey, memberMetadatas, itemCount, maxRecursionDepth: 2);
+        var ctorMemberValues = context.Advanced.AdvancedTestDataGenerator.CreateMany (memberKey, resolvedMetadatas, itemCount, maxRecursionDepth: 2);
         for (var valueIndex = 0; valueIndex < ctorMemberValues.Count; valueIndex++)
         {
           ctorValuesCollections[valueIndex][unsortedArgumentIndex] = ctorMemberValues[valueIndex];
@@ -83,16 +87,22 @@ namespace Farada.TestDataGeneration.ValueProviders
         IReadOnlyList<int> sortedToUnsorted,
         ITestDataGenerator testDataGenerator)
     {
-      for (int i=0;i<dependendArguments.Count;i++)
+      var dependendArgumentMapping = new List<Tuple<int, IKey>>();
+      for (var i = 0; i < dependendArguments.Count; i++)
       {
         var argument = dependendArguments[i];
         var argumentKey = baseKey.CreateKey (argument);
         var argumentIndex = sortedToUnsorted[i];
 
+        dependendArgumentMapping.Add (new Tuple<int, IKey> (argumentIndex, argumentKey));
+      }
+
+      foreach (var valueCollection in ctorValuesCollections)
+      {
         var context = new MetadataObjectContext(testDataGenerator);
-        foreach (var argumentValue in ctorValuesCollections.Select (valueCollection => valueCollection[argumentIndex]))
+        foreach (var dependendArgument in dependendArgumentMapping)
         {
-          context.Add (argumentKey, argumentValue);
+          context.Add (dependendArgument.Item2, valueCollection[dependendArgument.Item1]);
         }
 
         yield return context;
