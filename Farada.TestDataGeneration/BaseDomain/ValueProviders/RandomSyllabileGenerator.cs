@@ -36,7 +36,7 @@ namespace Farada.TestDataGeneration.BaseDomain.ValueProviders
 
       for (var i = 0; i < len; i++)
       {
-        var c = i == 1 ? s_vowels[context.Random.Next(s_vowels.Length)] : s_consonants[context.Random.Next(s_consonants.Length)];
+        var c = i % 2 == 0 ? s_consonants[context.Random.Next(s_consonants.Length)] : s_vowels[context.Random.Next(s_vowels.Length)];
         stringBuilder.Append(c);
       }
     }

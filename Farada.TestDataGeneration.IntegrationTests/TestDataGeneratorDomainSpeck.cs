@@ -99,7 +99,7 @@ namespace Farada.TestDataGeneration.IntegrationTests
       Specify (x => Create<ClassWithEmail> ()).Case ("email case", _ => _
           .Given (BaseDomainContext (seed: 2))
           //
-          .It ("should equal some random email address", x => x.Result.Email.Should ().Be ("lazdjv.bobb@lesg.ca")));
+          .It ("should equal some random email address", x => x.Result.Email.Should ().Be ("lazaju.boba@lese.ca")));
 
 
       //empty domain

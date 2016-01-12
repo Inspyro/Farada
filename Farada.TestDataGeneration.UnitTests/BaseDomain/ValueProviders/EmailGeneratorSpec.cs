@@ -19,7 +19,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
       Specify (x => TestDataGenerator.Create<ClassWithEmail> ())
           .Case ("when creating", _ => _
               .Given (BaseContext (seed: 5))
-              .It ("returns 2", x => x.Result.Email.Should ().Be ("herm.yid@kacnf.du")));
+              .It ("returns 2", x => x.Result.Email.Should ().Be ("heri.yid@kacif.du")));
     }
 
     Context BaseContext (int seed)

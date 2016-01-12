@@ -117,8 +117,8 @@ namespace Farada.TestDataGeneration.IntegrationTests
           TestDataGenerator.Create<ClassWithMixedMembers> (MaxRecursionDepth, null))
           .Case ("should fill mixed properties correctly", _ => _
               .Given (BaseDomainContext (seed: 0))
-              .It ("should fill public property", x => x.Result.PublicProperty.Should ().Be ("Vigpmuhj"))
-              .It ("should fill public field", x => x.Result.PublicField.Should ().Be ("Zaxseww"))
+              .It ("should fill public property", x => x.Result.PublicProperty.Should ().Be ("Vigimuhe"))
+              .It ("should fill public field", x => x.Result.PublicField.Should ().Be ("Zaxsewu"))
               .It ("Should not fill private property", x => x.Result.GetPrivateProperty ().Should ().Be ("default"))
               .It ("Should not fill private field", x => x.Result.GetPrivateField ().Should ().Be ("default")));
     }
