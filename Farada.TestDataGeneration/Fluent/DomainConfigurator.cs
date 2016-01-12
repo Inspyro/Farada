@@ -25,7 +25,7 @@ namespace Farada.TestDataGeneration.Fluent
     {
       _lazyValueProviderBuilder = () => ValueProviderBuilder;
 
-      _random = new DefaultRandom();
+      _random = DefaultRandom.Instance;
       _useDefaults = true;
 
       _parameterToPropertyConversionFunc = parameterName => parameterName[0].ToString().ToUpper() + parameterName.Substring (1);

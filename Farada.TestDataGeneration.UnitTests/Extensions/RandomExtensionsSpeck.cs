@@ -70,7 +70,7 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
     
     static Context<IRandom> DefaultRandomContext ()
     {
-      return c => c.GivenSubject ("default random", x => new DefaultRandom ());
+      return c => c.GivenSubject ("default random", x => DefaultRandom.Instance);
     }
 
     static Context<IRandom> SeededRandomContext (int seed)
