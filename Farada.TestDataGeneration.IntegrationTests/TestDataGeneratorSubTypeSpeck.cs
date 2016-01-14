@@ -10,7 +10,7 @@ using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  [Subject (typeof (ITestDataGenerator), "Create_SubTypes")]
+  [Subject (typeof (ITestDataGenerator), nameof(ITestDataGenerator.Create))]
   class TestDataGeneratorSubTypeSpeck:TestDataGeneratorBaseSpeck
   {
     public TestDataGeneratorSubTypeSpeck ()

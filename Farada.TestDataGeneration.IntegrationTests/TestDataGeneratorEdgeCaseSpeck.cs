@@ -12,7 +12,7 @@ using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  [Subject (typeof (ITestDataGenerator), "Create_WithEdgeCase")]
+  [Subject (typeof (ITestDataGenerator), nameof(ITestDataGenerator.Create))]
   class TestDataGeneratorEdgeCaseSpeck : TestDataGeneratorBaseSpeck
   {
     public TestDataGeneratorEdgeCaseSpeck ()

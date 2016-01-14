@@ -5,7 +5,7 @@ using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 {
-  [Subject(typeof(RandomWordGenerator),"Constructor")]
+  [Subject(typeof(RandomWordGenerator), nameof(String))]
   public class RandomWordGeneratorSpeck:Spec
   {
     [Faked] RandomSyllabileGenerator RandomSyllabileGenerator;

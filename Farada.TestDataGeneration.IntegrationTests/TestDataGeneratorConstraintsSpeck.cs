@@ -8,7 +8,7 @@ using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  [Subject (typeof (ITestDataGenerator), "Create_WithConstraints")]
+  [Subject (typeof (ITestDataGenerator), nameof(String))]
   class TestDataGeneratorConstraintsSpeck : TestDataGeneratorBaseSpeck
   {
     public TestDataGeneratorConstraintsSpeck ()

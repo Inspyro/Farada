@@ -7,7 +7,7 @@ using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 {
-  [Subject(typeof(AttributeBasedValueProvider<,>), "Create")]
+  [Subject(typeof(AttributeBasedValueProvider<,>), nameof(AttributeBasedValueProvider<string,DateRangeAttribute>))]
   public class AttributeBasedValueProviderSpec : Spec
   {
     static TestDataDomainConfiguration TestDataDomainConfiguration;

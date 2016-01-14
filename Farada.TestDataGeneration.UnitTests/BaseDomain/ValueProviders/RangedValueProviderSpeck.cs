@@ -6,7 +6,7 @@ using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 {
-  [Subject(typeof(RangedValueProvider<>), "Create")]
+  [Subject(typeof(RangedValueProvider<>), nameof(String))]
   public class RangedValueProviderSpec : Spec
   {
     static TestDataDomainConfiguration TestDataDomainConfiguration;

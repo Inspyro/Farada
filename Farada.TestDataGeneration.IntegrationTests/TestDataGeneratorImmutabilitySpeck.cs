@@ -9,7 +9,7 @@ using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  [Subject (typeof (ITestDataGenerator), "Create_Immutable")]
+  [Subject (typeof (ITestDataGenerator), nameof(ITestDataGenerator.Create))]
   public class TestDataGeneratorImmutabilitySpeck : TestDataGeneratorBaseSpeck
   {
     public TestDataGeneratorImmutabilitySpeck ()

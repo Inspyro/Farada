@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Farada.TestDataGeneration.BaseDomain.ValueProviders;
 using Farada.TestDataGeneration.CompoundValueProviders;
@@ -8,7 +9,7 @@ using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 {
-  [Subject (typeof (EmailGenerator), "Create")]
+  [Subject (typeof (EmailGenerator), nameof(String))]
   public class EmailGeneratorSpec : Spec
   {
     static TestDataDomainConfiguration TestDataDomainConfiguration;

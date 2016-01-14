@@ -12,7 +12,7 @@ using Farada.TestDataGeneration.Fluent;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  [Subject (typeof (ITestDataGenerator), "Create_TypeExtensions")]
+  [Subject (typeof (ITestDataGenerator), nameof(ITestDataGenerator.Create))]
   class TestDataGeneratorTypeExtensionSpeck : TestDataGeneratorBaseSpeck
   {
     public TestDataGeneratorTypeExtensionSpeck ()

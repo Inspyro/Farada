@@ -10,7 +10,7 @@ using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 {
-  [Subject (typeof (ChooseSingleItemValueProvider<,>), "Create")]
+  [Subject (typeof (ChooseSingleItemValueProvider<,>), nameof(String))]
   public class ChooseSingleItemValueProviderSpec : Spec
   {
     static List<int> InputList;

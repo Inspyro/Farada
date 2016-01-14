@@ -10,8 +10,7 @@ using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
 {
-  [Subject (typeof (StringConstraints), "FromProperty")]
-  [Guid ("499547D2-CA5C-4A48-86E6-ED489D704CEA")]
+  [Subject (typeof (StringConstraints), nameof(StringConstraints.FromMember))]
   public class StringConstraintsSpeck : Spec
   {
     [Faked] IFastMemberWithValues Member;

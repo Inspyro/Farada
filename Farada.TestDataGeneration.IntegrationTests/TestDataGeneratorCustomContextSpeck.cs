@@ -7,7 +7,7 @@ using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.IntegrationTests
 {
-  [Subject (typeof (ITestDataGenerator), "Create_WithCustomContext")]
+  [Subject (typeof (ITestDataGenerator), nameof(String))]
   class TestDataGeneratorCustomContextSpeck:TestDataGeneratorBaseSpeck
   {
     public TestDataGeneratorCustomContextSpeck ()

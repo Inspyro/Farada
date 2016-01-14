@@ -10,7 +10,7 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
   {
     Type Type;
 
-    [Subject (typeof (TypeExtensions), "IsNullableType")]
+    [Subject (typeof (TypeExtensions), nameof(String))]
     public class IsNullableTypeSpecK : TypeExtensionsSpecK
     {
       public IsNullableTypeSpecK ()
@@ -31,7 +31,7 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
       }
     }
 
-    [Subject (typeof (TypeExtensions), "UnwrapIfNullable")]
+    [Subject (typeof (TypeExtensions), nameof (TypeExtensions.UnwrapIfNullable))]
     public class UnwrapIfNullableSpecK : TypeExtensionsSpecK
     {
       public UnwrapIfNullableSpecK ()
@@ -49,7 +49,7 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
       }
     }
 
-    [Subject (typeof (TypeExtensions), "IsCompoundType")]
+    [Subject (typeof (TypeExtensions), nameof (TypeExtensions.IsCompoundType))]
     public class IsCompoundTypeSpecK : TypeExtensionsSpecK
     {
       public IsCompoundTypeSpecK ()
@@ -70,7 +70,7 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
       }
     }
 
-    [Subject (typeof (TypeExtensions), "CanBeInstantiated")]
+    [Subject (typeof (TypeExtensions), nameof (TypeExtensions.CanBeInstantiated))]
     public class CanBeInstantiatedSpecK : TypeExtensionsSpecK
     {
       bool IncludeNonPublicConstructor;
@@ -97,7 +97,7 @@ namespace Farada.TestDataGeneration.UnitTests.Extensions
       }
     }
 
-    [Subject (typeof (TypeExtensions), "GetPropertyInfo")]
+    [Subject (typeof (TypeExtensions), nameof (TypeExtensions.GetPropertyInfo))]
     public class GetPropertyInfoSpecK : TypeExtensionsSpecK
     {
       bool IncludeNonPublicConstructor;

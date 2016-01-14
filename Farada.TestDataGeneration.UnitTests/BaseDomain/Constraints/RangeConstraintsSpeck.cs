@@ -11,7 +11,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
 {
   public class RangeConstraintsSpecK
   {
-    [Subject (typeof (RangeContstraints<>), "Constructor")]
+    [Subject (typeof (RangeContstraints<>), nameof(RangeContstraints<string>))]
     public class ConstructorSpecK : Spec
     {
       RangeAttribute RangeAttribute;
@@ -26,7 +26,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.Constraints
       }
     }
 
-    [Subject (typeof (RangeContstraints<>), "FromProperty")]
+    [Subject (typeof (RangeContstraints<>), nameof(RangeContstraints<string>.FromMember))]
     public class FromPropertySpecK : Spec
     {
       [Faked] IFastMemberWithValues Member;

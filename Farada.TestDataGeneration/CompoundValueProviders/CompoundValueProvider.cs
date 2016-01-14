@@ -139,7 +139,7 @@ namespace Farada.TestDataGeneration.CompoundValueProviders
             var dependendMembers = sortedMembers.Take (index);
             var metadataContexts = GetMetadataContexts (instancesForType.Key, dependendMembers, instancesForType.Instances).ToList();
 
-            resolvedMetadatas = _metadataResolver.Resolve (memberKey, metadataContexts)?.ToList();
+            resolvedMetadatas = _metadataResolver.Resolve (memberKey, metadataContexts).ToList();
           }
 
           //next we will recursively call this function (in case the member is compound/complex)

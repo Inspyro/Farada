@@ -10,7 +10,7 @@ using TestFx.SpecK;
 
 namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 {
-  [Subject (typeof (ChooseMultipleDistinctItemsValueProvider<,>), "Create")]
+  [Subject (typeof (ChooseMultipleDistinctItemsValueProvider<,>), nameof(String))]
   public class ChooseMultipleDistinctItemsValueProviderSpec : Spec
   {
     static TestDataDomainConfiguration TestDataDomainConfiguration;

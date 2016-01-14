@@ -18,7 +18,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
 {
   public class RandomSyllabileGeneratorSpeck
   {
-    [Subject (typeof (RandomSyllabileGenerator), "Constructor")]
+    [Subject (typeof (RandomSyllabileGenerator), nameof(String))]
     public class ConstructorSpecK : Spec
     {
       ValueProviderContext<string> Context;
@@ -31,7 +31,7 @@ namespace Farada.TestDataGeneration.UnitTests.BaseDomain.ValueProviders
       }
     }
 
-    [Subject (typeof (RandomSyllabileGenerator), "Fill")]
+    [Subject (typeof (RandomSyllabileGenerator), nameof (RandomSyllabileGenerator.Fill))]
     public class FillSpecK : Spec<RandomSyllabileGenerator>
     {
       ValueProviderContext<string> Context;
