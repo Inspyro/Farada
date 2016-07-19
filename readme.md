@@ -1,4 +1,6 @@
 # Farada
+
+[![Join the chat at https://gitter.im/Inspyro/Farada](https://badges.gitter.im/Inspyro/Farada.svg)](https://gitter.im/Inspyro/Farada?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 ![main](https://raw.githubusercontent.com/Inspyro/Data/master/Farada/images/main.gif)  
 Farada is short for Fast random data Generator. And it does exactly what it says.
   - Create random data with blazing fast performance
